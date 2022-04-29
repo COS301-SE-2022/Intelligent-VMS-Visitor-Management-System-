@@ -19,23 +19,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "⚡ Checkout"
-      - uses: actions/checkout@v3
+        uses: actions/checkout@v3
       
       - name: "🧪 Setup node"
-      - uses: actions/setup-node@v2
-      - with:
+        uses: actions/setup-node@v2
+        with:
           node-version: '16.x'
           cache: 'yarn'
           
       - name: "📦 Install Dependencies"
-      - run: yarn install --frozen-lockfile
+        run: yarn install --frozen-lockfile
         
       - name: "🏁 Run tests backend"
-      - run: yarn run test
+        run: yarn run test
         
       - name: "⭐️ Deploy backend container"  
-      - uses: gonuit/heroku-docker-deploy@v1.3.2
-      - with:
+        uses: gonuit/heroku-docker-deploy@v1.3.2
+        with:
           email: ${{ secrets.HEROKU_EMAIL }}
           heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
           heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
