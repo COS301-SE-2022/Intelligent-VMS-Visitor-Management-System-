@@ -18,7 +18,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Run a one-line script
-        run: echo Hello, world!
+      - name: "⚡ Checkout"
+        uses: actions/checkout@v3
+      
+      - name: "🧪 Setup node"
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16.x'
+          
+      - name: "📦 Install Dependencies"
+        working-directory: ./client
+        run: yarn install --frozen-lockfile
+              
+      - name: "⭐️ Deploy frontend to vercel"  
+        uses: amondnet/vercel-action@v20 #deploy
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }} # Required
+          vercel-org-id: ${{ secrets.VERCEL_ORGANISATION_ID }}  #Required
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }} #Required 
+          working-directory: ./client
