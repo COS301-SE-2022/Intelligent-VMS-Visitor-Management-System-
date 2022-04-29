@@ -1,9 +1,21 @@
 {
-  "moduleFileExtensions": ["js", "json", "ts"],
+  "moduleFileExtensions": [
+    "js",
+    "json",
+    "ts"
+  ],
   "rootDir": ".",
   "testEnvironment": "node",
   "testRegex": ".e2e-spec.ts$",
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "moduleNameMapper": {
+    "@vms/my-library/(.*)": "<rootDir>/../libs/my-library/src/$1",
+    "@vms/my-library": "<rootDir>/../libs/my-library/src",
+    "@vms/database/(.*)": "<rootDir>/../libs/database/src/$1",
+    "@vms/database": "<rootDir>/../libs/database/src",
+    "@vms/visitor/(.*)": "<rootDir>/../libs/visitor/src/$1",
+    "@vms/visitor": "<rootDir>/../libs/visitor/src"
   }
 }

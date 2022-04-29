@@ -1,0 +1,26 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+directive @upper on FIELD_DEFINITION
+
+type Visitor {
+  id: Float!
+  name: String!
+  password: String!
+}
+
+input VisitorInputType {
+  id: Float!
+  name: String!
+  password: String!
+}
+
+type Query {
+  hello: String!
+  visitors: [Visitor!]!
+}
+
+type Mutation {
+  createVisitor(input: VisitorInputType!): Visitor!
+}
