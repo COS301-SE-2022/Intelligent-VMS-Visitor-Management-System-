@@ -25,12 +25,21 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '16.x'
-          cache: 'yarn'
           
       - name: "📦 Install Dependencies"
+        working-directory: ./backend
         run: yarn install --frozen-lockfile
+      
+      - name: "🌹 Format Code"
+        working-directory: ./backend
+        run: yarn format
+        
+      - name: "🧶 Lint Code"
+        working-directory: ./backend
+        run: yarn lint
         
       - name: "🏁 Run tests backend"
+        working-directory: ./backend
         run: yarn run test
         
       - name: "⭐️ Deploy backend container"  
@@ -39,7 +48,7 @@ jobs:
           email: ${{ secrets.HEROKU_EMAIL }}
           heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
           heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
-          dockerfile_directory: ./
+          dockerfile_directory: ./backend
           dockerfile_name: Dockerfile
           docker_options: "--no-cache"
           process_type: web
