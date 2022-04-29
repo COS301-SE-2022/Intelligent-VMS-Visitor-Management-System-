@@ -16,6 +16,26 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "paths": {
+      "@vms/my-library": [
+        "libs/my-library/src"
+      ],
+      "@vms/my-library/*": [
+        "libs/my-library/src/*"
+      ],
+      "@vms/database": [
+        "libs/database/src"
+      ],
+      "@vms/database/*": [
+        "libs/database/src/*"
+      ],
+      "@vms/visitor": [
+        "libs/visitor/src"
+      ],
+      "@vms/visitor/*": [
+        "libs/visitor/src/*"
+      ]
+    }
   }
 }
