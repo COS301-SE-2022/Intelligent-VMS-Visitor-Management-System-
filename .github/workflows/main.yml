@@ -18,16 +18,20 @@ jobs:
   cicd:
     runs-on: ubuntu-latest
     steps:
+      - name: "⚡ Checkout"
       - uses: actions/checkout@v3
-      - uses: borales/actions-yarn@v2.3.0
+      
+      - name: "🧪 Setup node"
+      - uses: actions/setup-node@v2
         with:
-          cmd: install # will run `yarn install` command
-      - uses: borales/actions-yarn@v2.3.0
-        with:
-          cmd: build # will run `yarn build` command
-      - uses: borales/actions-yarn@v2.3.0
-        with:
-          cmd: test # will run `yarn test` command
+          node-version: '16.x'
+      - name: "📦 Install Dependencies"
+        run: yarn install --frozen-lockfile
+        
+      - name: "🏁 Run tests backend"
+        run: yarn run test
+        
+      - name: "⭐️ Deploy backend container"  
       - uses: gonuit/heroku-docker-deploy@v1.3.2 # GitHub action name (leave it as it is).
         with:
           email: ${{ secrets.HEROKU_EMAIL }}
