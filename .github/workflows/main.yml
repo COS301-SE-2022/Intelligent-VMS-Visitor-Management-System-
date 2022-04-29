@@ -25,11 +25,18 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '16.x'
-          cache: 'yarn'
           
       - name: "📦 Install Dependencies"
         working-directory: ./backend
         run: yarn install --frozen-lockfile
+      
+      - name: "🌹 Format Code"
+        working-directory: ./backend
+        run: yarn format
+        
+      - name: "🧶 Lint Code"
+        working-directory: ./backend
+        run: yarn lint
         
       - name: "🏁 Run tests backend"
         working-directory: ./backend
