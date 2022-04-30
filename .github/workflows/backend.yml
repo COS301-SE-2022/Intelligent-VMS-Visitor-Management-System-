@@ -17,6 +17,7 @@ on:
 jobs:
   cicd:
     runs-on: ubuntu-latest
+    environment: vms
     steps:
       - name: "⚡ Checkout"
         uses: actions/checkout@v3
