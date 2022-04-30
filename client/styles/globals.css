@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer {
+    .debug {
+        border: 1px solid red;
+    }
+}
