@@ -23,10 +23,6 @@ jobs:
         working-directory: ./client
         run: yarn install --frozen-lockfile
         
-      - name: "🌹 Format"
-        working-directory: ./client
-        run: yarn format
-        
       - name: "✅ Unit Tests"
         working-directory: ./client
         run: yarn test
