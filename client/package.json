@@ -5,7 +5,7 @@
     "build": "next build",
     "start": "next start",
     "format": "prettier --write \"pages/**/*.js\" \"components/**/*.jsx\" \"pages/**/*.jsx\"",
-    "test": "jest --watch --env=jsdom",
+    "test": "jest",
     "cypress": "cypress open",
     "cypress:headless": "cypress run"
   },
