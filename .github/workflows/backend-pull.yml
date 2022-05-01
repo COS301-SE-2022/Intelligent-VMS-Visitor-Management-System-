@@ -1,0 +1,35 @@
+name: Backend-Pull
+
+on:
+  pull_request:
+    branches: [ develop,main ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "⚡ Checkout"
+        uses: actions/checkout@v3
+      
+      - name: "🧪 Setup node"
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16.x'
+          
+      - name: "📦 Install Dependencies"
+        working-directory: ./backend
+        run: yarn install --frozen-lockfile
+      
+      - name: "🌹 Format Code"
+        working-directory: ./backend
+        run: yarn format
+        
+      - name: "🧶 Lint Code"
+        working-directory: ./backend
+        run: yarn lint
+        
+      - name: "🏁 Run tests backend"
+        working-directory: ./backend
+        run: yarn run test
