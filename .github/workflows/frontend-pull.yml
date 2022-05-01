@@ -1,0 +1,32 @@
+name: frontend-check
+
+on: 
+  pull_request:
+    branches: [ develop ]
+
+  workflow_dispatch:
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "⚡ Checkout"
+        uses: actions/checkout@v3
+      
+      - name: "🧪 Setup node"
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16.x'
+          
+      - name: "📦 Install Dependencies"
+        working-directory: ./client
+        run: yarn install --frozen-lockfile
+        
+      - name: "🌹 Format"
+        working-directory: ./client
+        run: yarn format
+        
+      - name: "✅ Unit Tests"
+        working-directory: ./client
+        run: yarn test
