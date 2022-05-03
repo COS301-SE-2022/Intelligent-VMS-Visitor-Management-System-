@@ -16,6 +16,10 @@
     "@vms/database/(.*)": "<rootDir>/../libs/database/src/$1",
     "@vms/database": "<rootDir>/../libs/database/src",
     "@vms/visitor/(.*)": "<rootDir>/../libs/visitor/src/$1",
-    "@vms/visitor": "<rootDir>/../libs/visitor/src"
+    "@vms/visitor": "<rootDir>/../libs/visitor/src",
+    "@user/user/(.*)": "<rootDir>/../libs/user/src/$1",
+    "@user/user": "<rootDir>/../libs/user/src",
+    "@vms/auth/(.*)": "<rootDir>/../libs/auth/src/$1",
+    "@vms/auth": "<rootDir>/../libs/auth/src"
   }
 }
