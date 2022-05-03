@@ -9,6 +9,8 @@ import { DirectiveLocation, GraphQLDirective } from "graphql";
 
 import { DatabaseModule } from "@vms/database";
 import { VisitorModule } from "@vms/visitor";
+import { AuthModule } from "@vms/auth";
+import { UserModule } from "@vms/user";
 
 @Module({
     imports: [
@@ -30,6 +32,8 @@ import { VisitorModule } from "@vms/visitor";
         }),
         DatabaseModule,
         VisitorModule,
+        UserModule,
+        AuthModule,
     ],
     controllers: [AppController],
     providers: [AppService],

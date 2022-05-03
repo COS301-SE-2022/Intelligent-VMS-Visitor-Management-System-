@@ -6,8 +6,6 @@ import Home from '../pages/index';
 describe('Home', () => {
   it('renders a heading', () => {
     render(<Home />);
-
-    expect(screen.getByText('Hello there')).toBeInTheDocument()
-
+    expect(screen.getByText('Hello there 👋')).toBeInTheDocument();
   })
 })

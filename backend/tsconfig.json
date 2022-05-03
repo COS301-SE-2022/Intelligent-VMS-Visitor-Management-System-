@@ -35,6 +35,18 @@
       ],
       "@vms/visitor/*": [
         "libs/visitor/src/*"
+      ],
+      "@vms/user": [
+        "libs/user/src"
+      ],
+      "@vms/user/*": [
+        "libs/user/src/*"
+      ],
+      "@vms/auth": [
+        "libs/auth/src"
+      ],
+      "@vms/auth/*": [
+        "libs/auth/src/*"
       ]
     }
   }

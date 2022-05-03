@@ -10,17 +10,29 @@ type Visitor {
   password: String!
 }
 
+type User {
+  email: String
+  access_token: String
+}
+
 input VisitorInputType {
   id: Float!
   name: String!
   password: String!
 }
 
+input UserInputType {
+  email: String
+  access_token: String
+}
+
 type Query {
   hello: String!
   visitors: [Visitor!]!
+  helloUser: String!
 }
 
 type Mutation {
   createVisitor(input: VisitorInputType!): Visitor!
+  login(email: String!, password: String!): User!
 }
