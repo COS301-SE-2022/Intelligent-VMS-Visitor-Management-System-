@@ -90,4 +90,12 @@ const CreateInvite = () => {
 	)
 }
 
-export default CreateInvite
+export async function getStaticProps(context) {
+    return {
+        props: {
+          protected: true,
+        },
+    }
+}
+
+export default CreateInvite;

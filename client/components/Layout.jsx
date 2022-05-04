@@ -1,15 +1,14 @@
 import Head from "next/head";
 import Link from "next/link";
 
-import RouteGuard from "../guards/RouteGuard";
 import useAuth from "../store/authStore";
 
 const Layout = ({ children }) => {
 
     const token = useAuth((state) => state.access_token);
+    const logout = useAuth((state) => state.logout);
 
     return (
-        <RouteGuard>
             <div className="flex min-h-screen flex-col items-center md:py-2 font-main container mx-auto">
                 <Head>
                     <title>VMS</title>
@@ -66,8 +65,11 @@ const Layout = ({ children }) => {
                         </ul>
                             :
                             <ul className="dropdown-content">
-                                <Link href="createInvite">
+                                <Link href="/createInvite">
                                     <a className="btn">Create Invite</a>
+                                </Link>
+                                <Link href="/">
+                                    <a className="btn" onClick={() => logout()}>Logout</a>
                                 </Link>
                             </ul>
                         }
@@ -144,7 +146,6 @@ const Layout = ({ children }) => {
                     </div>
                 </footer>
             </div>
-        </RouteGuard>
     );
 };
 
