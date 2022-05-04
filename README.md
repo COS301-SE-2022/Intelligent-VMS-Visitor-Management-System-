@@ -1,5 +1,11 @@
 # Intelligent Visitor Management System(VMS)
-## Development Team Name: Firestorm
+## Development Team: Firestorm 🔥
+
+<div align="center">
+    <img width="60%" src="https://user-images.githubusercontent.com/29174023/166639981-b303a2c9-4e56-4623-a42f-f4cb0d3067cf.png" />
+</div>
+
+<hr/>
 
 [![Backend](https://github.com/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-/actions/workflows/backend-deploy.yml/badge.svg)](https://github.com/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-/actions/workflows/backend-deploy.yml)
 [![Frontend](https://github.com/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-/actions/workflows/frontend-deploy.yml/badge.svg)](https://github.com/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-/actions/workflows/frontend-deploy.yml)
@@ -18,9 +24,16 @@ const TeamLead = {
                   and Computer Science. I value those around me, but I do like my alone time. 
                   I’ve fallen in the love with the complexities that Computer Science 
                   has to offer and excited to learn more about it every day."
-    linkedin: "LINK"
+    linkedin: "https://www.linkedin.com/in/kyle-s-008636162/"
 };
 ```
+<div align="center">
+    <img width="300px" src="https://user-images.githubusercontent.com/29174023/166640805-7ce471ef-322a-4a86-894d-eacb9f8a9af4.JPG" />
+    <p>Kyle Smith</p>
+</div>
+
+
+<hr/>
 
 ```javascript
 const TeamMember = {
@@ -32,6 +45,7 @@ const TeamMember = {
     linkedin: "LINK"
 };
 ```
+<hr/>
 
 ```javascript
 const TeamMember = {
@@ -43,6 +57,7 @@ const TeamMember = {
     linkedin: "LINK"
 };
 ```
+<hr/>
 
 ```javascript
 const TeamMember = {
@@ -57,6 +72,7 @@ const TeamMember = {
     linkedin: "LINK"
 };
 ```
+<hr/>
 
 ```javascript
 const TeamMember = {
