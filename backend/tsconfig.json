@@ -47,6 +47,12 @@
       ],
       "@vms/auth/*": [
         "libs/auth/src/*"
+      ],
+      "@vms/visitor-invite": [
+        "libs/visitor-invite/src"
+      ],
+      "@vms/visitor-invite/*": [
+        "libs/visitor-invite/src/*"
       ]
     }
   }

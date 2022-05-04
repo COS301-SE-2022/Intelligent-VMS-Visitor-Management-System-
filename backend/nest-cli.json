@@ -46,6 +46,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/auth/tsconfig.lib.json"
       }
+    },
+    "visitor-invite": {
+      "type": "library",
+      "root": "libs/visitor-invite",
+      "entryFile": "index",
+      "sourceRoot": "libs/visitor-invite/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/visitor-invite/tsconfig.lib.json"
+      }
     }
   },
   "compilerOptions": {

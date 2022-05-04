@@ -14,7 +14,6 @@ describe("AuthService", () => {
         })
             .useMocker((token) => {
                 if (token.toString() === "JWT_MODULE_OPTIONS") {
-                    console.log("YES!");
                     return {
                         secret: "test",
                         signOptions: { expiresIn: "60s" },
