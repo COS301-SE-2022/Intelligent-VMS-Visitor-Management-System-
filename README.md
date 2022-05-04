@@ -3,6 +3,7 @@
 
 [![Backend](https://github.com/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-/actions/workflows/backend-deploy.yml/badge.svg)](https://github.com/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-/actions/workflows/backend-deploy.yml)
 [![Frontend](https://github.com/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-/actions/workflows/frontend-deploy.yml/badge.svg)](https://github.com/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-/actions/workflows/frontend-deploy.yml)
+[![Code Coverage Backend](https://github.com/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-/actions/workflows/codecov-backend.yml/badge.svg)](https://github.com/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-/actions/workflows/codecov-backend.yml)
 
 ### 📐 The Project
 The VMS is an intelligent visitor management system that allows provides a platform for building residents to create invites for visitors, contractors or even prospective buyers. The visitor management platform will also allow the building management to view and analyse visiting data as they see fit. The system will also provide "smart" suggestions using a custom AI analytics engine.
