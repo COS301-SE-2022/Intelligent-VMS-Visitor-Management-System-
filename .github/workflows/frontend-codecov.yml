@@ -1,0 +1,30 @@
+name: Code Coverage Frontend
+
+on: [push, pull_request]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+     - name: "⚡ Checkout"
+       uses: actions/checkout@v3
+      
+     - name: "🧪 Setup node"
+       uses: actions/setup-node@v2
+       with:
+          node-version: '16.x'
+          
+     - name: "📦 Install Dependencies"
+       working-directory: ./client
+       run: yarn install --frozen-lockfile
+
+     - name: "✅ Run tests"
+       working-directory: ./client
+       run: yarn run test:cov
+
+     - name: "📈 Upload Code Coverage"
+       uses: codecov/codecov-action@v1
+       with: 
+          token: ${{ secrets.CODECOV_TOKEN }}
