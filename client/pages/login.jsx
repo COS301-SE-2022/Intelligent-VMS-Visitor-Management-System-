@@ -37,7 +37,6 @@ const Login = () => {
 						return errors;
 					}}
 					onSubmit={(values, { setSubmitting }) => {
-						console.log(process.env.BACKEND_GRAPHQL_URL);
 						const client = new ApolloClient({
 							uri: process.env.BACKEND_GRAPHQL_URL,
 							cache: new InMemoryCache()
