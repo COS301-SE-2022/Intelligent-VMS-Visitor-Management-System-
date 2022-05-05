@@ -1,16 +1,24 @@
 import { useState } from "react";
+import { useRouter } from "next/router";
+import jwtDecode from "jwt-decode";
 import { Formik, Field } from "formik";
 import {
 	ApolloClient,
 	InMemoryCache,
-	gql
+	gql,
+	createHttpLink
 } from "@apollo/client";
+import { setContext } from '@apollo/client/link/context';
 
+import useAuth from "../store/authStore.js";
 import Layout from "../components/Layout";
 
 const CreateInvite = () => {
 	const [showErrorAlert, setShowErrorAlert] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
+
+	const token = useAuth((state) => state.access_token);
+	const router = useRouter();
 
 	return (
 		<Layout>
@@ -37,8 +45,48 @@ const CreateInvite = () => {
 						return errors;
 					}}
 					onSubmit={(values, { setSubmitting }) => {
-						alert(JSON.stringify(values));
-						setSubmitting(false);
+						console.log(process.env.BACKEND_GRAPHQL_URL);
+
+						const httpLink = createHttpLink({
+							uri: "localhost:3000/graphql",
+							header: { Authorization: `Bearer ${token}` }
+						});
+
+						const authLink = setContext((_, { headers }) => {
+							return {
+								headers: {
+									...headers,
+									authorization: token ? `Bearer ${token}` : "",
+								}
+							}
+						});
+
+						const client = new ApolloClient({
+							uri: process.env.BACKEND_GRAPHQL_URL,
+							cache: new InMemoryCache(),
+							headers: {
+								Authorization: `Bearer ${token}`
+							}
+						});
+
+						const jwtToken = jwtDecode(token);
+
+						client.mutate({
+							mutation: gql`
+                                mutation {
+                                  createInvite(userEmail: "admin@mail.com", visitorEmail: "visitor@mail.com", IDDocType: "RSA-ID", IDNumber: "0109195273080") 
+                                }
+                            `
+						}).then(result => {
+							setSubmitting(false);
+
+							setShowErrorAlert(false);
+
+							router.push("/");
+						}).catch(err => {
+							setSubmitting(false);
+							console.error(err);
+						});
 					}}
 				>
 					{({
@@ -91,11 +139,11 @@ const CreateInvite = () => {
 }
 
 export async function getStaticProps(context) {
-    return {
-        props: {
-          protected: true,
-        },
-    }
+	return {
+		props: {
+			protected: true,
+		},
+	}
 }
 
 export default CreateInvite;
