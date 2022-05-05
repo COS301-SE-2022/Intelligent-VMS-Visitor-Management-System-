@@ -1,11 +1,11 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import Home from '../pages/index';
+import Hero from '../components/Hero';
 
-describe('Home', () => {
+describe('Hero', () => {
   it('renders a heading', () => {
-    render(<Home />);
+    render(<Hero />);
     expect(screen.getByText('Hello there 👋')).toBeInTheDocument();
   })
 })

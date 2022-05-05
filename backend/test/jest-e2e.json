@@ -20,6 +20,8 @@
     "@user/user/(.*)": "<rootDir>/../libs/user/src/$1",
     "@user/user": "<rootDir>/../libs/user/src",
     "@vms/auth/(.*)": "<rootDir>/../libs/auth/src/$1",
-    "@vms/auth": "<rootDir>/../libs/auth/src"
+    "@vms/auth": "<rootDir>/../libs/auth/src",
+    "@vms/visitor-invite/(.*)": "<rootDir>/../libs/visitor-invite/src/$1",
+    "@vms/visitor-invite": "<rootDir>/../libs/visitor-invite/src"
   }
 }

@@ -3,6 +3,7 @@ import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { AuthService } from "@vms/auth";
 import { GqlAuthGuard } from "@vms/auth/guards/GqlAuthGuard.guard";
 import { LocalAuthGuard } from "@vms/auth/guards/LocalAuthGuard.guard";
+import { CurrentUser } from "@vms/auth/decorators/CurrentUserDecorator.decorator";
 
 import { UserService } from "./user.service";
 
@@ -19,8 +20,8 @@ export class UserResolver {
 
     @UseGuards(GqlAuthGuard)
     @Query((returns) => String, { name: "helloUser" })
-    async hello() {
-        return "👋 from User";
+    async hello(@CurrentUser() user: User) {
+        return "👋 from to " + user.email + " " + user.permission;
     }
 
     @UseGuards(LocalAuthGuard)
