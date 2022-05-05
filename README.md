@@ -15,9 +15,11 @@
 The VMS is an intelligent visitor management system that allows provides a platform for building residents to create invites for visitors, contractors or even prospective buyers. The visitor management platform will also allow the building management to view and analyse visiting data as they see fit. The system will also provide "smart" suggestions using a custom AI analytics engine.
 
 ### ⛓ Project Links
-<a href="https://github.com/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-/projects/1">Project Board</a>
-<a href="https://docs.google.com/document/d/1kul9kttceV1UyGOkjUum6q-4-hk6GGc1Jb8gHUMz7CU/edit?usp=sharing">SRS Document</a>
-<a href="#">Demo Video</a>
+<a href="https://github.com/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-/projects/1">📦 Project Board</a>
+
+<a href="https://docs.google.com/document/d/1kul9kttceV1UyGOkjUum6q-4-hk6GGc1Jb8gHUMz7CU/edit?usp=sharing">📊 SRS Document</a>
+
+<a href="#">🚧 Demo Video</a>
 
 ### 👏 The Team
 
