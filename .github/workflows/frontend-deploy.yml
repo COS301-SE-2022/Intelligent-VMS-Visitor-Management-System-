@@ -33,5 +33,6 @@ jobs:
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }} # Required
           vercel-org-id: ${{ secrets.VERCEL_ORGANISATION_ID }}  #Required
+          vercel-args: '--prod'
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }} #Required 
           working-directory: ./client
