@@ -6,8 +6,10 @@
     "start": "next start",
     "format": "prettier --write \"pages/**/*.js\" \"components/**/*.jsx\" \"pages/**/*.jsx\"",
     "test": "jest",
+    "lint": "next lint",
     "cypress": "cypress open",
-    "cypress:headless": "cypress run"
+    "cypress:headless": "cypress run",
+    "test:cov": "jest --coverage"
   },
   "dependencies": {
     "@apollo/client": "^3.6.2",
@@ -31,6 +33,8 @@
   },
   "devDependencies": {
     "autoprefixer": "^10.4.0",
+    "eslint": "8.15.0",
+    "eslint-config-next": "12.1.6",
     "postcss": "^8.4.5",
     "prettier": "^2.5.1",
     "prettier-plugin-tailwindcss": "^0.1.1",

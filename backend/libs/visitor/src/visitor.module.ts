@@ -3,6 +3,7 @@ import { VisitorService } from "./visitor.service";
 import { Visitor, VisitorSchema } from "./schema/visitor.schema";
 import { MongooseModule } from "@nestjs/mongoose";
 import { VisitorResolver } from "./visitor.resolver";
+import QRCode from "qrcode";
 
 @Module({
     imports: [
