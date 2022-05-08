@@ -2,7 +2,7 @@
 ## Development Team: Firestorm 🔥
 
 <div align="center">
-    <img width="60%" src="https://user-images.githubusercontent.com/29174023/166639981-b303a2c9-4e56-4623-a42f-f4cb0d3067cf.png" />
+    <img width="55%" src="https://user-images.githubusercontent.com/29174023/166639981-b303a2c9-4e56-4623-a42f-f4cb0d3067cf.png" />
 </div>
 
 <hr/>
