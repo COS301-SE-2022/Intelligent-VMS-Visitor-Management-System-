@@ -19,6 +19,7 @@
     "cypress": "^9.6.0",
     "daisyui": "^2.14.3",
     "formik": "^2.2.9",
+    "framer-motion": "^6.3.3",
     "graphql": "^16.4.0",
     "graphql-tag": "^2.12.6",
     "identity-obj-proxy": "^3.0.0",
