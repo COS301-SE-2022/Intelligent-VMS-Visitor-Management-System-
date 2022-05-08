@@ -1,4 +1,4 @@
-name: Frontend-Pull
+name: Frontend-Check
 
 on:
   pull_request:
