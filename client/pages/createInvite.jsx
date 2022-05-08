@@ -2,16 +2,13 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import jwtDecode from "jwt-decode";
 import { Formik, Field } from "formik";
-import {
-    ApolloClient,
-    InMemoryCache,
-    gql,
-    createHttpLink,
-} from "@apollo/client";
-import { setContext } from "@apollo/client/link/context";
+import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
+import { motion } from "framer-motion";
 
 import useAuth from "../store/authStore.js";
+
 import Layout from "../components/Layout";
+import ErrorAlert from "../components/ErrorAlert";
 
 const CreateInvite = () => {
     const [showErrorAlert, setShowErrorAlert] = useState(false);
@@ -54,24 +51,7 @@ const CreateInvite = () => {
                         return errors;
                     }}
                     onSubmit={(values, { setSubmitting }) => {
-                        console.log(process.env.BACKEND_GRAPHQL_URL);
-
-                        const httpLink = createHttpLink({
-                            uri: "localhost:3000/graphql",
-                            header: { Authorization: `Bearer ${token}` },
-                        });
-
-                        const authLink = setContext((_, { headers }) => {
-                            return {
-                                headers: {
-                                    ...headers,
-                                    authorization: token
-                                        ? `Bearer ${token}`
-                                        : "",
-                                },
-                            };
-                        });
-
+                        // Create Apollo client instance
                         const client = new ApolloClient({
                             uri: process.env.BACKEND_GRAPHQL_URL,
                             cache: new InMemoryCache(),
@@ -80,6 +60,7 @@ const CreateInvite = () => {
                             },
                         });
 
+                        // Decode jwt token contents
                         const jwtToken = jwtDecode(token);
 
                         client
@@ -97,9 +78,7 @@ const CreateInvite = () => {
                             })
                             .then((result) => {
                                 setSubmitting(false);
-
                                 setShowErrorAlert(false);
-
                                 router.push("/");
                             })
                             .catch((err) => {
@@ -179,30 +158,7 @@ const CreateInvite = () => {
                     )}
                 </Formik>
 
-                <div
-                    className={`drop-alert absolute top-3 ${
-                        showErrorAlert ? "active" : ""
-                    }`}
-                >
-                    <div className="alert alert-error shadow-lg">
-                        <div>
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="h-6 w-6 flex-shrink-0 stroke-current"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-                                />
-                            </svg>
-                            <span>Error! {errorMessage}</span>
-                        </div>
-                    </div>
-                </div>
+                <ErrorAlert message={message} showConditon={showErrorAlert} />
             </div>
         </Layout>
     );

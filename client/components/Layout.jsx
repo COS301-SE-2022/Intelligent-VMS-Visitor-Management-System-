@@ -1,11 +1,19 @@
 import Link from "next/link";
 import Head from "next/head";
 
+import { motion } from "framer-motion";
+
 import useAuth from "../store/authStore";
 
 const Layout = ({ children }) => {
     const token = useAuth((state) => state.access_token);
     const logout = useAuth((state) => state.logout);
+
+    const variants = {
+        hidden: { opacity: 0, x: -200, y: 0 },
+        enter: { opacity: 1, x: 0, y: 0 },
+        exit: { opacity: 0, x: 0, y: -100 },
+    };
 
     return (
         <div className="container mx-auto flex min-h-screen flex-col items-center font-main md:py-2">
@@ -65,9 +73,18 @@ const Layout = ({ children }) => {
                 </div>
             </nav>
 
-            <div className="container h-full min-h-screen">{children}</div>
+            <motion.main
+                initial="hidden"
+                animate="enter"
+                exit="exit"
+                variants={variants}
+                transition={{ type: "linear" }}
+                className="container h-full min-h-screen"
+            >
+                {children}
+            </motion.main>
 
-            <footer className="footer footer-center bg-primary p-10 text-primary-content">
+            <footer className="footer footer-center rounded-md bg-primary p-10 text-primary-content">
                 <div>
                     <svg
                         width="77"
