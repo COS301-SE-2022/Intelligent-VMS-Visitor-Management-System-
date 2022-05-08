@@ -24,25 +24,33 @@ The VMS is an intelligent visitor management system that allows provides a platf
 
 ### 👏 The Team
 
+<hr />
+
+<div markdown="1">
+    <img align="left" height="255px" src="https://user-images.githubusercontent.com/29174023/166640805-7ce471ef-322a-4a86-894d-eacb9f8a9af4.JPG" /> 
+   
 ```javascript
-const TeamLead = {
-    name: "Kyle Smith",
-    role: "Team Lead",
-    description: "I am an analytical, energetic and motivated person with a love for Computers 
-                  and Computer Science. I value those around me, but I do like my alone time. 
-                  I’ve fallen in the love with the complexities that Computer Science 
-                  has to offer and excited to learn more about it every day.",
-    linkedin: "https://www.linkedin.com/in/kyle-s-008636162/"
-};
-```
-<div align="center">
-    <img width="300px" src="https://user-images.githubusercontent.com/29174023/166640805-7ce471ef-322a-4a86-894d-eacb9f8a9af4.JPG" />
-    <p>Kyle Smith</p>
+     const TeamLead = {
+        name: "Kyle Smith",
+        role: "Team Lead",
+        description: "I am an analytical, energetic and motivated person with a love 
+        for Computers and Computer Science. I value those around me, but I do like my 
+                      alone time. I’ve fallen in the love with the complexities that 
+                      Computer Science has to offer and excited to learn more about 
+                      it every day.",
+        };
+ ```
+    
 </div>
 
+[![LinkedIn][linkedin-shield]](http://www.linkedin.com/in/kyle-s-008636162/)[![GitHub][github-shield]](https://github.com/KyleSmith19091)
 
 <hr/>
 
+
+<div markdown="1">
+<!-- Insert image here -->
+   
 ```javascript
 const TeamMember = {
     name: "Stefan van Schoor",
@@ -50,10 +58,18 @@ const TeamMember = {
                   enjoy a wide variety of challenges. I have been programming for 6 
                   years so I am quite experienced in a wide variety of languages and disciplines. 
                   In my free time I enjoy PC gaming and watching tv series.",
-    linkedin: "LINK"
 };
 ```
+    
+</div>
+
+[![LinkedIn][linkedin-shield]](http://www.linkedin.com/in/kyle-s-008636162/)[![GitHub][github-shield]](https://github.com/KyleSmith19091)
+
 <hr/>
+
+
+<div markdown="1">
+<!-- Insert image here -->
 
 ```javascript
 const TeamMember = {
@@ -62,10 +78,18 @@ const TeamMember = {
                   I value people, time spent with them and always treat others with respect. 
                   I am good at devoting myself to a task and learning everything required to complete it. 
                   I enjoy and am proficient at mathematics.",
-    linkedin: "LINK"
 };
 ```
+[![LinkedIn][linkedin-shield]](http://www.linkedin.com/in/kyle-s-008636162/)[![GitHub][github-shield]](https://github.com/KyleSmith19091)    
+</div>
+
+
+
 <hr/>
+
+
+<div markdown="1">
+<!-- Insert image here -->
 
 ```javascript
 const TeamMember = {
@@ -77,10 +101,17 @@ const TeamMember = {
                   android development as my greatest technical skill which I 
                   have been perfecting since 2017. Other qualities worth mentioning include 
                   my immense creativity, thirst for learning and polished communication skills.",
-    linkedin: "LINK"
 };
 ```
+ [![LinkedIn][linkedin-shield]](http://www.linkedin.com/in/kyle-s-008636162/)[![GitHub][github-shield]](https://github.com/KyleSmith19091)
+</div>
+
+
+
 <hr/>
+
+<div markdown="1">
+<!-- Insert image here -->
 
 ```javascript
 const TeamMember = {
@@ -90,6 +121,10 @@ const TeamMember = {
                   of software design, development and testing. I’m seeking to utilize my broad 
                   educational background together with my analytical and technical skills 
                   to thrive within the technological industry.",
-    linkedin: "LINK"
 };
 ```
+[![LinkedIn][linkedin-shield]](http://www.linkedin.com/in/kyle-s-008636162/)[![GitHub][github-shield]](https://github.com/KyleSmith19091)    
+</div>
+
+[linkedin-shield]: https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white
+[github-shield]: https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white
