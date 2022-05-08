@@ -158,7 +158,7 @@ const CreateInvite = () => {
                     )}
                 </Formik>
 
-                <ErrorAlert message={message} showConditon={showErrorAlert} />
+                <ErrorAlert message={errorMessage} showConditon={showErrorAlert} />
             </div>
         </Layout>
     );
