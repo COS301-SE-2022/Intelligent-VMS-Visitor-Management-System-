@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 const Hero = () => {
     return (
         <div className="hero min-h-[80vh]">
@@ -9,7 +11,9 @@ const Hero = () => {
                         to bring an efficient and customizable interface for our
                         clients.
                     </p>
-                    <button className="btn btn-primary">Get Started</button>
+                    <Link href="/login">
+                        <button className="btn btn-primary">Get Started</button>
+                    </Link>
                 </div>
             </div>
         </div>
