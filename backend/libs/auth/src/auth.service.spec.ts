@@ -1,10 +1,8 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { ConfigModule, ConfigService } from "@nestjs/config";
-import { JwtService, JwtModule } from "@nestjs/jwt";
+import { JwtService } from "@nestjs/jwt";
 import { AuthService } from "./auth.service";
 import { UserService } from "@vms/user";
 import { QueryBus } from "@nestjs/cqrs";
-import { isRegExp } from "util/types";
 import { LoginFailed } from "./errors/loginFailed.error";
 
 describe("AuthService", () => {
@@ -102,6 +100,36 @@ describe("AuthService", () => {
         });
 
         it("should throw an exception on invalid user email", async () => {
+            jest.spyOn(service, "validateUser").mockImplementation(
+                async (email: string, password: string) => {
+                    let user = undefined;
+
+                    if (email === "admin@mail.com") {
+                        user = {
+                            email: "admin@mail.com",
+                            password: "password",
+                        };
+                    }
+
+                    if (user) {
+                        const samePassword = password === "password";
+
+                        if (samePassword) {
+                            return user;
+                        }
+
+                        throw new LoginFailed("Incorrect Password");
+                    }
+
+                    throw new LoginFailed("User not found");
+                },
+            );
+            expect(
+                service.validateUser("error@mail.com", "password"),
+            ).rejects.toThrow(LoginFailed);
+        });
+
+        it("should throw an exception on invalid user password", async () => {
             jest.spyOn(service, "validateUser").mockImplementation(
                 async (email: string, password: string) => {
                     let user = undefined;
