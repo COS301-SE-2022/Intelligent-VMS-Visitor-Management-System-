@@ -15,6 +15,17 @@ const Layout = ({ children }) => {
         exit: { opacity: 0, x: 0, y: -100 },
     };
 
+    const navLinksUnAuth = [
+        { content: "Login", path: "/login" },
+        { content: "Sign Up", path: "/signup" },
+    ];
+
+    const navLinksAuth = [
+        { content: "Create Invite", path: "/createInvite" },
+        { content: "Dashboard", path: "/visitorDashboard" },
+        { content: "Logout", path: "/", onClick: () => logout() },
+    ];
+
     return (
         <div className="container mx-auto flex min-h-screen flex-col items-center font-main md:py-2">
             <Head>
@@ -51,23 +62,30 @@ const Layout = ({ children }) => {
                 <div className="navbar-end">
                     {!token ? (
                         <ul className="dropdown-content">
-                            <Link href="/login">
-                                <a className="btn">Login</a>
-                            </Link>
-                            <Link href="/signup">
-                                <a className="btn">Sign Up</a>
-                            </Link>
+                            {navLinksUnAuth.map((link, idx) => {
+                                return (
+                                    <Link key={idx} href={link.path}>
+                                        <a className="btn">{link.content}</a>
+                                    </Link>
+                                );
+                            })}
                         </ul>
                     ) : (
                         <ul className="dropdown-content">
-                            <Link href="/createInvite">
-                                <a className="btn">Create Invite</a>
-                            </Link>
-                            <Link href="/">
-                                <a className="btn" onClick={() => logout()}>
-                                    Logout
-                                </a>
-                            </Link>
+                            {navLinksAuth.map((link, idx) => {
+                                return (
+                                    <Link key={idx} href={link.path}>
+                                        <a
+                                            className="btn"
+                                            onClick={
+                                                link.onClick && link.onClick
+                                            }
+                                        >
+                                            {link.content}
+                                        </a>
+                                    </Link>
+                                );
+                            })}
                         </ul>
                     )}
                 </div>

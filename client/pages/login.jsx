@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { Formik } from "formik";
-import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
+import { gql, useMutation } from "@apollo/client";
 
 import useAuth from "../store/authStore";
 
@@ -15,6 +15,13 @@ const Login = () => {
 
     const [showErrorAlert, setShowErrorAlert] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+    const [loginMutation, { data, loading, error }] = useMutation(gql`
+        mutation {
+			login(email: "${undefined}", password: "${undefined}") {
+				access_token
+			}
+        }
+    `);
 
     return (
         <Layout>
@@ -35,22 +42,15 @@ const Login = () => {
                         return errors;
                     }}
                     onSubmit={(values, { setSubmitting }) => {
-                        const client = new ApolloClient({
-                            uri: process.env.BACKEND_GRAPHQL_URL,
-                            cache: new InMemoryCache(),
-                        });
-
-                        client
-                            .mutate({
-                                mutation: gql`
-									mutation {
-										login(email: "${values.email}", password: "${values.password}") {
-											access_token
-										}
-									 }
-								`,
-                            })
-                            .then((result) => {
+                        loginMutation({
+                            mutation: gql`
+                                    mutation {
+                                        login(email: "${values.email}", password: "${values.password}") {
+                                            access_token
+                                        }
+                                    }`,
+                        })
+                            .then((res) => {
                                 // Enable button
                                 setSubmitting(false);
 
@@ -58,8 +58,9 @@ const Login = () => {
                                 setShowErrorAlert(false);
 
                                 // Get token from response
-                                const token = result.data?.login.access_token;
+                                const token = res.data.login.access_token;
 
+                                // Remove old login data
                                 logout();
 
                                 // Add token to store
