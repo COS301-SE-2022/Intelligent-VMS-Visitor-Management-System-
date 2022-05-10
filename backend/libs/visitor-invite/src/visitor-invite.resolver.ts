@@ -2,8 +2,6 @@ import { UseGuards, Inject, forwardRef } from "@nestjs/common";
 import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { AuthService } from "@vms/auth";
 import { GqlAuthGuard } from "@vms/auth/guards/GqlAuthGuard.guard";
-import { LocalAuthGuard } from "@vms/auth/guards/LocalAuthGuard.guard";
-import { CurrentUser } from "@vms/auth/decorators/CurrentUserDecorator.decorator";
 
 import { VisitorInviteService } from "./visitor-invite.service";
 

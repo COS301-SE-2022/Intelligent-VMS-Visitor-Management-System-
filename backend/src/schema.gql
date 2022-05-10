@@ -31,6 +31,7 @@ type Query {
   visitors: [Visitor!]!
   helloUser: String!
   helloInvite: String!
+  helloResident: String!
 }
 
 type Mutation {

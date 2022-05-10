@@ -53,6 +53,12 @@
       ],
       "@vms/visitor-invite/*": [
         "libs/visitor-invite/src/*"
+      ],
+      "@vms/resident": [
+        "libs/resident/src"
+      ],
+      "@vms/resident/*": [
+        "libs/resident/src/*"
       ]
     }
   }

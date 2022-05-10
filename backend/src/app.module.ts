@@ -12,6 +12,7 @@ import { VisitorModule } from "@vms/visitor";
 import { AuthModule } from "@vms/auth";
 import { UserModule } from "@vms/user";
 import { VisitorInviteModule } from "@vms/visitor-invite";
+import { ResidentModule } from "@vms/resident";
 
 @Module({
     imports: [
@@ -22,6 +23,7 @@ import { VisitorInviteModule } from "@vms/visitor-invite";
             playground: true,
             autoSchemaFile: join(process.cwd(), "src/schema.gql"),
             installSubscriptionHandlers: true,
+            context: ({ req }) => ({ req }),
             buildSchemaOptions: {
                 directives: [
                     new GraphQLDirective({
@@ -36,6 +38,7 @@ import { VisitorInviteModule } from "@vms/visitor-invite";
         UserModule,
         AuthModule,
         VisitorInviteModule,
+        ResidentModule,
     ],
     controllers: [AppController],
     providers: [AppService],
