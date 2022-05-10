@@ -1,7 +1,9 @@
-import { Field, Int, ObjectType } from "@nestjs/graphql";
+import { Field, ObjectType } from "@nestjs/graphql";
+import { Invite } from "@vms/visitor-invite/models/invite.model"; 
+import { User } from "@vms/user/models/user.model";
 
 @ObjectType()
-export class Resident {
-    @Field((type) => [String])
-    visitors: string[];
+export class Resident extends User {
+    @Field((type) => [Invite])
+    visitors: Invite[];
 }
