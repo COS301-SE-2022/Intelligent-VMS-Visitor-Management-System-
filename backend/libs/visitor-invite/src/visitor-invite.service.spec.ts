@@ -1,5 +1,5 @@
-import { CommandBus } from "@nestjs/cqrs";
 import { Test, TestingModule } from "@nestjs/testing";
+import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import { VisitorInviteService } from "./visitor-invite.service";
 
 describe("VisitorInviteService", () => {
@@ -7,7 +7,7 @@ describe("VisitorInviteService", () => {
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
-            providers: [VisitorInviteService, CommandBus],
+            providers: [VisitorInviteService, CommandBus, QueryBus],
         }).compile();
 
         service = module.get<VisitorInviteService>(VisitorInviteService);

@@ -6,7 +6,10 @@ import { GqlAuthGuard } from "@vms/auth/guards/GqlAuthGuard.guard";
 import { VisitorInviteService } from "./visitor-invite.service";
 
 import { Invite } from "./models/invite.model";
+import {CurrentUser} from "@vms/auth/decorators/CurrentUserDecorator.decorator";
+import { User } from "@vms/user/models/user.model";
 
+@UseGuards(GqlAuthGuard)
 @Resolver((of) => Invite)
 export class VisitorInviteResolver {
     constructor(
@@ -15,13 +18,16 @@ export class VisitorInviteResolver {
         private visitorInviteService: VisitorInviteService,
     ) {}
 
-    @UseGuards(GqlAuthGuard)
     @Query((returns) => String, { name: "helloInvite" })
     async hello() {
         return "👋 from Invite";
     }
 
-    // @UseGuards(GqlAuthGuard)
+    @Query((returns) => [Invite], { name: "getInvites"})
+    async getInvites(@CurrentUser() user: User) {
+        return this.visitorInviteService.getInvites(user.email);
+    }
+
     @Mutation((returns) => String, { name: "createInvite" })
     async createInvite(
         @Args("userEmail") userEmail: string,
@@ -36,4 +42,5 @@ export class VisitorInviteResolver {
             idNumber,
         );
     }
+
 }
