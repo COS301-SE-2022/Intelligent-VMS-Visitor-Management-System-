@@ -65,7 +65,7 @@ I am a calm natured person with a passion for Computers and IT related topics. I
 I am good at devoting myself to a task and learning everything required to complete it. I enjoy and am proficient at mathematics.
 </p>
 
-[![LinkedIn][linkedin-shield]](http://www.linkedin.com/in/kyle-s-008636162/)[![GitHub][github-shield]](https://github.com/KyleSmith19091)    
+[![LinkedIn][linkedin-shield]](https://www.linkedin.com/in/daniel-burgess-2bb12897/)[![GitHub][github-shield]](https://github.com/Daniel-J-Burgess)    
 </div>
 
 <hr/>
