@@ -23,31 +23,35 @@ const VisitorDashboard = () => {
             }
         }
     `);
-    
+
     const client = useApolloClient();
     const cancelInvite = (inviteID) => {
         setIsLoading(true);
-        client.mutate({
-            mutation: gql`
+        client
+            .mutate({
+                mutation: gql`
                 mutation {
                     cancelInvite(inviteID: "${inviteID}")
                 }
-            `
-        }).then((res) => {
-            setIsLoading(false);
-            if(res.data.cancelInvite === true) {
-                setIsVisitorData(visitorData.filter((invite) => {
-                    return invite.inviteID !== inviteID;
-                }))
-            } else {
-                showErrorAlert("Something Went Wrong");
-            }
-
-        }).catch((err) => {
-            setIsLoading(false);
-            setShowErrorAlert(true);
-            showErrorAlert(err.message);
-        });
+            `,
+            })
+            .then((res) => {
+                setIsLoading(false);
+                if (res.data.cancelInvite === true) {
+                    setIsVisitorData(
+                        visitorData.filter((invite) => {
+                            return invite.inviteID !== inviteID;
+                        })
+                    );
+                } else {
+                    showErrorAlert("Something Went Wrong");
+                }
+            })
+            .catch((err) => {
+                setIsLoading(false);
+                setShowErrorAlert(true);
+                showErrorAlert(err.message);
+            });
     };
 
     useEffect(() => {
@@ -80,7 +84,9 @@ const VisitorDashboard = () => {
             </h1>
             <div className="flex h-full items-center justify-center overflow-x-auto p-3">
                 {isLoading ? (
-                    <progress className="progress progress-primary w-56">progress</progress>
+                    <progress className="progress progress-primary w-56">
+                        progress
+                    </progress>
                 ) : (
                     <table className="mb-5 table w-full">
                         <thead>
@@ -92,40 +98,55 @@ const VisitorDashboard = () => {
                                 <th>Cancel Invite</th>
                             </tr>
                         </thead>
-                        { visitorData.length > 0 ?
+                        {visitorData.length > 0 ? (
                             <tbody>
-                                {(
-                                    visitorData.map((visit, idx) => {
-                                        return (
-                                            <tr className="hover" key={idx}>
-                                                <th>{idx + 1}</th>
-                                                <td>{visit.visitorEmail}</td>
-                                                <td>{visit.idDocType}</td>
-                                                <td>{visit.idNumber}</td>
-                                                <td>
-                                                    <button className="btn btn-square" onClick={() => cancelInvite(visit.inviteID)}>
-                                                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
-                                                  </button>
-                                                </td>
-                                            </tr>
-                                        );
-                                    })
-                                ) 
-                                }
+                                {visitorData.map((visit, idx) => {
+                                    return (
+                                        <tr className="hover" key={idx}>
+                                            <th>{idx + 1}</th>
+                                            <td>{visit.visitorEmail}</td>
+                                            <td>{visit.idDocType}</td>
+                                            <td>{visit.idNumber}</td>
+                                            <td>
+                                                <button
+                                                    className="btn btn-square"
+                                                    onClick={() =>
+                                                        cancelInvite(
+                                                            visit.inviteID
+                                                        )
+                                                    }
+                                                >
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        className="h-6 w-6"
+                                                        fill="none"
+                                                        viewBox="0 0 24 24"
+                                                        stroke="currentColor"
+                                                    >
+                                                        <path
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                            strokeWidth="2"
+                                                            d="M6 18L18 6M6 6l12 12"
+                                                        />
+                                                    </svg>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
                             </tbody>
-                            :
+                        ) : (
                             <tbody>
                                 <tr>
-                                    <th>
-                                        Nothing to show...
-                                    </th>
+                                    <th>Nothing to show...</th>
                                 </tr>
                             </tbody>
-                        }
+                        )}
                     </table>
                 )}
             </div>
-            <ErrorAlert message={errorMessage} showConditon={showErrorAlert}/>
+            <ErrorAlert message={errorMessage} showConditon={showErrorAlert} />
         </Layout>
     );
 };

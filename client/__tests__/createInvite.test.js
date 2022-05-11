@@ -12,12 +12,16 @@ describe("Login", () => {
     const storeResetFns = new Set();
 
     it("renders a heading", () => {
-
         // when creating a store, we get its initial state, create a reset function and add it in the set
         const create = (createState) => {
             const store = actualCreate(createState);
             const initialState = store.getState();
-            storeResetFns.add(() => store.setState(access_token, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJhZG1pbkBtYWlsLmNvbSIsImlhdCI6MTUxNjIzOTAyMn0.ku9WeWbG-RUnSoNM6AHWw4UmfmsLHVSDndSgMwEr1YY"));
+            storeResetFns.add(() =>
+                store.setState(
+                    access_token,
+                    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJhZG1pbkBtYWlsLmNvbSIsImlhdCI6MTUxNjIzOTAyMn0.ku9WeWbG-RUnSoNM6AHWw4UmfmsLHVSDndSgMwEr1YY"
+                )
+            );
             return store;
         };
 
@@ -29,7 +33,7 @@ describe("Login", () => {
 
         expect(screen.getByText("Let's Invite Someone🔥")).toBeInTheDocument();
     });
-    
+
     // Reset all stores after each test run
     afterEach(() => {
         act(() => storeResetFns.forEach((resetFn) => resetFn()));

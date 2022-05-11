@@ -6,25 +6,13 @@ import { motion } from "framer-motion";
 import useAuth from "../store/authStore";
 
 const Layout = ({ children }) => {
-    const token = useAuth((state) => state.access_token);
-    const logout = useAuth((state) => state.logout);
+    const navlinks = useAuth((state) => state.navLinks)();
 
     const variants = {
         hidden: { opacity: 0, x: -200, y: 0 },
         enter: { opacity: 1, x: 0, y: 0 },
         exit: { opacity: 0, x: 0, y: -100 },
     };
-
-    const navLinksUnAuth = [
-        { content: "Login", path: "/login" },
-        { content: "Sign Up", path: "/signup" },
-    ];
-
-    const navLinksAuth = [
-        { content: "Create Invite", path: "/createInvite" },
-        { content: "Dashboard", path: "/visitorDashboard" },
-        { content: "Logout", path: "/", onClick: () => logout() },
-    ];
 
     return (
         <div className="container mx-auto flex min-h-screen flex-col items-center font-main md:py-2">
@@ -60,34 +48,18 @@ const Layout = ({ children }) => {
                 </div>
                 <div className="navbar-center"></div>
                 <div className="navbar-end">
-                    {!token ? (
-                        <ul className="dropdown-content">
-                            {navLinksUnAuth.map((link, idx) => {
-                                return (
-                                    <Link key={idx} href={link.path}>
-                                        <a className="btn">{link.content}</a>
-                                    </Link>
-                                );
-                            })}
-                        </ul>
-                    ) : (
-                        <ul className="dropdown-content">
-                            {navLinksAuth.map((link, idx) => {
-                                return (
-                                    <Link key={idx} href={link.path}>
-                                        <a
-                                            className="btn"
-                                            onClick={
-                                                link.onClick && link.onClick
-                                            }
-                                        >
-                                            {link.content}
-                                        </a>
-                                    </Link>
-                                );
-                            })}
-                        </ul>
-                    )}
+                    {navlinks.map((link, idx) => {
+                        return (
+                            <Link key={idx} href={link.path}>
+                                <a
+                                    className="btn"
+                                    onClick={link.onClick && link.onClick}
+                                >
+                                    {link.content}
+                                </a>
+                            </Link>
+                        );
+                    })}
                 </div>
             </nav>
 
@@ -128,7 +100,9 @@ const Layout = ({ children }) => {
                     <p className="font-bold">
                         Team Firestorm <br />
                         Providing reliable tech since 2022
-                        <span className="hidden">Millions and Millions of Dollars</span>
+                        <span className="hidden">
+                            Millions and Millions of Dollars
+                        </span>
                     </p>
                 </div>
                 <div>

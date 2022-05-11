@@ -3,7 +3,7 @@ import Link from "next/link";
 import useAuth from "../store/authStore";
 
 const Hero = () => {
-    const decodedToken = useAuth((state) => state.decodedToken)(); 
+    const decodedToken = useAuth((state) => state.decodedToken)();
 
     return (
         <div className="hero min-h-[80vh]">
@@ -15,7 +15,13 @@ const Hero = () => {
                         to bring an efficient and customizable interface for our
                         clients.
                     </p>
-                    <Link href={decodedToken === undefined ? "/login" : "/createInvite"}>
+                    <Link
+                        href={
+                            decodedToken === undefined
+                                ? "/login"
+                                : "/createInvite"
+                        }
+                    >
                         <button className="btn btn-primary">Get Started</button>
                     </Link>
                 </div>
