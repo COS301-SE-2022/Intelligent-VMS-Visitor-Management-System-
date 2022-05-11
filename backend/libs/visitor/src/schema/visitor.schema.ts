@@ -9,7 +9,7 @@ export class Visitor {
     name: string;
 
     @Prop()
-    password: string;
+    visitorID: string;
 
     @Prop()
     email: string;

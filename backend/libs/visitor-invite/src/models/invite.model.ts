@@ -10,4 +10,7 @@ export class Invite {
 
     @Field((type) => String)
     IDNumber: string;
+
+    @Field((type) => Date)
+    inviteDate?: Date;
 }
