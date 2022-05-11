@@ -8,28 +8,41 @@ import { ReserveParkingCommand } from './commands/impl/reserveParking.command';
 export class ParkingService {
     constructor(private commandBus: CommandBus) {}
 
-    async reserveParking(visitor: Visitor, invite: Invite){
+    async reserveParking(
+        reserverEmail: string, 
+        reservationDate: Date, 
+        parkingNumber: number
+    ){
         this.commandBus.execute(
             //TODO (LARISA) user specify specific parking close to his apartment
 
             //TODO (LARISA) get next avail parking
             
-            new ReserveParkingCommand(visitor.visitorID,invite.inviteDate,0)
+            new ReserveParkingCommand(reserverEmail,reservationDate,parkingNumber)
         );
 
         return "here";
     }
 
-    async freeParking(info: Invite | Visitor){
+    async freeParking(parkingNumber: number){
        /* this.commandBus.execute(
             
         )*/
     }
 
-    async assignParking(info: Invite | Visitor){
+    async assignParking(parkingNumber: number){
         /* this.commandBus.execute(
             
          )*/
      }
+
+    async createParking(
+        parkingNumber:number
+    ){
+        const d = new Date();
+        this.commandBus.execute( 
+            new ReserveParkingCommand("larisabotha@gmail.com",d,parkingNumber)
+        )
+    }
 }
 

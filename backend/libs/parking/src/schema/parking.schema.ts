@@ -16,13 +16,13 @@ export interface ParkingDocument extends Document {
 @Schema()
 export class Parking {
     @Prop()
-    reservationEmail: string;
+    reserverEmail?: string;
     
     @Prop()
-    reservationDate: Date;
+    reservationDate?: Date;
 
     @Prop()
-    visitorEmail: string;
+    visitorEmail?: string;
 
     @Prop()
     parkingNumber: number;

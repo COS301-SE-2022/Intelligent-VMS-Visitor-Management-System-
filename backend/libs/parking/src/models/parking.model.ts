@@ -3,13 +3,13 @@ import { Field, ObjectType } from "@nestjs/graphql";
 @ObjectType()
 export class Parking {
     @Field((type) => String)
-    reservationEmail: string;
+    reserverEmail?: string;
     
     @Field((type) => Date)
-    reservationDate: Date;
+    reservationDate?: Date;
 
     @Field((type) => String)
-    visitorEmail: string;
+    visitorEmail?: string;
 
     @Field((type) => String)
     parkingNumber: number;

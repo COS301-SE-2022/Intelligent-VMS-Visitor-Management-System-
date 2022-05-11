@@ -11,8 +11,7 @@ export class CreateInviteCommandHandler implements ICommandHandler {
     ) {}
 
     async execute(command: CreateInviteCommand): Promise<Invite> {
-        const { userEmail, visitorEmail, IDDocType, IDNumber, inviteID } =
-            command;
+        const { userEmail, visitorEmail, IDDocType, IDNumber, inviteID } = command;
         const invite = new Invite();
         invite.userEmail = userEmail;
         invite.visitorEmail = visitorEmail;
@@ -20,5 +19,6 @@ export class CreateInviteCommandHandler implements ICommandHandler {
         invite.idNumber = IDNumber;
         invite.inviteID = inviteID;
         return await this.inviteModel.create(invite);
+    
     }
 }

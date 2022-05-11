@@ -13,12 +13,24 @@ export class ReserveParkingCommandHandler implements ICommandHandler<ReservePark
 
   async execute(command: ReserveParkingCommand) {
 
-    //what does this do
-    const { reserverID, reservationDate, parkingNumber } = command;
+    //what does this do?
+    const { reserverEmail, reservationDate, parkingNumber } = command;
 
-    //let parkingSpace = new Parking();
-    await this.parkingModel.findByIdAndUpdate();
+    const parkingSpace = new Parking();
+    parkingSpace.parkingNumber=0;
+    parkingSpace.reservationDate=new Date();
+    parkingSpace.reserverEmail="larisa@gmail.com";
 
-    //do what is required to reserve parking
+    await this.parkingModel.create(parkingSpace);
+    return await this.parkingModel.findOneAndUpdate({parkingNumber: parkingNumber },{reserverEmail:reserverEmail,reservationDate:reservationDate},function (err, docs) {
+      if (err){
+          console.log(err)
+      }
+      else{
+          console.log("Reservation made : ", docs);
+      }
+  });
+
+    //do what is required to reserve parking db stuff!!
   }
 }

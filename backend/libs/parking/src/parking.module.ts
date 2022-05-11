@@ -5,6 +5,7 @@ import { CqrsModule } from "@nestjs/cqrs";
 import { ParkingResolver } from "./parking.resolver";
 import { AuthModule } from "@vms/auth";
 import { Parking, ParkingSchema } from "./schema/parking.schema";
+import { ReserveParkingCommandHandler } from "./commands/handlers/reserveParkingCommand.handler";
 
 @Module({
   imports: [
@@ -16,7 +17,10 @@ import { Parking, ParkingSchema } from "./schema/parking.schema";
   ],
   providers: [
     ParkingService,
-    ParkingResolver],
+    ParkingResolver,
+    ReserveParkingCommandHandler],
+
   exports: [ParkingService],
 })
 export class ParkingModule {}
+

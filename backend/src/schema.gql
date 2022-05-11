@@ -38,4 +38,12 @@ type Mutation {
   createVisitor(input: VisitorInputType!): Visitor!
   login(email: String!, password: String!): User!
   createInvite(userEmail: String!, visitorEmail: String!, IDDocType: String!, IDNumber: String!): String!
+  createParking(parkingNumber: Float!): String!
+  reserveParking(reserverEmail: String!, parkingNumber: Float!, reservationDate: DateTime!): String!
+  freeParking(parkingNumber: Float!): String!
 }
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
