@@ -17,7 +17,7 @@
 ### 📐 The Project
 The VMS is an intelligent visitor management system that allows provides a platform for building residents to create invites for visitors, contractors or even prospective buyers. The visitor management platform will also allow the building management to view and analyse visiting data as they see fit. The system will also provide "smart" suggestions using a custom AI analytics engine.
 
-### ⛓ Project Links
+### ⛓ Project Links - Demo 1
 <a href="https://github.com/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-/projects/1">📦 Project Board</a>
 
 <a href="https://docs.google.com/document/d/e/2PACX-1vSR_WyONH0nT5i7bT3AC7NENkvuTENs5Jh4KPf8oS3hNZwWdsw4bQbNTsg05tc37IkAPEmCxk5qUeVb/pub">📊 SRS Document</a>
@@ -94,6 +94,48 @@ I am good at devoting myself to a task and learning everything required to compl
 
 [![LinkedIn][linkedin-shield]](http://www.linkedin.com/in/kyle-s-008636162/)[![GitHub][github-shield]](https://github.com/KyleSmith19091)    
 </div>
+
+<br />
+
+### About this repo
+
+#### 🏡 Git Structure
+```
+├── client // Frontend of system
+│   ├── __tests__ // Unit tests
+│   ├── components // React components used in pages
+│   ├── pages // Pages of the site
+│   ├── store // Global state store
+│   ├── styles // CSS files
+│   ├── public // Static files
+├── backend // Backend of system
+│   ├── dist // Build directory
+│   ├── libs // Subsystem components
+│   ├── src // Entry point and bundler
+│   ├── test // e2e and integration tests
+```
+
+#### ⏰ Git organization and management
+
+- Tasks are recorded in the project board(found <a href="https://github.com/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-/projects/1" target="blank">Here</a>)
+- These tasks are then converted to issues and then linked to pull requests if applicable.
+- Since the scrum methodology is followed we have milestones that are linked to the issues/tasks to allow for better organisation per sprint.
+
+
+#### 🌴 Branching strategy
+This project follows the git flow branching strategy and can be visualised using the diagram below:
+
+<div align="center">
+    <img src="https://user-images.githubusercontent.com/29174023/167849088-8a6e53e1-5b4a-457b-98f3-6bcbbfb88a03.png" />
+    <p>Credits: <a href="https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.bitbull.it%2Fen%2Fblog%2Fhow-git-flow-works%2F&psig=AOvVaw2AeA5sRCPGZDBCIhTLiX4R&ust=1652358671537000&source=images&cd=vfe&ved=0CAwQjRxqFwoTCNDY9e651_cCFQAAAAAdAAAAABAD">Bitbull</a></p>
+</div>
+
+
+- **Main** = Represents the latest release for the system
+- **Release(Not shown)** = Reperesents a release of our system before it is merged into **Main**. (Will be done every demo)
+- **Develop** = Represents the latest code release of our system.
+- **Feature** = Represents some new functionality to be added to the system and is created from the development branch.
+
 
 <!-- Shield links -->
 [linkedin-shield]: https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white
