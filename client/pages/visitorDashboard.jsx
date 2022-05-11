@@ -24,12 +24,6 @@ const VisitorDashboard = () => {
         }
     `);
     
-    const CANCEL_INVITE_MUTATION = gql`
-        mutation {
-            cancelInvite(inviteID: ${undefined})
-        }
-    `;
-
     const client = useApolloClient();
     const cancelInvite = (inviteID) => {
         setIsLoading(true);
