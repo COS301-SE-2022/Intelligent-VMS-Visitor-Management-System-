@@ -29,7 +29,9 @@ function MyApp({ Component, pageProps }) {
     useEffect(() => {
         if (!isPublicPath(router.asPath) && !access_token) {
             router.push("/expire");
+            return;
         }
+
     }, [router, access_token]);
 
     if (pageProps.protected && !access_token) {
