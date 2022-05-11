@@ -22,6 +22,8 @@
     "@vms/auth/(.*)": "<rootDir>/../libs/auth/src/$1",
     "@vms/auth": "<rootDir>/../libs/auth/src",
     "@vms/visitor-invite/(.*)": "<rootDir>/../libs/visitor-invite/src/$1",
-    "@vms/visitor-invite": "<rootDir>/../libs/visitor-invite/src"
+    "@vms/visitor-invite": "<rootDir>/../libs/visitor-invite/src",
+    "@vms/parking/(.*)": "<rootDir>/../libs/parking/src/$1",
+    "@vms/parking": "<rootDir>/../libs/parking/src"
   }
 }

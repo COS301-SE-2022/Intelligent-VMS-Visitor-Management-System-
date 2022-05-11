@@ -726,7 +726,7 @@
     webpack "5.71.0"
     webpack-node-externals "3.0.0"
 
-"@nestjs/common@^8.0.0":
+"@nestjs/common@^8.4.4":
   version "8.4.4"
   resolved "https://registry.yarnpkg.com/@nestjs/common/-/common-8.4.4.tgz#0914c6c0540b5a344c7c8fd6072faa1a49af1158"
   integrity sha512-QHi7QcgH/5Jinz+SCfIZJkFHc6Cch1YsAEGFEhi6wSp6MILb0sJMQ1CX06e9tCOAjSlBwaJj4PH0eFCVau5v9Q==
@@ -831,7 +831,7 @@
     jsonc-parser "3.0.0"
     pluralize "8.0.0"
 
-"@nestjs/testing@^8.0.0":
+"@nestjs/testing@^8.4.4":
   version "8.4.4"
   resolved "https://registry.yarnpkg.com/@nestjs/testing/-/testing-8.4.4.tgz#ac58e1f4be2344823b14243072179ce13a1ebd40"
   integrity sha512-eGj0Lbi0ONMkjDKbKQHoGX+ecGdrGRZ81I8i6fH4dx9jIR0p4MsBlW964f6Swn1MGkPm/xxomJmBWLPqZEjF7g==
@@ -4441,6 +4441,11 @@ neo-async@^2.6.2:
   version "2.6.2"
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
+
+nest@^0.1.6:
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/nest/-/nest-0.1.6.tgz#81aa0236f0ebc996523e5d3855c73dd382a2b255"
+  integrity sha1-gaoCNvDryZZSPl04Vcc904KislU=
 
 node-addon-api@^3.1.0:
   version "3.2.1"

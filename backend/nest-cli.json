@@ -55,6 +55,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/visitor-invite/tsconfig.lib.json"
       }
+    },
+    "parking": {
+      "type": "library",
+      "root": "libs/parking",
+      "entryFile": "index",
+      "sourceRoot": "libs/parking/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/parking/tsconfig.lib.json"
+      }
     }
   },
   "compilerOptions": {

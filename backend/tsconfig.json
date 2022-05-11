@@ -53,6 +53,12 @@
       ],
       "@vms/visitor-invite/*": [
         "libs/visitor-invite/src/*"
+      ],
+      "@vms/parking": [
+        "libs/parking/src"
+      ],
+      "@vms/parking/*": [
+        "libs/parking/src/*"
       ]
     }
   }
