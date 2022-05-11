@@ -1,5 +1,6 @@
 import Layout from "../components/Layout";
-import { AiFillEye } from 'react-icons/ai';
+import { AiFillEye } from "react-icons/ai";
+import { BsFillHouseDoorFill } from 'react-icons/bs';
 
 import useAuth from "../store/authStore";
 
@@ -10,7 +11,7 @@ const AdminDashboard = () => {
         <Layout>
             <div className="px-3">
                 <h1 className="mt-4 mb-4 text-left text-3xl font-bold">
-                    Hello {decodedToken.email}
+                    Hello <span className="text-secondary">{decodedToken.email}</span>
                 </h1>
                 <p className="prose mb-4 text-tertiary">Welcome Back!</p>
 
@@ -20,9 +21,9 @@ const AdminDashboard = () => {
                             <div className="grid gap-4 grid-cols-3 grid-rows-1 place-center">
                                 <div className="card flex flex-col space-y-5 justify-center items-center">
                                     <div className="avatar">
-                                      <div className="w-14 rounded-full bg-neutral-focus flex items-center justify-center">
-                                        <AiFillEye className="text-primary" size="lg"/>
-                                      </div>
+                                      <button className="btn btn-circle btn-disabled bg-base-100 p-2">
+                                        <BsFillHouseDoorFill className="text-primary" size="lg"/>
+                                      </button>
                                     </div>
                                     <p className="text-sm">Number Of Visitors</p>
                                     <p className="font-bold text-5xl text-secondary">
@@ -33,9 +34,9 @@ const AdminDashboard = () => {
 
                                 <div className="card flex flex-col space-y-5 justify-center items-center">
                                     <div className="avatar">
-                                      <div className="w-14 rounded-full bg-neutral-focus flex items-center justify-center">
-                                        <AiFillEye className="text-primary" size="lg"/>
-                                      </div>
+                                      <buttton className="btn btn-circle btn-disabled bg-base-100 p-2">
+                                        <AiFillEye className="text-primary" size="lg" />
+                                      </buttton>
                                     </div>
                                     <p className="text-sm">Other Data</p>
                                     <p className="font-bold text-5xl text-secondary">
@@ -46,9 +47,9 @@ const AdminDashboard = () => {
 
                                 <div className="card flex flex-col space-y-5 justify-center items-center">
                                     <div className="avatar">
-                                      <div className="w-14 rounded-full bg-neutral-focus flex items-center justify-center">
+                                      <button className="btn btn-circle btn-disabled bg-base-100 p-2">
                                         <AiFillEye className="text-primary" size="lg"/>
-                                      </div>
+                                      </button>
                                     </div>
                                     <p className="text-sm">Other Data</p>
                                     <p className="font-bold text-5xl text-secondary">

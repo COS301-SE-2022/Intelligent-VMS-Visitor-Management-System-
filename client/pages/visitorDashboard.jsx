@@ -79,7 +79,7 @@ const VisitorDashboard = () => {
 
     return (
         <Layout>
-            <h1 className="mt-5 mb-5 text-center text-4xl text-primary font-bold underline underline-offset-auto">
+            <h1 className="mt-5 mb-5 text-left text-4xl text-secondary font-bold p-3">
                 Visitor History
             </h1>
             <div className="flex h-full items-center justify-center overflow-x-auto p-3">
