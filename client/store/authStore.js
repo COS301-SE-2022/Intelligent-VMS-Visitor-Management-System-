@@ -22,7 +22,7 @@ const useAuth = create(
                     const token = jwtDecode(get().access_token);
                     return token;
                 } catch(e) {
-                    return {};
+                    return undefined;
                 }
             },
 		}),

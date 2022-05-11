@@ -1,13 +1,16 @@
 import { useState, useEffect } from "react";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useQuery, useApolloClient } from "@apollo/client";
 
 import Layout from "../components/Layout";
+import ErrorAlert from "../components/ErrorAlert";
 
 import { useRouter } from "next/router";
 
 const VisitorDashboard = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [visitorData, setIsVisitorData] = useState([]);
+    const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const router = useRouter();
     const { loading, error, data } = useQuery(gql`
@@ -16,9 +19,42 @@ const VisitorDashboard = () => {
                 idNumber
                 visitorEmail
                 idDocType
+                inviteID
             }
         }
     `);
+    
+    const CANCEL_INVITE_MUTATION = gql`
+        mutation {
+            cancelInvite(inviteID: ${undefined})
+        }
+    `;
+
+    const client = useApolloClient();
+    const cancelInvite = (inviteID) => {
+        setIsLoading(true);
+        client.mutate({
+            mutation: gql`
+                mutation {
+                    cancelInvite(inviteID: "${inviteID}")
+                }
+            `
+        }).then((res) => {
+            setIsLoading(false);
+            if(res.data.cancelInvite === true) {
+                setIsVisitorData(visitorData.filter((invite) => {
+                    return invite.inviteID !== inviteID;
+                }))
+            } else {
+                showErrorAlert("Something Went Wrong");
+            }
+
+        }).catch((err) => {
+            setIsLoading(false);
+            setShowErrorAlert(true);
+            showErrorAlert(err.message);
+        });
+    };
 
     useEffect(() => {
         if (!loading && !error) {
@@ -59,29 +95,43 @@ const VisitorDashboard = () => {
                                 <th>Email</th>
                                 <th>ID Document Type</th>
                                 <th>ID Number</th>
+                                <th>Cancel Invite</th>
                             </tr>
                         </thead>
-                        <tbody className="relative">
-                            {visitorData.length > 0 ? (
-                                visitorData.map((visit, idx) => {
-                                    return (
-                                        <tr className="hover" key={idx}>
-                                            <th>{idx + 1}</th>
-                                            <td>{visit.visitorEmail}</td>
-                                            <td>{visit.idDocType}</td>
-                                            <td>{visit.idNumber}</td>
-                                        </tr>
-                                    );
-                                })
-                            ) : (
-                                <div className="absolute mt-2">
-                                    <p>Nothing to show...</p>
-                                </div>
-                            )}
-                        </tbody>
+                        { visitorData.length > 0 ?
+                            <tbody>
+                                {(
+                                    visitorData.map((visit, idx) => {
+                                        return (
+                                            <tr className="hover" key={idx}>
+                                                <th>{idx + 1}</th>
+                                                <td>{visit.visitorEmail}</td>
+                                                <td>{visit.idDocType}</td>
+                                                <td>{visit.idNumber}</td>
+                                                <td>
+                                                    <button className="btn btn-square" onClick={() => cancelInvite(visit.inviteID)}>
+                                                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                                  </button>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })
+                                ) 
+                                }
+                            </tbody>
+                            :
+                            <tbody>
+                                <tr>
+                                    <th>
+                                        Nothing to show...
+                                    </th>
+                                </tr>
+                            </tbody>
+                        }
                     </table>
                 )}
             </div>
+            <ErrorAlert message={errorMessage} showConditon={showErrorAlert}/>
         </Layout>
     );
 };

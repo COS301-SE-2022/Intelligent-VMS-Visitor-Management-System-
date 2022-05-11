@@ -2,13 +2,15 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 
-import useAuth from "../store/authStore";
 import Layout from "../components/Layout";
+
+import useAuth from "../store/authStore";
 
 import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }) {
     const router = useRouter();
+
     const access_token = useAuth((state) => state.access_token);
     const client = new ApolloClient({
         uri: process.env.BACKEND_GRAPHQL_URL,
@@ -26,7 +28,7 @@ function MyApp({ Component, pageProps }) {
 
     useEffect(() => {
         if (!isPublicPath(router.asPath) && !access_token) {
-            router.push("/login");
+            router.push("/expire");
         }
     }, [router, access_token]);
 
