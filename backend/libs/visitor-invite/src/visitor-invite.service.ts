@@ -6,7 +6,11 @@ import { toDataURL } from "qrcode";
 import { createTransport } from "nodemailer";
 
 import { CreateInviteCommand } from "./commands/impl/createInvite.command";
+import { CancelInviteCommand } from "./commands/impl/cancelInvite.command";
 import { GetInvitesQuery } from "./queries/impl/getInvites.query";
+import { GetInviteQuery } from "./queries/impl/getInvite.query";
+
+import { InviteNotFound } from "./errors/inviteNotFound.error";
 
 import { Invite } from "./models/invite.model";
 
@@ -51,7 +55,7 @@ export class VisitorInviteService {
             },
         });
 
-        // send mail with defined transport object
+        // Send mail with defined transport object
         const info = await transporter.sendMail({
             from: '"VMS 👋" <firestorm19091@gmail.com>', // sender address
             to: visitorEmail, // list of receivers
@@ -64,5 +68,26 @@ export class VisitorInviteService {
 
     async getInvites(email: string) {
         return this.queryBus.execute(new GetInvitesQuery(email));
+    }
+
+    async cancelInvite(email: string, inviteID: string) {
+
+        // Get the invite to delete
+        const inviteToDelete = await this.queryBus.execute(new GetInviteQuery(inviteID));  
+
+        // Check if it exists
+        if(inviteToDelete) {
+
+            // TODO: Might need to change this to allow admin/receptionist to revoke invites
+            // Check that the invite belongs to the user that is issuing the request
+            if(inviteToDelete.userEmail === email) {
+                return await this.commandBus.execute(new CancelInviteCommand(inviteID));
+            } else {
+                throw new InviteNotFound(`Invite was not issued by: ${email}`);
+            }
+        } else {
+            throw new InviteNotFound(`Invite not found with ID: ${inviteID}`);
+        }
+
     }
 }

@@ -18,16 +18,19 @@ export class VisitorInviteResolver {
         private visitorInviteService: VisitorInviteService,
     ) {}
 
+    // Test endpoint
     @Query((returns) => String, { name: "helloInvite" })
     async hello() {
         return "👋 from Invite";
     }
 
+    // Returns the invites issued by the current user
     @Query((returns) => [Invite], { name: "getInvites"})
     async getInvites(@CurrentUser() user: User) {
         return this.visitorInviteService.getInvites(user.email);
     }
 
+    // Create Invite
     @Mutation((returns) => String, { name: "createInvite" })
     async createInvite(
         @Args("userEmail") userEmail: string,
@@ -43,4 +46,10 @@ export class VisitorInviteResolver {
         );
     }
 
+    // Cancel Invite with inviteID
+    @Mutation((returns) => Boolean, { name: "cancelInvite" })
+    async cancelInvite(@CurrentUser() user: User, @Args("inviteID") inviteID: string) {
+        const res = await this.visitorInviteService.cancelInvite(user.email, inviteID);
+        return res.acknowledged;
+    }
 }

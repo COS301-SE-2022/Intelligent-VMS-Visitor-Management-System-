@@ -8,7 +8,9 @@ import { AuthModule } from "@vms/auth";
 import { Invite, InviteSchema } from "./schema/invite.schema";
 import { VisitorInviteResolver } from "./visitor-invite.resolver";
 import { CreateInviteCommandHandler } from "./commands/handlers/createInviteCommand.handler";
+import { CancelInviteCommandHandler } from "./commands/handlers/cancelInviteCommand.handler";
 import { GetInvitesQueryHandler } from "./queries/handlers/getInvites.handler";
+import { GetInviteQueryHandler } from "./queries/handlers/getInvite.handler";
 
 @Module({
     imports: [
@@ -22,7 +24,9 @@ import { GetInvitesQueryHandler } from "./queries/handlers/getInvites.handler";
         VisitorInviteService,
         VisitorInviteResolver,
         CreateInviteCommandHandler,
-        GetInvitesQueryHandler
+        CancelInviteCommandHandler,
+        GetInvitesQueryHandler,
+        GetInviteQueryHandler
     ],
     exports: [VisitorInviteService],
 })

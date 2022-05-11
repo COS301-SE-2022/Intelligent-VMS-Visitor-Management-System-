@@ -46,4 +46,5 @@ type Mutation {
   createVisitor(input: VisitorInputType!): Visitor!
   login(email: String!, password: String!): User!
   createInvite(userEmail: String!, visitorEmail: String!, IDDocType: String!, IDNumber: String!): String!
+  cancelInvite(inviteID: String!): Boolean!
 }
