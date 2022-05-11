@@ -18,7 +18,7 @@ const CreateInvite = () => {
     const [createInviteMutation, { error }] = useMutation(gql`
         mutation {
             createInvite(
-                userEmail: "${jwtTokenData.email}"
+                userEmail: "${undefined}"
                 visitorEmail: "${undefined}"
                 IDDocType: "${undefined}"
                 IDNumber: "${undefined}"

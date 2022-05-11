@@ -16,6 +16,7 @@ const validDataMock = [
                 idNumber
                 visitorEmail
                 idDocType
+                inviteID
             }
         }
       `,
@@ -27,6 +28,7 @@ const validDataMock = [
                 idNumber: "0109195273080",
                 visitorEmail: "visitorEmail@mail.com",
                 idDocType: "RSA-ID",
+                inviteID: "43e17f1b-4b2d-4db7-93d1-c76e2a00f346"
             }
 
         ]
@@ -45,6 +47,7 @@ const noDataMock = [
                 idNumber
                 visitorEmail
                 idDocType
+                inviteID
             }
         }
       `,

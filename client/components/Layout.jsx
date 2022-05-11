@@ -128,7 +128,7 @@ const Layout = ({ children }) => {
                     <p className="font-bold">
                         Team Firestorm <br />
                         Providing reliable tech since 2022
-                        <hidden className="hidden">Millions and Millions of Dollars</hidden>
+                        <span className="hidden">Millions and Millions of Dollars</span>
                     </p>
                 </div>
                 <div>

@@ -17,7 +17,7 @@ describe("Login", () => {
         const create = (createState) => {
             const store = actualCreate(createState);
             const initialState = store.getState();
-            storeResetFns.add(() => store.setState(access_token, ""));
+            storeResetFns.add(() => store.setState(access_token, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJhZG1pbkBtYWlsLmNvbSIsImlhdCI6MTUxNjIzOTAyMn0.ku9WeWbG-RUnSoNM6AHWw4UmfmsLHVSDndSgMwEr1YY"));
             return store;
         };
 
