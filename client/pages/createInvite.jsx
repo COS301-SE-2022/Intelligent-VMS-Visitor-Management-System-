@@ -104,7 +104,7 @@ const CreateInvite = () => {
                             onSubmit={handleSubmit}
                             className="md:p-26 prose form-control space-y-4 rounded-xl bg-base-300 p-14"
                         >
-                            <h1>Let&apos;s Invite Someone🔥</h1>
+                            <h1>Let&apos;s <span className="text-secondary">Invite</span> Someone🔥</h1>
                             <input
                                 type="email"
                                 name="email"
