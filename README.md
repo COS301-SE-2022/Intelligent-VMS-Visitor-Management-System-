@@ -50,7 +50,7 @@ The VMS is an intelligent visitor management system that allows provides a platf
         I am keenly interested in computer and network security and enjoy a wide variety of challenges. I have been programming for 6 years so I am quite         experienced in a wide variety of languages and disciplines. In my free time I enjoy PC gaming and watching tv series.
     </p>
 
-[![LinkedIn][linkedin-shield]](http://www.linkedin.com/in/kyle-s-008636162/)[![GitHub][github-shield]](https://github.com/KyleSmith19091)
+[![LinkedIn][linkedin-shield]](http://www.linkedin.com/in/stefan-van-schoor-0a0367138/)[![GitHub][github-shield]](https://github.com/stefan-van-schoor)
 </div>
 
 <hr/>
