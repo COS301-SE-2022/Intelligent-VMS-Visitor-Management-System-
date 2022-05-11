@@ -79,7 +79,7 @@ const VisitorDashboard = () => {
 
     return (
         <Layout>
-            <h1 className="mt-5 mb-5 text-center text-4xl font-bold underline underline-offset-auto">
+            <h1 className="mt-5 mb-5 text-center text-4xl text-primary font-bold underline underline-offset-auto">
                 Visitor History
             </h1>
             <div className="flex h-full items-center justify-center overflow-x-auto p-3">
@@ -109,7 +109,7 @@ const VisitorDashboard = () => {
                                             <td>{visit.idNumber}</td>
                                             <td>
                                                 <button
-                                                    className="btn btn-square"
+                                                    className="btn btn-square btn-primary"
                                                     onClick={() =>
                                                         cancelInvite(
                                                             visit.inviteID
