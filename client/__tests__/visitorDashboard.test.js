@@ -84,7 +84,7 @@ describe("VisitorDashboard", () => {
         );
 
         await act(async () => {
-            await new Promise((resolve) => setTimeout(resolve, 10));
+            await new Promise((resolve) => setTimeout(resolve, 30));
             expect(
                 screen.getByText("visitorEmail@mail.com")
             ).toBeInTheDocument();
@@ -101,7 +101,7 @@ describe("VisitorDashboard", () => {
         );
 
         await act(async () => {
-            await new Promise((resolve) => setTimeout(resolve, 10));
+            await new Promise((resolve) => setTimeout(resolve, 30));
             expect(screen.getByText("Nothing to show...")).toBeInTheDocument();
         });
     });
