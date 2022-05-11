@@ -31,7 +31,7 @@ describe("Login", () => {
             </MockedProvider>
         );
 
-        expect(screen.getByText("Let's Invite Someone🔥")).toBeInTheDocument();
+        expect(screen.getAllByText("Invite")).toBeDefined();
     });
 
     // Reset all stores after each test run
