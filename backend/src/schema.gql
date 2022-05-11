@@ -15,6 +15,13 @@ type User {
   access_token: String
 }
 
+type Invite {
+  visitorEmail: String!
+  idDocType: String!
+  idNumber: String!
+  inviteID: String!
+}
+
 input VisitorInputType {
   id: Float!
   name: String!
@@ -31,10 +38,13 @@ type Query {
   visitors: [Visitor!]!
   helloUser: String!
   helloInvite: String!
+  getInvites: [Invite!]!
+  helloResident: String!
 }
 
 type Mutation {
   createVisitor(input: VisitorInputType!): Visitor!
   login(email: String!, password: String!): User!
   createInvite(userEmail: String!, visitorEmail: String!, IDDocType: String!, IDNumber: String!): String!
+  cancelInvite(inviteID: String!): Boolean!
 }

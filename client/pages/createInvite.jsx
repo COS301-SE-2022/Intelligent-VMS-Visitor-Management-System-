@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import jwtDecode from "jwt-decode";
 import { Formik, Field } from "formik";
-import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
-import { motion } from "framer-motion";
+import { gql, useMutation } from "@apollo/client";
 
 import useAuth from "../store/authStore.js";
 
@@ -14,14 +12,25 @@ const CreateInvite = () => {
     const [showErrorAlert, setShowErrorAlert] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
 
-    const token = useAuth((state) => state.access_token);
+    const jwtTokenData = useAuth((state) => state.decodedToken)();
     const router = useRouter();
+
+    const [createInviteMutation, { error }] = useMutation(gql`
+        mutation {
+            createInvite(
+                userEmail: "${undefined}"
+                visitorEmail: "${undefined}"
+                IDDocType: "${undefined}"
+                IDNumber: "${undefined}"
+            )
+        }
+    `);
 
     return (
         <Layout>
             <div className="relative flex h-full min-h-[80vh] w-full flex-col items-center justify-center overflow-hidden shadow">
                 <Formik
-                    initialValues={{ email: "", idDoc: "id", idValue: "" }}
+                    initialValues={{ email: "", idDoc: "RSA-ID", idValue: "" }}
                     validate={(values) => {
                         const errors = {};
                         if (!values.email) {
@@ -51,39 +60,34 @@ const CreateInvite = () => {
                         return errors;
                     }}
                     onSubmit={(values, { setSubmitting }) => {
-                        // Create Apollo client instance
-                        const client = new ApolloClient({
-                            uri: process.env.BACKEND_GRAPHQL_URL,
-                            cache: new InMemoryCache(),
-                            headers: {
-                                Authorization: `Bearer ${token}`,
-                            },
-                        });
+                        const CREATE_INVITE = gql`
+                            mutation {
+                                createInvite(
+                                    userEmail: "${jwtTokenData.email}"
+                                    visitorEmail: "${values.email}"
+                                    IDDocType: "${values.idDoc}"
+                                    IDNumber: "${values.idValue}"
+                            )
+                        }
+                        `;
 
-                        // Decode jwt token contents
-                        const jwtToken = jwtDecode(token);
-
-                        client
-                            .mutate({
-                                mutation: gql`
-                                    mutation {
-                                        createInvite(
-                                            userEmail: "admin@mail.com"
-                                            visitorEmail: "visitor@mail.com"
-                                            IDDocType: "RSA-ID"
-                                            IDNumber: "0109195273080"
-                                        )
-                                    }
-                                `,
-                            })
-                            .then((result) => {
-                                setSubmitting(false);
+                        createInviteMutation({
+                            mutation: CREATE_INVITE,
+                        })
+                            .then(() => {
+                                router.push("/visitorDashboard");
                                 setShowErrorAlert(false);
-                                router.push("/");
+                                setSubmitting(false);
                             })
                             .catch((err) => {
                                 setSubmitting(false);
-                                console.error(err);
+
+                                if (err.message === "Unauthorized") {
+                                    router.push("/expire");
+                                    return;
+                                } else {
+                                    setErrorMessage(error);
+                                }
                             });
                     }}
                 >
@@ -123,11 +127,11 @@ const CreateInvite = () => {
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                             >
-                                <option value="id">RSA ID</option>
-                                <option value="drivers-license">
+                                <option value="RSA-ID">RSA ID</option>
+                                <option value="Drivers-License">
                                     Driver&apos;s License
                                 </option>
-                                <option value="up-student">
+                                <option value="UP-Student-ID">
                                     Student Number
                                 </option>
                             </Field>
@@ -158,7 +162,10 @@ const CreateInvite = () => {
                     )}
                 </Formik>
 
-                <ErrorAlert message={errorMessage} showConditon={showErrorAlert} />
+                <ErrorAlert
+                    message={errorMessage}
+                    showConditon={showErrorAlert}
+                />
             </div>
         </Layout>
     );

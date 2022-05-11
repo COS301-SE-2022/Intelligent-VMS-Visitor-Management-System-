@@ -1,2 +1,2 @@
-export * from './visitor-invite.module';
-export * from './visitor-invite.service';
+export * from "./visitor-invite.module";
+export * from "./visitor-invite.service";

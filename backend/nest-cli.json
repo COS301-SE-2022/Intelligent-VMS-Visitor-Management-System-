@@ -55,6 +55,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/visitor-invite/tsconfig.lib.json"
       }
+    },
+    "resident": {
+      "type": "library",
+      "root": "libs/resident",
+      "entryFile": "index",
+      "sourceRoot": "libs/resident/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/resident/tsconfig.lib.json"
+      }
     }
   },
   "compilerOptions": {

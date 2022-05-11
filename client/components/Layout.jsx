@@ -6,8 +6,7 @@ import { motion } from "framer-motion";
 import useAuth from "../store/authStore";
 
 const Layout = ({ children }) => {
-    const token = useAuth((state) => state.access_token);
-    const logout = useAuth((state) => state.logout);
+    const navlinks = useAuth((state) => state.navLinks)();
 
     const variants = {
         hidden: { opacity: 0, x: -200, y: 0 },
@@ -49,27 +48,18 @@ const Layout = ({ children }) => {
                 </div>
                 <div className="navbar-center"></div>
                 <div className="navbar-end">
-                    {!token ? (
-                        <ul className="dropdown-content">
-                            <Link href="/login">
-                                <a className="btn">Login</a>
-                            </Link>
-                            <Link href="/signup">
-                                <a className="btn">Sign Up</a>
-                            </Link>
-                        </ul>
-                    ) : (
-                        <ul className="dropdown-content">
-                            <Link href="/createInvite">
-                                <a className="btn">Create Invite</a>
-                            </Link>
-                            <Link href="/">
-                                <a className="btn" onClick={() => logout()}>
-                                    Logout
+                    {navlinks.map((link, idx) => {
+                        return (
+                            <Link key={idx} href={link.path}>
+                                <a
+                                    className="btn"
+                                    onClick={link.onClick && link.onClick}
+                                >
+                                    {link.content}
                                 </a>
                             </Link>
-                        </ul>
-                    )}
+                        );
+                    })}
                 </div>
             </nav>
 
@@ -110,6 +100,9 @@ const Layout = ({ children }) => {
                     <p className="font-bold">
                         Team Firestorm <br />
                         Providing reliable tech since 2022
+                        <span className="hidden">
+                            Millions and Millions of Dollars
+                        </span>
                     </p>
                 </div>
                 <div>

@@ -100,7 +100,8 @@
       "^@vms/visitor(|/.*)$": "<rootDir>/libs/visitor/src/$1",
       "^@vms/user(|/.*)$": "<rootDir>/libs/user/src/$1",
       "^@vms/auth(|/.*)$": "<rootDir>/libs/auth/src/$1",
-      "^@vms/visitor-invite(|/.*)$": "<rootDir>/libs/visitor-invite/src/$1"
+      "^@vms/visitor-invite(|/.*)$": "<rootDir>/libs/visitor-invite/src/$1",
+      "^@vms/resident(|/.*)$": "<rootDir>/libs/resident/src/$1"
     }
   }
 }

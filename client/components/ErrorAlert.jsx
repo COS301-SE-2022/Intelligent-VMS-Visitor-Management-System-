@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 
-const ErrorAlert = ({ message, showConditon, setShowCondition }) => {
+const ErrorAlert = ({ message, showConditon }) => {
     const alertVariants = {
         hidden: { opacity: 1, y: -200 },
         enter: { opacity: 1, y: 0 },

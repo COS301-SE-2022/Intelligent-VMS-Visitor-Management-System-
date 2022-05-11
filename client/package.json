@@ -4,7 +4,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "format": "prettier --write \"pages/**/*.js\" \"components/**/*.jsx\" \"pages/**/*.jsx\"",
+    "format": "prettier --write \"pages/**/*.js\" \"components/**/*.jsx\" \"pages/**/*.jsx\" \"__tests__/**/*.test.js\"",
     "test": "jest",
     "lint": "next lint",
     "cypress": "cypress open",
@@ -29,6 +29,7 @@
     "next": "^12.1.5",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-icons": "^4.3.1",
     "react-test-renderer": "^18.1.0",
     "zustand": "^4.0.0-rc.1"
   },
