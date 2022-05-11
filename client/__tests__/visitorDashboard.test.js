@@ -86,7 +86,7 @@ const noDataMock = [
         ); 
 
         await act(async () => {
-            await new Promise(resolve => setTimeout(resolve, 5));
+            await new Promise(resolve => setTimeout(resolve, 8));
             expect(screen.getByText("visitorEmail@mail.com")).toBeInTheDocument();
             expect(screen.getByText("0109195273080")).toBeInTheDocument();
             expect(screen.getByText("RSA-ID")).toBeInTheDocument();
@@ -101,7 +101,7 @@ const noDataMock = [
         ); 
 
         await act(async () => {
-            await new Promise(resolve => setTimeout(resolve, 5));
+            await new Promise(resolve => setTimeout(resolve, 8));
             expect(screen.getByText("Nothing to show...")).toBeInTheDocument();
         });
     });
