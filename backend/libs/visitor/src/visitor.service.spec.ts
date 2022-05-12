@@ -39,5 +39,13 @@ describe("VisitorService", () => {
         expect(resp).toEqual({data: []});
     })
 });
+describe("create()", () => {
+    it('should create', async() => {
+        //Act
+        const resp = await service.create({} as any);
+        //Assert
+        expect(resp).toEqual({data: {}});
+        })
+    });
 
 });
