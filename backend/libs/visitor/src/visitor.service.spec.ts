@@ -30,4 +30,14 @@ describe("VisitorService", () => {
     it("should be defined", () => {
         expect(service).toBeDefined();
     });
+
+    describe("findAll()", () => {
+        it("should find all", async () => {
+        //Act
+        const resp = await service.findAll();
+        //Assert
+        expect(resp).toEqual({data: []});
+    })
+});
+
 });
