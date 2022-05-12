@@ -12,28 +12,7 @@ export class ReserveParkingCommandHandler implements ICommandHandler<ReservePark
   ) {}
 
   async execute(command: ReserveParkingCommand) {
-    //db stuff for reserving parking
-
-    //what does this do? break up command into its components?
     const { reservationInviteID, parkingNumber } = command;
-
-    /*const parkingSpace = new Parking();
-    parkingSpace.parkingNumber=0;
-    parkingSpace.reservationDate=new Date();
-    parkingSpace.reserverEmail="larisa@gmail.com";
-
-    await this.parkingModel.create(parkingSpace);
-    return await this.parkingModel.findOneAndUpdate({parkingNumber: parkingNumber },{reserverEmail:reserverEmail,reservationDate:reservationDate},function (err, docs) {
-      if (err){
-          console.log(err)
-      }
-      else{
-          console.log("Reservation made : ", docs);
-      }
-    });*/
-
     return await this.parkingModel.findOneAndUpdate({parkingNumber:parkingNumber}, {reservationInviteID: reservationInviteID});
-
-
   }
 }

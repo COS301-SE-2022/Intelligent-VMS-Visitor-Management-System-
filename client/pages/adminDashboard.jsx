@@ -11,7 +11,10 @@ import useAuth from "../store/authStore";
 
 const AdminDashboard = () => {
     const [numInvitesSent, setNumInvitesSent] = useState(0);
-    const [numParkingSpotsAvailable, setNumParkingSpotsAvailable] = useState(0);
+    const numParkingSpotsAvailable = useAuth((state) => state.numParkingSpots);
+    const incParkingSpots = useAuth((state) => state.incParkingSpots);
+    const decParkingSpots = useAuth((state) => state.decParkingSpots);
+    const updateParkingSpots = useAuth((state) => state.updateParkingSpots);
     const decodedToken = useAuth((state) => state.decodedToken)();
     const router = useRouter();
 
@@ -99,13 +102,13 @@ const AdminDashboard = () => {
                     <div className="p-4 card w-100 bg-base-200 text-tertiary-content items-center justify-center font-bold text-2xl space-y-2">
                         <h1>Number of Parking Spots Available</h1>
                         <div className="flex space-x-4 select-none">
-                            <button className="btn btn-circle p-2" onClick={() => setNumParkingSpotsAvailable(numParkingSpotsAvailable+1)}>
+                            <button className="btn btn-circle p-2" onClick={incParkingSpots}>
                                 <AiOutlinePlus className="text-primary" size="lg"/>
                             </button>
 
                             <a href="#parking-modal" className="font-bold text-5xl text-secondary btn bg-tertiary modal-button">{numParkingSpotsAvailable}</a>
 
-                            <button className="btn btn-circle p-2" onClick={() => numParkingSpotsAvailable > 0 && setNumParkingSpotsAvailable(numParkingSpotsAvailable-1)}>
+                            <button className="btn btn-circle p-2" onClick={() => numParkingSpotsAvailable > 0 && decParkingSpots()}>
                                 <AiOutlineMinus className="text-primary" size="lg"/>
                             </button>
 
@@ -118,7 +121,7 @@ const AdminDashboard = () => {
             <div className="modal" id="parking-modal">
               <div className="modal-box space-y-2">
                 <h3 className="font-bold text-lg">Update Number of Parking Spots Available</h3>
-                <input onChange={(e) => setNumParkingSpotsAvailable(Number(e.target.value))} className="input input-bordered w-full max-w-xs" type="number" placeholder={numParkingSpotsAvailable}/>
+                <input onChange={(e) => updateParkingSpots(Number(e.target.value))} className="input input-bordered w-full max-w-xs" type="number" placeholder={numParkingSpotsAvailable}/>
                 <div className="modal-action">
                     <a href="#" className="btn">Update</a>
               </div>

@@ -4,29 +4,12 @@ import { AssignParkingCommand } from './commands/impl/assignParking.command';
 import { FreeParkingCommand } from './commands/impl/freeParking.command';
 import { ReserveParkingCommand } from './commands/impl/reserveParking.command';
 import { ParkingNotFound } from "./errors/parkingNotFound.error";
-import {Parking} from "../src/schema/parking.schema"
 import { getAvailableParkingQuery } from './queries/impl/getAvailableParking.query';
+import { CreateNParkingSpotsCommand } from "./commands/impl/createNParkingSpots.command"; 
 
 @Injectable()
 export class ParkingService {
     constructor(private commandBus: CommandBus, private queryBus: QueryBus) {}
-
-    async createParking(
-        reserverEmail: string, 
-        reservationDate: Date, 
-        parkingNumber: number
-    ){
-        /*this.commandBus.execute(
-            //TODO (LARISA) user specify specific parking close to his apartment?
-
-            //TODO (LARISA) get next avail parking
-            
-            //hard coded 0 for testing
-            //new ReserveParkingCommand("0",parkingNumber)
-        );*/
-
-        return "here";
-    }
 
     async getAvailableParking(){
         return this.queryBus.execute(
@@ -79,4 +62,5 @@ export class ParkingService {
                 throw new ParkingNotFound(`Parking with Number: ${parkingNumber} not found`);
             }
     }
+
 }

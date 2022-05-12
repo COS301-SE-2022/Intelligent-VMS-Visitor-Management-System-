@@ -13,6 +13,7 @@ const CreateInvite = () => {
     const [errorMessage, setErrorMessage] = useState("");
 
     const jwtTokenData = useAuth((state) => state.decodedToken)();
+    const numParkingSpotsAvailable = useAuth((state) => state.numParkingSpots);
     const router = useRouter();
 
     const [createInviteMutation, { error }] = useMutation(gql`
@@ -22,6 +23,7 @@ const CreateInvite = () => {
                 visitorEmail: "${undefined}"
                 IDDocType: "${undefined}"
                 IDNumber: "${undefined}"
+                requiresParking: ${undefined}
             )
         }
     `);
@@ -67,6 +69,7 @@ const CreateInvite = () => {
                                     visitorEmail: "${values.email}"
                                     IDDocType: "${values.idDoc}"
                                     IDNumber: "${values.idValue}"
+                                    requiresParking: ${values.reserveParking}
                             )
                         }
                         `;
@@ -155,7 +158,7 @@ const CreateInvite = () => {
 
                             <label className="label cursor-pointer">
                                 <span className="label-text">Reserve Parking</span> 
-                                <input type="checkbox" className="toggle" onChange={handleChange} onBlur={handleBlur} value={values.reserveParking}/>
+                                <input className="disabled toggle" disabled={numParkingSpotsAvailable > 0 ? false : true} name="reserveParking" type="checkbox" onChange={handleChange} onBlur={handleBlur} value={values.reserveParking}/>
                             </label>
 
                             <button

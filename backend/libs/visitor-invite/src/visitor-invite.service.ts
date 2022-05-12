@@ -9,13 +9,13 @@ import { CreateInviteCommand } from "./commands/impl/createInvite.command";
 import { CancelInviteCommand } from "./commands/impl/cancelInvite.command";
 import { GetInvitesQuery } from "./queries/impl/getInvites.query";
 import { GetInviteQuery } from "./queries/impl/getInvite.query";
-import { getAvailableParkingQuery } from '../../../libs/parking/src/queries/impl/getAvailableParking.query';
+import { GetNumberVisitorQuery } from "./queries/impl/getNumberOfVisitors.query";
 
 import { InviteNotFound } from "./errors/inviteNotFound.error";
 
-import { Invite } from "./models/invite.model";
 import { ReserveParkingCommand } from "@vms/parking/commands/impl/reserveParking.command";
-import { GetNumberVisitorQuery } from "./queries/impl/getNumberOfVisitors.query";
+import { getAvailableParkingQuery } from '@vms/parking/queries/impl/getAvailableParking.query';
+import { ParkingNotFound } from "@vms/parking/errors/parkingNotFound.error";
 
 @Injectable()
 export class VisitorInviteService {
@@ -49,23 +49,16 @@ export class VisitorInviteService {
         const qrCode = await toDataURL(qrData);
 
         // Parking
-        if(requiresParking)
-        {
-            //TODO (Larisa) : should I be calling this directly
+        if(requiresParking) {
+
             const parking =  await this.queryBus.execute(
                 new getAvailableParkingQuery()
             )
 
-            if(parking>0)
-            {
-                //TODO user should be able to reserve parkingSpace close to him
-                await this.commandBus.execute(
-                    new ReserveParkingCommand(inviteID,2));
-            }
-            else
-            {
-                //TODO (Kyle)?
-                console.log("error")
+            if(parking>0) {
+                await this.commandBus.execute(new ReserveParkingCommand(inviteID,2));
+            } else {
+                throw new ParkingNotFound("Parking Unavailable");
             }
         }
 
@@ -85,7 +78,7 @@ export class VisitorInviteService {
             from: '"VMS 👋" <firestorm19091@gmail.com>', // sender address
             to: visitorEmail, // list of receivers
             subject: "You received an invite", // Subject line
-            html: `<h1>Hello Visitor!</h1><br /><p>Invite ID: ${inviteID}</p><img src="${qrCode}"/>`,
+            html: `<h1>Hello Visitor!👋</h1><br /><p>Invite ID: ${inviteID}</p><img src="${qrCode}"/><br/>${requiresParking ? "<p>Parking Reserved 🚗</p>" : ""}`,
         });
 
         return info.messageId;

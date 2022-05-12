@@ -4,6 +4,7 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { CqrsModule } from "@nestjs/cqrs";
 
 import { AuthModule } from "@vms/auth";
+import { ParkingModule } from "@vms/parking";
 
 import { Invite, InviteSchema } from "./schema/invite.schema";
 import { VisitorInviteResolver } from "./visitor-invite.resolver";
@@ -11,14 +12,13 @@ import { CreateInviteCommandHandler } from "./commands/handlers/createInviteComm
 import { CancelInviteCommandHandler } from "./commands/handlers/cancelInviteCommand.handler";
 import { GetInvitesQueryHandler } from "./queries/handlers/getInvites.handler";
 import { GetInviteQueryHandler } from "./queries/handlers/getInvite.handler";
-import { ReserveParkingCommandHandler } from "../../parking/src/commands/handlers/reserveParkingCommand.handler";
-import { getAvailableParkingQueryHandler } from "../../parking/src/queries/handlers/getAvailableParkingQuery.handler";
 import { getNumberOfVisitors } from "./queries/handlers/getNumberOfVisitors.handler";
 
 @Module({
     imports: [
         CqrsModule,
         AuthModule,
+        ParkingModule,
         MongooseModule.forFeature([
             { name: Invite.name, schema: InviteSchema },
         ]),
@@ -30,8 +30,6 @@ import { getNumberOfVisitors } from "./queries/handlers/getNumberOfVisitors.hand
         CancelInviteCommandHandler,
         GetInvitesQueryHandler,
         GetInviteQueryHandler,
-        ReserveParkingCommandHandler,
-        getAvailableParkingQueryHandler,
         getNumberOfVisitors
     ],
     exports: [VisitorInviteService],
