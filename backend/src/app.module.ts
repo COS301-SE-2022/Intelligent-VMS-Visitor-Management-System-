@@ -9,6 +9,11 @@ import { DirectiveLocation, GraphQLDirective } from "graphql";
 
 import { DatabaseModule } from "@vms/database";
 import { VisitorModule } from "@vms/visitor";
+import { AuthModule } from "@vms/auth";
+import { UserModule } from "@vms/user";
+import { VisitorInviteModule } from "@vms/visitor-invite";
+import { ResidentModule } from "@vms/resident";
+import { ParkingModule } from "@vms/parking";
 
 @Module({
     imports: [
@@ -19,6 +24,7 @@ import { VisitorModule } from "@vms/visitor";
             playground: true,
             autoSchemaFile: join(process.cwd(), "src/schema.gql"),
             installSubscriptionHandlers: true,
+            context: ({ req }) => ({ req }),
             buildSchemaOptions: {
                 directives: [
                     new GraphQLDirective({
@@ -30,6 +36,11 @@ import { VisitorModule } from "@vms/visitor";
         }),
         DatabaseModule,
         VisitorModule,
+        UserModule,
+        AuthModule,
+        VisitorInviteModule,
+        ResidentModule,
+        ParkingModule,
     ],
     controllers: [AppController],
     providers: [AppService],

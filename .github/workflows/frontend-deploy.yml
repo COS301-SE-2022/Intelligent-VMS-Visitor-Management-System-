@@ -1,0 +1,41 @@
+name: Frontend-deploy
+
+on:
+  push:
+    branches: [ develop,main ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "⚡ Checkout"
+        uses: actions/checkout@v3
+      
+      - name: "🧪 Setup node"
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16.x'
+          
+      - name: "📦 Install Dependencies"
+        working-directory: ./client
+        run: yarn install --frozen-lockfile
+        
+      - name: "🌹 Format Code"
+        working-directory: ./client
+        run: yarn format
+
+      - name: "🧶 Lint Code"
+        working-directory: ./client
+        run: yarn lint
+              
+      - name: "⭐️ Deploy frontend to vercel"  
+        uses: amondnet/vercel-action@v20 #deploy
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }} # Required
+          vercel-org-id: ${{ secrets.VERCEL_ORGANISATION_ID }}  #Required
+          vercel-args: '--prod'
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }} #Required 
+          working-directory: ./client

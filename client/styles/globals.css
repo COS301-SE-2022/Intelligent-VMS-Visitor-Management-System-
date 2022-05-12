@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer {
+    .debug {
+        border: 1px solid red;
+    }
+
+    .drop-alert {
+        transform: translateY(-150%); 
+        transition: transform 0.5s ease-in-out;
+    }
+
+    .drop-alert.active {
+        transform: translateY(0%);
+    }
+
+}

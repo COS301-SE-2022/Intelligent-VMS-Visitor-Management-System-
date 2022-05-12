@@ -15,7 +15,6 @@ export class VisitorService {
     }
 
     async create(createVisitor: VisitorType): Promise<Visitor> {
-        const newVisitor = new this.visitorModel(createVisitor);
-        return newVisitor.save();
+        return await this.visitorModel.create(createVisitor);
     }
 }

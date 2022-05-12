@@ -35,6 +35,36 @@
       ],
       "@vms/visitor/*": [
         "libs/visitor/src/*"
+      ],
+      "@vms/user": [
+        "libs/user/src"
+      ],
+      "@vms/user/*": [
+        "libs/user/src/*"
+      ],
+      "@vms/auth": [
+        "libs/auth/src"
+      ],
+      "@vms/auth/*": [
+        "libs/auth/src/*"
+      ],
+      "@vms/visitor-invite": [
+        "libs/visitor-invite/src"
+      ],
+      "@vms/visitor-invite/*": [
+        "libs/visitor-invite/src/*"
+      ],
+      "@vms/resident": [
+        "libs/resident/src"
+      ],
+      "@vms/resident/*": [
+        "libs/resident/src/*"
+      ],
+      "@vms/parking": [
+        "libs/parking/src"
+      ],
+      "@vms/parking/*": [
+        "libs/parking/src/*"
       ]
     }
   }

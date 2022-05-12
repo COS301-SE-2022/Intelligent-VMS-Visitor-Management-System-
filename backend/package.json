@@ -25,12 +25,29 @@
     "@nestjs/common": "^8.0.0",
     "@nestjs/config": "^2.0.0",
     "@nestjs/core": "^8.0.0",
+    "@nestjs/cqrs": "^8.0.3",
     "@nestjs/graphql": "^10.0.10",
+    "@nestjs/jwt": "^8.0.0",
     "@nestjs/mongoose": "^9.0.3",
+    "@nestjs/passport": "^8.2.1",
     "@nestjs/platform-express": "^8.0.0",
+    "@types/bcrypt": "^5.0.0",
+    "@types/nodemailer": "^6.4.4",
+    "@types/passport-jwt": "^3.0.6",
+    "@types/passport-local": "^1.0.34",
+    "@types/qrcode": "^1.4.2",
     "apollo-server-express": "^3.6.7",
+    "bcrypt": "^5.0.1",
     "graphql": "^16.4.0",
+    "guid": "^0.0.12",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.3.1",
+    "nest": "^0.1.6",
+    "nodemailer": "^6.7.5",
+    "passport": "^0.5.2",
+    "passport-jwt": "^4.0.0",
+    "passport-local": "^1.0.0",
+    "qrcode": "^1.5.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0"
@@ -81,7 +98,12 @@
     "moduleNameMapper": {
       "^@vms/my-library(|/.*)$": "<rootDir>/libs/my-library/src/$1",
       "^@vms/database(|/.*)$": "<rootDir>/libs/database/src/$1",
-      "^@vms/visitor(|/.*)$": "<rootDir>/libs/visitor/src/$1"
+      "^@vms/visitor(|/.*)$": "<rootDir>/libs/visitor/src/$1",
+      "^@vms/user(|/.*)$": "<rootDir>/libs/user/src/$1",
+      "^@vms/auth(|/.*)$": "<rootDir>/libs/auth/src/$1",
+      "^@vms/visitor-invite(|/.*)$": "<rootDir>/libs/visitor-invite/src/$1",
+      "^@vms/resident(|/.*)$": "<rootDir>/libs/resident/src/$1",
+      "^@vms/parking(|/.*)$": "<rootDir>/libs/parking/src/$1"
     }
   }
 }

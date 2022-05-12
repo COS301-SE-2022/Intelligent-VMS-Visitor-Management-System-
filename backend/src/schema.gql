@@ -10,17 +10,48 @@ type Visitor {
   password: String!
 }
 
+type User {
+  email: String
+  access_token: String
+}
+
+type Invite {
+  visitorEmail: String!
+  idDocType: String!
+  idNumber: String!
+  inviteID: String!
+  requiresParking: Boolean!
+}
+
 input VisitorInputType {
   id: Float!
   name: String!
   password: String!
 }
 
+input UserInputType {
+  email: String
+  access_token: String
+}
+
 type Query {
   hello: String!
   visitors: [Visitor!]!
+  helloUser: String!
+  helloInvite: String!
+  getInvites: [Invite!]!
+  getTotalNumberOfVisitors: Float!
+  helloParking: String!
+  getAvailableParking: String!
+  helloResident: String!
 }
 
 type Mutation {
   createVisitor(input: VisitorInputType!): Visitor!
+  login(email: String!, password: String!): User!
+  createInvite(userEmail: String!, visitorEmail: String!, IDDocType: String!, IDNumber: String!, requiresParking: Boolean!): String!
+  cancelInvite(inviteID: String!): Boolean!
+  assignParking(parkingNumber: Float!, visitorEmail: String!): String!
+  reserveParking(reservationInviteID: String!, parkingNumber: Float!): String!
+  freeParking(parkingNumber: Float!): String!
 }

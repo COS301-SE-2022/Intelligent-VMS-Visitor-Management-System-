@@ -28,6 +28,51 @@
       "compilerOptions": {
         "tsConfigPath": "libs/visitor/tsconfig.lib.json"
       }
+    },
+    "user": {
+      "type": "library",
+      "root": "libs/user",
+      "entryFile": "index",
+      "sourceRoot": "libs/user/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/user/tsconfig.lib.json"
+      }
+    },
+    "auth": {
+      "type": "library",
+      "root": "libs/auth",
+      "entryFile": "index",
+      "sourceRoot": "libs/auth/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/auth/tsconfig.lib.json"
+      }
+    },
+    "visitor-invite": {
+      "type": "library",
+      "root": "libs/visitor-invite",
+      "entryFile": "index",
+      "sourceRoot": "libs/visitor-invite/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/visitor-invite/tsconfig.lib.json"
+      }
+    },
+    "resident": {
+      "type": "library",
+      "root": "libs/resident",
+      "entryFile": "index",
+      "sourceRoot": "libs/resident/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/resident/tsconfig.lib.json"
+      }
+    },
+    "parking": {
+      "type": "library",
+      "root": "libs/parking",
+      "entryFile": "index",
+      "sourceRoot": "libs/parking/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/parking/tsconfig.lib.json"
+      }
     }
   },
   "compilerOptions": {
