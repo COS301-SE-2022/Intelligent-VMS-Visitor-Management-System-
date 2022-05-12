@@ -17,13 +17,6 @@ export class AssignParkingCommandHandler implements ICommandHandler<AssignParkin
     const { visitorEmail, parkingNumber } = command;
 
     //TODO (Larisa) change find one
-    return await this.parkingModel.findOneAndUpdate({parkingNumber: parkingNumber}, {visitorEmail: visitorEmail},function (err, docs) {
-      if (err){
-          console.log(err)
-      }
-      else{
-          console.log("Parking assigned : ", docs);
-      }
-    });
+    return await this.parkingModel.findOneAndUpdate({parkingNumber: parkingNumber}, {visitorEmail: visitorEmail});
   }
 }

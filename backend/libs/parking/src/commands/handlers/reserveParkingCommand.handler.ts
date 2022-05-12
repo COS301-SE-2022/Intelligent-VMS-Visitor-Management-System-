@@ -32,14 +32,7 @@ export class ReserveParkingCommandHandler implements ICommandHandler<ReservePark
       }
     });*/
 
-    return await this.parkingModel.findOneAndUpdate({parkingNumber:parkingNumber}, {reservationInviteID: reservationInviteID},function (err, docs) {
-      if (err){
-          console.log(err)
-      }
-      else{
-          console.log("Reservation made : ", docs);
-      }
-    });
+    return await this.parkingModel.findOneAndUpdate({parkingNumber:parkingNumber}, {reservationInviteID: reservationInviteID});
 
 
   }

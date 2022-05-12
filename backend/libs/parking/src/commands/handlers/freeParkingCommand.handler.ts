@@ -17,13 +17,6 @@ export class FreeParkingCommandHandler implements ICommandHandler<FreeParkingCom
 
     //TODO (Larisa) change find one
     //set visitorEmail = "" since no visitor is occupying the space anymore
-    return await this.parkingModel.findOneAndUpdate({parkingNumber: parkingNumber}, {visitorEmail: ""},function (err, docs) {
-      if (err){
-          console.log(err)
-      }
-      else{
-          console.log("Parking is free'd up : ", docs);
-      }
-    });
+    return await this.parkingModel.findOneAndUpdate({parkingNumber: parkingNumber}, {visitorEmail: ""});
   }
 }

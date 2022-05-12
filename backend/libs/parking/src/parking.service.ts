@@ -39,8 +39,13 @@ export class ParkingService {
         parkingNumber:number,
         invitationID:string
     ){
-        this.commandBus.execute( 
-            new ReserveParkingCommand(invitationID,parkingNumber)
-        )
+        const parking = await this.commandBus.execute(
+            new ReserveParkingCommand(invitationID,parkingNumber));
+            
+        if(parking) {
+                return parking.parkingNumber;
+            } else {
+                return -1;
+            }
     }
 }

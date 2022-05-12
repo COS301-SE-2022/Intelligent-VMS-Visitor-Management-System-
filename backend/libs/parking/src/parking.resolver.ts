@@ -8,8 +8,8 @@ import { Parking } from "./models/parking.model";
 @Resolver((of) => Parking)
 export class ParkingResolver {
     constructor(
-        @Inject(forwardRef(() => AuthService))
         private parkingService: ParkingService,
+        private authService: AuthService,
     ) {}
 
     //@UseGuards(GqlAuthGuard)
@@ -30,10 +30,10 @@ export class ParkingResolver {
     // @UseGuards(GqlAuthGuard)
     @Mutation((returns) => String, { name: "reserveParking" })
     async reserveParking(
-        @Args("invitationID") invitationID: string,
+        @Args("reservationInviteID") reservationInviteID: string,
         @Args("parkingNumber") parkingNumber: number,
     ) {
-        return this.parkingService.reserveParking(parkingNumber,invitationID);
+        return this.parkingService.reserveParking(parkingNumber,reservationInviteID);
     }
 
     // @UseGuards(GqlAuthGuard)
