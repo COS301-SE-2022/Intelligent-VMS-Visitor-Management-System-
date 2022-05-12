@@ -37,12 +37,14 @@ export class VisitorInviteResolver {
         @Args("visitorEmail") email: string,
         @Args("IDDocType") idDocType: string,
         @Args("IDNumber") idNumber: string,
+        @Args("requiresParking") requiresParking: boolean,
     ) {
         return this.visitorInviteService.createInvite(
             userEmail,
             email,
             idDocType,
             idNumber,
+            requiresParking
         );
     }
 
@@ -53,3 +55,7 @@ export class VisitorInviteResolver {
         return res.acknowledged;
     }
 }
+function requiresParking(userEmail: string, email: string, idDocType: string, idNumber: string, requiresParking: any) {
+    throw new Error("Function not implemented.");
+}
+
