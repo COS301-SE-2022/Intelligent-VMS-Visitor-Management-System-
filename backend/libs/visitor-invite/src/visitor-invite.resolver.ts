@@ -12,8 +12,7 @@ import { RolesGuard } from "@vms/user/guards/roles.guard";
 import { Roles } from "@vms/user/decorators/roles.decorator";
 //import { getTotalNumberOfVisitors } from "./queries/impl/getNumberOfVisitors.query"
 
-@UseGuards(GqlAuthGuard, RolesGuard)
-@Roles("admin")
+@UseGuards(GqlAuthGuard)
 @Resolver((of) => Invite)
 export class VisitorInviteResolver {
     constructor(
@@ -56,6 +55,9 @@ export class VisitorInviteResolver {
         const res = await this.visitorInviteService.cancelInvite(user.email, inviteID);
         return res.acknowledged;
     }
+    
+    @UseGuards(GqlAuthGuard, RolesGuard)
+    @Roles("admin")
     //get total number of invites in the database
     @Query((returns) => Number, { name: "getTotalNumberOfVisitors" })
     async getTotalNumberOfVisitors() {
