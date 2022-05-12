@@ -36,8 +36,14 @@ describe("UserService", () => {
         expect(mockUserModel).toBeDefined();
         expect(service).toBeDefined();
     });
-
-
-   
+     describe("findOne()", () => {
+        it("should find one", async() => {
+            // Act
+            const resp = await service.findOne('tab@email.com');
+            // Assert
+            expect(resp).toEqual({data: 'email'});
+            expect(queryBusMock.execute).toHaveBeenCalledTimes(1);
+        })
+    })   
     
 });
