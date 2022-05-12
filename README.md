@@ -79,7 +79,7 @@ I am good at devoting myself to a task and learning everything required to compl
     believe that one can achieve anything you set your mind to, I would list android development as my greatest technical skill which I have been perfecting since 2017. Other qualities worth mentioning include my immense creativity, thirst for learning and polished communication skills.
 </p>
 
- [![LinkedIn][linkedin-shield]](http://www.linkedin.com/in/kyle-s-008636162/)[![GitHub][github-shield]](https://github.com/KyleSmith19091)
+ [![LinkedIn][linkedin-shield]](https://www.linkedin.com/in/larisa-botha-80512419a/)[![GitHub][github-shield]](https://github.com/LarisaBothaTuks)
 </div>
 
 <hr/>
