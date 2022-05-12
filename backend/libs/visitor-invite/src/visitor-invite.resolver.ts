@@ -55,7 +55,5 @@ export class VisitorInviteResolver {
         return res.acknowledged;
     }
 }
-function requiresParking(userEmail: string, email: string, idDocType: string, idNumber: string, requiresParking: any) {
-    throw new Error("Function not implemented.");
-}
+
 

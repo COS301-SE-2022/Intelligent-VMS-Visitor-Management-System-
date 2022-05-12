@@ -6,6 +6,7 @@ import { ReserveParkingCommand } from './commands/impl/reserveParking.command';
 import { ParkingNotFound } from "./errors/parkingNotFound.error";
 import {Parking} from "../src/schema/parking.schema"
 import { getAvailableParkingQuery } from './queries/impl/getAvailableParking.query';
+import { UnreserveParkingCommand } from './commands/impl/unreserveParking.command';
 
 @Injectable()
 export class ParkingService {
@@ -75,6 +76,19 @@ export class ParkingService {
         
         if(parking) {
                 return parking.reservationInviteID;
+            } else {
+                throw new ParkingNotFound(`Parking with Number: ${parkingNumber} not found`);
+            }
+    }
+
+    async unreserveParking(
+        parkingNumber:number,
+    ){
+        const parking = await this.commandBus.execute(
+            new UnreserveParkingCommand(parkingNumber));
+        
+        if(parking) {
+                return parking;
             } else {
                 throw new ParkingNotFound(`Parking with Number: ${parkingNumber} not found`);
             }

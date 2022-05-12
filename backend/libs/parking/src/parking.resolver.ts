@@ -53,6 +53,14 @@ export class ParkingResolver {
     }
 
     // @UseGuards(GqlAuthGuard)
+    @Mutation((returns) => String, { name: "unreserveParking" })
+    async unreserveParking(
+        @Args("parkingNumber") parkingNumber: number,
+    ) {
+        return this.parkingService.unreserveParking(parkingNumber);
+    }
+
+    // @UseGuards(GqlAuthGuard)
     @Mutation((returns) => String, { name: "freeParking" })
     async freeParking(
         @Args("parkingNumber") parkingNumber: number,
