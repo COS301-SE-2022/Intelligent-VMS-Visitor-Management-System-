@@ -8,8 +8,11 @@ import { VisitorInviteService } from "./visitor-invite.service";
 import { Invite } from "./models/invite.model";
 import {CurrentUser} from "@vms/auth/decorators/CurrentUserDecorator.decorator";
 import { User } from "@vms/user/models/user.model";
+import { RolesGuard } from "@vms/user/guards/roles.guard";
+import { Roles } from "@vms/user/decorators/roles.decorator";
 
-@UseGuards(GqlAuthGuard)
+@UseGuards(GqlAuthGuard, RolesGuard)
+@Roles("admin")
 @Resolver((of) => Invite)
 export class VisitorInviteResolver {
     constructor(
