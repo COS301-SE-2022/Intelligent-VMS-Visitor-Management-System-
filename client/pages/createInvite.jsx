@@ -30,7 +30,7 @@ const CreateInvite = () => {
         <Layout>
             <div className="relative flex h-full min-h-[80vh] w-full flex-col items-center justify-center overflow-hidden shadow">
                 <Formik
-                    initialValues={{ email: "", idDoc: "RSA-ID", idValue: "" }}
+                    initialValues={{ email: "", idDoc: "RSA-ID", idValue: "", reserveParking: false }}
                     validate={(values) => {
                         const errors = {};
                         if (!values.email) {
@@ -89,6 +89,8 @@ const CreateInvite = () => {
                                     setErrorMessage(error);
                                 }
                             });
+
+
                     }}
                 >
                     {({
@@ -150,6 +152,11 @@ const CreateInvite = () => {
                                     touched.email &&
                                     errors.idValue}
                             </span>
+
+                            <label className="label cursor-pointer">
+                                <span className="label-text">Reserve Parking</span> 
+                                <input type="checkbox" className="toggle" onChange={handleChange} onBlur={handleBlur} value={values.reserveParking}/>
+                            </label>
 
                             <button
                                 className="btn btn-primary"

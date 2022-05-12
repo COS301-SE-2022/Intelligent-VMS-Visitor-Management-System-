@@ -40,6 +40,7 @@ type Query {
   helloUser: String!
   helloInvite: String!
   getInvites: [Invite!]!
+  getTotalNumberOfVisitors: Float!
   helloResident: String!
   helloParking: String!
   getAvailableParking: String!

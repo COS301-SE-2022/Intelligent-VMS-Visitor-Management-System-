@@ -27,7 +27,6 @@ export class RolesGuard implements CanActivate {
         }
 
         const { user } = ctx.req;
-        console.log(user);
 
         return this._matchRoles(user.permission, roles);
     }
