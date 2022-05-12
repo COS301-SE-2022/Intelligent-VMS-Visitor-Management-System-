@@ -34,9 +34,9 @@ const AdminDashboard = () => {
 
                                 <div className="card flex flex-col space-y-5 justify-center items-center">
                                     <div className="avatar">
-                                      <buttton className="btn btn-circle btn-disabled bg-base-100 p-2">
+                                      <button className="btn btn-circle btn-disabled bg-base-100 p-2">
                                         <AiFillEye className="text-primary" size="lg" />
-                                      </buttton>
+                                      </button>
                                     </div>
                                     <p className="text-sm">Other Data</p>
                                     <p className="font-bold text-5xl text-secondary">
