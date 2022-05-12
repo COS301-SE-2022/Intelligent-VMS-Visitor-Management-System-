@@ -7,7 +7,6 @@ import ErrorAlert from "../components/ErrorAlert";
 import { useRouter } from "next/router";
 
 const VisitorDashboard = () => {
-    const [isLoading, setIsLoading] = useState(true);
     const [visitorData, setIsVisitorData] = useState([]);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
@@ -26,7 +25,6 @@ const VisitorDashboard = () => {
 
     const client = useApolloClient();
     const cancelInvite = (inviteID) => {
-        setIsLoading(true);
         client
             .mutate({
                 mutation: gql`
@@ -36,7 +34,6 @@ const VisitorDashboard = () => {
             `,
             })
             .then((res) => {
-                setIsLoading(false);
                 if (res.data.cancelInvite === true) {
                     setIsVisitorData(
                         visitorData.filter((invite) => {
@@ -48,7 +45,6 @@ const VisitorDashboard = () => {
                 }
             })
             .catch((err) => {
-                setIsLoading(false);
                 setShowErrorAlert(true);
                 showErrorAlert(err.message);
             });
@@ -56,11 +52,9 @@ const VisitorDashboard = () => {
 
     useEffect(() => {
         if (!loading && !error) {
-            setIsLoading(false);
             const invites = data.getInvites;
             setIsVisitorData(invites);
         } else if (error) {
-            setIsLoading(false);
 
             if (error.message === "Unauthorized") {
                 router.push("/expire");
@@ -83,7 +77,7 @@ const VisitorDashboard = () => {
                 Visitor History
             </h1>
             <div className="flex h-full items-center justify-center overflow-x-auto p-3">
-                {isLoading ? (
+                {loading ? (
                     <progress className="progress progress-primary w-56">
                         progress
                     </progress>
