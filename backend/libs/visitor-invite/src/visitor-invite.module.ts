@@ -28,7 +28,7 @@ import { getNumberOfVisitors } from "./queries/handlers/getNumberOfVisitors.hand
         CancelInviteCommandHandler,
         GetInvitesQueryHandler,
         GetInviteQueryHandler,
-
+        getNumberOfVisitors
     ],
     exports: [VisitorInviteService],
 })
