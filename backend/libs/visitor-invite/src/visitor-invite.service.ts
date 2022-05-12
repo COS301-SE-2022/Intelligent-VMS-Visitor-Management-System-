@@ -91,7 +91,7 @@ export class VisitorInviteService {
         }
 
     }
-
+    //get the total number of invites that have been sent
     async getTotalNumberOfVisitors() {
         return this.queryBus.execute(new GetNumberVisitorQuery());
     } 

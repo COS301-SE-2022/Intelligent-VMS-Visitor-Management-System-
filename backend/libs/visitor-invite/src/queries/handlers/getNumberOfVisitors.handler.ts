@@ -4,6 +4,7 @@ import { Model } from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
 import { Invite, InviteDocument } from "../../schema/invite.schema";
 
+//Query class to count the total number of invites that have been sent
 @QueryHandler(GetNumberVisitorQuery)
 export class getNumberOfVisitors implements IQueryHandler {
     constructor(

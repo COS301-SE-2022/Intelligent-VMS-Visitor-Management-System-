@@ -56,7 +56,7 @@ export class VisitorInviteResolver {
         const res = await this.visitorInviteService.cancelInvite(user.email, inviteID);
         return res.acknowledged;
     }
-
+    //get total number of invites in the database
     @Query((returns) => Number, { name: "getTotalNumberOfVisitors" })
     async getTotalNumberOfVisitors() {
         return this.visitorInviteService.getTotalNumberOfVisitors()
