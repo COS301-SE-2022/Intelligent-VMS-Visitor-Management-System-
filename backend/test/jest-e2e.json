@@ -24,6 +24,8 @@
     "@vms/visitor-invite/(.*)": "<rootDir>/../libs/visitor-invite/src/$1",
     "@vms/visitor-invite": "<rootDir>/../libs/visitor-invite/src",
     "@vms/resident/(.*)": "<rootDir>/../libs/resident/src/$1",
-    "@vms/resident": "<rootDir>/../libs/resident/src"
+    "@vms/resident": "<rootDir>/../libs/resident/src",
+    "@vms/parking/(.*)": "<rootDir>/../libs/parking/src/$1",
+    "@vms/parking": "<rootDir>/../libs/parking/src"
   }
 }

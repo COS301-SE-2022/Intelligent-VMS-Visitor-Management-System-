@@ -59,6 +59,12 @@
       ],
       "@vms/resident/*": [
         "libs/resident/src/*"
+      ],
+      "@vms/parking": [
+        "libs/parking/src"
+      ],
+      "@vms/parking/*": [
+        "libs/parking/src/*"
       ]
     }
   }
