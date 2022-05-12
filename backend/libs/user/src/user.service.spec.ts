@@ -9,28 +9,10 @@ import { User, UserDocument } from "./schema/user.schema";
 describe("UserService", () => {
     let service: UserService;
     let mockUserModel: Model<UserDocument>;
+    const queryBusMock = {
+        execute: jest.fn(() => ({data: 'email'}))
+    }
 
-    beforeEach(async () => {
-        const module: TestingModule = await Test.createTestingModule({
-            providers: [
-                {
-                    provide: getModelToken(User.name),
-                    useValue: Model,
-                },
-                UserService,
-                QueryBus,
-            ],
-        }).compile();
-
-        mockUserModel = module.get<Model<UserDocument>>(
-            getModelToken(User.name),
-        );
-
-        service = module.get<UserService>(UserService);
-    });
-
-    it("should be defined", () => {
-        expect(mockUserModel).toBeDefined();
-        expect(service).toBeDefined();
-    });
+   
+    
 });
