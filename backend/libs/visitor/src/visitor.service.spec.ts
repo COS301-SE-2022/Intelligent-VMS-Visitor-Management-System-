@@ -24,6 +24,7 @@ describe("VisitorService", () => {
         }).compile();
 
         service = module.get<VisitorService>(VisitorService);
+        model = module.get<Model<Visitor>>(getModelToken(Visitor.name));
     });
 
     it("should be defined", () => {
