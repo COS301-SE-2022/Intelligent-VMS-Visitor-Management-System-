@@ -6,7 +6,7 @@ import { Parking, ParkingDocument } from "../../schema/parking.schema";
 
 
 @CommandHandler(AssignParkingCommand)
-export class FreeParkingCommandHandler implements ICommandHandler<AssignParkingCommand> {
+export class AssignParkingCommandHandler implements ICommandHandler<AssignParkingCommand> {
   constructor(
       @InjectModel(Parking.name) private parkingModel: Model<ParkingDocument>,
   ) {}

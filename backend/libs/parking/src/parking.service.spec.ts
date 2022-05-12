@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import { ParkingService } from './parking.service';
 
 describe('ParkingService', () => {
