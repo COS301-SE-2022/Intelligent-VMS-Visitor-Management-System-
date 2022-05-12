@@ -10,7 +10,6 @@ import {CurrentUser} from "@vms/auth/decorators/CurrentUserDecorator.decorator";
 import { User } from "@vms/user/models/user.model";
 import { RolesGuard } from "@vms/user/guards/roles.guard";
 import { Roles } from "@vms/user/decorators/roles.decorator";
-//import { getTotalNumberOfVisitors } from "./queries/impl/getNumberOfVisitors.query"
 
 @UseGuards(GqlAuthGuard)
 @Resolver((of) => Invite)
@@ -55,7 +54,7 @@ export class VisitorInviteResolver {
         const res = await this.visitorInviteService.cancelInvite(user.email, inviteID);
         return res.acknowledged;
     }
-    
+
     @UseGuards(GqlAuthGuard, RolesGuard)
     @Roles("admin")
     //get total number of invites in the database
