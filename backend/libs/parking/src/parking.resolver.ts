@@ -8,8 +8,8 @@ import { Parking } from "./models/parking.model";
 @Resolver((of) => Parking)
 export class ParkingResolver {
     constructor(
-        @Inject(forwardRef(() => AuthService))
         private parkingService: ParkingService,
+        
     ) {}
 
     //@UseGuards(GqlAuthGuard)
@@ -18,22 +18,38 @@ export class ParkingResolver {
         return "👋 from Parking";  
     }
 
+    //@UseGuards(GqlAuthGuard)
+    @Query((returns) => String, { name: "getAvailableParking" })
+    async getAvailableParking() {
+        return this.parkingService.getAvailableParking(); 
+    }
+
+
     // @UseGuards(GqlAuthGuard)
     @Mutation((returns) => String, { name: "createParking" })
     async createParking(
         @Args("parkingNumber") parkingNumber: number,
     ) {
-        //return this.parkingService.createParking(parkingNumber);
+        //return this.parkingService.createParking(parkingNumber); 
+    }
+
+    // @UseGuards(GqlAuthGuard)
+    @Mutation((returns) => String, { name: "assignParking" })
+    async assignParking(
+        @Args("parkingNumber") parkingNumber: number,
+        @Args("visitorEmail") visitorEmail: string,
+    ) {
+        return this.parkingService.assignParking(visitorEmail,parkingNumber);
         
     }
 
     // @UseGuards(GqlAuthGuard)
     @Mutation((returns) => String, { name: "reserveParking" })
     async reserveParking(
-        @Args("invitationID") invitationID: string,
+        @Args("reservationInviteID") reservationInviteID: string,
         @Args("parkingNumber") parkingNumber: number,
     ) {
-        return this.parkingService.reserveParking(parkingNumber,invitationID);
+        return this.parkingService.reserveParking(parkingNumber,reservationInviteID);
     }
 
     // @UseGuards(GqlAuthGuard)

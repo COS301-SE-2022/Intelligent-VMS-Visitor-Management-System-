@@ -8,6 +8,7 @@ import { Parking, ParkingSchema } from "./schema/parking.schema";
 import { ReserveParkingCommandHandler } from "./commands/handlers/reserveParkingCommand.handler";
 import { FreeParkingCommandHandler } from "./commands/handlers/freeParkingCommand.handler";
 import { AssignParkingCommandHandler } from "./commands/handlers/assignParkingCommand.handler";
+import { getAvailableParkingQueryHandler } from './queries/handlers/getAvailableParkingQuery.handler';
 
 @Module({
   imports: [
@@ -22,7 +23,8 @@ import { AssignParkingCommandHandler } from "./commands/handlers/assignParkingCo
     ParkingResolver,
     ReserveParkingCommandHandler,
     FreeParkingCommandHandler,
-    AssignParkingCommandHandler],
+    AssignParkingCommandHandler,
+    getAvailableParkingQueryHandler],
 
   exports: [ParkingService],
 })
