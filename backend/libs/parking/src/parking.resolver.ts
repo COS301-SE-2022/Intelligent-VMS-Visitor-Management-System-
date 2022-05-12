@@ -28,6 +28,16 @@ export class ParkingResolver {
     }
 
     // @UseGuards(GqlAuthGuard)
+    @Mutation((returns) => String, { name: "assignParking" })
+    async assignParking(
+        @Args("parkingNumber") parkingNumber: number,
+        @Args("visitorEmail") visitorEmail: string,
+    ) {
+        return this.parkingService.assignParking(visitorEmail,parkingNumber);
+        
+    }
+
+    // @UseGuards(GqlAuthGuard)
     @Mutation((returns) => String, { name: "reserveParking" })
     async reserveParking(
         @Args("reservationInviteID") reservationInviteID: string,

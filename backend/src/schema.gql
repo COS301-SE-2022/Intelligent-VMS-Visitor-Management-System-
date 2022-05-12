@@ -49,6 +49,7 @@ type Mutation {
   createInvite(userEmail: String!, visitorEmail: String!, IDDocType: String!, IDNumber: String!): String!
   cancelInvite(inviteID: String!): Boolean!
   createParking(parkingNumber: Float!): String!
+  assignParking(parkingNumber: Float!, visitorEmail: String!): String!
   reserveParking(reservationInviteID: String!, parkingNumber: Float!): String!
   freeParking(parkingNumber: Float!): String!
 }
