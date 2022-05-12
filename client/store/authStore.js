@@ -69,6 +69,22 @@ const useAuth = create(
                 }
 
             },
+            numParkingSpots: 22,
+            updateParkingSpots: (newVal) => {
+				set((state) => ({
+					numParkingSpots: newVal
+				}));
+            },
+            incParkingSpots: () => {
+                set((state) => ({
+                    numParkingSpots: get().numParkingSpots+1
+                }));
+            },
+            decParkingSpots: () => {
+                set((state) => ({
+                    numParkingSpots: get().numParkingSpots-1
+                }));
+            },
 		}),
 		{ name: "auth" }
 	)
