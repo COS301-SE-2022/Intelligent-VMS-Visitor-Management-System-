@@ -9,7 +9,7 @@ import { Parking } from "./models/parking.model";
 export class ParkingResolver {
     constructor(
         private parkingService: ParkingService,
-        private authService: AuthService,
+        
     ) {}
 
     //@UseGuards(GqlAuthGuard)
@@ -18,13 +18,19 @@ export class ParkingResolver {
         return "👋 from Parking";  
     }
 
+    //@UseGuards(GqlAuthGuard)
+    @Query((returns) => String, { name: "getAvailableParking" })
+    async getAvailableParking() {
+        return this.parkingService.getAvailableParking(); 
+    }
+
+
     // @UseGuards(GqlAuthGuard)
     @Mutation((returns) => String, { name: "createParking" })
     async createParking(
         @Args("parkingNumber") parkingNumber: number,
     ) {
-        //return this.parkingService.createParking(parkingNumber);
-        
+        //return this.parkingService.createParking(parkingNumber); 
     }
 
     // @UseGuards(GqlAuthGuard)

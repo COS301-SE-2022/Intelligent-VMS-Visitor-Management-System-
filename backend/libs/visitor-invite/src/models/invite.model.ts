@@ -13,4 +13,7 @@ export class Invite {
 
     @Field((type) => String)
     inviteID: string;
+
+    @Field((type) => Boolean)
+    requiresParking: boolean;
 }
