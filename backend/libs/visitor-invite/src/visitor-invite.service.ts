@@ -9,10 +9,12 @@ import { CreateInviteCommand } from "./commands/impl/createInvite.command";
 import { CancelInviteCommand } from "./commands/impl/cancelInvite.command";
 import { GetInvitesQuery } from "./queries/impl/getInvites.query";
 import { GetInviteQuery } from "./queries/impl/getInvite.query";
+import { getAvailableParkingQuery } from '../../../libs/parking/src/queries/impl/getAvailableParking.query';
 
 import { InviteNotFound } from "./errors/inviteNotFound.error";
 
 import { Invite } from "./models/invite.model";
+import { ReserveParkingCommand } from "@vms/parking/commands/impl/reserveParking.command";
 
 @Injectable()
 export class VisitorInviteService {
@@ -23,6 +25,7 @@ export class VisitorInviteService {
         visitorEmail: string,
         idDocType: string,
         idNumber: string,
+        requiresParking: boolean
     ) {
         // Generate inviteID
         const inviteID = randomUUID();
@@ -43,6 +46,27 @@ export class VisitorInviteService {
 
         // Get the qrcode
         const qrCode = await toDataURL(qrData);
+
+        // Parking
+        if(requiresParking)
+        {
+            //TODO (Larisa) : should I be calling this directly
+            const parking =  await this.queryBus.execute(
+                new getAvailableParkingQuery()
+            )
+
+            if(parking>0)
+            {
+                //TODO user should be able to reserve parkingSpace close to him
+                await this.commandBus.execute(
+                    new ReserveParkingCommand(inviteID,2));
+            }
+            else
+            {
+                //TODO (Kyle)?
+                console.log("error")
+            }
+        }
 
         // Send email
         const transporter = createTransport({
@@ -88,6 +112,7 @@ export class VisitorInviteService {
         } else {
             throw new InviteNotFound(`Invite not found with ID: ${inviteID}`);
         }
+
 
     }
 }

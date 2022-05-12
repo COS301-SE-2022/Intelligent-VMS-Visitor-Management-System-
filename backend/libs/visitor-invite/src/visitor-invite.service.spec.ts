@@ -26,7 +26,7 @@ describe("VisitorInviteService", () => {
     });
 
     it('valid information does not generate an invite', async () => {    
-       const s = service.createInvite("receptionist@mail.com", "melis@mail.com", "RSA-ID", "0012120178087");
+       const s = service.createInvite("receptionist@mail.com", "melis@mail.com", "RSA-ID", "0012120178087",false);
        expect((await s)).toBe(true);
     });
 });

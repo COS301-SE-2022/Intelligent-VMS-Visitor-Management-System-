@@ -11,7 +11,7 @@ export class getAvailableParkingQueryHandler implements IQueryHandler {
       @InjectModel(Parking.name) private parkingModel: Model<ParkingDocument>,
   ) {}
 
-  async execute(query: getAvailableParkingQuery) {
+  async execute(query: getAvailableParkingQuery):Promise<number> {
     //db stuff for getting avail parking
     const parkingArr = await this.parkingModel.find();
     return parkingArr.length;
