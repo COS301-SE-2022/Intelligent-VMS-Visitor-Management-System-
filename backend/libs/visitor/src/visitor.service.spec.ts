@@ -16,10 +16,10 @@ describe("VisitorService", () => {
     }
 
     beforeEach(async () => {
+        jest.restoreAllMocks();
         const module: TestingModule = await Test.createTestingModule({
             providers: [
-                VisitorService,
-                { provide: getModelToken(Visitor.name), useValue: jest.fn() },
+                VisitorService, { provide: getModelToken(Visitor.name),useValue: visitorModelMock},
             ],
         }).compile();
 
