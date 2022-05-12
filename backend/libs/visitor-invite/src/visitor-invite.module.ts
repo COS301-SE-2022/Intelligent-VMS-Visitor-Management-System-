@@ -11,6 +11,7 @@ import { CreateInviteCommandHandler } from "./commands/handlers/createInviteComm
 import { CancelInviteCommandHandler } from "./commands/handlers/cancelInviteCommand.handler";
 import { GetInvitesQueryHandler } from "./queries/handlers/getInvites.handler";
 import { GetInviteQueryHandler } from "./queries/handlers/getInvite.handler";
+import { getNumberOfVisitors } from "./queries/handlers/getNumberOfVisitors.handler";
 
 @Module({
     imports: [
@@ -26,7 +27,8 @@ import { GetInviteQueryHandler } from "./queries/handlers/getInvite.handler";
         CreateInviteCommandHandler,
         CancelInviteCommandHandler,
         GetInvitesQueryHandler,
-        GetInviteQueryHandler
+        GetInviteQueryHandler,
+        getNumberOfVisitors
     ],
     exports: [VisitorInviteService],
 })

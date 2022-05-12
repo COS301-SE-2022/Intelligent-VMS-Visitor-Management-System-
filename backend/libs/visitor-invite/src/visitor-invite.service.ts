@@ -13,6 +13,7 @@ import { GetInviteQuery } from "./queries/impl/getInvite.query";
 import { InviteNotFound } from "./errors/inviteNotFound.error";
 
 import { Invite } from "./models/invite.model";
+import { GetNumberVisitorQuery } from "./queries/impl/getNumberOfVisitors.query";
 
 @Injectable()
 export class VisitorInviteService {
@@ -90,4 +91,8 @@ export class VisitorInviteService {
         }
 
     }
+    //get the total number of invites that have been sent
+    async getTotalNumberOfVisitors() {
+        return this.queryBus.execute(new GetNumberVisitorQuery());
+    } 
 }

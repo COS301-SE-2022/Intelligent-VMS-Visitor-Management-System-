@@ -7,7 +7,7 @@ import {Model} from "mongoose";
 describe("VisitorService", () => {
     let service: VisitorService;
     let model: Model<Visitor>;
-    let visitorModelMock={
+    const visitorModelMock={
          find:jest.fn(()=>({
         exec: jest.fn(()=>({data:[]}))
     })),
