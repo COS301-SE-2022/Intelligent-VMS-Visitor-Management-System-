@@ -31,7 +31,7 @@ import { getNumberOfVisitors } from "./queries/handlers/getNumberOfVisitors.hand
         GetInvitesQueryHandler,
         GetInviteQueryHandler,
         ReserveParkingCommandHandler,
-        getAvailableParkingQueryHandler
+        getAvailableParkingQueryHandler,
         getNumberOfVisitors
     ],
     exports: [VisitorInviteService],
