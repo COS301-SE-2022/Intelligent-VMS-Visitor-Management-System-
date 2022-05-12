@@ -12,7 +12,6 @@ export class getAvailableParkingQueryHandler implements IQueryHandler {
   ) {}
 
   async execute(query: getAvailableParkingQuery):Promise<number> {
-    //db stuff for getting avail parking
     const parkingArr = await this.parkingModel.find();
     return parkingArr.length;
   }

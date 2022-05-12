@@ -12,11 +12,7 @@ export class AssignParkingCommandHandler implements ICommandHandler<AssignParkin
   ) {}
 
   async execute(command: AssignParkingCommand) {
-
-    //db stuff for assigning parking
     const { visitorEmail, parkingNumber } = command;
-
-    //TODO (Larisa) change find one
     return await this.parkingModel.findOneAndUpdate({parkingNumber: parkingNumber}, {visitorEmail: visitorEmail});
   }
 }
