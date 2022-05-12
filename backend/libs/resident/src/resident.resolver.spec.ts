@@ -7,7 +7,6 @@ import { JwtService } from "@nestjs/jwt";
 import {ResidentService} from "./resident.service";
 describe("ResidentResolver", () => {
     let resolver: ResidentResolver;
-    //let service:AuthService;
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
             providers: [ResidentResolver,AuthService,ResidentService,JwtService,UserService, QueryBus],
@@ -21,9 +20,7 @@ describe("ResidentResolver", () => {
             return null;
         })
         .compile();
-
         resolver = module.get<ResidentResolver>(ResidentResolver);
-        //service = module.get<AuthService>(AuthService);
     });
 
    
