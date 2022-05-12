@@ -8,6 +8,8 @@ import { VisitorInviteService } from "./visitor-invite.service";
 import { Invite } from "./models/invite.model";
 import {CurrentUser} from "@vms/auth/decorators/CurrentUserDecorator.decorator";
 import { User } from "@vms/user/models/user.model";
+import { RolesGuard } from "@vms/user/guards/roles.guard";
+import { Roles } from "@vms/user/decorators/roles.decorator";
 
 @UseGuards(GqlAuthGuard)
 @Resolver((of) => Invite)
@@ -53,6 +55,14 @@ export class VisitorInviteResolver {
     async cancelInvite(@CurrentUser() user: User, @Args("inviteID") inviteID: string) {
         const res = await this.visitorInviteService.cancelInvite(user.email, inviteID);
         return res.acknowledged;
+    }
+
+    @UseGuards(GqlAuthGuard, RolesGuard)
+    @Roles("admin")
+    //get total number of invites in the database
+    @Query((returns) => Number, { name: "getTotalNumberOfVisitors" })
+    async getTotalNumberOfVisitors() {
+        return this.visitorInviteService.getTotalNumberOfVisitors()
     }
 }
 function requiresParking(userEmail: string, email: string, idDocType: string, idNumber: string, requiresParking: any) {

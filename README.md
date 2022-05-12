@@ -92,7 +92,7 @@ I am good at devoting myself to a task and learning everything required to compl
     I am a highly motivated Computer Science student with fundamental knowledge of software design, development and testing. I’m seeking to utilize my    broad educational background together with my analytical and technical skills to thrive within the technological industry.
 </p>
 
-[![LinkedIn][linkedin-shield]](http://www.linkedin.com/in/kyle-s-008636162/)[![GitHub][github-shield]](https://github.com/KyleSmith19091)    
+[![LinkedIn][linkedin-shield]](http://www.linkedin.com/in/tabitha-jemwa-008636162/)[![GitHub][github-shield]](https://github.com/Tabby709)    
 </div>
 
 <br />

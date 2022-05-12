@@ -15,6 +15,7 @@ import { InviteNotFound } from "./errors/inviteNotFound.error";
 
 import { Invite } from "./models/invite.model";
 import { ReserveParkingCommand } from "@vms/parking/commands/impl/reserveParking.command";
+import { GetNumberVisitorQuery } from "./queries/impl/getNumberOfVisitors.query";
 
 @Injectable()
 export class VisitorInviteService {
@@ -115,4 +116,8 @@ export class VisitorInviteService {
 
 
     }
+    //get the total number of invites that have been sent
+    async getTotalNumberOfVisitors() {
+        return this.queryBus.execute(new GetNumberVisitorQuery());
+    } 
 }

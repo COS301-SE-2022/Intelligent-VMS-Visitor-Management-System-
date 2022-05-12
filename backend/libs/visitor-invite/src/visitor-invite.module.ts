@@ -13,6 +13,7 @@ import { GetInvitesQueryHandler } from "./queries/handlers/getInvites.handler";
 import { GetInviteQueryHandler } from "./queries/handlers/getInvite.handler";
 import { ReserveParkingCommandHandler } from "../../parking/src/commands/handlers/reserveParkingCommand.handler";
 import { getAvailableParkingQueryHandler } from "../../parking/src/queries/handlers/getAvailableParkingQuery.handler";
+import { getNumberOfVisitors } from "./queries/handlers/getNumberOfVisitors.handler";
 
 @Module({
     imports: [
@@ -31,6 +32,7 @@ import { getAvailableParkingQueryHandler } from "../../parking/src/queries/handl
         GetInviteQueryHandler,
         ReserveParkingCommandHandler,
         getAvailableParkingQueryHandler
+        getNumberOfVisitors
     ],
     exports: [VisitorInviteService],
 })
