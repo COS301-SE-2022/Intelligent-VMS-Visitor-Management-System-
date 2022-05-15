@@ -35,13 +35,6 @@ const AdminDashboard = () => {
                 return;
             }
 
-            setIsVisitorData([
-                {
-                    visitorEmail: "ERROR",
-                    idDocType: "ERROR",
-                    isNumber: "ERROR",
-                },
-            ]);
         }
 
     }, [loading, error, data, router]);

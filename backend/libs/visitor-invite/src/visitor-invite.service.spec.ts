@@ -1,9 +1,6 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import { VisitorInviteService } from "./visitor-invite.service";
-import { Invite } from "./models/invite.model";
-import { CreateInviteCommandHandler } from "../src/commands/handlers/createInviteCommand.handler";
-
 
 describe("VisitorInviteService", () => {
     let service: VisitorInviteService;
@@ -25,8 +22,4 @@ describe("VisitorInviteService", () => {
         expect(command).toBeDefined();
     });
 
-   /* it('valid information does not generate an invite', async () => {    
-       const s = service.createInvite("receptionist@mail.com", "melis@mail.com", "RSA-ID", "0012120178087",false);
-       expect((await s)).toBe(true);
-    });*/
 });
