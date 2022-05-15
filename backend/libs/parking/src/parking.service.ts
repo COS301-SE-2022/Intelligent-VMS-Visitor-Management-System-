@@ -5,7 +5,6 @@ import { FreeParkingCommand } from './commands/impl/freeParking.command';
 import { ReserveParkingCommand } from './commands/impl/reserveParking.command';
 import { ParkingNotFound } from "./errors/parkingNotFound.error";
 import { getAvailableParkingQuery } from './queries/impl/getAvailableParking.query';
-import { CreateNParkingSpotsCommand } from "./commands/impl/createNParkingSpots.command"; 
 
 @Injectable()
 export class ParkingService {
@@ -25,8 +24,7 @@ export class ParkingService {
         )
 
         if(parking) {
-            return "true";
-            //return parking;
+            return true;
         } else {
             throw new ParkingNotFound(`Parking with Number: ${parkingNumber} not found`);
         }
@@ -42,8 +40,7 @@ export class ParkingService {
          )
 
         if(parking){
-            return "true";
-            //return parking.reservationInvitationID;
+            return true;
         } else {
             throw new ParkingNotFound(`Parking with Number: ${parkingNumber} not found`);
         }

@@ -19,13 +19,13 @@ export class ParkingResolver {
     }
 
     @UseGuards(GqlAuthGuard)
-    @Query((returns) => String, { name: "getAvailableParking" })
+    @Query((returns) => Number, { name: "getAvailableParking" })
     async getAvailableParking() {
         return this.parkingService.getAvailableParking(); 
     }
 
     @UseGuards(GqlAuthGuard)
-    @Mutation((returns) => String, { name: "assignParking" })
+    @Mutation((returns) => Boolean, { name: "assignParking" })
     async assignParking(
         @Args("parkingNumber") parkingNumber: number,
         @Args("visitorEmail") visitorEmail: string,
@@ -43,7 +43,7 @@ export class ParkingResolver {
     }
 
     @UseGuards(GqlAuthGuard)
-    @Mutation((returns) => String, { name: "freeParking" })
+    @Mutation((returns) => Number, { name: "freeParking" })
     async freeParking(
         @Args("parkingNumber") parkingNumber: number,
     ) {
