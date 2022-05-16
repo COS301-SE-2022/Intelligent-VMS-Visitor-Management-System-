@@ -16,10 +16,11 @@ import { InviteNotFound } from "./errors/inviteNotFound.error";
 import { ReserveParkingCommand } from "@vms/parking/commands/impl/reserveParking.command";
 import { getAvailableParkingQuery } from '@vms/parking/queries/impl/getAvailableParking.query';
 import { ParkingNotFound } from "@vms/parking/errors/parkingNotFound.error";
+import { MailService } from "@vms/mail";
 
 @Injectable()
 export class VisitorInviteService {
-    constructor(private readonly commandBus: CommandBus, private readonly queryBus: QueryBus) {}
+    constructor(private readonly commandBus: CommandBus, private readonly queryBus: QueryBus, private readonly mailService: MailService) {}
 
     async createInvite(
         userEmail: string,
@@ -42,12 +43,6 @@ export class VisitorInviteService {
             ),
         );
 
-        // QRCode data to be encoded
-        const qrData = JSON.stringify({ inviteID: inviteID });
-
-        // Get the qrcode
-        const qrCode = await toDataURL(qrData);
-
         // Parking
         if(requiresParking) {
 
@@ -62,25 +57,7 @@ export class VisitorInviteService {
             }
         }
 
-        // Send email
-        const transporter = createTransport({
-            host: "smtp.mailtrap.io",
-            port: 2525,
-            secure: false, // true for 465(auth ports), false for other ports
-            auth: {
-                user: "8a3164c958f015",
-                pass: "6327e7c4877921",
-            },
-        });
-
-        // Send mail with defined transport object
-        const info = await transporter.sendMail({
-            from: '"VMS 👋" <firestorm19091@gmail.com>', // sender address
-            to: visitorEmail, // list of receivers
-            subject: "You received an invite", // Subject line
-            html: `<h1>Hello Visitor!👋</h1><br /><p>Invite ID: ${inviteID}</p><img src="${qrCode}"/><br/>${requiresParking ? "<p>Parking Reserved 🚗</p>" : ""}`,
-        });
-
+        const info = await this.mailService.sendInvite(visitorEmail, userEmail, inviteID, idDocType, requiresParking);
         return info.messageId;
     }
 

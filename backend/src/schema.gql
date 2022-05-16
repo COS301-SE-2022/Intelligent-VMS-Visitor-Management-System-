@@ -42,7 +42,7 @@ type Query {
   getInvites: [Invite!]!
   getTotalNumberOfVisitors: Float!
   helloParking: String!
-  getAvailableParking: String!
+  getAvailableParking: Float!
   helloResident: String!
 }
 
@@ -51,7 +51,7 @@ type Mutation {
   login(email: String!, password: String!): User!
   createInvite(userEmail: String!, visitorEmail: String!, IDDocType: String!, IDNumber: String!, requiresParking: Boolean!): String!
   cancelInvite(inviteID: String!): Boolean!
-  assignParking(parkingNumber: Float!, visitorEmail: String!): String!
+  assignParking(parkingNumber: Float!, visitorEmail: String!): Boolean!
   reserveParking(reservationInviteID: String!, parkingNumber: Float!): String!
-  freeParking(parkingNumber: Float!): String!
+  freeParking(parkingNumber: Float!): Float!
 }

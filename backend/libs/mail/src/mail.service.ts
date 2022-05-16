@@ -14,13 +14,13 @@ export class MailService {
             port: 2525,
             secure: false,
             auth: {
-                user: "",
-                pass: ""
+                user: "8a3164c958f015",
+                pass: "6327e7c4877921"
             }
         });
     }
 
-    async sendInvite(to: string, from: string, inviteID: string, reserveParking: boolean) {
+    async sendInvite(to: string, from: string, inviteID: string, idDocType: string, reserveParking: boolean) {
         // QRCode data to be encoded
         const qrData = JSON.stringify({ inviteID: inviteID });
 
@@ -38,8 +38,10 @@ export class MailService {
                 <p>Invite ID: ${inviteID}</p>
                 <img src="${qrCode}"/>
                 <br/>
-                <p>Please present qrCode to frontdesk, you will be asked to present your chosen form of identification</p>
-                ${reserveParking ? "<p>Parking Reserved 🚗</p>" : ""}`,
+                <p>Please present QR-Code to frontdesk, you will be asked to present your chosen form of identification</p>
+                ${reserveParking ? "<p>Parking Reserved 🚗</p>" : ""}
+                <h4>Please remember to bring your ${idDocType}</h4>
+                `,
         });
 
     } 
