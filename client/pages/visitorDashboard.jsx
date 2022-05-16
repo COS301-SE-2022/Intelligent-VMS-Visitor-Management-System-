@@ -46,7 +46,7 @@ const VisitorDashboard = () => {
             })
             .catch((err) => {
                 setShowErrorAlert(true);
-                showErrorAlert(err.message);
+                setErrorMessage(err.message);
             });
     };
 

@@ -65,6 +65,7 @@ export class VisitorInviteResolver {
         return this.visitorInviteService.getTotalNumberOfVisitors()
     }
 }
+
 function requiresParking(userEmail: string, email: string, idDocType: string, idNumber: string, requiresParking: any) {
     throw new Error("Function not implemented.");
 }
