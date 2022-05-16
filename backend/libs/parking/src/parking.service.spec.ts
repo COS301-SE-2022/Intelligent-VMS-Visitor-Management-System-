@@ -5,7 +5,8 @@ import { getAvailableParkingQuery } from './queries/impl/getAvailableParking.que
 import {FreeParkingCommand} from './commands/impl/freeParking.command';
 import {AssignParkingCommand} from './commands/impl/assignParking.command';
 import {ReserveParkingCommand} from './commands/impl/reserveParking.command';
-import {ParkingNotFound} from './errors/parkingNotFound.error';
+
+import { ParkingNotFound } from './errors/parkingNotFound.error';
 
 describe('ParkingService', () => {
   let service: ParkingService;
@@ -49,7 +50,7 @@ describe('ParkingService', () => {
         providers: [
             ParkingService, 
             {
-                provide: QueryBus, useValue: queryBusMock
+                    provide: QueryBus, useValue: queryBusMock
             },
             {
                 provide: CommandBus, useValue: commandBusMock

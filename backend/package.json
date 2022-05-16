@@ -77,11 +77,11 @@
   },
   "jest": {
     "coverageThreshold": {
-        "global": {
-          "functions": 20,
-          "lines": 60,
-          "statements": 60
-        }
+      "global": {
+        "functions": 20,
+        "lines": 60,
+        "statements": 60
+      }
     },
     "moduleFileExtensions": [
       "js",
@@ -94,32 +94,32 @@
       "^.+\\.(t|j)s$": "ts-jest"
     },
     "collectCoverageFrom": [
-        "**/*.(t|j)s",
-        "!main.(t|j)s",
-        "!**/*.module.(t|j)s",
-        "!**/*.input.(t|j)s",
-        "!**/*.entity.(t|j)s"
+      "**/*.(t|j)s",
+      "!main.(t|j)s",
+      "!**/*.module.(t|j)s",
+      "!**/*.input.(t|j)s",
+      "!**/*.entity.(t|j)s"
     ],
     "coveragePathIgnorePatterns": [
-        "node_modules",
-        "test-config",
-        "interfaces",
-        "jestGlobalMocks.ts",
-        ".module.ts",
-        "<rootDir>/src/main.ts",
-        ".mock.ts",
-        ".query.ts",
-        ".command.ts",
-        ".handler.ts",
-        ".resolver.ts",
-        ".guard.ts",
-        ".strategy.ts",
-        ".schema.ts",
-        ".model.ts",
-        ".dto.ts",
-        ".error.ts",
-        ".decorator.ts",
-        "index.ts"
+      "node_modules",
+      "test-config",
+      "interfaces",
+      "jestGlobalMocks.ts",
+      ".module.ts",
+      "<rootDir>/src/main.ts",
+      ".mock.ts",
+      ".query.ts",
+      ".command.ts",
+      ".handler.ts",
+      ".resolver.ts",
+      ".guard.ts",
+      ".strategy.ts",
+      ".schema.ts",
+      ".model.ts",
+      ".dto.ts",
+      ".error.ts",
+      ".decorator.ts",
+      "index.ts"
     ],
     "coverageDirectory": "./coverage",
     "testEnvironment": "node",
@@ -135,7 +135,8 @@
       "^@vms/auth(|/.*)$": "<rootDir>/libs/auth/src/$1",
       "^@vms/visitor-invite(|/.*)$": "<rootDir>/libs/visitor-invite/src/$1",
       "^@vms/resident(|/.*)$": "<rootDir>/libs/resident/src/$1",
-      "^@vms/parking(|/.*)$": "<rootDir>/libs/parking/src/$1"
+      "^@vms/parking(|/.*)$": "<rootDir>/libs/parking/src/$1",
+      "^@vms/mail(|/.*)$": "<rootDir>/libs/mail/src/$1"
     }
   }
 }
