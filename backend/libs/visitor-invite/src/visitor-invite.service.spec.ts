@@ -3,6 +3,7 @@ import { CommandBus, IQuery, QueryBus } from "@nestjs/cqrs";
 import { VisitorInviteService } from "./visitor-invite.service";
 import {GetInvitesQuery} from "./queries/impl/getInvites.query";
 import {GetNumberVisitorQuery} from "./queries/impl/getNumberOfVisitors.query";
+import {MailService} from "@vms/mail";
 
 describe("VisitorInviteService", () => {
     let service: VisitorInviteService;
@@ -42,6 +43,7 @@ describe("VisitorInviteService", () => {
         const module: TestingModule = await Test.createTestingModule({
             providers: [
                 VisitorInviteService, 
+                MailService,
                 CommandBus, 
                 {
                     provide: QueryBus, useValue: queryBusMock
