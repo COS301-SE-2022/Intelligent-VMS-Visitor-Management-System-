@@ -24,6 +24,13 @@ The VMS is an intelligent visitor management system that allows provides a platf
 
 <a href="#">🚧 Demo Video</a>
 
+### ⛓ Project Links - Demo 2
+<a href="https://github.com/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-/projects/1">📦 Project Board</a>
+
+<a href="https://docs.google.com/document/d/e/2PACX-1vRpyOyBBYHXRq3KVTKVrSCkpmAfiWigeEcCTrDTAIm5HCVHSFdvKiVo1KAHz91CyXnsckY5dBVeCzzV/pub">📊 SRS Document</a>
+
+<a href="#">🚧 Demo Video</a>
+
 ### 👏 The Team
 <hr />
 
