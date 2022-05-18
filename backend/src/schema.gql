@@ -15,6 +15,11 @@ type User {
   access_token: String
 }
 
+type ParkingReservation {
+  invitationID: String!
+  parkingNumber: String!
+}
+
 type Invite {
   visitorEmail: String!
   idDocType: String!
@@ -51,8 +56,10 @@ type Mutation {
   login(email: String!, password: String!): User!
   createInvite(userEmail: String!, visitorEmail: String!, IDDocType: String!, IDNumber: String!, requiresParking: Boolean!): String!
   cancelInvite(inviteID: String!): Boolean!
-  assignParking(parkingNumber: Float!, visitorEmail: String!): Boolean!
-  reserveParking(reservationInviteID: String!, parkingNumber: Float!): String!
-  unreserveParking(parkingNumber: Float!): String!
-  freeParking(parkingNumber: Float!): Float!
+  assignParking(invitationID: String!): Boolean!
+  reserveParkingSpace(invitationID: String!, parkingNumber: Float!): ParkingReservation!
+  reserveParking(invitationID: String!): ParkingReservation!
+  unreserveParking(invitationID: String!): String!
+  freeParking(parkingNumber: Float!): String!
+  createNParkingSpots(N: Float!): String!
 }

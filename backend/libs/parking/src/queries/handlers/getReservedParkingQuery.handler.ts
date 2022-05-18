@@ -6,14 +6,13 @@ import { ParkingReservation, ParkingReservationDocument } from "../../schema/res
 
 
 @QueryHandler(GetReservedParkingQuery)
-export class GetAvailableParkingQueryHandler implements IQueryHandler {
+export class GetReservedParkingQueryHandler implements IQueryHandler {
   constructor(
-      @InjectModel(ParkingReservation.name) private parkingModel: Model<ParkingReservationDocument>,
+      @InjectModel(ParkingReservation.name) private parkingReservationModel: Model<ParkingReservationDocument>,
   ) {}
 
-  //db stuff for getting reserved parking
   async execute(query: GetReservedParkingQuery):Promise<ParkingReservation[]> {
     
-    return await this.parkingModel.find();
+    return await this.parkingReservationModel.find();
   }
 }

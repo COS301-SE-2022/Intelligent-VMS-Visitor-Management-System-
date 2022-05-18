@@ -6,7 +6,7 @@ import { Parking, ParkingDocument } from "../../schema/parking.schema";
 
 
 @CommandHandler(CreateNParkingSpotsCommand)
-export class CreateNParkingSpotsHandler implements ICommandHandler<CreateNParkingSpotsCommand> {
+export class CreateNParkingSpotsCommandHandler implements ICommandHandler<CreateNParkingSpotsCommand> {
   constructor(
       @InjectModel(Parking.name) private parkingModel: Model<ParkingDocument>,
   ) {}

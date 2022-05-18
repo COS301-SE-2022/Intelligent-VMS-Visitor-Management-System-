@@ -5,6 +5,7 @@ import { ParkingService } from "./parking.service";
 import { GqlAuthGuard } from "@vms/auth/guards/GqlAuthGuard.guard";
 
 import { Parking } from "./models/parking.model";
+import { ParkingReservation } from "./models/reservation.model";
 
 @Resolver((of) => Parking)
 export class ParkingResolver {
@@ -12,42 +13,51 @@ export class ParkingResolver {
         private parkingService: ParkingService,
     ) {}
 
-    @UseGuards(GqlAuthGuard)
+    //@UseGuards(GqlAuthGuard)
     @Query((returns) => String, { name: "helloParking" })
     async hello() {
         return "👋 from Parking";  
     }
 
-    @UseGuards(GqlAuthGuard)
+    //@UseGuards(GqlAuthGuard)
     @Query((returns) => Number, { name: "getAvailableParking" })
     async getAvailableParking() {
         return this.parkingService.getAvailableParking(); 
     }
 
-    @UseGuards(GqlAuthGuard)
+    //@UseGuards(GqlAuthGuard)
     @Mutation((returns) => Boolean, { name: "assignParking" })
     async assignParking(
-        @Args("parkingNumber") parkingNumber: number,
-        @Args("visitorEmail") visitorEmail: string,
+        @Args("invitationID") invitationID: string,
     ) {
-        //return this.parkingService.assignParking(visitorEmail,parkingNumber);
+        console.log("here...............................");
+        return this.parkingService.assignParking(invitationID);
     }
 
-    @UseGuards(GqlAuthGuard)
-    @Mutation((returns) => String, { name: "reserveParking" })
+    //@UseGuards(GqlAuthGuard)
+    @Mutation((returns) => ParkingReservation, { name: "reserveParkingSpace" })
+    async reserveParkingSpace(
+        @Args("invitationID") invitationID: string,
+        @Args("parkingNumber") parkingNumber: number,
+    ) {
+        return this.parkingService.reserveParkingSpace(parkingNumber,invitationID);
+    }
+
+    //@UseGuards(GqlAuthGuard)
+    @Mutation((returns) => ParkingReservation, { name: "reserveParking" })
     async reserveParking(
-        @Args("reservationInviteID") reservationInviteID: string,
-        @Args("parkingNumber") parkingNumber: number,
+        @Args("invitationID") invitationID: string,
     ) {
-        //return this.parkingService.reserveParking(parkingNumber,reservationInviteID);
+        return this.parkingService.reserveParking(invitationID);
     }
 
+    //TODO (Larisa): Fix mutation return types and names
     // @UseGuards(GqlAuthGuard)
-    @Mutation((returns) => String, { name: "unreserveParking" })
+    @Mutation((returns) => ParkingReservation, { name: "unreserveParking" })
     async unreserveParking(
-        @Args("parkingNumber") parkingNumber: number,
+        @Args("invitationID") invitationID: string,
     ) {
-        return this.parkingService.unreserveParking(parkingNumber);
+        return this.parkingService.unreserveParking(invitationID);
     }
 
     // @UseGuards(GqlAuthGuard)
@@ -56,6 +66,14 @@ export class ParkingResolver {
         @Args("parkingNumber") parkingNumber: number,
     ) {
         return this.parkingService.freeParking(parkingNumber);
+    }
+
+    // @UseGuards(GqlAuthGuard)
+    @Mutation((returns) => String, { name: "createNParkingSpots" })
+    async createNParkingSpots(
+        @Args("N") N: number,
+    ) {
+        return this.parkingService.createNParkingSpots(N);
     }
 
 }

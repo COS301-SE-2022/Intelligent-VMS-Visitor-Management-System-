@@ -66,6 +66,10 @@ export class VisitorInviteService {
         return this.queryBus.execute(new GetInvitesQuery(email));
     }
 
+    async getInvite(inviteID: string) {
+        return this.queryBus.execute(new GetInviteQuery(inviteID));
+    }
+
     async cancelInvite(email: string, inviteID: string) {
 
         // Get the invite to delete

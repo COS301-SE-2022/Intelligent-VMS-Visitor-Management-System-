@@ -13,8 +13,8 @@ export class UnreserveParkingCommandHandler implements ICommandHandler<Unreserve
 
   //db stuff for reserving parking
   async execute(command: UnreserveParkingCommand) {
-    const { parkingNumber } = command;
+    const { invitatationID } = command;
 
-    await this.parkingReservationModel.deleteOne( { parkingNumber: parkingNumber} );
+    await this.parkingReservationModel.deleteOne( { invitationID: invitatationID} );
   }
 }

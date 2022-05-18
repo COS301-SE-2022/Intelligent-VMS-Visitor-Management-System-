@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import { AssignParkingCommand } from './commands/impl/assignParking.command';
 import { FreeParkingCommand } from './commands/impl/freeParking.command';
@@ -11,11 +11,15 @@ import { AddParkingCommand } from './commands/impl/addParking.command';
 import { ExternalError } from './errors/externalError.error';
 import { VisitorInviteService } from '@vms/visitor-invite';
 import { NoParkingFound } from './errors/noParkingFound.error';
+import { InvalidParkingNumber } from './errors/invalidParkingNumber.error';
+import { GetInviteReservationQuery } from './queries/impl/getInviteReservation.query';
+import { CreateNParkingSpotsCommand } from './commands/impl/createNParkingSpots.command';
 
 @Injectable()
 export class ParkingService {
     constructor(private commandBus: CommandBus, 
                 private queryBus: QueryBus,
+                @Inject(forwardRef(() => VisitorInviteService))
                 private inviteService: VisitorInviteService) {}
 
     /*
@@ -33,6 +37,7 @@ export class ParkingService {
         if(parking)
             return parking;
         else
+            //for testing purposes
             throw new ExternalError("Error outside the parking.service");
 
     }
@@ -61,13 +66,17 @@ export class ParkingService {
     Throws: 
     External error
     Invalid parking number
-    *Already free error
 
     Returns: the free'd up parking
     */
     async freeParking(
         parkingNumber: number
     ){
+        const spaces = await this.getAvailableParking();
+
+        if(parkingNumber<0 || parkingNumber>spaces)
+            throw new InvalidParkingNumber(`Parking number ${parkingNumber} is out of parking range. Parking range from 0 to ${spaces}`);
+
         const parking =  this.commandBus.execute(
             new FreeParkingCommand(parkingNumber)
         )
@@ -75,7 +84,7 @@ export class ParkingService {
         if(parking) {
             return parking;
         } else {
-            throw new ParkingNotFound(`Parking with Number: ${parkingNumber} not found`);
+            throw new ExternalError("Error outside the parking.service");
         }
     }
     /*
@@ -85,16 +94,22 @@ export class ParkingService {
         invitationID: string,
     ){
     
-        /*this.inviteService.getInvite()
-        const parking = this.commandBus.execute(
-            new AssignParkingCommand(visitorEmail,parkingNumber)
-         )
+        const reservation = await this.queryBus.execute(
+            new GetInviteReservationQuery(invitationID)
+        )
+        
+        //TODO (Larisa) : throw invalid invite ID?
+        const invite = await this.inviteService.getInvite(invitationID);
+
+        const parking = await this.commandBus.execute(
+            new AssignParkingCommand(invite.visitorEmail, reservation.parkingNumber)
+        )
 
         if(parking){
             return parking;
         } else {
-            throw new ParkingNotFound(`Parking with Number: ${parkingNumber} not found`);
-        }*/
+            throw new ExternalError("Error outside the parking.service");
+        }
      }
 
     /*
@@ -124,7 +139,7 @@ export class ParkingService {
         if(parking)
         return parking;
         else
-        return -1;
+        throw new ExternalError("Error outside the parking.service");
             
     }
 
@@ -133,16 +148,15 @@ export class ParkingService {
 
     Returns parking reserved 
     */
-   //TODO (Larisa) add specific errors
     async reserveParkingSpace(
         parkingNumber:number,
         invitationID:string
     ){
-        const availNum = await this.queryBus.execute( 
-            new GetAvailableParkingQuery());
+        const spaces = await this.getAvailableParking();
 
+        //TODO (Larisa) : Add disable and enable parking commands
         // or parking disabled
-        if(parkingNumber<0 ||  parkingNumber>availNum)
+        if(parkingNumber<0 ||  parkingNumber>spaces)
             throw new ParkingNotFound(`Parking Number is invalid`);
 
         const parking = await this.commandBus.execute(
@@ -156,16 +170,28 @@ export class ParkingService {
     }
 
     async unreserveParking(
-        parkingNumber:number,
+        invitationID:string,
     ){
-        const parking = await this.commandBus.execute(
-            new UnreserveParkingCommand(parkingNumber));
-        
-        if(parking) {
-                return parking;
-            } else {
-                throw new ParkingNotFound(`Parking with Number: ${parkingNumber} not found`);
-            }
+        //TODO (Larisa) : Add checks
+        await this.commandBus.execute(
+            new UnreserveParkingCommand(invitationID));
+             
     }
 
+    async createNParkingSpots(
+        N:number,
+    ){
+        //TODO (Larisa) : Add checks
+        const parking = await this.commandBus.execute(
+            new CreateNParkingSpotsCommand(N));
+        
+        if(parking) 
+            return parking;
+         else 
+            throw new ExternalError("Error outside the parking.service");
+            
+    }
+
+    //TODO (Larisa): Check doubles ie double reservation
+    
 }
