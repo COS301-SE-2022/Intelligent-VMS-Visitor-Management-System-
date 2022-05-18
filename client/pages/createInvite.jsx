@@ -32,7 +32,12 @@ const CreateInvite = () => {
         <Layout>
             <div className="relative flex h-full min-h-[80vh] w-full flex-col items-center justify-center overflow-hidden shadow">
                 <Formik
-                    initialValues={{ email: "", idDoc: "RSA-ID", idValue: "", reserveParking: false }}
+                    initialValues={{
+                        email: "",
+                        idDoc: "RSA-ID",
+                        idValue: "",
+                        reserveParking: false,
+                    }}
                     validate={(values) => {
                         const errors = {};
                         if (!values.email) {
@@ -46,7 +51,7 @@ const CreateInvite = () => {
                         } else if (!values.idValue) {
                             errors.idValue = "Required";
                         } else if (
-                            (values.idDoc === "id" ||
+                            (values.idDoc === "RSA-ID" ||
                                 values.idDoc === "drivers-license") &&
                             !/^(((\d{2}((0[13578]|1[02])(0[1-9]|[12]\d|3[01])|(0[13456789]|1[012])(0[1-9]|[12]\d|30)|02(0[1-9]|1\d|2[0-8])))|([02468][048]|[13579][26])0229))(( |-)(\d{4})( |-)(\d{3})|(\d{7}))$/i.test(
                                 values.idValue
@@ -54,7 +59,7 @@ const CreateInvite = () => {
                         ) {
                             errors.idValue = "Invalid RSA ID";
                         } else if (
-                            values.idDoc === "up-student" &&
+                            values.idDoc === "UP-Student-ID" &&
                             !/^\d{8}$/i.test(values.idValue)
                         ) {
                             errors.idValue = "Invalid UP student number";
@@ -92,8 +97,6 @@ const CreateInvite = () => {
                                     setErrorMessage(error);
                                 }
                             });
-
-
                     }}
                 >
                     {({
@@ -109,7 +112,11 @@ const CreateInvite = () => {
                             onSubmit={handleSubmit}
                             className="md:p-26 prose form-control space-y-4 rounded-xl bg-base-300 p-14"
                         >
-                            <h1>Let&apos;s <span className="text-secondary">Invite</span> Someone🔥</h1>
+                            <h1>
+                                Let&apos;s{" "}
+                                <span className="text-secondary">Invite</span>{" "}
+                                Someone🔥
+                            </h1>
                             <input
                                 type="email"
                                 name="email"
@@ -157,8 +164,22 @@ const CreateInvite = () => {
                             </span>
 
                             <label className="label cursor-pointer">
-                                <span className="label-text">Reserve Parking</span> 
-                                <input className="disabled toggle" disabled={numParkingSpotsAvailable > 0 ? false : true} name="reserveParking" type="checkbox" onChange={handleChange} onBlur={handleBlur} value={values.reserveParking}/>
+                                <span className="label-text">
+                                    Reserve Parking
+                                </span>
+                                <input
+                                    className="disabled toggle"
+                                    disabled={
+                                        numParkingSpotsAvailable > 0
+                                            ? false
+                                            : true
+                                    }
+                                    name="reserveParking"
+                                    type="checkbox"
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    value={values.reserveParking}
+                                />
                             </label>
 
                             <button
