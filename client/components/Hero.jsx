@@ -11,7 +11,7 @@ const Hero = () => {
                 <div className="max-w-md">
                     <h1 className="text-5xl font-bold">Hello there 👋</h1>
                     <p className="py-6">
-                        V Ʌ S is an intelligent visitor management system aiming
+                        <span className="text-secondary">V Ʌ S</span> is an intelligent visitor management system aiming
                         to bring an efficient and customizable interface for our
                         clients.
                     </p>

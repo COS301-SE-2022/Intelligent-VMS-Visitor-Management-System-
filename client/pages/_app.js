@@ -33,22 +33,20 @@ function MyApp({ Component, pageProps }) {
             router.push("/expire");
             return;
         }
-
     }, [router, permission]);
 
     if (
         (pageProps.protected && permission === -1) ||
         (pageProps.permission < permission && permission !== -1)
     ) {
-        return <Layout> Woops: you are not supposed to be here </Layout>
-    } 
+        return <Layout> Woops: you are not supposed to be here </Layout>;
+    }
 
     return (
         <ApolloProvider client={client}>
             <Component {...pageProps} />
         </ApolloProvider>
     );
-
 }
 
 export default MyApp;
