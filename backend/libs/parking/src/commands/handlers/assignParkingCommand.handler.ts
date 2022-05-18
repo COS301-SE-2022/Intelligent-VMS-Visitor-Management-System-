@@ -11,12 +11,13 @@ export class AssignParkingCommandHandler implements ICommandHandler<AssignParkin
       @InjectModel(Parking.name) private parkingModel: Model<ParkingDocument>,
   ) {}
 
-  async execute(command: AssignParkingCommand) {
-
-    //db stuff for assigning parking
+  //db stuff for assigning parking
+  async execute(command: AssignParkingCommand):Promise<Parking> {
     const { visitorEmail, parkingNumber } = command;
 
     //TODO (Larisa) change find one
+
+    //Set the visitor email field to indicate that visitor is occupying the space at the current time
     return await this.parkingModel.findOneAndUpdate({parkingNumber: parkingNumber}, {visitorEmail: visitorEmail});
   }
 }

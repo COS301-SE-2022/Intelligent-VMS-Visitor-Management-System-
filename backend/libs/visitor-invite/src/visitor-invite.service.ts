@@ -9,7 +9,7 @@ import { CreateInviteCommand } from "./commands/impl/createInvite.command";
 import { CancelInviteCommand } from "./commands/impl/cancelInvite.command";
 import { GetInvitesQuery } from "./queries/impl/getInvites.query";
 import { GetInviteQuery } from "./queries/impl/getInvite.query";
-import { getAvailableParkingQuery } from '../../../libs/parking/src/queries/impl/getAvailableParking.query';
+import { ParkingService } from '../../../libs/parking/src/parking.service';
 
 import { InviteNotFound } from "./errors/inviteNotFound.error";
 
@@ -19,7 +19,9 @@ import { GetNumberVisitorQuery } from "./queries/impl/getNumberOfVisitors.query"
 
 @Injectable()
 export class VisitorInviteService {
-    constructor(private readonly commandBus: CommandBus, private readonly queryBus: QueryBus) {}
+    constructor(private readonly commandBus: CommandBus, 
+                private readonly queryBus: QueryBus,
+                private readonly parkingService: ParkingService) {}
 
     async createInvite(
         userEmail: string,
@@ -49,24 +51,8 @@ export class VisitorInviteService {
         const qrCode = await toDataURL(qrData);
 
         // Parking
-        if(requiresParking)
-        {
-            //TODO (Larisa) : should I be calling this directly
-            const parking =  await this.queryBus.execute(
-                new getAvailableParkingQuery()
-            )
-
-            if(parking>0)
-            {
-                //TODO user should be able to reserve parkingSpace close to him
-                await this.commandBus.execute(
-                    new ReserveParkingCommand(inviteID,2));
-            }
-            else
-            {
-                //TODO (Kyle)?
-                console.log("error")
-            }
+        if(requiresParking){
+            
         }
 
         // Send email

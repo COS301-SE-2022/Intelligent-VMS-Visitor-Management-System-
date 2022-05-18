@@ -12,7 +12,7 @@ export class ReserveParkingCommandHandler implements ICommandHandler<ReservePark
   ) {}
 
   //db stuff for reserving parking
-  async execute(command: ReserveParkingCommand) {
+  async execute(command: ReserveParkingCommand):Promise<Parking> {
     
     //what does this do? break up command into its components?
     const { reservationInviteID, parkingNumber } = command;

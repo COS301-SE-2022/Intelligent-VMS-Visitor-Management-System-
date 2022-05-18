@@ -11,13 +11,16 @@ import { AddParkingCommandHandler } from "./commands/handlers/addParkingCommand.
 import { RemoveParkingCommandHandler } from "./commands/handlers/removeParkingCommand.handler";
 import { FreeParkingCommandHandler } from "./commands/handlers/freeParkingCommand.handler";
 import { AssignParkingCommandHandler } from "./commands/handlers/assignParkingCommand.handler";
-import { getAvailableParkingQueryHandler } from './queries/handlers/getAvailableParkingQuery.handler';
-import { getFreeParkingQueryHandler } from './queries/handlers/getFreeParkingQuery.handler';
+import { GetAvailableParkingQueryHandler } from './queries/handlers/getAvailableParkingQuery.handler';
+import { GetFreeParkingQueryHandler } from './queries/handlers/getFreeParkingQuery.handler';
+import { GetInviteQuery } from '@vms/visitor-invite/queries/impl/getInvite.query';
+import { VisitorInviteModule } from '@vms/visitor-invite';
 
 @Module({
   imports: [
     CqrsModule,
     AuthModule,
+    VisitorInviteModule,
     MongooseModule.forFeature([
       { name: Parking.name, schema: ParkingSchema },
     ]),
@@ -31,8 +34,9 @@ import { getFreeParkingQueryHandler } from './queries/handlers/getFreeParkingQue
     UnreserveParkingCommandHandler,
     AddParkingCommandHandler,
     RemoveParkingCommandHandler,
-    getAvailableParkingQueryHandler,
-    getFreeParkingQueryHandler],
+    GetAvailableParkingQueryHandler,
+    GetFreeParkingQueryHandler,
+    GetInviteQuery],
 
   exports: [ParkingService],
 })

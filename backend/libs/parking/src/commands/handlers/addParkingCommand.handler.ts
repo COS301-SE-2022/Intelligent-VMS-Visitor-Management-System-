@@ -12,13 +12,14 @@ export class AddParkingCommandHandler implements ICommandHandler<AddParkingComma
   ) {}
 
   //db stuff for adding parking
-  async execute(command: AddParkingCommand) {
+  async execute(command: AddParkingCommand): Promise<Parking> {
 
     //TODO (Larisa) change find one
+    const spaces = await this.parkingModel.find();
 
     const parkingSpace = new Parking();
-    //TODO auto inc
-    parkingSpace.parkingNumber=0;
+  
+    parkingSpace.parkingNumber=spaces.length+1;
     parkingSpace.reservationInviteID="";
     parkingSpace.visitorEmail="";
 
