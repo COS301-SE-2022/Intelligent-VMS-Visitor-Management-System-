@@ -10,18 +10,18 @@ import { CancelInviteCommand } from "./commands/impl/cancelInvite.command";
 import { GetInvitesQuery } from "./queries/impl/getInvites.query";
 import { GetInviteQuery } from "./queries/impl/getInvite.query";
 import { ParkingService } from '../../../libs/parking/src/parking.service';
+import { GetNumberVisitorQuery } from "./queries/impl/getNumberOfVisitors.query";
 
 import { InviteNotFound } from "./errors/inviteNotFound.error";
 
-import { Invite } from "./models/invite.model";
 import { ReserveParkingCommand } from "@vms/parking/commands/impl/reserveParking.command";
-import { GetNumberVisitorQuery } from "./queries/impl/getNumberOfVisitors.query";
+import { GetAvailableParkingQuery } from '@vms/parking/queries/impl/getAvailableParking.query';
+import { ParkingNotFound } from "@vms/parking/errors/parkingNotFound.error";
+import { MailService } from "@vms/mail";
 
 @Injectable()
 export class VisitorInviteService {
-    constructor(private readonly commandBus: CommandBus, 
-                private readonly queryBus: QueryBus,
-                private readonly parkingService: ParkingService) {}
+    constructor(private readonly commandBus: CommandBus, private readonly queryBus: QueryBus, private readonly mailService: MailService) {}
 
     async createInvite(
         userEmail: string,
@@ -44,36 +44,21 @@ export class VisitorInviteService {
             ),
         );
 
-        // QRCode data to be encoded
-        const qrData = JSON.stringify({ inviteID: inviteID });
-
-        // Get the qrcode
-        const qrCode = await toDataURL(qrData);
-
         // Parking
-        if(requiresParking){
-            
+        if(requiresParking) {
+
+            const parking =  await this.queryBus.execute(
+                new GetAvailableParkingQuery()
+            )
+
+            if(parking>0) {
+                await this.commandBus.execute(new ReserveParkingCommand(inviteID,2));
+            } else {
+                throw new ParkingNotFound("Parking Unavailable");
+            }
         }
 
-        // Send email
-        const transporter = createTransport({
-            host: "smtp.mailtrap.io",
-            port: 2525,
-            secure: false, // true for 465(auth ports), false for other ports
-            auth: {
-                user: "8a3164c958f015",
-                pass: "6327e7c4877921",
-            },
-        });
-
-        // Send mail with defined transport object
-        const info = await transporter.sendMail({
-            from: '"VMS 👋" <firestorm19091@gmail.com>', // sender address
-            to: visitorEmail, // list of receivers
-            subject: "You received an invite", // Subject line
-            html: `<h1>Hello Visitor!</h1><br /><p>Invite ID: ${inviteID}</p><img src="${qrCode}"/>`,
-        });
-
+        const info = await this.mailService.sendInvite(visitorEmail, userEmail, inviteID, idDocType, requiresParking);
         return info.messageId;
     }
 

@@ -10,6 +10,10 @@ describe("Login", () => {
                 <Expire />
             </MockedProvider>
         );
-        expect(screen.getByText("Woops: you are unauthorized"&&"Please login again.")).toBeInTheDocument();
+        expect(
+            screen.getByText(
+                "Woops: you are unauthorized" && "Please login again."
+            )
+        ).toBeInTheDocument();
     });
 });

@@ -3,15 +3,44 @@ import { JwtService } from "@nestjs/jwt";
 import { AuthService } from "./auth.service";
 import { UserService } from "@vms/user";
 import { QueryBus } from "@nestjs/cqrs";
+import { Model } from "mongoose";
+import { getModelToken } from "@nestjs/mongoose";
+
 import { LoginFailed } from "./errors/loginFailed.error";
+import * as bcrypt from "bcrypt";
+import { User, UserDocument } from "@vms/user/schema/user.schema";
+import {GetUserQuery} from "@vms/user/queries/impl/getUser.query";
 
 describe("AuthService", () => {
     let service: AuthService;
+    let userService: UserService;
     let jwtService: JwtService;
+    let queryBus: QueryBus;
+    let mockUserModel: Model<UserDocument>;
+
+    const queryBusMock = {
+        execute: jest.fn((query) => {
+            return {
+                email: "admin@mail.com",
+                password: "password"
+            };
+        })
+    }
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
-            providers: [AuthService, JwtService, UserService, QueryBus],
+            providers: [AuthService, 
+                JwtService, 
+                UserService, 
+                {
+                  provide: QueryBus,
+                  useValue: queryBusMock
+                },
+                {
+                    provide: getModelToken(User.name),
+                    useValue: Model,
+                },
+            ],
         })
             .useMocker((token) => {
                 if (token.toString() === "JWT_MODULE_OPTIONS") {
@@ -25,68 +54,60 @@ describe("AuthService", () => {
             .compile();
 
         service = module.get<AuthService>(AuthService);
+        queryBus = module.get<QueryBus>(QueryBus);
+        userService = module.get<UserService>(UserService);
         jwtService = module.get<JwtService>(JwtService);
+        mockUserModel = module.get<Model<UserDocument>>(getModelToken(User.name));
     });
 
     it("should be defined", () => {
         expect(service).toBeDefined();
+        expect(jwtService).toBeDefined();
+        expect(queryBus).toBeDefined();
+        expect(mockUserModel).toBeDefined();
     });
 
     describe("Login", () => {
         it("should return an access token on valid user data", async () => {
-            jest.spyOn(service, "login").mockImplementation(
-                async (user: any) => {
-                    if (
-                        user.email === "admin@mail.com" &&
-                        user.password === "password"
-                    ) {
-                        const payload = {
-                            email: user.email,
-                            permission: 0,
-                        };
+            jest.spyOn(userService, "findOne").mockImplementation(async (email: string) => {
+                if(email === "admin@mail.com") {
+                    return {
+                        email: "admin@mail.com",
+                        password: "password"
+                    };
+                } else {
+                    return undefined;
+                }
+            }); 
 
-                        return {
-                            access_token: jwtService.sign(payload),
-                        };
-                    }
+            jest.spyOn(service, "validateUser").mockImplementation(
+                async (email: string, password: string) => {
+                    return true;
                 },
             );
 
-            const payload = await service.login({
-                email: "admin@mail.com",
-                password: "password",
-            });
-
+            const payload = await service.login({email: "admin@mail.com", password: "password"});
             expect(payload).toHaveProperty("access_token");
         });
     });
 
     describe("validateUser", () => {
+
         it("should return a user object on valid user data", async () => {
-            jest.spyOn(service, "validateUser").mockImplementation(
-                async (email: string, password: string) => {
-                    let user = undefined;
-
-                    if (email === "admin@mail.com") {
-                        user = {
-                            email: "admin@mail.com",
-                            password: "password",
-                        };
+            const bcryptCompare = jest.fn().mockResolvedValue(true);
+            (bcrypt.compare as jest.Mock) = bcryptCompare;
+            
+            jest.spyOn(userService, "findOne").mockImplementation(async (email: string) => {
+                if(email === "admin@mail.com") {
+                    return {
+                        email: "admin@mail.com",
+                        password: "password",
+                        permission: 0
                     }
-
-                    if (user) {
-                        const samePassword = password === "password";
-
-                        if (samePassword) {
-                            return user;
-                        }
-
-                        throw new LoginFailed("Incorrect Password");
-                    }
-
-                    throw new LoginFailed("User not found");
-                },
-            );
+                } else {
+                    return undefined;
+                }
+            });
 
             const user = await service.validateUser(
                 "admin@mail.com",
@@ -100,63 +121,52 @@ describe("AuthService", () => {
         });
 
         it("should throw an exception on invalid user email", async () => {
-            jest.spyOn(service, "validateUser").mockImplementation(
-                async (email: string, password: string) => {
-                    let user = undefined;
-
-                    if (email === "admin@mail.com") {
-                        user = {
-                            email: "admin@mail.com",
-                            password: "password",
-                        };
+            const bcryptCompare = jest.fn().mockResolvedValue(true);
+            (bcrypt.compare as jest.Mock) = bcryptCompare;
+            
+            jest.spyOn(userService, "findOne").mockImplementation(async (email: string) => {
+                if(email === "admin@mail.com") {
+                    return {
+                        email: "admin@mail.com",
+                        password: "password",
+                        permission: 0
                     }
+                } else {
+                    return undefined;
+                }
+            });
 
-                    if (user) {
-                        const samePassword = password === "password";
-
-                        if (samePassword) {
-                            return user;
-                        }
-
-                        throw new LoginFailed("Incorrect Password");
-                    }
-
-                    throw new LoginFailed("User not found");
-                },
-            );
-            expect(
-                service.validateUser("error@mail.com", "password"),
-            ).rejects.toThrow(LoginFailed);
+            try {
+                await service.validateUser("error@mail.com", "password");
+            } catch(err) {
+                expect(err).toBeDefined();
+                expect(err.message).toEqual("User not found");
+            }
         });
 
         it("should throw an exception on invalid user password", async () => {
-            jest.spyOn(service, "validateUser").mockImplementation(
-                async (email: string, password: string) => {
-                    let user = undefined;
-
-                    if (email === "admin@mail.com") {
-                        user = {
-                            email: "admin@mail.com",
-                            password: "password",
-                        };
+            const bcryptCompare = jest.fn().mockResolvedValue(false);
+            (bcrypt.compare as jest.Mock) = bcryptCompare;
+            
+            jest.spyOn(userService, "findOne").mockImplementation(async (email: string) => {
+                if(email === "admin@mail.com") {
+                    return {
+                        email: "admin@mail.com",
+                        password: "password",
+                        permission: 0
                     }
+                } else {
+                    return undefined;
+                }
+            });
 
-                    if (user) {
-                        const samePassword = password === "password";
-
-                        if (samePassword) {
-                            return user;
-                        }
-
-                        throw new LoginFailed("Incorrect Password");
-                    }
-
-                    throw new LoginFailed("User not found");
-                },
-            );
-            expect(
-                service.validateUser("error@mail.com", "password"),
-            ).rejects.toThrow(LoginFailed);
+            try {
+                await service.validateUser("admin@mail.com", "password");
+            } catch(err) {
+                expect(err).toBeDefined();
+                expect(err.message).toEqual("Incorrect Password");
+            }
         });
+
     });
 });

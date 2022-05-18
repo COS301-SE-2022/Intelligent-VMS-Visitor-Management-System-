@@ -5,6 +5,7 @@ import { CqrsModule } from "@nestjs/cqrs";
 
 import { AuthModule } from "@vms/auth";
 import { ParkingModule } from "@vms/parking";
+import { MailModule } from "@vms/mail";
 
 import { Invite, InviteSchema } from "./schema/invite.schema";
 import { VisitorInviteResolver } from "./visitor-invite.resolver";
@@ -19,6 +20,7 @@ import { getNumberOfVisitors } from "./queries/handlers/getNumberOfVisitors.hand
         CqrsModule,
         AuthModule,
         ParkingModule,
+        MailModule,
         MongooseModule.forFeature([
             { name: Invite.name, schema: InviteSchema },
         ]),
