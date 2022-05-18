@@ -11,11 +11,13 @@ export class UnreserveParkingCommandHandler implements ICommandHandler<Unreserve
       @InjectModel(Parking.name) private parkingModel: Model<ParkingDocument>,
   ) {}
 
+  //db stuff for reserving parking
   async execute(command: UnreserveParkingCommand):Promise<Parking> {
-    //db stuff for reserving parking
-
-    //what does this do? break up command into its components?
     const { parkingNumber } = command;
+
+    //TODO (Larisa) change find one
+
+    //set the reservation invite ID to null as it is no longer reserved
     return await this.parkingModel.findOneAndUpdate({parkingNumber:parkingNumber}, {reservationInviteID: ""});
 
 

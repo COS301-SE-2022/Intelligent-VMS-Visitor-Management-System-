@@ -11,29 +11,14 @@ export class ReserveParkingCommandHandler implements ICommandHandler<ReservePark
       @InjectModel(Parking.name) private parkingModel: Model<ParkingDocument>,
   ) {}
 
+  //db stuff for reserving parking
   async execute(command: ReserveParkingCommand) {
-    //db stuff for reserving parking
-
+    
     //what does this do? break up command into its components?
     const { reservationInviteID, parkingNumber } = command;
 
-    /*const parkingSpace = new Parking();
-    parkingSpace.parkingNumber=0;
-    parkingSpace.reservationDate=new Date();
-    parkingSpace.reserverEmail="larisa@gmail.com";
-
-    await this.parkingModel.create(parkingSpace);
-    return await this.parkingModel.findOneAndUpdate({parkingNumber: parkingNumber },{reserverEmail:reserverEmail,reservationDate:reservationDate},function (err, docs) {
-      if (err){
-          console.log(err)
-      }
-      else{
-          console.log("Reservation made : ", docs);
-      }
-    });*/
-
+    //set the reservation ID to the invitation that reserved this space, using the invite allows the parking system to retrieve date and visitor related data without redundently storing it
     return await this.parkingModel.findOneAndUpdate({parkingNumber:parkingNumber}, {reservationInviteID: reservationInviteID});
-
 
   }
 }
