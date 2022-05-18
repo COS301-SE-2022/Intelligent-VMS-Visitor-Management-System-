@@ -16,4 +16,23 @@
         transform: translateY(0%);
     }
 
+    .icon > * {
+        stroke-dasharray: 1000;
+        stroke-dashoffset: 1000;
+        animation: dash 8s infinite linear;
+    }
+
+    .path {
+        stroke-dasharray: 1000;
+        stroke-dashoffset: 1000;
+        animation: dash 8s infinite linear;
+    }
+
+    @keyframes dash {
+        to {
+         stroke-dashoffset: 0;
+      }
+
+    }
+
 }
