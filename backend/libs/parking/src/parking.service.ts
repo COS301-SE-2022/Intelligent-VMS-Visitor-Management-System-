@@ -4,7 +4,6 @@ import { AssignParkingCommand } from './commands/impl/assignParking.command';
 import { FreeParkingCommand } from './commands/impl/freeParking.command';
 import { ReserveParkingCommand } from './commands/impl/reserveParking.command';
 import { ParkingNotFound } from "./errors/parkingNotFound.error";
-<<<<<<< HEAD
 import { GetAvailableParkingQuery } from './queries/impl/getAvailableParking.query';
 import { GetFreeParkingQuery } from './queries/impl/getFreeParking.query';
 import { UnreserveParkingCommand } from './commands/impl/unreserveParking.command';
@@ -12,9 +11,6 @@ import { AddParkingCommand } from './commands/impl/addParking.command';
 import { ExternalError } from './errors/externalError.error';
 import { VisitorInviteService } from '@vms/visitor-invite';
 import { NoParkingFound } from './errors/noParkingFound.error';
-=======
-import { getAvailableParkingQuery } from './queries/impl/getAvailableParking.query';
->>>>>>> develop
 
 @Injectable()
 export class ParkingService {
@@ -22,7 +18,6 @@ export class ParkingService {
                 private queryBus: QueryBus,
                 private inviteService: VisitorInviteService) {}
 
-<<<<<<< HEAD
     /*
     Create more visitor parking
 
@@ -52,11 +47,6 @@ export class ParkingService {
     ){
         const amount = this.queryBus.execute(
             new GetAvailableParkingQuery()
-=======
-    async getAvailableParking(){
-        return this.queryBus.execute(
-            new getAvailableParkingQuery()
->>>>>>> develop
         )
 
         if(amount)
@@ -83,11 +73,7 @@ export class ParkingService {
         )
 
         if(parking) {
-<<<<<<< HEAD
             return parking;
-=======
-            return true;
->>>>>>> develop
         } else {
             throw new ParkingNotFound(`Parking with Number: ${parkingNumber} not found`);
         }
@@ -105,11 +91,7 @@ export class ParkingService {
          )
 
         if(parking){
-<<<<<<< HEAD
             return parking;
-=======
-            return true;
->>>>>>> develop
         } else {
             throw new ParkingNotFound(`Parking with Number: ${parkingNumber} not found`);
         }*/

@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document } from "mongoose";
-import {AutoIncrement} from "mongoose-sequence";
 
 // what is with this parking document?
 export type ParkingDocument = Parking & Document;
@@ -16,8 +15,6 @@ export interface ParkingDocument extends Document {
 */
 @Schema()
 export class Parking {
-    @Prop()
-    reservationInviteID?: string;
 
     @Prop()
     visitorEmail?: string;
