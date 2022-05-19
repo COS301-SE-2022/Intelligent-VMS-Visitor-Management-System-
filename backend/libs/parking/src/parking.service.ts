@@ -192,6 +192,25 @@ export class ParkingService {
             
     }
 
+    async getFreeParking(
+    ){
+        //TODO (Larisa) : Add checks
+        const parkings = await this.commandBus.execute(
+            new GetFreeParkingQuery());
+
+        if(parkings)
+        {
+            if(parkings.length > 0) 
+                return parkings;
+            else
+                //TODO (Larisa)
+                console.log("noFreeparking error");
+
+        }else 
+            throw new ExternalError("Error outside the parking.service");
+            
+    }
+
     //TODO (Larisa): Check doubles ie double reservation
     
 }

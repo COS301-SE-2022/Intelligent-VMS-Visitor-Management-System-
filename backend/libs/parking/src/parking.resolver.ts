@@ -76,4 +76,11 @@ export class ParkingResolver {
         return this.parkingService.createNParkingSpots(N);
     }
 
+    // @UseGuards(GqlAuthGuard)
+    @Mutation((returns) => String, { name: "freeParkings" })
+    async getFreeParking(
+    ) {
+        return this.parkingService.getFreeParking();
+    }
+
 }

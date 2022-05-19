@@ -59,7 +59,8 @@ type Mutation {
   assignParking(invitationID: String!): Boolean!
   reserveParkingSpace(invitationID: String!, parkingNumber: Float!): ParkingReservation!
   reserveParking(invitationID: String!): ParkingReservation!
-  unreserveParking(invitationID: String!): String!
+  unreserveParking(invitationID: String!): ParkingReservation!
   freeParking(parkingNumber: Float!): String!
   createNParkingSpots(N: Float!): String!
+  freeParkings: String!
 }
