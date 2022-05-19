@@ -30,7 +30,6 @@ export class ParkingResolver {
     async assignParking(
         @Args("invitationID") invitationID: string,
     ) {
-        console.log("here...............................");
         return this.parkingService.assignParking(invitationID);
     }
 
@@ -77,10 +76,17 @@ export class ParkingResolver {
     }
 
     // @UseGuards(GqlAuthGuard)
-    @Mutation((returns) => String, { name: "freeParkings" })
+    @Query((returns) => String, { name: "getFreeParking" })
     async getFreeParking(
     ) {
         return this.parkingService.getFreeParking();
+    }
+
+    // @UseGuards(GqlAuthGuard)
+    @Query((returns) => String, { name: "getReservedParking" })
+    async getReservedParking(
+    ) {
+        return this.parkingService.getReservedParking();
     }
 
 }

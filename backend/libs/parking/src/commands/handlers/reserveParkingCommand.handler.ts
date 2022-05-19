@@ -15,7 +15,12 @@ export class ReserveParkingCommandHandler implements ICommandHandler<ReservePark
   async execute(command: ReserveParkingCommand):Promise<ParkingReservation> {
     
     const { invitationID, parkingNumber } = command;
-    return await this.parkingReservationModel.create({parkingNumber:parkingNumber,invitationID: invitationID});
+
+    const parkingReservation = new ParkingReservation();
+    parkingReservation.invitationID = invitationID;
+    parkingReservation.parkingNumber = parkingNumber;
+
+    return await this.parkingReservationModel.create(parkingReservation);
 
   }
 }

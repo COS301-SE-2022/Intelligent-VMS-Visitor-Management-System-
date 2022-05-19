@@ -48,6 +48,8 @@ type Query {
   getTotalNumberOfVisitors: Float!
   helloParking: String!
   getAvailableParking: Float!
+  getFreeParking: String!
+  getReservedParking: String!
   helloResident: String!
 }
 
@@ -62,5 +64,4 @@ type Mutation {
   unreserveParking(invitationID: String!): ParkingReservation!
   freeParking(parkingNumber: Float!): String!
   createNParkingSpots(N: Float!): String!
-  freeParkings: String!
 }
