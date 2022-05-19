@@ -7,6 +7,7 @@ import {AssignParkingCommand} from './commands/impl/assignParking.command';
 import {ReserveParkingCommand} from './commands/impl/reserveParking.command';
 
 import { ParkingNotFound } from './errors/parkingNotFound.error';
+import { VisitorInviteService } from '@vms/visitor-invite';
 
 describe('ParkingService', () => {
   let service: ParkingService;

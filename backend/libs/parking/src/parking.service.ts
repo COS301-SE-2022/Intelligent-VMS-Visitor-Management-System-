@@ -9,7 +9,7 @@ import { GetFreeParkingQuery } from './queries/impl/getFreeParking.query';
 import { UnreserveParkingCommand } from './commands/impl/unreserveParking.command';
 import { AddParkingCommand } from './commands/impl/addParking.command';
 import { ExternalError } from './errors/externalError.error';
-import { VisitorInviteService } from '@vms/visitor-invite';
+import { VisitorInviteService } from '@vms/visitor-invite/visitor-invite.service';
 import { InvalidParkingNumber } from './errors/invalidParkingNumber.error';
 import { GetInviteReservationQuery } from './queries/impl/getInviteReservation.query';
 import { CreateNParkingSpotsCommand } from './commands/impl/createNParkingSpots.command';
