@@ -14,7 +14,8 @@ import { InvalidParkingNumber } from './errors/invalidParkingNumber.error';
 import { GetInviteReservationQuery } from './queries/impl/getInviteReservation.query';
 import { CreateNParkingSpotsCommand } from './commands/impl/createNParkingSpots.command';
 import { InviteNotFound } from '@vms/visitor-invite/errors/inviteNotFound.error';
-import { GetReservedParkingQuery } from './queries/impl/getReservedParking.query';
+import { ReservationNotFound } from './errors/reservationNotFound.error';
+import { GetReservationsQuery } from './queries/impl/getReservations.query';
 
 @Injectable()
 export class ParkingService {
@@ -101,15 +102,19 @@ export class ParkingService {
     async assignParking(
         invitationID: string,
     ){
-    
-        const reservation = await this.queryBus.execute(
-            new GetInviteReservationQuery(invitationID)
-        )
         
         const invite = await this.inviteService.getInvite(invitationID);
 
         if(!invite)
         throw new InviteNotFound(`Invitation with ID ${invitationID} not found`);
+    
+        const reservation = await this.queryBus.execute(
+            new GetInviteReservationQuery(invitationID)
+        )
+
+        if(!reservation)
+        throw new ReservationNotFound(`Reservation for ${invitationID} not found`);
+        
 
         const parking = await this.commandBus.execute(
             new AssignParkingCommand(invite.visitorEmail, reservation.parkingNumber)
@@ -183,7 +188,11 @@ export class ParkingService {
     async unreserveParking(
         invitationID:string,
     ){
-        //TODO (Larisa) : Add checks
+        const invite = await this.inviteService.getInvite(invitationID);
+
+        if(!invite)
+        throw new InviteNotFound(`Invitation with ID ${invitationID} not found`);
+        
         await this.commandBus.execute(
             new UnreserveParkingCommand(invitationID));
              
@@ -214,7 +223,7 @@ export class ParkingService {
         if(parkings)
         {
             if(parkings.length > 0) 
-                return parkings.length;
+                return parkings;
             else
                 throw new ParkingNotFound("No Free parkings")
 
@@ -223,15 +232,15 @@ export class ParkingService {
             
     }
 
-    async getReservedParking(
+    async getReservations(
         ){
             const parkings = await this.queryBus.execute(
-                new GetReservedParkingQuery());
+                new GetReservationsQuery());
     
             if(parkings)
             {
                 if(parkings.length > 0) 
-                    return parkings.length;
+                    return parkings;
                 else
                     throw new ParkingNotFound("No Reserved parkings")
     

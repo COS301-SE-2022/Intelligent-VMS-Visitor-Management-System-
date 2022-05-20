@@ -8,6 +8,7 @@ import {ReserveParkingCommand} from './commands/impl/reserveParking.command';
 
 import { ParkingNotFound } from './errors/parkingNotFound.error';
 import { VisitorInviteService } from '@vms/visitor-invite';
+import { MailService } from '@vms/mail/mail.service';
 
 describe('ParkingService', () => {
   let service: ParkingService;
@@ -50,6 +51,8 @@ describe('ParkingService', () => {
     const module: TestingModule = await Test.createTestingModule({
         providers: [
             ParkingService, 
+            VisitorInviteService,
+            MailService,
             {
                     provide: QueryBus, useValue: queryBusMock
             },

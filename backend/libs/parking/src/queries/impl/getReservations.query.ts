@@ -1,5 +1,5 @@
 /*eslint-disable*/
-export class GetReservedParkingQuery {
+export class GetReservationsQuery {
     constructor(
     ) {}
   }

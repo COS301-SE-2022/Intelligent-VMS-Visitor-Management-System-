@@ -13,6 +13,8 @@ export class ParkingResolver {
         private parkingService: ParkingService,
     ) {}
 
+    //QUERIES
+
     @UseGuards(GqlAuthGuard)
     @Query((returns) => String, { name: "helloParking" })
     async hello() {
@@ -20,13 +22,29 @@ export class ParkingResolver {
     }
 
     @UseGuards(GqlAuthGuard)
-    @Query((returns) => Number, { name: "getAvailableParking" })
+    @Query((returns) => Parking, { name: "getAvailableParking" })
     async getAvailableParking() {
         return this.parkingService.getAvailableParking(); 
     }
 
     @UseGuards(GqlAuthGuard)
-    @Mutation((returns) => Boolean, { name: "assignParking" })
+    @Query((returns) => Parking, { name: "getFreeParking" })
+    async getFreeParking(
+    ) {
+        return this.parkingService.getFreeParking();
+    }
+
+    @UseGuards(GqlAuthGuard)
+    @Query((returns) => ParkingReservation, { name: "getReservations" })
+    async getReservations(
+    ) {
+        return this.parkingService.getReservations();
+    }
+
+    //MUTATION
+
+    @UseGuards(GqlAuthGuard)
+    @Mutation((returns) => Parking, { name: "assignParking" })
     async assignParking(
         @Args("invitationID") invitationID: string,
     ) {
@@ -50,9 +68,8 @@ export class ParkingResolver {
         return this.parkingService.reserveParking(invitationID);
     }
 
-    //TODO (Larisa): Fix mutation return types and names
     @UseGuards(GqlAuthGuard)
-    @Mutation((returns) => ParkingReservation, { name: "unreserveParking" })
+    @Mutation()
     async unreserveParking(
         @Args("invitationID") invitationID: string,
     ) {
@@ -60,7 +77,7 @@ export class ParkingResolver {
     }
 
     @UseGuards(GqlAuthGuard)
-    @Mutation((returns) => String, { name: "freeParking" })
+    @Mutation((returns) => Parking, { name: "freeParking" })
     async freeParking(
         @Args("parkingNumber") parkingNumber: number,
     ) {
@@ -68,25 +85,13 @@ export class ParkingResolver {
     }
 
     @UseGuards(GqlAuthGuard)
-    @Mutation((returns) => String, { name: "createNParkingSpots" })
+    @Mutation()
     async createNParkingSpots(
         @Args("N") N: number,
     ) {
         return this.parkingService.createNParkingSpots(N);
     }
 
-    @UseGuards(GqlAuthGuard)
-    @Query((returns) => String, { name: "getFreeParking" })
-    async getFreeParking(
-    ) {
-        return this.parkingService.getFreeParking();
-    }
-
-    @UseGuards(GqlAuthGuard)
-    @Query((returns) => String, { name: "getReservedParking" })
-    async getReservedParking(
-    ) {
-        return this.parkingService.getReservedParking();
-    }
+    
 
 }
