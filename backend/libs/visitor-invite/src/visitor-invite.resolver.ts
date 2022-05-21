@@ -39,6 +39,7 @@ export class VisitorInviteResolver {
         @Args("visitorEmail") email: string,
         @Args("IDDocType") idDocType: string,
         @Args("IDNumber") idNumber: string,
+        @Args("inviteDate") inviteDate: string,
         @Args("requiresParking") requiresParking: boolean,
     ) {
         return this.visitorInviteService.createInvite(
@@ -46,6 +47,7 @@ export class VisitorInviteResolver {
             email,
             idDocType,
             idNumber,
+            inviteDate,
             requiresParking
         );
     }
@@ -57,16 +59,12 @@ export class VisitorInviteResolver {
         return res.acknowledged;
     }
 
+    //Get total number of invites in the database
     @UseGuards(GqlAuthGuard, RolesGuard)
     @Roles("admin")
-    //get total number of invites in the database
     @Query((returns) => Number, { name: "getTotalNumberOfVisitors" })
     async getTotalNumberOfVisitors() {
         return this.visitorInviteService.getTotalNumberOfVisitors()
     }
-}
-
-function requiresParking(userEmail: string, email: string, idDocType: string, idNumber: string, requiresParking: any) {
-    throw new Error("Function not implemented.");
 }
 

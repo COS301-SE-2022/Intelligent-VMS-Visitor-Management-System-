@@ -20,6 +20,7 @@ type Invite {
   idDocType: String!
   idNumber: String!
   inviteID: String!
+  inviteDate: String!
   requiresParking: Boolean!
 }
 
@@ -49,7 +50,7 @@ type Query {
 type Mutation {
   createVisitor(input: VisitorInputType!): Visitor!
   login(email: String!, password: String!): User!
-  createInvite(userEmail: String!, visitorEmail: String!, IDDocType: String!, IDNumber: String!, requiresParking: Boolean!): String!
+  createInvite(userEmail: String!, visitorEmail: String!, IDDocType: String!, IDNumber: String!, inviteDate: String!, requiresParking: Boolean!): String!
   cancelInvite(inviteID: String!): Boolean!
   assignParking(parkingNumber: Float!, visitorEmail: String!): Boolean!
   reserveParking(reservationInviteID: String!, parkingNumber: Float!): String!
