@@ -34,6 +34,7 @@ const CreateInvite = () => {
                 visitorEmail: "${undefined}"
                 IDDocType: "${undefined}"
                 IDNumber: "${undefined}"
+                inviteDate: "${undefined}"
                 requiresParking: ${undefined}
             )
         }
@@ -75,10 +76,14 @@ const CreateInvite = () => {
                             !/^\d{8}$/i.test(values.idValue)
                         ) {
                             errors.idValue = "Invalid UP student number";
+                        } else if(!values.visitDate) {
+                            errors.visitDate = "Please add a date";
                         }
+
                         return errors;
                     }}
                     onSubmit={(values, { setSubmitting }) => {
+
                         const CREATE_INVITE = gql`
                             mutation {
                                 createInvite(
@@ -86,6 +91,7 @@ const CreateInvite = () => {
                                     visitorEmail: "${values.email}"
                                     IDDocType: "${values.idDoc}"
                                     IDNumber: "${values.idValue}"
+                                    inviteDate: "${values.visitDate}"
                                     requiresParking: ${values.reserveParking}
                             )
                         }
@@ -100,6 +106,7 @@ const CreateInvite = () => {
                                 setSubmitting(false);
                             })
                             .catch((err) => {
+                                console.log(err);
                                 setSubmitting(false);
                                 if (err.message === "Unauthorized") {
                                     router.push("/expire");
@@ -187,7 +194,7 @@ const CreateInvite = () => {
 
                             <motion.label className="label cursor-pointer">
                                 <motion.span initial="initial" whileHover="animate" className="label-text overflow-x-hidden pr-3">
-                                    Reserve Parking <motion.span initial="initial" className="inline-block" animate={{x: values.reserveParking ? 0 : -500}} variants={driveAway}> 🚗</motion.span>
+                                    Reserve Parking <motion.span initial="initial" className="inline-block" animate={{x: values.reserveParking ? 0 : -500, transition: {duration: 0.8, ease: "easeInOut"}}} variants={driveAway}> 🚗</motion.span>
                                 </motion.span>
 
                                 <motion.input

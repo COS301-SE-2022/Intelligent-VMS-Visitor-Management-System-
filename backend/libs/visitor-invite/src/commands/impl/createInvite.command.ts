@@ -4,6 +4,7 @@ export class CreateInviteCommand {
         public readonly visitorEmail: string,
         public readonly IDDocType: string,
         public readonly IDNumber: string,
+        public readonly inviteDate: string,
         public readonly inviteID: string,
     ) {}
 }
