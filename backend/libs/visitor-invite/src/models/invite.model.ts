@@ -14,8 +14,8 @@ export class Invite {
     @Field((type) => String)
     inviteID: string;
 
-    @Field((type) => Date)
-    visitDate: Date;
+    @Field((type) => String)
+    inviteDate: string;
 
     @Field((type) => Boolean)
     requiresParking: boolean;

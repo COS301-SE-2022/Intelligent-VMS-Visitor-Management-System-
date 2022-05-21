@@ -32,6 +32,7 @@ export class VisitorInviteService {
         visitorEmail: string,
         idDocType: string,
         idNumber: string,
+        inviteDate: string,
         requiresParking: boolean
     ) {
         // Generate inviteID
@@ -44,6 +45,7 @@ export class VisitorInviteService {
                 visitorEmail,
                 idDocType,
                 idNumber,
+                inviteDate,
                 inviteID,
             ),
         );
@@ -62,8 +64,9 @@ export class VisitorInviteService {
             }
         }
 
-        const info = await this.mailService.sendInvite(visitorEmail, userEmail, inviteID, idDocType, requiresParking);
-        return info.messageId;
+        //const info = await this.mailService.sendInvite(visitorEmail, userEmail, inviteID, idDocType, requiresParking);
+        //return info.messageId;
+        return "";
     }
 
     async getInvites(email: string) {

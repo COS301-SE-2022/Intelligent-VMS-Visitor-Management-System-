@@ -20,6 +20,7 @@ describe("VisitorInviteService", () => {
                             idDocType: "RSA-ID",
                             idNumber: "0109195283090",
                             inviteID: "fej1-23d3-334f-99fd",
+                            inviteDate: "2022-06-21",
                             requiresParking: true
                         },
                         {
@@ -28,6 +29,7 @@ describe("VisitorInviteService", () => {
                             idDocType: "RSA-ID",
                             idNumber: "0109195283090",
                             inviteID: "fej1-33ft-334f-99fd",
+                            inviteDate: "2022-05-21",
                             requiresParking: false
                         }
                     ]
@@ -76,6 +78,7 @@ describe("VisitorInviteService", () => {
             expect(invites[0]).toHaveProperty("residentEmail");
             expect(invites[0]).toHaveProperty("idDocType");
             expect(invites[0]).toHaveProperty("inviteID");
+            expect(invites[0]).toHaveProperty("inviteDate");
             expect(invites[0]).toHaveProperty("requiresParking");
         });
 

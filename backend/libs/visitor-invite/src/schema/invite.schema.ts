@@ -21,6 +21,9 @@ export class Invite {
     idNumber: string;
 
     @Prop()
+    inviteDate: string;
+
+    @Prop()
     inviteID: string;
 }
 

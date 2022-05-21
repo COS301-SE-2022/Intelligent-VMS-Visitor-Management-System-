@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { Formik, Field } from "formik";
 import { gql, useMutation } from "@apollo/client";
+import { motion } from "framer-motion";
 
 import useAuth from "../store/authStore.js";
 
@@ -16,6 +17,16 @@ const CreateInvite = () => {
     const numParkingSpotsAvailable = useAuth((state) => state.numParkingSpots);
     const router = useRouter();
 
+    const driveAway = {
+        initial: {
+            scale: 1.2,
+            x: 0,
+        },
+        animate: {
+            x: 900
+        },
+    };
+
     const [createInviteMutation, { error }] = useMutation(gql`
         mutation {
             createInvite(
@@ -23,6 +34,7 @@ const CreateInvite = () => {
                 visitorEmail: "${undefined}"
                 IDDocType: "${undefined}"
                 IDNumber: "${undefined}"
+                inviteDate: "${undefined}"
                 requiresParking: ${undefined}
             )
         }
@@ -30,12 +42,13 @@ const CreateInvite = () => {
 
     return (
         <Layout>
-            <div className="relative flex h-full min-h-[80vh] w-full flex-col items-center justify-center overflow-hidden shadow">
+            <div className="relative flex h-full min-h-[80vh] w-full flex-col items-center justify-center overflow-hidden">
                 <Formik
                     initialValues={{
                         email: "",
                         idDoc: "RSA-ID",
                         idValue: "",
+                        visitDate: "",
                         reserveParking: false,
                     }}
                     validate={(values) => {
@@ -63,10 +76,14 @@ const CreateInvite = () => {
                             !/^\d{8}$/i.test(values.idValue)
                         ) {
                             errors.idValue = "Invalid UP student number";
+                        } else if(!values.visitDate) {
+                            errors.visitDate = "Please add a date";
                         }
+
                         return errors;
                     }}
                     onSubmit={(values, { setSubmitting }) => {
+
                         const CREATE_INVITE = gql`
                             mutation {
                                 createInvite(
@@ -74,11 +91,12 @@ const CreateInvite = () => {
                                     visitorEmail: "${values.email}"
                                     IDDocType: "${values.idDoc}"
                                     IDNumber: "${values.idValue}"
+                                    inviteDate: "${values.visitDate}"
                                     requiresParking: ${values.reserveParking}
                             )
                         }
                         `;
-
+                        
                         createInviteMutation({
                             mutation: CREATE_INVITE,
                         })
@@ -88,13 +106,14 @@ const CreateInvite = () => {
                                 setSubmitting(false);
                             })
                             .catch((err) => {
+                                console.log(err);
                                 setSubmitting(false);
-
                                 if (err.message === "Unauthorized") {
                                     router.push("/expire");
                                     return;
                                 } else {
-                                    setErrorMessage(error);
+                                    setErrorMessage(err.message);
+                                    setShowErrorAlert(true);
                                 }
                             });
                     }}
@@ -110,7 +129,7 @@ const CreateInvite = () => {
                     }) => (
                         <form
                             onSubmit={handleSubmit}
-                            className="md:p-26 prose form-control space-y-4 rounded-xl bg-base-300 p-14"
+                            className="md:p-26 prose form-control space-y-4 rounded-none md:rounded-xl bg-base-300 p-14"
                         >
                             <h1>
                                 Let&apos;s{" "}
@@ -163,11 +182,22 @@ const CreateInvite = () => {
                                     errors.idValue}
                             </span>
 
-                            <label className="label cursor-pointer">
-                                <span className="label-text">
-                                    Reserve Parking
-                                </span>
-                                <input
+                            <input
+                                type="date"
+                                name="visitDate"
+                                placeholder="Visit Date"
+                                className="input input-bordered w-full"
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.visitDate}
+                            />
+
+                            <motion.label className="label cursor-pointer">
+                                <motion.span initial="initial" whileHover="animate" className="label-text overflow-x-hidden pr-3">
+                                    Reserve Parking <motion.span initial="initial" className="inline-block" animate={{x: values.reserveParking ? 0 : -500, transition: {duration: 0.8, ease: "easeInOut"}}} variants={driveAway}> 🚗</motion.span>
+                                </motion.span>
+
+                                <motion.input
                                     className="disabled toggle"
                                     disabled={
                                         numParkingSpotsAvailable > 0
@@ -180,7 +210,7 @@ const CreateInvite = () => {
                                     onBlur={handleBlur}
                                     value={values.reserveParking}
                                 />
-                            </label>
+                            </motion.label>
 
                             <button
                                 className="btn btn-primary"

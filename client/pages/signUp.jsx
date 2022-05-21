@@ -1,33 +1,38 @@
-import { useRouter } from "next/router";
-import { useState } from "react";
+import Layout from "../components/Layout";
 import { Formik } from "formik";
-import { gql, useMutation } from "@apollo/client";
+import { motion } from "framer-motion";
 
 import useAuth from "../store/authStore";
 
-import Layout from "../components/Layout";
-import ErrorAlert from "../components/ErrorAlert";
+const SignUp = () => {
 
-const Login = () => {
-    const login = useAuth((state) => state.login);
-    const logout = useAuth((state) => state.logout);
-    const router = useRouter();
-
-    const [showErrorAlert, setShowErrorAlert] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");
-    const [loginMutation, { data, loading, error }] = useMutation(gql`
-        mutation {
-			login(email: "${undefined}", password: "${undefined}") {
-				access_token
-			}
-        }
-    `);
+    const scaleEmoji = {
+        initial: {
+            scale: 1.2,
+        },
+        hover: {
+            scale: [1.5,1,1.5,2,1.5],
+            rotate: [10, -10, 10, -20, 0],
+            transition: {
+                ease: "easeInOut",
+                duration: 0.7
+            }
+        },
+    };
 
     return (
         <Layout>
-            <div className="relative flex h-full min-h-[80vh] w-full flex-col items-center justify-center overflow-hidden shadow">
+            <div className="relative flex flex-col h-full min-h-[80vh] w-full flex-col items-center justify-center overflow-hidden">
+
+                <ul className="steps mb-3 mt-2 text-xs md:text-base">
+                  <li className="step step-primary">Tell Us About Yourself</li>
+                  <li className="step">Usage</li>
+                  <li className="step">Verify Email</li>
+                  <li className="step">Authorize Account</li>
+                </ul>
+
                 <Formik
-                    initialValues={{ email: "", password: "" }}
+                initialValues={{ email: "", password: "", confirmPassword: "", apartmentNumber: "", idNumber: "" }}
                     validate={(values) => {
                         const errors = {};
                         if (!values.email) {
@@ -40,7 +45,16 @@ const Login = () => {
                             errors.email = "Invalid email address";
                         } else if(!values.password) {
                             errors.password = "Required";
+                        } else if(!values.confirmPassword) {
+                            errors.confirmPassword = "Required";
+                        } else if(!/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/i.test(
+                            values.password
+                        )) {
+                            errors.password = "Password needs minimum of 8 characters with one number and one special character";
+                        } else if(values.confirmPassword !== values.password) {
+                            errors.confirmPassword = "Passwords do not match";
                         }
+
                         return errors;
                     }}
                     onSubmit={(values, { setSubmitting }) => {
@@ -88,20 +102,20 @@ const Login = () => {
                     }) => (
                         <form
                             onSubmit={handleSubmit}
-                            className="prose form-control border space-y-4 rounded-xl bg-base-300 p-14 md:p-28"
+                            className="prose form-control rounded-xl border p-14 space-y-4"
                         >
-                            <h1>Welcome Back 👋</h1>
+                            <h1>Let&apos;s Get Started ✨</h1>
                             <input
                                 type="email"
                                 name="email"
-                                placeholder="Email"
+                                placeholder="Your Email"
                                 autoComplete="username"
-                                className="input input-bordered w-full max-w-xs"
+                                className="input input-bordered w-full"
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                                 value={values.email}
                             ></input>
-                            <span className="text-error">
+                            <span className="text-error text-sm md:text-base">
                                 {errors.email && touched.email && errors.email}
                             </span>
                             <input
@@ -109,32 +123,42 @@ const Login = () => {
                                 name="password"
                                 autoComplete="current-password"
                                 placeholder="Password"
-                                className="input input-bordered w-full max-w-xs"
+                                className="input input-bordered w-full"
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                                 value={values.password}
                             ></input>
-                            <span className="text-error">
+                            <span className="text-error text-sm md:text-base max-w-xs">
                                 {errors.password && touched.password && errors.password}
                             </span>
-                            <button
-                                className="btn btn-primary"
+                            <input
+                                type="password"
+                                name="confirmPassword"
+                                placeholder="Confirm Password"
+                                className="input input-bordered w-full"
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.confirmPassword}
+                            ></input>
+                            <span className="text-error text-sm md:text-base">
+                                {errors.confirmPassword && touched.confirmPassword && errors.confirmPassword}
+                            </span>
+                            <motion.button
+                                className="btn btn-primary space-x-4"
                                 type="submit"
                                 disabled={isSubmitting}
+                                initial="initial"
+                                whileHover="hover"
+                                whileFocus="hover"
                             >
-                                Login
-                            </button>
+                                Let&apos;s Go <motion.span className="ml-3" variants={scaleEmoji}> 🎉</motion.span>
+                            </motion.button>
                         </form>
                     )}
                 </Formik>
-
-                <ErrorAlert
-                    message={errorMessage}
-                    showConditon={showErrorAlert}
-                />
             </div>
         </Layout>
     );
 };
 
-export default Login;
+export default SignUp;
