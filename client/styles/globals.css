@@ -32,7 +32,23 @@
         to {
          stroke-dashoffset: 0;
       }
-
     }
+
+    .menuPath {
+        transition: width 0.3s ease-in-out;
+    }
+
+    .menuPath:first-of-type {
+        width: 10px;
+    }
+
+    .menuPath:last-of-type {
+        width: 8px;
+    }
+
+    .menuIcon:hover .menuPath {
+        width: 16px;
+    }
+
 
 }
