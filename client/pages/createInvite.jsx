@@ -79,10 +79,10 @@ const CreateInvite = () => {
                         } else if(!values.visitDate) {
                             errors.visitDate = "Please add a date";
                         }
+
                         return errors;
                     }}
                     onSubmit={(values, { setSubmitting }) => {
-                        console.log(values.visitDate);
 
                         const CREATE_INVITE = gql`
                             mutation {
@@ -106,6 +106,7 @@ const CreateInvite = () => {
                                 setSubmitting(false);
                             })
                             .catch((err) => {
+                                console.log(err);
                                 setSubmitting(false);
                                 if (err.message === "Unauthorized") {
                                     router.push("/expire");

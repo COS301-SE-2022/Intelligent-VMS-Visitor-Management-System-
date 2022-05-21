@@ -28,8 +28,9 @@ describe("CreateInvite", () => {
                         visitorEmail: "visitor@mail.com",
                         IDDocType: "RSA-ID",
                         IDNumber: "0109195273080",
-                        requiresParking: true,
-                        )
+                        inviteDate: "2020-08-21",
+                        requiresParking: true
+                    )
                 }
             `
         },
@@ -48,6 +49,7 @@ describe("CreateInvite", () => {
                         visitorEmail: "error@mail.com",
                         IDDocType: "RSA-ID",
                         IDNumber: "0109195273080",
+                        inviteDate: "2022-08-21",
                         requiresParking: true,
                         )
                 }
@@ -67,6 +69,7 @@ describe("CreateInvite", () => {
                         visitorEmail: "visitor@mail.com",
                         IDDocType: "RSA-ID",
                         IDNumber: "0109195273080",
+                        inviteDate: "2020-08-21",
                         requiresParking: true,
                         )
                 }
@@ -192,6 +195,7 @@ describe("CreateInvite", () => {
         await user.type(screen.getByPlaceholderText("Visitor Email"), "visitor@mail.com");
         await user.selectOptions(screen.getByRole("combobox"), ["RSA-ID"]);
         await user.type(screen.getByPlaceholderText("Enter ID number"), "0109195273080");
+        await user.type(screen.getByPlaceholderText("Visit Date"),"2020-08-21");
         await user.click(screen.getByRole("checkbox"));
         await user.click(screen.getByRole("button"));
 
@@ -228,14 +232,16 @@ describe("CreateInvite", () => {
         
         const user = userEvent.setup();
 
+
         await user.type(screen.getByPlaceholderText("Visitor Email"), "visitor@mail.com");
         await user.selectOptions(screen.getByRole("combobox"), ["RSA-ID"]);
         await user.type(screen.getByPlaceholderText("Enter ID number"), "0109195273080");
+        await user.type(screen.getByPlaceholderText("Visit Date"),"2020-08-21");
         await user.click(screen.getByRole("checkbox"));
         await user.click(screen.getByRole("button"));
 
         await waitFor(async () => {
-            await new Promise((resolve) => setTimeout(resolve, 30));
+            await new Promise((resolve) => setTimeout(resolve, 50));
             expect(router.push).toHaveBeenCalledWith("/visitorDashboard");
         });
     });
