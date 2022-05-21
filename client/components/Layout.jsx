@@ -1,14 +1,10 @@
-import Link from "next/link";
 import Head from "next/head";
 
 import { motion } from "framer-motion";
 
 import Navbar from "./Navbar";
 
-import useAuth from "../store/authStore";
-
 const Layout = ({ children }) => {
-    const navlinks = useAuth((state) => state.navLinks)();
 
     const variants = {
         hidden: { opacity: 0, x: -200, y: 0 },
@@ -32,7 +28,7 @@ const Layout = ({ children }) => {
                 transition={{ type: "linear" }}
                 className="container h-full min-h-screen"
                 >
-                    {children}
+                {children}
             </motion.main>
 
             <footer className="footer footer-center rounded-md bg-primary p-10 text-primary-content">

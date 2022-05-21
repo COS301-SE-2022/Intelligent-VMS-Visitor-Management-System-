@@ -38,7 +38,7 @@ const AdminDashboard = () => {
 
     return (
         <Layout>
-            <div className="px-3">
+            <div className="px-3 space-y-3 mb-3">
                 <h1 className="mt-4 mb-4 text-left text-3xl font-bold">
                     Hello{" "}
                     <span className="text-secondary">{decodedToken.email}</span>
@@ -48,7 +48,7 @@ const AdminDashboard = () => {
                 <div className="space-y-3">
                     <div className="w-100 h-70 text-tertiary-content card bg-base-300">
                         <div className="card-body">
-                            <div className="place-center grid grid-cols-3 grid-rows-1 gap-4">
+                            <div className="place-center grid grid-cols-1 md:grid-cols-3 grid-rows-1 gap-4">
                                 <div className="card flex flex-col items-center justify-center space-y-5">
                                     <div className="avatar">
                                         <button className="btn btn-disabled btn-circle bg-base-100 p-2">
@@ -58,13 +58,13 @@ const AdminDashboard = () => {
                                             />
                                         </button>
                                     </div>
-                                    <p className="text-sm">
+                                    <p className="text-xs md:text-sm">
                                         Total Number Of Invites Sent
                                     </p>
-                                    <p className="text-5xl font-bold text-secondary">
+                                    <p className="text-3xl md:text-4xl lg:text-5xl font-bold text-secondary">
                                         <span>{numInvitesSent}</span>
                                     </p>
-                                    <p>Total</p>
+                                    <p className="text-xs md:text-sm">Total</p>
                                 </div>
 
                                 <div className="card flex flex-col items-center justify-center space-y-5">
@@ -76,11 +76,11 @@ const AdminDashboard = () => {
                                             />
                                         </button>
                                     </div>
-                                    <p className="text-sm">Other Data</p>
-                                    <p className="text-5xl font-bold text-secondary">
+                                    <p className="text-xs md:text-sm">Other Data</p>
+                                    <p className="text-3xl md:text-4xl lg:text-5xl font-bold text-secondary">
                                         <span>{120}</span>
                                     </p>
-                                    <p>Amount</p>
+                                    <p className="text-xs md:text-sm">Amount</p>
                                 </div>
 
                                 <div className="card flex flex-col items-center justify-center space-y-5">
@@ -92,17 +92,17 @@ const AdminDashboard = () => {
                                             />
                                         </button>
                                     </div>
-                                    <p className="text-sm">Other Data</p>
-                                    <p className="text-5xl font-bold text-secondary">
+                                    <p className="text-xs md:text-sm">Other Data</p>
+                                    <p className="text-3xl md:text-4xl lg:text-5xl font-bold text-secondary">
                                         <span>{9102}</span>
                                     </p>
-                                    <p>Amount</p>
+                                    <p className="text-xs md:text-sm">Amount</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div className="w-100 text-tertiary-content card items-center justify-center space-y-2 bg-base-200 p-4 text-2xl font-bold">
-                        <h1>Number of Parking Spots Available</h1>
+                        <h1 className="text-sm md:text-xl lg:text-2xl">Number of Parking Spots Available</h1>
                         <div className="flex select-none space-x-4">
                             <button
                                 className="btn btn-circle p-2"
@@ -116,7 +116,7 @@ const AdminDashboard = () => {
 
                             <a
                                 href="#parking-modal"
-                                className="bg-tertiary modal-button btn text-5xl font-bold text-secondary"
+                            className="bg-tertiary modal-button btn text-3xl md:text-4xl lg:text-5xl font-bold text-secondary"
                             >
                                 {numParkingSpotsAvailable}
                             </a>
@@ -140,7 +140,7 @@ const AdminDashboard = () => {
 
             <div className="modal" id="parking-modal">
                 <div className="modal-box space-y-2">
-                    <h3 className="text-lg font-bold">
+                    <h3 className="text-md md:text-lg font-bold">
                         Update Number of Parking Spots Available
                     </h3>
                     <input

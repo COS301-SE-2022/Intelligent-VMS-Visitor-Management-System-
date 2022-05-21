@@ -35,8 +35,12 @@ const Navbar = () => {
             </div>
             <div className="navbar-end">
                  <div className="dropdown dropdown-end">
-                  <label tabIndex="0" className="btn btn-ghost">
-                      <h1><CgMenuRight style={{fontSize: "30px"}}/></h1>
+                  <label tabIndex="0" className="btn btn-ghost menuIcon">
+                        <svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect className = "menuPath" width="16" height="2" rx="1" fill="#D9D9D9"/>
+                            <rect className = "menuPath" y="5" width="16" height="2" rx="1" fill="#D9D9D9"/>
+                            <rect className= "menuPath" y="10" width="16" height="2" rx="1" fill="#D9D9D9"/>
+                        </svg>
                   </label>
                   <ul tabIndex="0" className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-neutral rounded-box w-52">
                         {navlinks.map((link, idx) => {

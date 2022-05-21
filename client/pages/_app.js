@@ -23,7 +23,7 @@ function MyApp({ Component, pageProps }) {
     });
 
     const isPublicPath = (url) => {
-        const publicPaths = ["/login", "/", "/expire"];
+        const publicPaths = ["/login", "/", "/expire", "/signUp"];
         const path = url.split("?")[0];
         return publicPaths.includes(path);
     };
