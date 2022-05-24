@@ -137,10 +137,14 @@ export class ParkingService {
     Returns: parking reserved
 
     */
+   //TODO (Larisa) only one reservation per invite
     async reserveParking(
         invitationID:string
     ){
         const invite = await this.inviteService.getInvite(invitationID);
+
+        if(!invite)
+        throw new InviteNotFound(`Invitation with ID ${invitationID} not found`);
         
         let parkingNumber = -1;
         let temp = true;
@@ -154,7 +158,7 @@ export class ParkingService {
             {
                 const resInvite = await this.inviteService.getInvite(reservations[j].invitationID);
 
-                if(resInvite.visitDate == invite.visitDate)
+                if(resInvite && resInvite.visitDate == invite.visitDate)
                 {
                     temp =false;
                     break;
@@ -171,11 +175,11 @@ export class ParkingService {
         if(parkingNumber == -1)
             throw new ParkingNotFound("There are no parking available")
 
-        const parking = await this.commandBus.execute(
+        const parkingReservation = await this.commandBus.execute(
             new ReserveParkingCommand(invitationID,parkingNumber));
           
-        if(parking)
-        return parking;
+        if(parkingReservation)
+        return parkingReservation;
         else
         throw new ExternalError("Error outside the parking.service");
             

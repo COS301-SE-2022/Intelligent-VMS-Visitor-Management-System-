@@ -11,7 +11,8 @@ import { VisitorInviteService } from '@vms/visitor-invite';
 import { MailService } from '@vms/mail/mail.service';
 
 describe('ParkingService', () => {
-  let service: ParkingService;
+  let parkingService: ParkingService;
+  let inviteService: VisitorInviteService;
 
   const queryBusMock = {
       execute: jest.fn((query: IQuery) => {
@@ -62,65 +63,91 @@ describe('ParkingService', () => {
         ],
     }).compile();
 
-    service = module.get<ParkingService>(ParkingService);
+    parkingService = module.get<ParkingService>(ParkingService);
+    inviteService = module.get<VisitorInviteService>(VisitorInviteService);
   });
 
   it('should be defined', () => {
-    expect(service).toBeDefined();
+    expect(parkingService).toBeDefined();
+    expect(inviteService).toBeDefined();
   });
 
   describe("getAvailableParking", () => {
         it("should return the number of unused parking spots", async () => {
-            expect(await service.getAvailableParking()).toEqual(999);
+            let amount = 0;
+            try{
+                amount = await parkingService.getAvailableParking();
+            } catch (error) {
+            }
+            expect(amount).toEqual(8);
         });    
   });
 
   describe("freeParking", () => {
-      it("should return true if parking number valid", async () => {
-          expect(await service.freeParking(1)).toEqual(true);
+      it("should return valid parking if parking number is valid", async () => {
+          let email = null;
+          try{
+          const parking = await parkingService.freeParking(0);
+          email = parking.visitorEmail;
+          } catch(error){}
+          expect(email).toEqual("");
       });
 
       it("should throw an expception if an invalid parking number is given", async () => {
+          const spaces = await parkingService.getAvailableParking();
           try {
-              await service.freeParking(999);
+              await parkingService.freeParking(999);
           } catch (error) {
               expect(error).toBeDefined();
-              expect(error.message).toEqual("Parking with Number: 999 not found")
+              expect(error.message).toEqual(`Parking number 999 is out of parking range. Parking range from 0 to `+spaces)
           }
       });
   });
 
   describe("assignParking", () => {
-      /*it("should return true if parking number is valid", async () => {
-          expect(await service.assignParking("admin@mail.com",1)).toEqual(true);
+      it("should return valid parking if invitation ID is valid and reservation is made", async () => {
+          const parking = await parkingService.assignParking("f11ae766-ce23-4f27-b428-83cff1afbf04");
+          const invite = await inviteService.getInvite("f11ae766-ce23-4f27-b428-83cff1afbf04");
+          expect(parking.visitorEmail).toEqual(invite.email);
       });
 
-      it("should throw an expception if an invalid parking number is given", async () => {
+      it("should throw an expception if invitation ID is valid and no reservation is made", async () => {
+        try{
+            await parkingService.assignParking("cb7c7938-1c41-427d-833e-2c6b77e0e26b");
+        }catch (error) {
+            expect(error).toBeDefined();
+            expect(error.message).toEqual("Reservation cb7c7938-1c41-427d-833e-2c6b77e0e26b not found");
+        }
+    });
+
+      it("should throw an expception if an invalid invitation is given", async () => {
           try {
-              await service.assignParking("", 999);
+            await parkingService.assignParking("f11ae766-ce23-4f27-b428-83cff1afbf04");
           } catch (error) {
               expect(error).toBeDefined();
-              expect(error.message).toEqual("Parking with Number: 999 not found")
+              expect(error.message).toEqual(`Invitation with ID f11ae766-ce23-4f27-b428-83cff1afbf04 not found`)
           }
-      });*/
-      //These tests are obsolute
-      //TODO (Larisa) update tests
+      });
+
   });
 
   describe("reserveParking", () => {
-      it("should return true if parking number is valid", async () => {
-          expect(await service.reserveParkingSpace(1, "dwdwf-233-1-2fe-2")).toEqual("2133-4fek-12mce-fee1");
+      it("should return the parking reservation made if valid invitation ID is given", async () => {
+          const makeRes = await parkingService.reserveParking("f11ae766-ce23-4f27-b428-83cff1afbf04");
+          const getRes = await parkingService.getInviteReservations("f11ae766-ce23-4f27-b428-83cff1afbf04");
+          expect(makeRes).toEqual(getRes);
       });
 
-      it("should throw an expception if an invalid parking number is given", async () => {
+      it("should throw an expception if an invalid invitation ID is given", async () => {
           try {
-              await service.reserveParkingSpace(999, "");
+              await parkingService.reserveParking("jippy");
           } catch (error) {
               expect(error).toBeDefined();
-              expect(error.message).toEqual("Parking with Number: 999 not found")
+              expect(error.message).toEqual("Invitation with ID jippy not found")
           }
       });
   });
 
+  //TODO (Larisa) test the rest of the functions
 });
 
