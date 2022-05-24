@@ -116,7 +116,6 @@ export class ParkingService {
         if(!reservation)
         throw new ReservationNotFound(`Reservation for ${invitationID} not found`);
         
-        console.log(invite.visitorEmail+ reservation.parkingNumber);
         const parking = await this.commandBus.execute(
             new AssignParkingCommand(invite.visitorEmail, reservation.parkingNumber)
         )
@@ -181,8 +180,6 @@ export class ParkingService {
 
         if(parkingNumber == -1)
             throw new ParkingNotFound("There are no parking available");
-
-        console.log(parkingNumber);
 
         const parkingReservation = await this.commandBus.execute(
             new ReserveParkingCommand(invitationID,parkingNumber));
