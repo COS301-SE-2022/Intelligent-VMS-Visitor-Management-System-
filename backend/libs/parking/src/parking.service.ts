@@ -116,7 +116,6 @@ export class ParkingService {
         if(!reservation)
         throw new ReservationNotFound(`Reservation for ${invitationID} not found`);
         
-
         const parking = await this.commandBus.execute(
             new AssignParkingCommand(invite.visitorEmail, reservation.parkingNumber)
         )
@@ -145,14 +144,21 @@ export class ParkingService {
 
         if(!invite)
         throw new InviteNotFound(`Invitation with ID ${invitationID} not found`);
+
+        const InviteReservations = await this.queryBus.execute(
+            new GetInviteReservationQuery(invitationID));
+
+        if(InviteReservations.length != 0)
+            throw new InvalidQuery(`Invitation with ID ${invitationID} already have reserved parking.`)
         
         let parkingNumber = -1;
         let temp = true;
         const spaces = await this.getAvailableParking();
 
         for(let i=0;i<spaces;i++){
-            const reservations = await this.getParkingReservations(i);
-            
+            const reservations = await this.queryBus.execute(
+                new GetParkingReservationsQuery(parkingNumber));
+                
             temp = true;
             for(let j=0;j<reservations.length;j++)
             {
@@ -173,7 +179,9 @@ export class ParkingService {
         }
 
         if(parkingNumber == -1)
-            throw new ParkingNotFound("There are no parking available")
+            throw new ParkingNotFound("There are no parking available");
+
+        console.log(parkingNumber);
 
         const parkingReservation = await this.commandBus.execute(
             new ReserveParkingCommand(invitationID,parkingNumber));
@@ -197,6 +205,9 @@ export class ParkingService {
 
         const invite = await this.inviteService.getInvite(invitationID);
 
+        if(!invite)
+        throw new InviteNotFound(`Invitation with ID ${invitationID} not found`);
+
         const InviteReservations = await this.queryBus.execute(
             new GetInviteReservationQuery(invitationID));
 
@@ -204,7 +215,7 @@ export class ParkingService {
 
         // or parking disabled
         if(parkingNumber<0 ||  parkingNumber>spaces)
-            throw new ParkingNotFound(`Parking Number is invalid.`);
+        throw new InvalidQuery(`Parking number ${parkingNumber} is out of parking range. Parking range from 0 to ${spaces}`);
 
         if(InviteReservations.length != 0)
             throw new InvalidQuery(`Invitation with ID ${invitationID} already have reserved parking.`)
@@ -221,11 +232,11 @@ export class ParkingService {
                 throw new InvalidQuery(`Parking number ${parkingNumber} already reserved.`);
         }
 
-        const parking = await this.commandBus.execute(
+        const parkingReservation = await this.commandBus.execute(
             new ReserveParkingCommand(invitationID,parkingNumber));
         
-        if(parking) {
-                return parking;
+        if(parkingReservation) {
+                return parkingReservation;
             } else {
                 throw new ParkingNotFound(`Parking with Number: ${parkingNumber} not found.`);
             }
@@ -294,9 +305,16 @@ export class ParkingService {
                 
     }
 
+    //TODO (Larisa) check parking num in another way?
     async getParkingReservations(
         parkingNumber: number,
         ){
+            const spaces = await this.getAvailableParking();
+
+            // or parking disabled
+            if(parkingNumber<0 ||  parkingNumber>spaces)
+            throw new InvalidQuery(`Parking number ${parkingNumber} is out of parking range. Parking range from 0 to ${spaces}`);
+
             const reservations = await this.queryBus.execute(
                 new GetParkingReservationsQuery(parkingNumber));
     
@@ -317,6 +335,7 @@ export class ParkingService {
         ){
             const reservations = await this.queryBus.execute(
                 new GetInviteReservationQuery(invitationID));
+
     
             if(reservations)
             {
