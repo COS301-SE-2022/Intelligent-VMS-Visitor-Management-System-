@@ -1,9 +1,9 @@
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 
 import Layout from "../components/Layout";
-import Unauthorized from "../components/Unauthorized";
 
 import useAuth from "../store/authStore";
 
@@ -44,6 +44,10 @@ function MyApp({ Component, pageProps }) {
 
     return (
         <ApolloProvider client={client}>
+            <Head>
+                <title>VMS</title>
+                <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable = no" />
+            </Head>
             <Component {...pageProps} />
         </ApolloProvider>
     );

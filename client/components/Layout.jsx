@@ -1,6 +1,4 @@
-import Head from "next/head";
-
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 import Navbar from "./Navbar";
 
@@ -14,22 +12,21 @@ const Layout = ({ children }) => {
 
     return (
         <div className="container mx-auto flex min-h-screen flex-col items-center font-main md:py-2">
-            <Head>
-                <title>VMS</title>
-            </Head>
 
             <Navbar />
 
-            <motion.main
-                initial="hidden"
-                animate="enter"
-                exit="exit"
-                variants={variants}
-                transition={{ type: "linear" }}
-                className="container h-full min-h-screen"
+            <AnimatePresence exitBeforeEnter>
+                <motion.main
+                    initial="hidden"
+                    animate="enter"
+                    exit="exit"
+                    variants={variants}
+                    transition={{ type: "linear" }}
+                    className="container h-full min-h-screen"
                 >
-                {children}
-            </motion.main>
+                        {children}
+                </motion.main>
+            </AnimatePresence>
 
             <footer className="footer footer-center rounded-md bg-primary p-10 text-primary-content">
                 <div>
