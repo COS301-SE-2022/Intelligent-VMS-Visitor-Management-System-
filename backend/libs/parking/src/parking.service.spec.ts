@@ -54,14 +54,12 @@ describe('ParkingService', () => {
             } else if(query instanceof GetInviteReservationQuery){
                 if(query.invitationID === "f11ae766-ce23-4f27-b428-83cff1afbf04" )
                 {
-                    const reservations = [];
                     const reservation = new ParkingReservation();
                     reservation.parkingNumber= 0;
                     reservation.invitationID= "f11ae766-ce23-4f27-b428-83cff1afbf04"
-                    reservations[0] = reservation;
-                    return reservations;
+                    return reservation;
                 } else
-                return [];
+                return undefined;
                 
             } else if(query instanceof GetParkingReservationsQuery){
                 if(query.parkingNumber === 0 )
@@ -161,13 +159,22 @@ describe('ParkingService', () => {
 
   describe("freeParking", () => {
       it("should return valid parking if parking number is valid", async () => {
+          let email = null;
+          try{
           const parking = await parkingService.freeParking(0);
-          expect(parking).toEqual(true);
+          email = parking.visitorEmail;
+          } catch(error){}
+          expect(email).toEqual("");
       });
 
-      it("should return undefined when invalid parking number is given", async () => {
-              const parking = await parkingService.freeParking(999);
-              expect(parking).toBeUndefined();
+      it("should throw an expception if an invalid parking number is given", async () => {
+          const spaces = await parkingService.getAvailableParking();
+          try {
+              await parkingService.freeParking(999);
+          } catch (error) {
+              expect(error).toBeDefined();
+              expect(error.message).toEqual(`Parking number 999 is out of parking range. Parking range from 0 to `+spaces)
+          }
       });
   });
 
@@ -258,4 +265,3 @@ describe('ParkingService', () => {
 
   //TODO (Larisa) test the rest of the functions
 });
-
