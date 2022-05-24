@@ -10,8 +10,9 @@ const customJestConfig = {
   coverageDirectory: "./coverage",
   coveragePathIgnorePatterns: [
     "node_modules",
-    "authStore.js"
+    "authStore.js",
   ],
+  modulePathIgnorePatterns: ["__mocks__"]
 }
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async

@@ -171,7 +171,6 @@ describe("CreateInvite", () => {
         
         const user = userEvent.setup();
 
-
         await user.type(screen.getByPlaceholderText("Visitor Email"), "visitor@mail.com");
         await user.selectOptions(screen.getByRole("combobox"), ["RSA-ID"]);
         await user.type(screen.getByPlaceholderText("Enter ID number"), "0109195273080");
