@@ -7,7 +7,7 @@ import useAuth from "../store/authStore";
 
 const Hero = () => {
     const decodedToken = useAuth((state) => state.decodedToken)();
-    
+
     const spinArrow = {
         initial: {
             transition: {
@@ -27,7 +27,7 @@ const Hero = () => {
         <div className="hero min-h-[80vh]">
             <div className="hero-content">
                 <motion.div className="max-w-md overflow-y-hidden">
-                    <motion.h1 className="text-4xl font-bold">Go <span className="text-secondary">Beyond</span> The Lobby <span className="text-primary">.</span></motion.h1>
+                    <motion.h1 className="text-4xl font-bold">Go <motion.span className="text-secondary">Beyond</motion.span> The Lobby <motion.span className="text-primary">.</motion.span></motion.h1>
 
                     <motion.p className="py-6">
                         Go Beyond the Lobby with <span className="text-secondary">V Ʌ S</span> is an intelligent visitor management system aiming
