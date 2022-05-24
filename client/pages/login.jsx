@@ -11,6 +11,7 @@ import ErrorAlert from "../components/ErrorAlert";
 const Login = () => {
     const login = useAuth((state) => state.login);
     const logout = useAuth((state) => state.logout);
+    const verify = useAuth((state) => state.setVerify);
     const router = useRouter();
 
     const [showErrorAlert, setShowErrorAlert] = useState(false);
@@ -64,6 +65,9 @@ const Login = () => {
 
                                 // Remove old login data
                                 logout();
+                                
+                                // Mark the user as verified
+                                verify();
 
                                 // Add token to store
                                 login(token);

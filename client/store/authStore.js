@@ -16,6 +16,9 @@ const useAuth = create(
 				set((state) => ({
 					access_token: ""
 				}));
+				set((state) => ({
+                    verified: false
+				}));
 			},
             decodedToken: () => {
                 try {
@@ -85,6 +88,12 @@ const useAuth = create(
                     numParkingSpots: get().numParkingSpots-1
                 }));
             },
+            verified: false,
+            setVerify: () => {
+                set((state) => ({
+                    verified: true                     
+                }));
+            }
 		}),
 		{ name: "auth" }
 	)

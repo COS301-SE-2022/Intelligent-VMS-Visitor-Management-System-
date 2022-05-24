@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 import Layout from "../components/Layout";
 import { Field, Formik } from "formik";
 import { motion } from "framer-motion";
@@ -6,23 +7,10 @@ import { motion } from "framer-motion";
 import useAuth from "../store/authStore";
 
 const SignUp = () => {
+    const permission = useAuth((state) => state.permission)(); 
+    const verify = useAuth((state) => state.setVerify);
+    const verified = useAuth((state) => state.verified);
     
-    const [showUsageForm, setShowUsageForm] = useState(false);
-
-    const scaleEmoji = {
-        initial: {
-            scale: 1.2,
-        },
-        hover: {
-            scale: [1.5,1,1.5,2,1.5],
-            rotate: [10, -10, 10, -20, 0],
-            transition: {
-                ease: "easeInOut",
-                duration: 0.7
-            }
-        },
-    };
-
     const flyEmojiAway = {
         initial: {
             y: 0,
@@ -37,6 +25,16 @@ const SignUp = () => {
             }
         }
     };
+    
+    const router = useRouter();
+
+    useEffect(() => {
+        if(verified && permission === -1) {
+            router.push("/verify");
+        } else if(permission >= 0){
+            router.push("/");
+        }
+    }, [router, verified, permission]);
 
     return (
         <Layout>
@@ -78,7 +76,8 @@ const SignUp = () => {
                     onSubmit={(values, { setSubmitting }) => {
                         alert({values});
                         setSubmitting(false);
-                        setShowUsageForm(true);
+                        verify();
+                        router.push("/verify");
                     }}
                 >
                     {({

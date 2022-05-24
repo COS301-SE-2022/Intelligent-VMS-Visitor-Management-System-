@@ -23,16 +23,16 @@ function MyApp({ Component, pageProps }) {
     });
 
     const isPublicPath = (url) => {
-        const publicPaths = ["/login", "/", "/expire", "/signUp"];
+        const publicPaths = ["/login", "/", "/expire", "/signUp", "/verify"];
         const path = url.split("?")[0];
         return publicPaths.includes(path);
     };
 
     useEffect(() => {
-        if (!isPublicPath(router.asPath) && permission === -1) {
+        if(!isPublicPath(router.asPath) && permission === -1) {
             router.push("/expire");
             return;
-        }
+        }     
     }, [router, permission]);
 
     if (
