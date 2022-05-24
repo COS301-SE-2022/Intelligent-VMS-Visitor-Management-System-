@@ -82,6 +82,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/mail/tsconfig.lib.json"
       }
+    },
+    "receptionist": {
+      "type": "library",
+      "root": "libs/receptionist",
+      "entryFile": "index",
+      "sourceRoot": "libs/receptionist/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/receptionist/tsconfig.lib.json"
+      }
     }
   },
   "compilerOptions": {
