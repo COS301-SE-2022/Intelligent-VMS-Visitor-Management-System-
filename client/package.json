@@ -6,7 +6,6 @@
     "start": "next start",
     "format": "prettier --write \"pages/**/*.js\" \"components/**/*.jsx\" \"pages/**/*.jsx\" \"__tests__/**/*.test.js\"",
     "test": "jest",
-    "test:integration": "jest ./integration",
     "lint": "next lint",
     "cypress": "cypress open",
     "cypress:headless": "cypress run",
