@@ -163,22 +163,13 @@ describe('ParkingService', () => {
 
   describe("freeParking", () => {
       it("should return valid parking if parking number is valid", async () => {
-          let email = null;
-          try{
           const parking = await parkingService.freeParking(0);
-          email = parking.visitorEmail;
-          } catch(error){}
-          expect(email).toEqual("");
+          expect(parking).toEqual(true);
       });
 
-      it("should throw an expception if an invalid parking number is given", async () => {
-          const spaces = await parkingService.getAvailableParking();
-          try {
-              await parkingService.freeParking(999);
-          } catch (error) {
-              expect(error).toBeDefined();
-              expect(error.message).toEqual(`Parking number 999 is out of parking range. Parking range from 0 to `+spaces)
-          }
+      it("should return undefined when invalid parking number is given", async () => {
+              const parking = await parkingService.freeParking(999);
+              expect(parking).toBeUndefined();
       });
   });
 
