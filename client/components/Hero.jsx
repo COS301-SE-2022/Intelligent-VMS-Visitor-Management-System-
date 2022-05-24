@@ -27,10 +27,10 @@ const Hero = () => {
         <div className="hero min-h-[80vh]">
             <div className="hero-content">
                 <motion.div className="max-w-md overflow-y-hidden">
-                    <motion.h1 className="text-5xl font-bold">Hello there 👋</motion.h1>
+                    <motion.h1 className="text-4xl font-bold">Go <span className="text-secondary">Beyond</span> The Lobby <span className="text-primary">.</span></motion.h1>
 
                     <motion.p className="py-6">
-                        <span className="text-secondary">V Ʌ S</span> is an intelligent visitor management system aiming
+                        Go Beyond the Lobby with <span className="text-secondary">V Ʌ S</span> is an intelligent visitor management system aiming
                         to bring an efficient and customizable interface for our
                         clients.
                     </motion.p>
