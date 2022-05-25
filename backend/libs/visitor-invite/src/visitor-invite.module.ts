@@ -1,9 +1,11 @@
-import { Module } from "@nestjs/common";
+import { forwardRef, Module } from "@nestjs/common";
 import { VisitorInviteService } from "./visitor-invite.service";
 import { MongooseModule } from "@nestjs/mongoose";
 import { CqrsModule } from "@nestjs/cqrs";
 
 import { AuthModule } from "@vms/auth";
+import { ParkingModule } from "@vms/parking";
+import { MailModule } from "@vms/mail";
 
 import { Invite, InviteSchema } from "./schema/invite.schema";
 import { VisitorInviteResolver } from "./visitor-invite.resolver";
@@ -17,6 +19,8 @@ import { getNumberOfVisitors } from "./queries/handlers/getNumberOfVisitors.hand
     imports: [
         CqrsModule,
         AuthModule,
+        forwardRef(() => ParkingModule),
+        MailModule,
         MongooseModule.forFeature([
             { name: Invite.name, schema: InviteSchema },
         ]),

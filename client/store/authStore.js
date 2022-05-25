@@ -16,6 +16,9 @@ const useAuth = create(
 				set((state) => ({
 					access_token: ""
 				}));
+				set((state) => ({
+                    verified: false
+				}));
 			},
             decodedToken: () => {
                 try {
@@ -64,11 +67,33 @@ const useAuth = create(
                 } else {
                     return [
                         { content: "Login", path: "/login" },
-                        { content: "Signup", path: "/signup"}
+                        { content: "Signup", path: "/signUp"}
                     ];
                 }
 
             },
+            numParkingSpots: 22,
+            updateParkingSpots: (newVal) => {
+				set((state) => ({
+					numParkingSpots: newVal
+				}));
+            },
+            incParkingSpots: () => {
+                set((state) => ({
+                    numParkingSpots: get().numParkingSpots+1
+                }));
+            },
+            decParkingSpots: () => {
+                set((state) => ({
+                    numParkingSpots: get().numParkingSpots-1
+                }));
+            },
+            verified: false,
+            setVerify: () => {
+                set((state) => ({
+                    verified: true                     
+                }));
+            }
 		}),
 		{ name: "auth" }
 	)

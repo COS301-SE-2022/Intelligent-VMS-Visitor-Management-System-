@@ -73,6 +73,24 @@
       "compilerOptions": {
         "tsConfigPath": "libs/parking/tsconfig.lib.json"
       }
+    },
+    "mail": {
+      "type": "library",
+      "root": "libs/mail",
+      "entryFile": "index",
+      "sourceRoot": "libs/mail/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/mail/tsconfig.lib.json"
+      }
+    },
+    "receptionist": {
+      "type": "library",
+      "root": "libs/receptionist",
+      "entryFile": "index",
+      "sourceRoot": "libs/receptionist/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/receptionist/tsconfig.lib.json"
+      }
     }
   },
   "compilerOptions": {

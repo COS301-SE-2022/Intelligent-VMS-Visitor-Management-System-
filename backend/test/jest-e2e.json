@@ -26,6 +26,10 @@
     "@vms/resident/(.*)": "<rootDir>/../libs/resident/src/$1",
     "@vms/resident": "<rootDir>/../libs/resident/src",
     "@vms/parking/(.*)": "<rootDir>/../libs/parking/src/$1",
-    "@vms/parking": "<rootDir>/../libs/parking/src"
+    "@vms/parking": "<rootDir>/../libs/parking/src",
+    "@vms/mail/(.*)": "<rootDir>/../libs/mail/src/$1",
+    "@vms/mail": "<rootDir>/../libs/mail/src",
+    "@vms/receptionist/(.*)": "<rootDir>/../libs/receptionist/src/$1",
+    "@vms/receptionist": "<rootDir>/../libs/receptionist/src"
   }
 }

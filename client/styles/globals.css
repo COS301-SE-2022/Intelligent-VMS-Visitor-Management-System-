@@ -16,4 +16,39 @@
         transform: translateY(0%);
     }
 
+    .icon > * {
+        stroke-dasharray: 1000;
+        stroke-dashoffset: 1000;
+        animation: dash 8s infinite linear;
+    }
+
+    .path {
+        stroke-dasharray: 1000;
+        stroke-dashoffset: 1000;
+        animation: dash 8s infinite linear;
+    }
+
+    @keyframes dash {
+        to {
+         stroke-dashoffset: 0;
+      }
+    }
+
+    .menuPath {
+        transition: width 0.3s ease-in-out;
+    }
+
+    .menuPath:first-of-type {
+        width: 10px;
+    }
+
+    .menuPath:last-of-type {
+        width: 8px;
+    }
+
+    .menuIcon:hover .menuPath {
+        width: 16px;
+    }
+
+
 }

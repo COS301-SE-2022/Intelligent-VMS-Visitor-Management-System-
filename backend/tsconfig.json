@@ -65,6 +65,18 @@
       ],
       "@vms/parking/*": [
         "libs/parking/src/*"
+      ],
+      "@vms/mail": [
+        "libs/mail/src"
+      ],
+      "@vms/mail/*": [
+        "libs/mail/src/*"
+      ],
+      "@vms/receptionist": [
+        "libs/receptionist/src"
+      ],
+      "@vms/receptionist/*": [
+        "libs/receptionist/src/*"
       ]
     }
   }

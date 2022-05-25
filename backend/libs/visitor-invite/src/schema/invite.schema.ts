@@ -12,10 +12,16 @@ export class Invite {
     visitorEmail: string;
 
     @Prop()
+    visitDate: Date;
+
+    @Prop()
     idDocType: string;
 
     @Prop()
     idNumber: string;
+
+    @Prop()
+    inviteDate: string;
 
     @Prop()
     inviteID: string;

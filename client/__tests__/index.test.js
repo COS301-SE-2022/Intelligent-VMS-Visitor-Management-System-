@@ -6,6 +6,7 @@ import Hero from "../components/Hero";
 describe("Hero", () => {
     it("renders a heading", () => {
         render(<Hero />);
-        expect(screen.getByText("Hello there 👋")).toBeInTheDocument();
+        expect(screen.getByRole("button")).toBeVisible();
+        expect(screen.getByRole("button")).toHaveTextContent("Get Started");
     });
 });

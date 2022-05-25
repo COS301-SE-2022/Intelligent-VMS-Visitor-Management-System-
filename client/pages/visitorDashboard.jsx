@@ -46,7 +46,7 @@ const VisitorDashboard = () => {
             })
             .catch((err) => {
                 setShowErrorAlert(true);
-                showErrorAlert(err.message);
+                setErrorMessage(err.message);
             });
     };
 
@@ -55,7 +55,6 @@ const VisitorDashboard = () => {
             const invites = data.getInvites;
             setIsVisitorData(invites);
         } else if (error) {
-
             if (error.message === "Unauthorized") {
                 router.push("/expire");
                 return;
@@ -73,9 +72,7 @@ const VisitorDashboard = () => {
 
     return (
         <Layout>
-            <h1 className="mt-5 mb-5 text-left text-4xl text-secondary font-bold p-3">
-                Visitor History
-            </h1>
+            <h1 className="mt-5 mb-5 p-3 text-left text-4xl font-bold text-secondary flex items-center"> Visitor History</h1>
             <div className="flex h-full items-center justify-center overflow-x-auto p-3">
                 {loading ? (
                     <progress className="progress progress-primary w-56">
