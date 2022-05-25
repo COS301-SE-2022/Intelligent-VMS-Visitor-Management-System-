@@ -1,9 +1,9 @@
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 
 import Layout from "../components/Layout";
-import Unauthorized from "../components/Unauthorized";
 
 import useAuth from "../store/authStore";
 
@@ -23,16 +23,16 @@ function MyApp({ Component, pageProps }) {
     });
 
     const isPublicPath = (url) => {
-        const publicPaths = ["/login", "/", "/expire", "/signUp"];
+        const publicPaths = ["/login", "/", "/expire", "/signUp", "/verify"];
         const path = url.split("?")[0];
         return publicPaths.includes(path);
     };
 
     useEffect(() => {
-        if (!isPublicPath(router.asPath) && permission === -1) {
+        if(!isPublicPath(router.asPath) && permission === -1) {
             router.push("/expire");
             return;
-        }
+        }     
     }, [router, permission]);
 
     if (
@@ -44,6 +44,10 @@ function MyApp({ Component, pageProps }) {
 
     return (
         <ApolloProvider client={client}>
+            <Head>
+                <title>VMS</title>
+                <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable = no" />
+            </Head>
             <Component {...pageProps} />
         </ApolloProvider>
     );

@@ -1,88 +1,22 @@
 import { render, screen, waitFor } from "@testing-library/react";
-import "@testing-library/jest-dom";
-import userEvent from '@testing-library/user-event';
-import { MockedProvider } from "@apollo/client/testing";
-import { gql } from "@apollo/client";
-import { GraphQLError } from "graphql";
 import { renderHook, act } from "@testing-library/react-hooks/server";
-import * as nextRouter from "next/router";
-import { useRouter } from "next/router";
+import userEvent from '@testing-library/user-event';
+import "@testing-library/jest-dom";
+import { MockedProvider } from "@apollo/client/testing";
 
-import ErrorAlert from "../components/ErrorAlert";
+import * as nextRouter from "next/router";
+
 import CreateInvite from "../pages/createInvite";
 import useAuth from "../store/authStore";
 
+import { inviteUnauthMock, inviteDataErrorMock, inviteDataMock } from "./__mocks__/createInvite.mock";
+
+// Setup router mock hook
 nextRouter.useRouter = jest.fn();
 nextRouter.useRouter.mockImplementation(() => ({ route: "/" }));
 
 describe("CreateInvite", () => {
-    // a variable to hold reset functions for all stores declared in the app
-    const storeResetFns = new Set();
 
-    const inviteUnauthMock = [{
-        request: {
-            query: gql`
-                mutation {
-                    createInvite(
-                        userEmail: "admin@mail.com",
-                        visitorEmail: "visitor@mail.com",
-                        IDDocType: "RSA-ID",
-                        IDNumber: "0109195273080",
-                        inviteDate: "2020-08-21",
-                        requiresParking: true
-                    )
-                }
-            `
-        },
-        result: {
-            errors: [new GraphQLError("Unauthorized")],
-        }
-    }
-    ];
-
-    const inviteDataErrorMock = [{
-        request: {
-            query: gql`
-                mutation {
-                    createInvite(
-                        userEmail: "admin@mail.com",
-                        visitorEmail: "error@mail.com",
-                        IDDocType: "RSA-ID",
-                        IDNumber: "0109195273080",
-                        inviteDate: "2022-08-21",
-                        requiresParking: true,
-                        )
-                }
-            `,
-        }, 
-        result: {
-            errors: [new GraphQLError("ERROR")],
-        }
-    }];
-
-    const inviteDataMock = [{
-        request: {
-            query: gql`
-                mutation {
-                    createInvite(
-                        userEmail: "admin@mail.com",
-                        visitorEmail: "visitor@mail.com",
-                        IDDocType: "RSA-ID",
-                        IDNumber: "0109195273080",
-                        inviteDate: "2020-08-21",
-                        requiresParking: true,
-                        )
-                }
-            `
-        },
-        result: {
-            data: {
-                createInvite: {
-                    "response": true
-                }
-            }
-        }
-    }];
     it("renders a heading", () => {
         render(
             <MockedProvider>
@@ -102,14 +36,16 @@ describe("CreateInvite", () => {
 
         expect(screen.getByPlaceholderText("Visitor Email")).toBeDefined();
 
+        // Setup user event object
         const user = userEvent.setup();
+
+        // Type email into input box
         await user.type(screen.getByPlaceholderText("Visitor Email"), "notvalidmail");
 
         // Just to cause blur event to be called on previous input
         await user.type(screen.getByPlaceholderText("Enter ID number"), "notvalidmail");
 
         expect(screen.getByText("Invalid email address")).toBeDefined();
-        
     });
 
     it("shows an error message with invalid RSA ID", async () => {
@@ -143,6 +79,7 @@ describe("CreateInvite", () => {
         const user = userEvent.setup();
 
         await user.click(screen.getByPlaceholderText("Visitor Email"));
+
         // Just to cause blur event to be called on previous input
         await user.type(screen.getByPlaceholderText("Enter ID number"), "notvalidmail");
 
@@ -209,6 +146,7 @@ describe("CreateInvite", () => {
     it("redirects to visitor dashboard when data is valid", async () => {
         const { result, hydrate } = renderHook(() => useAuth());
 
+        // SSR => Wait till page is hydrated with JS code
         hydrate();
 
         act(() => {
@@ -231,7 +169,6 @@ describe("CreateInvite", () => {
         );
         
         const user = userEvent.setup();
-
 
         await user.type(screen.getByPlaceholderText("Visitor Email"), "visitor@mail.com");
         await user.selectOptions(screen.getByRole("combobox"), ["RSA-ID"]);
@@ -277,11 +214,6 @@ describe("CreateInvite", () => {
         await user.type(screen.getByPlaceholderText("Enter ID number"), "0109195273080");
         await user.click(screen.getByRole("checkbox"));
         await user.click(screen.getByRole("button"));
-
     });
 
-    // Reset all stores after each test run
-    afterEach(() => {
-        act(() => storeResetFns.forEach((resetFn) => resetFn()));
-    });
 });

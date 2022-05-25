@@ -10,7 +10,10 @@ const customJestConfig = {
   coverageDirectory: "./coverage",
   coveragePathIgnorePatterns: [
     "node_modules",
-    "authStore.js"
+    "authStore.js",
+  ],
+  modulePathIgnorePatterns: [
+      "__mocks__",
   ],
 }
 

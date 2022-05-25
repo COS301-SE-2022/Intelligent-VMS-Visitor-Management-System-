@@ -1,34 +1,48 @@
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 import Layout from "../components/Layout";
-import { Formik } from "formik";
+import { Field, Formik } from "formik";
 import { motion } from "framer-motion";
 
 import useAuth from "../store/authStore";
 
 const SignUp = () => {
-
-    const scaleEmoji = {
+    const permission = useAuth((state) => state.permission)(); 
+    const verify = useAuth((state) => state.setVerify);
+    const verified = useAuth((state) => state.verified);
+    
+    const flyEmojiAway = {
         initial: {
-            scale: 1.2,
+            y: 0,
+            x: 0
         },
         hover: {
-            scale: [1.5,1,1.5,2,1.5],
-            rotate: [10, -10, 10, -20, 0],
+            y: -100,
+            x: 200,
             transition: {
-                ease: "easeInOut",
-                duration: 0.7
+                ease: "linear",
+                duration: 1.2
             }
-        },
+        }
     };
+    
+    const router = useRouter();
+
+    useEffect(() => {
+        if(verified && permission === -1) {
+            router.push("/verify");
+        } else if(permission >= 0){
+            router.push("/");
+        }
+    }, [router, verified, permission]);
 
     return (
         <Layout>
             <div className="relative flex flex-col h-full min-h-[80vh] w-full flex-col items-center justify-center overflow-hidden">
-
                 <ul className="steps mb-3 mt-2 text-xs md:text-base">
-                  <li className="step step-primary">Tell Us About Yourself</li>
-                  <li className="step">Usage</li>
-                  <li className="step">Verify Email</li>
-                  <li className="step">Authorize Account</li>
+                    <li className="step step-primary">Tell Us About Yourself</li>
+                    <li className="step">Verify Email</li>
+                    <li className="step">Authorize Account</li>
                 </ul>
 
                 <Formik
@@ -53,42 +67,17 @@ const SignUp = () => {
                             errors.password = "Password needs minimum of 8 characters with one number and one special character";
                         } else if(values.confirmPassword !== values.password) {
                             errors.confirmPassword = "Passwords do not match";
-                        }
+                        } else if(!values.userType) {
+                            errors.userType = "Please select user type";
+                        } 
 
                         return errors;
                     }}
                     onSubmit={(values, { setSubmitting }) => {
-                        loginMutation({
-                            mutation: gql`
-                                    mutation {
-                                        login(email: "${values.email}", password: "${values.password}") {
-                                            access_token
-                                        }
-                                    }`,
-                        })
-                            .then((res) => {
-                                // Enable button
-                                setSubmitting(false);
-
-                                // Remove alerts if any
-                                setShowErrorAlert(false);
-
-                                // Get token from response
-                                const token = res.data.login.access_token;
-
-                                // Remove old login data
-                                logout();
-
-                                // Add token to store
-                                login(token);
-
-                                router.push("/createInvite");
-                            })
-                            .catch((err) => {
-                                setShowErrorAlert(true);
-                                setSubmitting(false);
-                                setErrorMessage(err.message);
-                            });
+                        alert({values});
+                        setSubmitting(false);
+                        verify();
+                        router.push("/verify");
                     }}
                 >
                     {({
@@ -143,15 +132,29 @@ const SignUp = () => {
                             <span className="text-error text-sm md:text-base">
                                 {errors.confirmPassword && touched.confirmPassword && errors.confirmPassword}
                             </span>
+                            <p className="text-sm md:text-lg lg:text-xl">I&apos;m a... <span>{values.userType}</span></p>
+                            <div className="flex items-center space-x-3">
+                                <label className="flex items-center space-x-3">
+                                    <span className="text-sm md:text-base font-bold">Resident</span>
+                                    <Field onChange={handleChange} onBlur={handleBlur} className="radio checked:bg-primary" type="radio" name="userType" value="resident" />
+                                </label>
+                                <label className="flex items-center space-x-3">
+                                    <span className="text-sm md:text-base font-bold">Receptionist</span>
+                                    <Field onChange={handleChange} onBlur={handleBlur} className="radio checked:bg-secondary" type="radio" name="userType" value="receptionist" />
+                                </label>
+                            </div>
+                            <span className="text-error">
+                                {errors.userType && touched.userType && errors.userType}
+                            </span>
                             <motion.button
-                                className="btn btn-primary space-x-4"
+                                className="btn btn-primary space-x-4 overflow-y-hidden"
                                 type="submit"
                                 disabled={isSubmitting}
                                 initial="initial"
                                 whileHover="hover"
                                 whileFocus="hover"
                             >
-                                Let&apos;s Go <motion.span className="ml-3" variants={scaleEmoji}> 🎉</motion.span>
+                                Let&apos;s Go <motion.span className="ml-3" variants={flyEmojiAway}> 🚀</motion.span>
                             </motion.button>
                         </form>
                     )}
