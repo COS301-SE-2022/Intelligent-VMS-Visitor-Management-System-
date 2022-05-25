@@ -31,14 +31,6 @@ const AdminDashboard = () => {
                 router.push("/expire");
                 return;
             }
-
-            setIsVisitorData([
-                {
-                    visitorEmail: "ERROR",
-                    idDocType: "ERROR",
-                    isNumber: "ERROR",
-                },
-            ]);
         }
 
     }, [loading, error, data, router]);
