@@ -46,7 +46,6 @@ describe("CreateInvite", () => {
         await user.type(screen.getByPlaceholderText("Enter ID number"), "notvalidmail");
 
         expect(screen.getByText("Invalid email address")).toBeDefined();
-        
     });
 
     it("shows an error message with invalid RSA ID", async () => {
