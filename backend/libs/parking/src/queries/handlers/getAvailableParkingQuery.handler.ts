@@ -1,17 +1,19 @@
-import { getAvailableParkingQuery} from "../impl/getAvailableParking.query";
+import { GetAvailableParkingQuery} from "../impl/getAvailableParking.query";
 import { QueryHandler, IQueryHandler } from "@nestjs/cqrs";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { Parking, ParkingDocument } from "../../schema/parking.schema";
 
 
-@QueryHandler(getAvailableParkingQuery)
-export class getAvailableParkingQueryHandler implements IQueryHandler {
+@QueryHandler(GetAvailableParkingQuery)
+export class GetAvailableParkingQueryHandler implements IQueryHandler {
   constructor(
       @InjectModel(Parking.name) private parkingModel: Model<ParkingDocument>,
   ) {}
 
-  async execute(query: getAvailableParkingQuery):Promise<number> {
+  //db stuff for getting avail parking
+  async execute(query: GetAvailableParkingQuery):Promise<number> {
+    
     const parkingArr = await this.parkingModel.find();
     return parkingArr.length;
   }

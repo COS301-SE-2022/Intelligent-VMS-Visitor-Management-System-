@@ -71,6 +71,12 @@
       ],
       "@vms/mail/*": [
         "libs/mail/src/*"
+      ],
+      "@vms/receptionist": [
+        "libs/receptionist/src"
+      ],
+      "@vms/receptionist/*": [
+        "libs/receptionist/src/*"
       ]
     }
   }

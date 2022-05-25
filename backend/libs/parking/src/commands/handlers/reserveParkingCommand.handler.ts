@@ -2,17 +2,25 @@ import { ReserveParkingCommand } from "../impl/reserveParking.command";
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import { Parking, ParkingDocument } from "../../schema/parking.schema";
+import { ParkingReservation, ParkingReservationDocument } from "../../schema/reservation.schema";
 
 
 @CommandHandler(ReserveParkingCommand)
 export class ReserveParkingCommandHandler implements ICommandHandler<ReserveParkingCommand> {
   constructor(
-      @InjectModel(Parking.name) private parkingModel: Model<ParkingDocument>,
+      @InjectModel(ParkingReservation.name) private parkingReservationModel: Model<ParkingReservationDocument>,
   ) {}
 
-  async execute(command: ReserveParkingCommand) {
-    const { reservationInviteID, parkingNumber } = command;
-    return await this.parkingModel.findOneAndUpdate({parkingNumber:parkingNumber}, {reservationInviteID: reservationInviteID});
+  //db stuff for reserving parking
+  async execute(command: ReserveParkingCommand):Promise<ParkingReservation> {
+    
+    const { invitationID, parkingNumber } = command;
+
+    const parkingReservation = new ParkingReservation();
+    parkingReservation.invitationID = invitationID;
+    parkingReservation.parkingNumber = parkingNumber;
+
+    return await this.parkingReservationModel.create(parkingReservation);
+
   }
 }

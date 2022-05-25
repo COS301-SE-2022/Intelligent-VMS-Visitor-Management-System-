@@ -15,6 +15,7 @@ import { VisitorInviteModule } from "@vms/visitor-invite";
 import { ResidentModule } from "@vms/resident";
 import { ParkingModule } from "@vms/parking";
 import { MailModule } from "@vms/mail";
+import { ReceptionistModule } from "@vms/receptionist";
 
 @Module({
     imports: [
@@ -42,7 +43,8 @@ import { MailModule } from "@vms/mail";
         VisitorInviteModule,
         ResidentModule,
         ParkingModule,
-        MailModule
+        MailModule,
+        ReceptionistModule,
     ],
     controllers: [AppController],
     providers: [AppService],

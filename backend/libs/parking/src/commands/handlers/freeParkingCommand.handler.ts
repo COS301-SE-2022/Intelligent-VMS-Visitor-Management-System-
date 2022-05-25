@@ -11,11 +11,12 @@ export class FreeParkingCommandHandler implements ICommandHandler<FreeParkingCom
       @InjectModel(Parking.name) private parkingModel: Model<ParkingDocument>,
   ) {}
 
-  async execute(command: FreeParkingCommand) {
-    //db stuff for freeing up parking
+  //db stuff for freeing up parking
+  async execute(command: FreeParkingCommand): Promise<Parking> {
     const { parkingNumber } = command;
 
     //TODO (Larisa) change find one
+
     //set visitorEmail = "" since no visitor is occupying the space anymore
     return await this.parkingModel.findOneAndUpdate({parkingNumber: parkingNumber}, {visitorEmail: ""});
   }

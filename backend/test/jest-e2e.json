@@ -28,6 +28,8 @@
     "@vms/parking/(.*)": "<rootDir>/../libs/parking/src/$1",
     "@vms/parking": "<rootDir>/../libs/parking/src",
     "@vms/mail/(.*)": "<rootDir>/../libs/mail/src/$1",
-    "@vms/mail": "<rootDir>/../libs/mail/src"
+    "@vms/mail": "<rootDir>/../libs/mail/src",
+    "@vms/receptionist/(.*)": "<rootDir>/../libs/receptionist/src/$1",
+    "@vms/receptionist": "<rootDir>/../libs/receptionist/src"
   }
 }

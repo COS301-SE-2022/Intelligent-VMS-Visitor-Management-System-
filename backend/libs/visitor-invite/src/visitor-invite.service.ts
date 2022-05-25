@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import { randomUUID } from "crypto";
 
@@ -14,13 +14,18 @@ import { GetNumberVisitorQuery } from "./queries/impl/getNumberOfVisitors.query"
 import { InviteNotFound } from "./errors/inviteNotFound.error";
 
 import { ReserveParkingCommand } from "@vms/parking/commands/impl/reserveParking.command";
-import { getAvailableParkingQuery } from '@vms/parking/queries/impl/getAvailableParking.query';
+import { GetAvailableParkingQuery } from '@vms/parking/queries/impl/getAvailableParking.query';
 import { ParkingNotFound } from "@vms/parking/errors/parkingNotFound.error";
 import { MailService } from "@vms/mail";
+import { ParkingService } from "@vms/parking";
 
 @Injectable()
 export class VisitorInviteService {
-    constructor(private readonly commandBus: CommandBus, private readonly queryBus: QueryBus, private readonly mailService: MailService) {}
+    constructor(private readonly commandBus: CommandBus, 
+                private readonly queryBus: QueryBus, 
+                @Inject(forwardRef(() => ParkingService))
+                private readonly parkingService:ParkingService,
+                private readonly mailService: MailService) {}
 
     async createInvite(
         userEmail: string,
@@ -49,7 +54,7 @@ export class VisitorInviteService {
         if(requiresParking) {
 
             const parking =  await this.queryBus.execute(
-                new getAvailableParkingQuery()
+                new GetAvailableParkingQuery()
             )
 
             if(parking>0) {
@@ -66,6 +71,10 @@ export class VisitorInviteService {
 
     async getInvites(email: string) {
         return this.queryBus.execute(new GetInvitesQuery(email));
+    }
+
+    async getInvite(inviteID: string) {
+        return this.queryBus.execute(new GetInviteQuery(inviteID));
     }
 
     async cancelInvite(email: string, inviteID: string) {

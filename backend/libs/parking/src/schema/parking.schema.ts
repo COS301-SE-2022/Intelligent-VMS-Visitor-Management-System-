@@ -15,8 +15,6 @@ export interface ParkingDocument extends Document {
 */
 @Schema()
 export class Parking {
-    @Prop()
-    reservationInviteID?: string;
 
     @Prop()
     visitorEmail?: string;
@@ -24,5 +22,6 @@ export class Parking {
     @Prop()
     parkingNumber: number;
 }
+
 
 export const ParkingSchema = SchemaFactory.createForClass(Parking);

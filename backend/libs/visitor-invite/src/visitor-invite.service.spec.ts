@@ -4,6 +4,7 @@ import { VisitorInviteService } from "./visitor-invite.service";
 import {GetInvitesQuery} from "./queries/impl/getInvites.query";
 import {GetNumberVisitorQuery} from "./queries/impl/getNumberOfVisitors.query";
 import {MailService} from "@vms/mail";
+import { ParkingService } from "@vms/parking/parking.service";
 
 describe("VisitorInviteService", () => {
     let service: VisitorInviteService;
@@ -45,6 +46,7 @@ describe("VisitorInviteService", () => {
         const module: TestingModule = await Test.createTestingModule({
             providers: [
                 VisitorInviteService, 
+                ParkingService,
                 MailService,
                 CommandBus, 
                 {
