@@ -5,7 +5,7 @@ import Layout from "../components/Layout";
 import ErrorAlert from "../components/ErrorAlert";
 
 import { useRouter } from "next/router";
-import Popup from "../components/Popup";
+import QRScanner from "../components/QRScanner";
 
 const ReceptionistDashboard = () => {
 
@@ -18,7 +18,7 @@ const ReceptionistDashboard = () => {
     }*/
     
     const [visitorData, setIsVisitorData] = useState([]);
-    const [showErrorAlert] = useState(false);
+    const [showErrorAlert, scanPopup] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
 
     const router = useRouter();
@@ -33,13 +33,13 @@ const ReceptionistDashboard = () => {
         }
     `);
 
-    const { searching, err, invite } = useQuery(gql`
+   /* const { searching, err, invite } = useQuery(gql`
         query {
             getInvite( "${this.state.inviteID}" ) {
                 inviteID
             }
         }
-    `);
+    `);*/
 
     const signIn = (inviteID) => {
         //TODO (Larisa)
@@ -50,7 +50,7 @@ const ReceptionistDashboard = () => {
     };
 
     const scan = (inviteID) => {
-        this.state={scanPopup: !this.state.scanPopup}
+       // this.state={scanPopup: !this.state.scanPopup}
     };
 
 /*
