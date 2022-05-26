@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, setState } from "react";
 import { QrReader } from 'react-qr-reader';
 
-const Popup = ({showCondition}) => {
+const QrScanner = ({showCondition}) => {
     const videoRef = useRef(null);
     const [data, setData] = useState('No result');
 
@@ -46,4 +46,4 @@ const Popup = ({showCondition}) => {
     );
 };
 
-export default Popup;
+export default QrScanner;

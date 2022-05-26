@@ -9,13 +9,13 @@ import Popup from "../components/Popup";
 
 const ReceptionistDashboard = () => {
 
-    constructor() {
+    /*constructor() {
         super();
         this.state = {
           scanPopup: false,
           inviteID: ""
         };
-    }
+    }*/
     
     const [visitorData, setIsVisitorData] = useState([]);
     const [showErrorAlert] = useState(false);
@@ -77,7 +77,7 @@ const ReceptionistDashboard = () => {
     //////////////////////////////////////////////////////////////////////////////////////////////////
     return (
         <Layout>
-            <input type="text" value = {} placeholder="Search.." className="ml-5 input input-bordered input-primary w-4/6" />
+            <input type="text" value = {this.state.search} placeholder="Search.." className="ml-5 input input-bordered input-primary w-4/6" />
             <button onClick={search} className="ml-5 mt-5 mb-5 btn btn-primary">Search</button>
             <button onClick={scan} className="mr-5 mt-5 mb-5 float-right btn btn-primary">Scan to Search</button>
             <h1 className="mt-5 mb-5 p-3 text-left text-4xl font-bold base-100">
@@ -139,7 +139,7 @@ const ReceptionistDashboard = () => {
                 )}
             </div>
             <ErrorAlert message={errorMessage} showConditon={showErrorAlert} />
-            <Popup showCondition={scanPopup} />
+            <QRScanner showCondition={scanPopup} />
         </Layout>
     );
 };
