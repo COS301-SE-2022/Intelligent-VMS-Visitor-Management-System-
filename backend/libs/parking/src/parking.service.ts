@@ -50,6 +50,8 @@ export class ParkingService {
 
     Throws: External error
     Returns: amount of available parking
+
+    Note: This does not return unreserved or free parking only spaces regardless their state
     */
     async getAvailableParking(
     ){
@@ -96,9 +98,9 @@ export class ParkingService {
     Throws:
     External Error
     InviteNotFound
+    ReservationNotFound
 
-    Returns:
-    Parking assigned
+    Returns: the parking assigned to invite
     */
     async assignParking(
         invitationID: string,
@@ -130,13 +132,14 @@ export class ParkingService {
     /*
     Reserve the first open parking space
 
-    Throws:
+    Throws: 
     External error
+    InviteNotFound
+    InvalidQuery
+    ParkingNotFound
 
-    Returns: parking reserved
-
+    Returns: the reserved parking
     */
-   //TODO (Larisa) only one reservation per invite
     async reserveParking(
         invitationID:string
     ){
@@ -192,7 +195,12 @@ export class ParkingService {
     }
 
     /*
-    Reserve a parking space
+    Reserve a specific parking space
+
+    Throws:
+    InviteNotFound
+    InvalidQuery
+    ParkingNotFound
 
     Returns: parking reserved 
     */
@@ -213,7 +221,7 @@ export class ParkingService {
 
         // or parking disabled
         if(parkingNumber<0 ||  parkingNumber>spaces)
-        throw new InvalidQuery(`Parking number ${parkingNumber} is out of parking range. Parking range from 0 to ${spaces}`);
+            throw new InvalidQuery(`Parking number ${parkingNumber} is out of parking range. Parking range from 0 to ${spaces}`);
 
         if(InviteReservation)
             throw new InvalidQuery(`Invitation with ID ${invitationID} already have reserved parking.`)
@@ -240,6 +248,14 @@ export class ParkingService {
             }
     }
 
+    /*
+    Unreserve the parking for an invite
+
+    Throws:
+    InviteNotFound
+
+    Returns: parking unreserved 
+    */
     async unreserveParking(
         invitationID:string,
     ){
@@ -253,6 +269,15 @@ export class ParkingService {
              
     }
 
+    /*
+    Create n amount of new parking spots
+
+    Throws:
+    ExternalError
+    InvalidQuery
+
+    Returns: array of parking objects 
+    */
     async createNParkingSpots(
         N:number,
     ){
@@ -268,7 +293,15 @@ export class ParkingService {
             throw new ExternalError("Error outside the parking.service.");
             
     }
+    /*
+    Returns all parking that have not been assigned yet
 
+    Throws:
+    ExternalError
+    ParkingNotFound
+
+    Returns: array of parking that aren't assigned
+    */
     async getFreeParking(
     ){
         const parkings = await this.queryBus.execute(
@@ -286,6 +319,15 @@ export class ParkingService {
             
     }
 
+    /*
+    Return all parking reservations made
+
+    Throws:
+    ExternalError
+    ParkingNotFound
+
+    Returns: an array of parking reservations
+    */
     async getReservations(
         ){
             const parkings = await this.queryBus.execute(
@@ -303,6 +345,16 @@ export class ParkingService {
                 
     }
 
+    /*
+    Return all reservations of a specific parking space
+
+    Throws:
+    ExternalError
+    InvalidQuery
+    ParkingNotFound
+
+    Returns: an array of reservations for a specific parking space 
+    */
     //TODO (Larisa) check parking num in another way?
     async getParkingReservations(
         parkingNumber: number,
@@ -328,12 +380,25 @@ export class ParkingService {
                 
     }
 
+    /*
+    Return the reservation of a specific invite
+
+    Throws:
+    InviteNotFound
+    ParkingNotFound
+
+    Returns: the reservation for a specific invitation
+    */
     async getInviteReservation(
         invitationID: string,
         ){
+            const invite = await this.inviteService.getInvite(invitationID);
+
+            if(!invite)
+            throw new InviteNotFound(`Invitation with ID ${invitationID} not found.`);
+
             const reservation = await this.queryBus.execute(
                 new GetInviteReservationQuery(invitationID));
-
     
             if(reservation)
             {
