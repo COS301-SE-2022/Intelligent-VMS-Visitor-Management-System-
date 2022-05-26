@@ -2,16 +2,16 @@ import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { Parking, ParkingDocument } from "../../schema/parking.schema";
-import { DisableParkingCommand } from "../impl/disableParking.command";
+import { DisableParkingSpaceCommand } from "../impl/disableParkingSpace.command";
 
 
-@CommandHandler(DisableParkingCommand)
-export class EnableParkingCommandHandler implements ICommandHandler<DisableParkingCommand> {
+@CommandHandler(DisableParkingSpaceCommand)
+export class EnableParkingCommandHandler implements ICommandHandler<DisableParkingSpaceCommand> {
   constructor(
       @InjectModel(Parking.name) private parkingModel: Model<ParkingDocument>,
   ) {}
 
-  async execute(command: DisableParkingCommand): Promise<Parking> {
+  async execute(command: DisableParkingSpaceCommand): Promise<Parking> {
     const { parkingNumber } = command;
 
     //TODO (Larisa) change find one

@@ -1,4 +1,4 @@
-export class DisableParkingCommand {
+export class EnableParkingSpaceCommand {
     constructor(
       readonly parkingNumber: number
     ) {}
