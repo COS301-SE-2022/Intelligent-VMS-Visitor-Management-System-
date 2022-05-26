@@ -81,7 +81,7 @@ const ReceptionistDashboard = () => {
             <button onClick={search} className="ml-5 mt-5 mb-5 btn btn-primary">Search</button>
             <button onClick={scan} className="mr-5 mt-5 mb-5 float-right btn btn-primary">Scan to Search</button>
             <h1 className="mt-5 mb-5 p-3 text-left text-4xl font-bold base-100">
-                Today's Invites
+                Todays Invites
             </h1>
             
             {/* <div className="mx-5 grid grid-cols-3 gap-4 content-evenly h-10 bg-base-300 rounded-md content-center">
