@@ -66,5 +66,14 @@ export class VisitorInviteResolver {
     async getTotalNumberOfVisitors() {
         return this.visitorInviteService.getTotalNumberOfVisitors()
     }
+
+    // Get Number of invites in date range
+    @UseGuards(GqlAuthGuard, RolesGuard)
+    @Roles("admin")
+    @Query((returns) => [Invite], { name: "getNumInvitesPerDate"})
+    async getNumInvitesPerDate(@Args("dateStart") dateStart: string, @Args("dateEnd") dateEnd: string) {
+        return this.visitorInviteService.getNumInvitesPerDate(dateStart, dateEnd);
+    }
+
 }
 
