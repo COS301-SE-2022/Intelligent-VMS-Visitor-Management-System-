@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { renderHook, act } from "@testing-library/react-hooks/server";
-import userEvent from '@testing-library/user-event';
+import userEvent from "@testing-library/user-event";
 import { MockedProvider } from "@apollo/client/testing";
 
 import * as nextRouter from "next/router";
@@ -42,10 +42,9 @@ describe("Login", () => {
         await user.click(screen.getByRole("button"));
 
         expect(screen.getByText("Required")).toBeVisible();
-         
     });
 
-    it("shows an error message with invalid email",  async () => {
+    it("shows an error message with invalid email", async () => {
         render(
             <MockedProvider>
                 <Login />
@@ -84,7 +83,7 @@ describe("Login", () => {
 
         expect(screen.getByText("Required")).toBeVisible();
     });
-    
+
     it("should redirect page to create invite page on succesful login", async () => {
         const { result, hydrate } = renderHook(() => useAuth());
 
@@ -101,17 +100,16 @@ describe("Login", () => {
             <MockedProvider mocks={validLogin} addTypename={false}>
                 <Login />
             </MockedProvider>
-        );        
+        );
 
         const user = userEvent.setup();
         await user.type(screen.getByPlaceholderText("Email"), "admin@mail.com");
         await user.type(screen.getByPlaceholderText("Password"), "password");
         await user.click(screen.getByRole("button"));
-        
+
         await waitFor(async () => {
             await new Promise((resolve) => setTimeout(resolve, 50));
             expect(router.push).toHaveBeenCalledWith("/createInvite");
         });
     });
-
 });
