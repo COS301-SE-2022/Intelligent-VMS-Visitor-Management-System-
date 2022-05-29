@@ -75,5 +75,13 @@ export class VisitorInviteResolver {
         return this.visitorInviteService.getNumInvitesPerDate(dateStart, dateEnd);
     }
 
+    // Get Number of total open invites per resident
+    @UseGuards(GqlAuthGuard, RolesGuard)
+    @Roles("resident", "receptionist", "admin")
+    @Query((returns) => Number, { name: "getTotalNumberOfInvitesOfResident"})
+    async getTotalNumberOfVisitorsOfResident(@CurrentUser() user: User) {
+        return this.visitorInviteService.getTotalNumberOfInvitesOfResident(user.email);
+    }
+
 }
 

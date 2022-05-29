@@ -8,6 +8,7 @@ import { GetInvitesQuery } from "./queries/impl/getInvites.query";
 import { GetInviteQuery } from "./queries/impl/getInvite.query";
 import { GetNumberVisitorQuery } from "./queries/impl/getNumberOfVisitors.query";
 import { GetInvitesInRangeQuery } from "./queries/impl/getInvitesInRange.query";
+import { GetNumberOfInvitesOfResidentQuery } from "./queries/impl/getNumberOfInvitesOfResident.query";
 
 import { InviteNotFound } from "./errors/inviteNotFound.error";
 import { DateFormatError } from "./errors/dateFormat.error";
@@ -113,5 +114,10 @@ export class VisitorInviteService {
         }
 
        return await this.queryBus.execute(new GetInvitesInRangeQuery(dateStart, dateEnd));
+    }
+
+    // Get Number of total open invites per resident
+    async getTotalNumberOfInvitesOfResident(email: string) {
+        return await this.queryBus.execute(new GetNumberOfInvitesOfResidentQuery(email)); 
     }
 }

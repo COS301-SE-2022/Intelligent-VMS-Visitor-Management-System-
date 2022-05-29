@@ -6,6 +6,7 @@ import { GetNumberVisitorQuery } from "./queries/impl/getNumberOfVisitors.query"
 import { GetInvitesInRangeQuery } from "./queries/impl/getInvitesInRange.query";
 import {MailService} from "@vms/mail";
 import { ParkingService } from "@vms/parking/parking.service";
+import {GetNumberOfInvitesOfResidentQuery} from "./queries/impl/getNumberOfInvitesOfResident.query";
 
 describe("VisitorInviteService", () => {
     let service: VisitorInviteService;
@@ -60,6 +61,12 @@ describe("VisitorInviteService", () => {
                         requiresParking: false
                     }
                 ];
+            } else if(query instanceof GetNumberOfInvitesOfResidentQuery) {
+                if(query.email === "admin@mail.com") {
+                    return 2;
+                } else {
+                    return 0;
+                }
             }
         }),
     };
@@ -166,6 +173,13 @@ describe("VisitorInviteService", () => {
             }
         });
 
+    });
+
+    describe("GetTotalNumberOfInvitesOfResident", () => {
+        it("should return the number of invites per resident", async () => {
+            const numInvites = await service.getTotalNumberOfInvitesOfResident("admin@mail.com");
+            expect(numInvites).toEqual(2);
+        });
     });
 
 });
