@@ -29,10 +29,10 @@ function MyApp({ Component, pageProps }) {
     };
 
     useEffect(() => {
-        if(!isPublicPath(router.asPath) && permission === -1) {
+        if (!isPublicPath(router.asPath) && permission === -1) {
             router.push("/expire");
             return;
-        }     
+        }
     }, [router, permission]);
 
     if (
@@ -46,7 +46,10 @@ function MyApp({ Component, pageProps }) {
         <ApolloProvider client={client}>
             <Head>
                 <title>VMS</title>
-                <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable = no" />
+                <meta
+                    name="viewport"
+                    content="width=device-width, initial-scale=1.0, user-scalable = no"
+                />
             </Head>
             <Component {...pageProps} />
         </ApolloProvider>
