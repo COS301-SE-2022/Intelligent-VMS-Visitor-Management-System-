@@ -21,6 +21,9 @@ export class Parking {
 
     @Prop()
     parkingNumber: number;
+
+    @Prop()
+    enabled: boolean;
 }
 
 

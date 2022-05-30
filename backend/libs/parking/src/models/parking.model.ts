@@ -8,5 +8,8 @@ export class Parking {
     @Field((type) => String)
     parkingNumber: number;
 
+    @Field((type) => Boolean)
+    enabled: boolean;
+
 }
 
