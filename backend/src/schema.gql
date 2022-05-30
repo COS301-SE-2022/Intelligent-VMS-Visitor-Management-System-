@@ -18,6 +18,7 @@ type User {
 type Parking {
   visitorEmail: String!
   parkingNumber: String!
+  enabled: Boolean!
 }
 
 type ParkingReservation {
