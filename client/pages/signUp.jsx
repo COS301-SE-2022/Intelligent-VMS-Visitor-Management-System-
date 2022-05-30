@@ -1,8 +1,10 @@
 import { useEffect } from "react";
 import { useRouter } from "next/router";
-import Layout from "../components/Layout";
+import { gql, useQuery, useApolloClient } from "@apollo/client";
 import { Field, Formik } from "formik";
 import { motion } from "framer-motion";
+
+import Layout from "../components/Layout";
 
 import useAuth from "../store/authStore";
 
@@ -26,10 +28,11 @@ const SignUp = () => {
         },
     };
 
+    const client = useApolloClient();
     const router = useRouter();
 
     useEffect(() => {
-        if (verified && permission === -1) {
+        if (verified && (permission === -1 || permission === -2)) {
             router.push("/verify");
         } else if (permission >= 0) {
             router.push("/");
@@ -85,10 +88,25 @@ const SignUp = () => {
                         return errors;
                     }}
                     onSubmit={(values, { setSubmitting }) => {
-                        alert({ values });
                         setSubmitting(false);
                         verify();
-                        router.push("/verify");
+                        
+                        client.mutate({
+                            mutation: gql`
+                                mutation {
+                                    signup(email: "${values.email}", password: "${values.password}", type: "${values.userType}", idNumber: "${values.idNumber}")
+                                }
+                            `,
+                        }).then((res) => {
+                            if(res.data.signup) {
+                                router.push("/verify");
+                                setSubmitting(false);
+                            }
+                        }).catch((err) => {
+                            console.error(err.message);
+                        });
+                        
+                        setSubmitting(false);
                     }}
                 >
                     {({

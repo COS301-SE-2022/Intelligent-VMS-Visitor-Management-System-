@@ -33,13 +33,13 @@ const useAuth = create(
                 if(token) {
                     return token.permission;
                 } else {
-                    return -1;
+                    return -999;
                 }
             },
             navLinks: () => {
                 const permission = get().permission();
                 
-                if(permission !== -1) {
+                if(permission > -1) {
                     switch(permission) {
                         case 0:
                             return [
@@ -64,6 +64,11 @@ const useAuth = create(
                                 { content: "Logout", path: "/", onClick: () => get().logout() },
                             ];
                     }
+                } else if(permission === -1 || permission === -2){
+                    return [
+                        { content: "Authorize", path: "/authorize" },
+                        { content: "Logout", path: "/", onClick: () => get().logout() },
+                    ]
                 } else {
                     return [
                         { content: "Login", path: "/login" },

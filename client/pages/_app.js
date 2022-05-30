@@ -36,7 +36,7 @@ function MyApp({ Component, pageProps }) {
     }, [router, permission]);
 
     if (
-        (pageProps.protected && permission === -1) ||
+        (pageProps.protected && permission < 0) ||
         (pageProps.permission < permission && permission !== -1)
     ) {
         return <Layout> Woops: you are not supposed to be here </Layout>;
