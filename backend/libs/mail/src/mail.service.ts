@@ -43,6 +43,18 @@ export class MailService {
                 <h4>Please remember to bring your ${idDocType}</h4>
                 `,
         });
-
     } 
+
+    async sendVerify(to: string, verficationID: string) {
+        return this.transporter.sendMail({
+            from: '"VMS 👋" <firestorm19091@gmail.com>', // sender address
+            to: to, // list of receivers
+            subject: "You received an invite", // Subject line
+            html: `<h1>Hello New User!👋</h1>
+                <br />
+                <h3>Thank you for choosing V Ʌ S</h3>
+                    <p>Please verify your account <a href="https://vms-client.vercel.app/verify?id=${verficationID}&email=${to}">here</a>.</p>
+                `
+        });
+    }
 }
