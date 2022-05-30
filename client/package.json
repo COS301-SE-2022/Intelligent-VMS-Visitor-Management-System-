@@ -27,6 +27,7 @@
     "graphql-tag": "^2.12.6",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^28.0.3",
+    "jest-canvas-mock": "^2.4.0",
     "jest-environment-jsdom": "^28.0.2",
     "jwt-decode": "^3.1.2",
     "next": "^12.1.6",
