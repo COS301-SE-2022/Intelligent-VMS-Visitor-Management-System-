@@ -93,7 +93,7 @@ describe("AdminDashboard", () => {
         );
 
         await act(async () => {
-            await new Promise((resolve) => setTimeout(resolve, 30));
+            await new Promise((resolve) => setTimeout(resolve, 50));
             expect(router.push).toHaveBeenCalledWith("/expire");
         });
     });
