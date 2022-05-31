@@ -18,6 +18,7 @@ type User {
 type Parking {
   visitorEmail: String!
   parkingNumber: String!
+  enabled: Boolean!
 }
 
 type ParkingReservation {
@@ -52,6 +53,8 @@ type Query {
   helloInvite: String!
   getInvites: [Invite!]!
   getTotalNumberOfVisitors: Float!
+  getNumInvitesPerDate(dateStart: String!, dateEnd: String!): [Invite!]!
+  getTotalNumberOfInvitesOfResident: Float!
   helloParking: String!
   getAvailableParking: Float!
   getFreeParking: Parking!
@@ -62,6 +65,8 @@ type Query {
 type Mutation {
   createVisitor(input: VisitorInputType!): Visitor!
   login(email: String!, password: String!): User!
+  signup(email: String!, password: String!, type: String!, idNumber: String!): String!
+  verify(verifyID: String!, email: String!): Boolean!
   createInvite(userEmail: String!, visitorEmail: String!, IDDocType: String!, IDNumber: String!, inviteDate: String!, requiresParking: Boolean!): String!
   cancelInvite(inviteID: String!): Boolean!
   assignParking(invitationID: String!): Parking!

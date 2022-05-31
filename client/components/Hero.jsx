@@ -11,28 +11,36 @@ const Hero = () => {
     const spinArrow = {
         initial: {
             transition: {
-                ease: "easeInOut"
-            }
+                ease: "easeInOut",
+            },
         },
         hover: {
-            rotate: [0,360],
+            rotate: [0, 360],
             transition: {
                 ease: "easeInOut",
-                duration: 1
+                duration: 1,
             },
-        }
+        },
     };
-    
+
     return (
         <div className="hero min-h-[80vh]">
             <div className="hero-content">
                 <motion.div className="max-w-md overflow-y-hidden">
-                    <motion.h1 className="text-4xl font-bold">Go <motion.span className="text-secondary">Beyond</motion.span> The Lobby <motion.span className="text-primary">.</motion.span></motion.h1>
+                    <motion.h1 className="text-4xl font-bold">
+                        Go{" "}
+                        <motion.span className="text-secondary">
+                            Beyond
+                        </motion.span>{" "}
+                        The Lobby{" "}
+                        <motion.span className="text-primary">.</motion.span>
+                    </motion.h1>
 
                     <motion.p className="py-6">
-                        Go Beyond the Lobby with <span className="text-secondary">V Ʌ S</span> is an intelligent visitor management system aiming
-                        to bring an efficient and customizable interface for our
-                        clients.
+                        Go Beyond the Lobby with{" "}
+                        <span className="text-secondary">V Ʌ S</span> is an
+                        intelligent visitor management system aiming to bring an
+                        efficient and customizable interface for our clients.
                     </motion.p>
                     <Link
                         href={
@@ -41,7 +49,20 @@ const Hero = () => {
                                 : "/createInvite"
                         }
                     >
-                        <motion.button initial="initial" whileHover="hover" className="btn btn-primary">Get Started <motion.span variants={spinArrow} className="text-lg"> <BiRightArrowAlt /></motion.span> </motion.button>
+                        <motion.button
+                            initial="initial"
+                            whileHover="hover"
+                            className="btn btn-primary"
+                        >
+                            Get Started{" "}
+                            <motion.span
+                                variants={spinArrow}
+                                className="text-lg"
+                            >
+                                {" "}
+                                <BiRightArrowAlt />
+                            </motion.span>{" "}
+                        </motion.button>
                     </Link>
                 </motion.div>
             </div>

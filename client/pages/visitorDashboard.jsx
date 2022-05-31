@@ -72,7 +72,10 @@ const VisitorDashboard = () => {
 
     return (
         <Layout>
-            <h1 className="mt-5 mb-5 p-3 text-left text-4xl font-bold text-secondary flex items-center"> Visitor History</h1>
+            <h1 className="mt-5 mb-5 flex items-center p-3 text-left text-4xl font-bold text-secondary">
+                {" "}
+                Visitor History
+            </h1>
             <div className="flex h-full items-center justify-center overflow-x-auto p-3">
                 {loading ? (
                     <progress className="progress progress-primary w-56">
@@ -100,7 +103,7 @@ const VisitorDashboard = () => {
                                             <td>{visit.idNumber}</td>
                                             <td>
                                                 <button
-                                                    className="btn btn-square btn-primary"
+                                                    className="btn btn-primary btn-square"
                                                     onClick={() =>
                                                         cancelInvite(
                                                             visit.inviteID

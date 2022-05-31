@@ -39,7 +39,7 @@ const Login = () => {
                             )
                         ) {
                             errors.email = "Invalid email address";
-                        } else if(!values.password) {
+                        } else if (!values.password) {
                             errors.password = "Required";
                         }
                         return errors;
@@ -65,7 +65,7 @@ const Login = () => {
 
                                 // Remove old login data
                                 logout();
-                                
+
                                 // Mark the user as verified
                                 verify();
 
@@ -92,7 +92,7 @@ const Login = () => {
                     }) => (
                         <form
                             onSubmit={handleSubmit}
-                            className="prose form-control border space-y-4 rounded-xl bg-base-300 p-14 md:p-28"
+                            className="prose form-control space-y-4 rounded-xl border bg-base-300 p-14 md:p-28"
                         >
                             <h1>Welcome Back 👋</h1>
                             <input
@@ -119,7 +119,9 @@ const Login = () => {
                                 value={values.password}
                             ></input>
                             <span className="text-error">
-                                {errors.password && touched.password && errors.password}
+                                {errors.password &&
+                                    touched.password &&
+                                    errors.password}
                             </span>
                             <button
                                 className="btn btn-primary"

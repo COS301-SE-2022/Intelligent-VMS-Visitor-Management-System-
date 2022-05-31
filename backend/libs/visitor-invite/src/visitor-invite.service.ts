@@ -2,16 +2,16 @@ import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import { randomUUID } from "crypto";
 
-import { toDataURL } from "qrcode";
-import { createTransport } from "nodemailer";
-
 import { CreateInviteCommand } from "./commands/impl/createInvite.command";
 import { CancelInviteCommand } from "./commands/impl/cancelInvite.command";
 import { GetInvitesQuery } from "./queries/impl/getInvites.query";
 import { GetInviteQuery } from "./queries/impl/getInvite.query";
 import { GetNumberVisitorQuery } from "./queries/impl/getNumberOfVisitors.query";
+import { GetInvitesInRangeQuery } from "./queries/impl/getInvitesInRange.query";
+import { GetNumberOfInvitesOfResidentQuery } from "./queries/impl/getNumberOfInvitesOfResident.query";
 
 import { InviteNotFound } from "./errors/inviteNotFound.error";
+import { DateFormatError } from "./errors/dateFormat.error";
 
 import { ReserveParkingCommand } from "@vms/parking/commands/impl/reserveParking.command";
 import { GetAvailableParkingQuery } from '@vms/parking/queries/impl/getAvailableParking.query';
@@ -64,9 +64,8 @@ export class VisitorInviteService {
             }
         }
 
-        //const info = await this.mailService.sendInvite(visitorEmail, userEmail, inviteID, idDocType, requiresParking);
-        //return info.messageId;
-        return "";
+        const info = await this.mailService.sendInvite(visitorEmail, userEmail, inviteID, idDocType, requiresParking);
+        return info.messageId;
     }
 
     async getInvites(email: string) {
@@ -102,4 +101,23 @@ export class VisitorInviteService {
     async getTotalNumberOfVisitors() {
         return this.queryBus.execute(new GetNumberVisitorQuery());
     } 
+
+    // Get invites in date range
+    async getNumInvitesPerDate(dateStart: string, dateEnd: string) {
+        const start = Date.parse(dateStart);
+        const end = Date.parse(dateEnd);
+
+        if(isNaN(start) || isNaN(end)) {
+            throw new DateFormatError("Given Date is not of the form yyyy-mm-dd");
+        } else if(start > end) {
+            throw new DateFormatError("Start date can not be later than the end date");
+        }
+
+       return await this.queryBus.execute(new GetInvitesInRangeQuery(dateStart, dateEnd));
+    }
+
+    // Get Number of total open invites per resident
+    async getTotalNumberOfInvitesOfResident(email: string) {
+        return await this.queryBus.execute(new GetNumberOfInvitesOfResidentQuery(email)); 
+    }
 }

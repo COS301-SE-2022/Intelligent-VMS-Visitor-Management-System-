@@ -23,7 +23,7 @@ const CreateInvite = () => {
             x: 0,
         },
         animate: {
-            x: 900
+            x: 900,
         },
     };
 
@@ -76,14 +76,13 @@ const CreateInvite = () => {
                             !/^\d{8}$/i.test(values.idValue)
                         ) {
                             errors.idValue = "Invalid UP student number";
-                        } else if(!values.visitDate) {
+                        } else if (!values.visitDate) {
                             errors.visitDate = "Please add a date";
                         }
 
                         return errors;
                     }}
                     onSubmit={(values, { setSubmitting }) => {
-
                         const CREATE_INVITE = gql`
                             mutation {
                                 createInvite(
@@ -96,7 +95,7 @@ const CreateInvite = () => {
                             )
                         }
                         `;
-                        
+
                         createInviteMutation({
                             mutation: CREATE_INVITE,
                         })
@@ -129,7 +128,7 @@ const CreateInvite = () => {
                     }) => (
                         <form
                             onSubmit={handleSubmit}
-                            className="md:p-26 prose form-control space-y-4 rounded-none md:rounded-xl bg-base-300 p-14"
+                            className="md:p-26 prose form-control space-y-4 rounded-none bg-base-300 p-14 md:rounded-xl"
                         >
                             <h1>
                                 Let&apos;s{" "}
@@ -193,8 +192,27 @@ const CreateInvite = () => {
                             />
 
                             <motion.label className="label cursor-pointer">
-                                <motion.span initial="initial" whileHover="animate" className="label-text overflow-x-hidden pr-3">
-                                    Reserve Parking <motion.span initial="initial" className="inline-block" animate={{x: values.reserveParking ? 0 : -500, transition: {duration: 0.8, ease: "easeInOut"}}} variants={driveAway}> 🚗</motion.span>
+                                <motion.span
+                                    initial="initial"
+                                    whileHover="animate"
+                                    className="label-text overflow-x-hidden pr-3"
+                                >
+                                    Reserve Parking{" "}
+                                    <motion.span
+                                        initial="initial"
+                                        className="inline-block"
+                                        animate={{
+                                            x: values.reserveParking ? 0 : -500,
+                                            transition: {
+                                                duration: 0.8,
+                                                ease: "easeInOut",
+                                            },
+                                        }}
+                                        variants={driveAway}
+                                    >
+                                        {" "}
+                                        🚗
+                                    </motion.span>
                                 </motion.span>
 
                                 <motion.input
