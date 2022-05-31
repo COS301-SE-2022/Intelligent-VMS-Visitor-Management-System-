@@ -16,16 +16,18 @@ import useAuth from "../store/authStore";
 
 const AdminDashboard = () => {
     const [numInvitesSent, setNumInvitesSent] = useState(0);
+
     const incParkingSpots = useAuth((state) => state.incParkingSpots);
     const decParkingSpots = useAuth((state) => state.decParkingSpots);
     const updateParkingSpots = useAuth((state) => state.updateParkingSpots);
+
     const decodedToken = useAuth((state) => state.decodedToken)();
     const router = useRouter();
     const [visitorVals, setVisitorVals] = useState({
         data: [],
         labels: []
     });
-    const visitorGraph = useRef(null);
+
     const [startDate, endDate, dateMap, setDateMap] = useDateRange(7);
     const [todayInvites, setTodayInvites] = useState(0);
     const [numParkingSpotsAvailable, setNumParkingSpotsAvailable] = useState(0);
@@ -52,12 +54,6 @@ const AdminDashboard = () => {
             getAvailableParking 
         }
     `);
-
-    const downloadGraph = (chartRef) => {
-        if(chartRef.current) {
-            return chartRef.current.toBase64Image();
-        }
-    };
 
     useEffect(() => {
         // Num invites

@@ -88,7 +88,6 @@ const SignUp = () => {
                         return errors;
                     }}
                     onSubmit={(values, { setSubmitting }) => {
-                        setSubmitting(false);
                         verify();
                         
                         client.mutate({
@@ -104,9 +103,8 @@ const SignUp = () => {
                             }
                         }).catch((err) => {
                             console.error(err.message);
+                            setSubmitting(false);
                         });
-                        
-                        setSubmitting(false);
                     }}
                 >
                     {({
