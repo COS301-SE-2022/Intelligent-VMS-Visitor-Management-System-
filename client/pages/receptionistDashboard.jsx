@@ -43,17 +43,26 @@ const ReceptionistDashboard = () => {
 
     const signIn = (inviteID) => {
         //TODO (Larisa)
+        //change the state of the invite
+        //assigning parking if nec.
     };
 
     const search = (inviteID) => {
-        //TODO (Tabitha)
+        //TODO (Stefan)
     };
 
     const scan = (inviteID) => {
        // this.state={scanPopup: !this.state.scanPopup}
+       //TODO (Larisa)
     };
 
-/*
+    const signOut = (inviteID) => {
+        //TODO (Tabitha)
+        //change the state of the invite
+        //free the parking
+    };
+
+
     useEffect(() => {
         if (!loading && !error) {
             const invites = data.getInvites;
@@ -72,12 +81,12 @@ const ReceptionistDashboard = () => {
                 },
             ]);
         }
-    }, [loading, error, router, data]);*/
+    }, [loading, error, router, data]);
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
     return (
         <Layout>
-            <input type="text" value = {this.state.search} placeholder="Search.." className="ml-5 input input-bordered input-primary w-4/6" />
+            <input type="text" placeholder="Search.." className="ml-5 input input-bordered input-primary w-4/6" />
             <button onClick={search} className="ml-5 mt-5 mb-5 btn btn-primary">Search</button>
             <button onClick={scan} className="mr-5 mt-5 mb-5 float-right btn btn-primary">Scan to Search</button>
             <h1 className="mt-5 mb-5 p-3 text-left text-4xl font-bold base-100">
