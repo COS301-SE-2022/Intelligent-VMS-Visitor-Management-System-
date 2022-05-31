@@ -1,0 +1,17 @@
+import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
+import { CreateUserCommand } from "../impl/createUser.command";
+import { Model } from "mongoose";
+import { InjectModel } from "@nestjs/mongoose";
+import { User, UserDocument } from "../../schema/user.schema";
+
+@CommandHandler(CreateUserCommand)
+export class CreateUserCommandHandler implements ICommandHandler {
+    constructor(
+        @InjectModel(User.name) private userModel: Model<UserDocument>,
+    ) {}
+
+    async execute(command: CreateUserCommand) {
+        const { email, password, permission } = command;
+        await this.userModel.create({ email: email, password: password, permission: permission });
+    }
+}

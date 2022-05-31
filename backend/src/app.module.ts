@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { CacheModule, Module } from '@nestjs/common';
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { ConfigModule } from "@nestjs/config";
@@ -19,6 +19,7 @@ import { ReceptionistModule } from "@vms/receptionist";
 
 @Module({
     imports: [
+        CacheModule.register(),
         ConfigModule.forRoot({ isGlobal: true }),
         GraphQLModule.forRoot<ApolloDriverConfig>({
             driver: ApolloDriver,

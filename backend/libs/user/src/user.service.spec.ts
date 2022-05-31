@@ -1,5 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { QueryBus } from "@nestjs/cqrs";
+import { QueryBus, CommandBus } from "@nestjs/cqrs";
 import { Model } from "mongoose";
 import { getModelToken } from "@nestjs/mongoose";
 
@@ -22,6 +22,7 @@ describe("UserService", () => {
                 },
                 UserService,
                 {provide: QueryBus, useValue: queryBusMock},
+                CommandBus
             ],
         }).compile();
 
