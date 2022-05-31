@@ -11,7 +11,7 @@ export class UnreserveParkingCommandHandler implements ICommandHandler<Unreserve
       @InjectModel(ParkingReservation.name) private parkingReservationModel: Model<ParkingReservationDocument>,
   ) {}
 
-  //db stuff for reserving parking
+  //db stuff for unreserving parking
   async execute(command: UnreserveParkingCommand) {
     const { invitatationID } = command;
 
