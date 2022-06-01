@@ -8,7 +8,7 @@ import { ReceptionistService } from './receptionist.service';
 describe('ReceptionistService', () => {
   let service: ReceptionistService;
   let inviteService: VisitorInviteService;
-
+ /*eslint-disable*/
   const commandBusMock = {
     execute: jest.fn((command) => {
         
@@ -20,6 +20,7 @@ describe('ReceptionistService', () => {
         
     }),
   };
+  /*eslint-enable*/
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({

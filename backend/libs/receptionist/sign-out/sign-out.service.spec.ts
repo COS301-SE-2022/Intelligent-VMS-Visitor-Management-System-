@@ -9,6 +9,7 @@ describe('SignOutService', () => {
   let service: SignOutService;
   let inviteService: VisitorInviteService;
 
+  /*eslint-disable*/
   const commandBusMock = {
     execute: jest.fn((command) => {
         
@@ -20,6 +21,7 @@ describe('SignOutService', () => {
         
     }),
   };
+  /*eslint-enable*/
 
   beforeEach(async () => {
     

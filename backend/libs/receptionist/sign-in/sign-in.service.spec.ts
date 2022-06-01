@@ -9,6 +9,7 @@ describe('SignInService', () => {
   let service: SignInService;
   let inviteService: VisitorInviteService;
 
+  /*eslint-disable*/
   const commandBusMock = {
     execute: jest.fn((command) => {
         
@@ -20,6 +21,7 @@ describe('SignInService', () => {
         
     }),
   };
+  /*eslint-enable*/
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
