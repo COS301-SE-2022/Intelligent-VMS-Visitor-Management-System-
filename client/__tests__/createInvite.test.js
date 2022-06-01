@@ -67,20 +67,29 @@ describe("CreateInvite", () => {
         expect(screen.getByPlaceholderText("Visitor Email")).toBeDefined();
 
         const user = userEvent.setup();
+
         await user.type(
             screen.getByPlaceholderText("Visitor Email"),
             "valid@mail.com"
         );
 
-        // Just to cause blur event to be called on previous input
+        await user.selectOptions(screen.getByRole("combobox"), [
+            "RSA-ID",
+        ]);
+
         await user.type(
             screen.getByPlaceholderText("Enter ID number"),
             "notvalidid"
         );
 
+        await user.type(
+            screen.getByPlaceholderText("Enter Visitor Name"),
+            "Dave"
+        );
+
         await user.click(screen.getByRole("button"));
 
-        expect(screen.getByText("Invalid RSA ID")).toBeDefined();
+        expect(screen.getByText("Invalid RSA ID Number")).toBeDefined();
     });
 
     it("should show an error if the visitor email field is ignored", async () => {
@@ -91,10 +100,9 @@ describe("CreateInvite", () => {
         );
 
         const user = userEvent.setup();
-
+        
         await user.click(screen.getByPlaceholderText("Visitor Email"));
 
-        // Just to cause blur event to be called on previous input
         await user.type(
             screen.getByPlaceholderText("Enter ID number"),
             "notvalidmail"
@@ -116,16 +124,57 @@ describe("CreateInvite", () => {
             screen.getByPlaceholderText("Visitor Email"),
             "visitor@mail.com"
         );
+
         await user.selectOptions(screen.getByRole("combobox"), [
             "UP-Student-ID",
         ]);
+
         await user.type(
             screen.getByPlaceholderText("Enter ID number"),
             "0109195273080"
         );
+
+        await user.type(
+            screen.getByPlaceholderText("Enter Visitor Name"),
+            "Dave"
+        );
+
         await user.click(screen.getByRole("button"));
 
         expect(screen.getByText("Invalid UP student number")).toBeDefined();
+    });
+
+    it("should show an error message when no visitor name is provided", async () => {
+        render(
+            <MockedProvider>
+                <CreateInvite />
+            </MockedProvider>
+        );
+
+        // Create user event generator
+        const user = userEvent.setup();
+        
+        // Type in visitor email in field
+        await user.type(
+            screen.getByPlaceholderText("Visitor Email"),
+            "visitor@mail.com"
+        );
+
+        // Select RSA-ID option from comboxbox
+        await user.selectOptions(screen.getByRole("combobox"), [
+            "RSA-ID",
+        ]);
+
+        // Type ID number into field
+        await user.type(
+            screen.getByPlaceholderText("Enter ID number"),
+            "0109195273080"
+        );
+
+        // Click submit button
+        await user.click(screen.getByRole("button"));
+
+        expect(screen.getByText("Required")).toBeDefined();
     });
 
     it("redirects to unauthorized page when api error is unauthorized", async () => {
@@ -158,16 +207,26 @@ describe("CreateInvite", () => {
             screen.getByPlaceholderText("Visitor Email"),
             "visitor@mail.com"
         );
+
         await user.selectOptions(screen.getByRole("combobox"), ["RSA-ID"]);
+
         await user.type(
             screen.getByPlaceholderText("Enter ID number"),
             "0109195273080"
         );
+
+        await user.type(
+            screen.getByPlaceholderText("Enter Visitor Name"),
+            "Dave"
+        );
+
         await user.type(
             screen.getByPlaceholderText("Visit Date"),
             "2020-08-21"
         );
+
         await user.click(screen.getByRole("checkbox"));
+
         await user.click(screen.getByRole("button"));
 
         await waitFor(async () => {
@@ -207,16 +266,26 @@ describe("CreateInvite", () => {
             screen.getByPlaceholderText("Visitor Email"),
             "visitor@mail.com"
         );
+
         await user.selectOptions(screen.getByRole("combobox"), ["RSA-ID"]);
+
+        await user.type(
+            screen.getByPlaceholderText("Enter Visitor Name"),
+            "Dave"
+        );
+
         await user.type(
             screen.getByPlaceholderText("Enter ID number"),
             "0109195273080"
         );
+
         await user.type(
             screen.getByPlaceholderText("Visit Date"),
             "2020-08-21"
         );
+
         await user.click(screen.getByRole("checkbox"));
+
         await user.click(screen.getByRole("button"));
 
         await waitFor(async () => {
@@ -225,42 +294,4 @@ describe("CreateInvite", () => {
         });
     });
 
-    it("displays the error message from the backend", async () => {
-        const { result, hydrate } = renderHook(() => useAuth());
-
-        hydrate();
-
-        act(() => {
-            result.current.login(
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJhZG1pbkBtYWlsLmNvbSIsImlhdCI6MTUxNjIzOTAyMiwicGVybWlzc2lvbiI6MH0.bh6yTWV0lN9A0_xOGcgqN_za3M35BewXpJNuuprcaJ8"
-            );
-        });
-
-        const useRouter = jest.spyOn(require("next/router"), "useRouter");
-        const router = {
-            push: jest.fn().mockImplementation(() => Promise.resolve(true)),
-            prefetch: () => new Promise((resolve) => resolve),
-        };
-        useRouter.mockReturnValue(router);
-
-        render(
-            <MockedProvider mocks={inviteDataErrorMock} addTypename={false}>
-                <CreateInvite />
-            </MockedProvider>
-        );
-
-        const user = userEvent.setup();
-
-        await user.type(
-            screen.getByPlaceholderText("Visitor Email"),
-            "error@mail.com"
-        );
-        await user.selectOptions(screen.getByRole("combobox"), ["RSA-ID"]);
-        await user.type(
-            screen.getByPlaceholderText("Enter ID number"),
-            "0109195273080"
-        );
-        await user.click(screen.getByRole("checkbox"));
-        await user.click(screen.getByRole("button"));
-    });
 });

@@ -8,6 +8,7 @@ export const inviteUnauthMock = [{
                     createInvite(
                         userEmail: "admin@mail.com",
                         visitorEmail: "visitor@mail.com",
+                        visitorName: "dave",
                         IDDocType: "RSA-ID",
                         IDNumber: "0109195273080",
                         inviteDate: "2020-08-21",
@@ -29,6 +30,7 @@ export const inviteDataErrorMock = [{
                     createInvite(
                         userEmail: "admin@mail.com",
                         visitorEmail: "error@mail.com",
+                        visitorName: "dave",
                         IDDocType: "RSA-ID",
                         IDNumber: "0109195273080",
                         inviteDate: "2022-08-21",
@@ -50,6 +52,7 @@ export const inviteDataMock = [{
                     createInvite(
                         userEmail: "admin@mail.com",
                         visitorEmail: "visitor@mail.com",
+                        visitorName: "dave",
                         IDDocType: "RSA-ID",
                         IDNumber: "0109195273080",
                         inviteDate: "2020-08-21",
