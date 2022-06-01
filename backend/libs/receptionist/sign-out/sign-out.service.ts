@@ -14,14 +14,14 @@ export class SignOutService {
         async signOut(
 
         ){
-
+            console.log("do some stuff here");
         }
 
         //TODO(Daniel)
         async getTrayNumber(
 
         ){
-
+            console.log("do some stuff here");
         }
 
 

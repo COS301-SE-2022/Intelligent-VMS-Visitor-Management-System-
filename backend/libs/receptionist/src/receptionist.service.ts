@@ -13,12 +13,16 @@ export class ReceptionistService {
         }
 
     //TODO (Stefan)
-    async getInviteByName(){
+    async getInviteByName(
 
+    ){
+        console.log("do some stuff here");
     }
 
     //TODO(Sefan)
-    async getInviteByID(){
-        
+    async getInviteByID(
+
+    ){
+        console.log("do some stuff here");
     }
 }

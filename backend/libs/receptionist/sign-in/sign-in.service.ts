@@ -12,24 +12,24 @@ export class SignInService {
 
         //TODO(Larisa)
         async signIn(
-            invitationID:String,
-            notes: String
+            invitationID:string,
+            notes: string
         ){
-
+            console.log("do some stuff here");
         }
 
         //TODO(Daniel)
         async generateTrayNumber(
 
         ){
-
+            console.log("do some stuff here");
         }
 
         //TODO(Daniel)
         async bulkSignIn(
 
         ){
-
+            console.log("do some stuff here");
         }
 
 
