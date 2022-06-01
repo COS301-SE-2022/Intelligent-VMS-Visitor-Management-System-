@@ -228,6 +228,8 @@ export class ParkingService {
         for(let i=0;i<ParkingReservations.length;i++){
             const resInvite = await this.inviteService.getInvite(ParkingReservations[i].invitationID);
             
+            console.log(resInvite.inviteDate);
+            console.log(invite.inviteDate);
             if(resInvite.inviteDate === invite.inviteDate)
                 throw new InvalidQuery(`Parking number ${parkingNumber} already reserved.`);
         }
