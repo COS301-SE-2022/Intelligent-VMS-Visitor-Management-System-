@@ -25,18 +25,16 @@ const ReceptionistDashboard = () => {
     const { loading, error, data } = useQuery(gql`
         query {
             getInvites {
-                idNumber
-                visitorEmail
-                idDocType
                 inviteID
+                inviteDate
             }
         }
     `);
 
-   /* const { searching, err, invite } = useQuery(gql`
+    /*const { searching, err, invite } = useQuery(gql`
         query {
             getInvite( "${this.state.inviteID}" ) {
-                inviteID
+                visitor
             }
         }
     `);*/
@@ -90,7 +88,7 @@ const ReceptionistDashboard = () => {
             <button onClick={search} className="ml-5 mt-5 mb-5 btn btn-primary">Search</button>
             <button onClick={scan} className="mr-5 mt-5 mb-5 float-right btn btn-primary">Scan to Search</button>
             <h1 className="mt-5 mb-5 p-3 text-left text-4xl font-bold base-100">
-                Todays Invites
+                Today&apos;s Invites
             </h1>
             
             {/* <div className="mx-5 grid grid-cols-3 gap-4 content-evenly h-10 bg-base-300 rounded-md content-center">
@@ -117,24 +115,37 @@ const ReceptionistDashboard = () => {
                         {visitorData.length > 0 ? (
                             <tbody>
                                 {visitorData.map((visit, idx) => {
-                                    return (
-                                        <tr className="hover" key={idx}>
-                                            <th>{idx + 1}</th>
-                                            <td>{visit.inviteID}</td>
-                                            <td>0012120178087</td>
-                                            <td>
-                                                <button
-                                                    className="btn text-white border-0 bg-green-800 max-w-md"
-                                                    onClick={() =>
-                                                        signIn(
-                                                            visit.inviteID
-                                                        )
-                                                    }
-                                                >Sign In   
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    );
+                                        if (new Date(visit.inviteDate).getTime == new Date("2020-12-12").getTime){
+                                            return(
+                                                <tr className="hover" key={idx}>
+                                                    <th>{idx + 1}</th>
+                                                    <td>{visit.inviteID}</td>
+                                                    <td>0012120178087</td>
+                                                    <td>
+                                                        <button
+                                                            className="btn text-white border-0 bg-green-800 max-w-md"
+                                                            onClick={() =>
+                                                                signIn(
+                                                                    visit.inviteID
+                                                                )
+                                                            }
+                                                        >Sign In   
+                                                        </button>
+                                                    </td>
+                                                    <td>
+                                                        <button
+                                                            className="btn text-white border-0 bg-red-800 max-w-md"
+                                                            onClick={() =>
+                                                                signOut(
+                                                                    visit.inviteID
+                                                                )
+                                                            }
+                                                        >Sign Out  
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            )
+                                            }
                                 })}
                             </tbody>
                         ) : (
@@ -148,7 +159,7 @@ const ReceptionistDashboard = () => {
                 )}
             </div>
             <ErrorAlert message={errorMessage} showConditon={showErrorAlert} />
-            <QRScanner showCondition={scanPopup} />
+            <QRScanner/>
         </Layout>
     );
 };
