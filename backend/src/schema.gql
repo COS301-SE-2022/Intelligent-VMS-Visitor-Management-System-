@@ -57,7 +57,7 @@ type Query {
   getAvailableParking: Float!
   getFreeParking: Parking!
   getReservations: ParkingReservation!
-  getAmountOfUsedParkingsByDate(date: DateTime!): Float!
+  getAmountOfUsedParkingsByDate(startDate: DateTime!, endDate: DateTime!): Float!
   helloResident: String!
 }
 

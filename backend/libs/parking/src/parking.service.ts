@@ -490,8 +490,9 @@ export class ParkingService {
                 throw new ExternalError("Error outside the parking.service");
         }
 
-    async getTotalUsedParkingByDate(
-        date: Date,
+    async getTotalUsedParkingInRange(
+        startDate: Date,
+        endDate: Date
     ){
         let count = 0;
 
@@ -505,7 +506,7 @@ export class ParkingService {
             const resInvite = await this.inviteService.getInvite(Reservations[i].invitationID);
     
             let resDate = new Date(resInvite.inviteDate);
-            if(resDate.getTime == date.getTime)
+            if(resDate.getTime >= startDate.getTime && resDate.getTime <= endDate.getTime)
                 count++;
         }
 
