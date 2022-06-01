@@ -6,6 +6,9 @@ export class Invite {
     visitorEmail: string;
 
     @Field((type) => String)
+    visitorName: string;
+
+    @Field((type) => String)
     idDocType: string;
 
     @Field((type) => String)
