@@ -26,8 +26,8 @@ const SignInPopUp = ({showCondition}) => {
             </svg>
           <h1 className="font-bold text-center text-3xl mt-5 ">Confirm Sign-in</h1>
           <p>Confirm sign-in of visitor with id 0012120178087</p>
-          <input type="text" placeholder="Add some observations.." class="input input-bordered w-5/6 mt-5 ml-5" />
-          <button class="btn btn-primary w-5/6 m-5">Sign in</button>
+          <input type="text" placeholder="Add some observations.." className="input input-bordered w-5/6 mt-5 ml-5" />
+          <button className="btn btn-primary w-5/6 m-5">Sign in</button>
       </div>
     );
 };
