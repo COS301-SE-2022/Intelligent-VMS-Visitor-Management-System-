@@ -1,5 +1,6 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { SignInInviteCommand } from '@vms/receptionist/commands/impl/signInInvite.command';
 import { VisitorInviteService } from '@vms/visitor-invite';
 
 @Injectable()
@@ -15,7 +16,8 @@ export class SignInService {
             invitationID:string,
             notes: string
         ){
-            console.log("do some stuff here");
+            return await this.commandBus.execute(
+                new SignInInviteCommand(invitationID,notes));
         }
 
         //TODO(Daniel)

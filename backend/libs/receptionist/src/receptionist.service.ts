@@ -7,7 +7,6 @@ export class ReceptionistService {
 
     constructor(private commandBus: CommandBus, 
         private queryBus: QueryBus,
-        @Inject(forwardRef(() => VisitorInviteService))
         private inviteService: VisitorInviteService) {
 
         }

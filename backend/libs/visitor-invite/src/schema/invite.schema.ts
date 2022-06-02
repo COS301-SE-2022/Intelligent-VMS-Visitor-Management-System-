@@ -3,7 +3,7 @@ import { Document } from "mongoose";
 
 export type InviteDocument = Invite & Document;
 
-enum State{
+export enum InviteState{
     signedIn,
     inActive,
     signedOut,
@@ -33,14 +33,23 @@ export class Invite {
     inviteID: string;
 
     @Prop()
-    notes: string;
+    notes?: string;
 
-    //DEFAULT SHOULD BE INACTIVE
+    //TODO (Kyle) DEFAULT SHOULD BE INACTIVE
     @Prop()
-    inviteState: State
-    
+    inviteState: string
+
     @Prop()
     visitorName: string;
+    
+    @Prop()
+    signOutDate: string;
+
+    @Prop()
+    signInDate: string;
+
+    @Prop()
+    creationDate: string;
 }
 
 export const InviteSchema = SchemaFactory.createForClass(Invite);

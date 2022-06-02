@@ -6,7 +6,7 @@ import { SignInService } from "../sign-in/sign-in.service";
 import { SignOutService } from "../sign-out/sign-out.service";
 import { Invite } from "@vms/visitor-invite/models/invite.model";
 
-@UseGuards(GqlAuthGuard)
+//@UseGuards(GqlAuthGuard)
 @Resolver((of) => Invite)
 export class ReceptionistResolver {
     constructor(
@@ -21,10 +21,10 @@ export class ReceptionistResolver {
     }
 
     @Mutation((returns) => Invite, { name: "signIn" })
-    async assignParking(
-        @Args("invitationID") invitationID: string,
+    async signIn(
+        @Args("inviteID") inviteID: string,
         @Args("notes") notes: string,
     ) {
-        return this.signInService.signIn(invitationID,notes);
+        return this.signInService.signIn(inviteID,notes);
     }
 }

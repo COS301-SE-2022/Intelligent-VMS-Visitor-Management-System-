@@ -6,8 +6,15 @@ import ErrorAlert from "../components/ErrorAlert";
 
 import { useRouter } from "next/router";
 import QRScanner from "../components/QRScanner";
+import SignInPopUp from "../components/SignInPopUp";
 
 const ReceptionistDashboard = () => {
+    
+    const [showSignIn, setShowSignIn] = useState(false);
+    const [showQR, setShowQR] = useState(false);
+    const [currentVisitorID,setCurrentVisitorID] = useState("");
+    const [currentInviteID,setCurrentInviteID] = useState("");
+
 
     /*constructor() {
         super();
@@ -27,6 +34,9 @@ const ReceptionistDashboard = () => {
             getInvites {
                 inviteID
                 inviteDate
+                idNumber
+                visitorName
+                inviteState
             }
         }
     `);
@@ -86,7 +96,7 @@ const ReceptionistDashboard = () => {
         <Layout>
             <input type="text" placeholder="Search.." className="ml-5 input input-bordered input-primary w-4/6" />
             <button onClick={search} className="ml-5 mt-5 mb-5 btn btn-primary">Search</button>
-            <button onClick={scan} className="mr-5 mt-5 mb-5 float-right btn btn-primary">Scan to Search</button>
+            <a href="#QRScan-modal" className="modal-button mr-5 mt-5 mb-5 float-right btn btn-primary">Scan to Search</a>
             <h1 className="mt-5 mb-5 p-3 text-left text-4xl font-bold base-100">
                 Today&apos;s Invites
             </h1>
@@ -107,7 +117,7 @@ const ReceptionistDashboard = () => {
                         <thead>
                             <tr>
                                 <th></th>
-                                <th>Invitation ID</th>
+                                <th>Visitor Name</th>
                                 <th>Visitor ID</th>
                                 <th></th>
                             </tr>
@@ -115,23 +125,25 @@ const ReceptionistDashboard = () => {
                         {visitorData.length > 0 ? (
                             <tbody>
                                 {visitorData.map((visit, idx) => {
-                                        if (new Date(visit.inviteDate).getTime == new Date("2020-12-12").getTime){
+
+                                        if (new Date(visit.inviteDate).getTime == new Date("2022-06-02").getTime && visit.inviteState !=="signedOut"){
                                             return(
                                                 <tr className="hover" key={idx}>
                                                     <th>{idx + 1}</th>
-                                                    <td>{visit.inviteID}</td>
-                                                    <td>0012120178087</td>
+                                                    <td>{visit.visitorName}</td>
+                                                    <td>{visit.idNumber}</td>
+                                                    
+                                                    {visit.inviteState === "inActive" ? (
                                                     <td>
-                                                        <button
-                                                            className="btn text-white border-0 bg-green-800 max-w-md"
-                                                            onClick={() =>
-                                                                signIn(
-                                                                    visit.inviteID
-                                                                )
-                                                            }
-                                                        >Sign In   
-                                                        </button>
+                                                        <a
+                                                            href="#signIn-modal"
+                                                            className="btn modal-button text-white border-0 bg-green-800 max-w-md"
+                                                            onClick={()=> {setCurrentVisitorID(visit.idNumber); setCurrentInviteID(visit.inviteID);}}
+                                                        >
+                                                            Sign In
+                                                        </a>
                                                     </td>
+                                                    ):(
                                                     <td>
                                                         <button
                                                             className="btn text-white border-0 bg-red-800 max-w-md"
@@ -143,6 +155,7 @@ const ReceptionistDashboard = () => {
                                                         >Sign Out  
                                                         </button>
                                                     </td>
+                                                    )}
                                                 </tr>
                                             )
                                             }
@@ -159,7 +172,21 @@ const ReceptionistDashboard = () => {
                 )}
             </div>
             <ErrorAlert message={errorMessage} showConditon={showErrorAlert} />
-            <QRScanner/>
+
+            
+            <div className="modal cursor-pointer" id="signIn-modal">
+                <div className="modal-box">
+                    <SignInPopUp visitorID={currentVisitorID} inviteID={currentInviteID} />
+                </div>                
+            </div>
+
+            <div className="modal fade" id="QRScan-modal">
+                <div className="modal-box flex flex-wrap">
+                    <QRScanner />
+                </div>                
+            </div>
+
+            
         </Layout>
     );
 };
