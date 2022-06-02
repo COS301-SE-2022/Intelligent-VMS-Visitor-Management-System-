@@ -32,13 +32,15 @@ export class Invite {
     @Prop()
     inviteID: string;
 
-    // TODO (Kyle): notes will vary in length is there a more efficient way to store it?
     @Prop()
     notes: string;
 
     //DEFAULT SHOULD BE INACTIVE
     @Prop()
     inviteState: State
+    
+    @Prop()
+    visitorName: string;
 }
 
 export const InviteSchema = SchemaFactory.createForClass(Invite);

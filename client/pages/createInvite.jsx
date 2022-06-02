@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { Formik, Field } from "formik";
-import { gql, useMutation } from "@apollo/client";
+import { gql, useApolloClient } from "@apollo/client";
 import { motion } from "framer-motion";
 
 import useAuth from "../store/authStore.js";
@@ -10,13 +10,25 @@ import Layout from "../components/Layout";
 import ErrorAlert from "../components/ErrorAlert";
 
 const CreateInvite = () => {
-    const [showErrorAlert, setShowErrorAlert] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");
-
-    const jwtTokenData = useAuth((state) => state.decodedToken)();
-    const numParkingSpotsAvailable = useAuth((state) => state.numParkingSpots);
+    /* Get Instance of NextJS router to redirect to different pages */
     const router = useRouter();
 
+    /* Get Apollo client from provider */
+    const client = useApolloClient();
+
+    /* Manipulate state for showing error alert */
+    const [showErrorAlert, setShowErrorAlert] = useState(false);
+
+    /* Manipulate state for showing error alert */
+    const [errorMessage, setErrorMessage] = useState("");
+
+    /* Get Data From JWT Token */
+    const jwtTokenData = useAuth((state) => state.decodedToken)();
+
+    /* Get number of parking spots available */
+    const numParkingSpotsAvailable = useAuth((state) => state.numParkingSpots);
+
+    /* Car Animation Framer Motion Variant */
     const driveAway = {
         initial: {
             scale: 1.2,
@@ -27,19 +39,6 @@ const CreateInvite = () => {
         },
     };
 
-    const [createInviteMutation, { error }] = useMutation(gql`
-        mutation {
-            createInvite(
-                userEmail: "${undefined}"
-                visitorEmail: "${undefined}"
-                IDDocType: "${undefined}"
-                IDNumber: "${undefined}"
-                inviteDate: "${undefined}"
-                requiresParking: ${undefined}
-            )
-        }
-    `);
-
     return (
         <Layout>
             <div className="relative flex h-full min-h-[80vh] w-full flex-col items-center justify-center overflow-hidden">
@@ -47,6 +46,7 @@ const CreateInvite = () => {
                     initialValues={{
                         email: "",
                         idDoc: "RSA-ID",
+                        name: "",
                         idValue: "",
                         visitDate: "",
                         reserveParking: false,
@@ -55,26 +55,19 @@ const CreateInvite = () => {
                         const errors = {};
                         if (!values.email) {
                             errors.email = "Required";
-                        } else if (
-                            !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(
-                                values.email
-                            )
-                        ) {
+                        } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)) {
                             errors.email = "Invalid email address";
+                        } else if(!values.name) {
+                            errors.name = "Required";
+                        } else if(!/[A-Za-z]+/i.test(values.name)) {
+                            errors.name = "Name contains non alphabetic characters";
                         } else if (!values.idValue) {
                             errors.idValue = "Required";
-                        } else if (
-                            (values.idDoc === "RSA-ID" ||
-                                values.idDoc === "drivers-license") &&
-                            !/^(((\d{2}((0[13578]|1[02])(0[1-9]|[12]\d|3[01])|(0[13456789]|1[012])(0[1-9]|[12]\d|30)|02(0[1-9]|1\d|2[0-8])))|([02468][048]|[13579][26])0229))(( |-)(\d{4})( |-)(\d{3})|(\d{7}))$/i.test(
-                                values.idValue
-                            )
+                        } else if ((values.idDoc === "RSA-ID" || values.idDoc === "Drivers-License") &&
+                             !/^(((\d{2}((0[13578]|1[02])(0[1-9]|[12]\d|3[01])|(0[13456789]|1[012])(0[1-9]|[12]\d|30)|02(0[1-9]|1\d|2[0-8])))|([02468][048]|[13579][26])0229))(( |-)(\d{4})( |-)(\d{3})|(\d{7}))$/i.test(values.idValue)
                         ) {
-                            errors.idValue = "Invalid RSA ID";
-                        } else if (
-                            values.idDoc === "UP-Student-ID" &&
-                            !/^\d{8}$/i.test(values.idValue)
-                        ) {
+                            errors.idValue = "Invalid RSA ID Number";
+                        } else if (values.idDoc === "UP-Student-ID" && !/^\d{8}$/i.test(values.idValue)) {
                             errors.idValue = "Invalid UP student number";
                         } else if (!values.visitDate) {
                             errors.visitDate = "Please add a date";
@@ -88,6 +81,7 @@ const CreateInvite = () => {
                                 createInvite(
                                     userEmail: "${jwtTokenData.email}"
                                     visitorEmail: "${values.email}"
+                                    visitorName: "${values.name.toLowerCase()}"
                                     IDDocType: "${values.idDoc}"
                                     IDNumber: "${values.idValue}"
                                     inviteDate: "${values.visitDate}"
@@ -96,25 +90,25 @@ const CreateInvite = () => {
                         }
                         `;
 
-                        createInviteMutation({
+                        client.mutate({
                             mutation: CREATE_INVITE,
-                        })
-                            .then(() => {
-                                router.push("/visitorDashboard");
-                                setShowErrorAlert(false);
-                                setSubmitting(false);
-                            })
-                            .catch((err) => {
-                                console.log(err);
-                                setSubmitting(false);
-                                if (err.message === "Unauthorized") {
-                                    router.push("/expire");
-                                    return;
-                                } else {
-                                    setErrorMessage(err.message);
-                                    setShowErrorAlert(true);
+                        }).then((res) => {
+                                if(res.data.createInvite) {
+                                    router.push("/visitorDashboard");
+                                    setShowErrorAlert(false);
+                                    setSubmitting(false);
                                 }
-                            });
+                        }).catch((err) => {
+                            console.log(err);
+                            setSubmitting(false);
+                            if (err.message === "Unauthorized") {
+                                router.push("/expire");
+                                return;
+                            } else {
+                                setErrorMessage(err.message);
+                                setShowErrorAlert(true);
+                            }
+                        });
                     }}
                 >
                     {({
@@ -177,8 +171,23 @@ const CreateInvite = () => {
                             />
                             <span className="text-error">
                                 {errors.idValue &&
-                                    touched.email &&
+                                    touched.idValue &&
                                     errors.idValue}
+                            </span>
+
+                            <input
+                                type="text"
+                                name="name"
+                                placeholder="Enter Visitor Name"
+                                className="input input-bordered w-full"
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.name}
+                            />
+                            <span className="text-error">
+                                {errors.name &&
+                                    touched.name &&
+                                    errors.name}
                             </span>
 
                             <input
