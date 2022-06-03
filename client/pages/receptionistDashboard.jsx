@@ -7,6 +7,7 @@ import ErrorAlert from "../components/ErrorAlert";
 import { useRouter } from "next/router";
 import QRScanner from "../components/QRScanner";
 import SignInPopUp from "../components/SignInPopUp";
+import SignOutPopUp from "../components/SignOutPopUp";
 
 const ReceptionistDashboard = () => {
     
@@ -32,18 +33,15 @@ const ReceptionistDashboard = () => {
         }
     `);
 
-    /*const { searching, err, invite } = useQuery(gql`
-        query {
-            getInvite( "${this.state.inviteID}" ) {
-                visitor
-            }
-        }
-    `);*/
+    function refreshPage() {
+        window.location.reload(true);
+      }
 
-    const signIn = (inviteID) => {
-        //TODO (Larisa)
-        //change the state of the invite
-        //assigning parking if nec.
+    const click = (inviteID) => {
+        setCurrentVisitorID(visit.idNumber); 
+        setCurrentInviteID(visit.inviteID);
+        refreshPage;
+        alert("here");
     };
 
     const search = (inviteID) => {
@@ -128,22 +126,23 @@ const ReceptionistDashboard = () => {
                                                         <a
                                                             href="#signIn-modal"
                                                             className="btn modal-button text-white border-0 bg-green-800 max-w-md"
-                                                            onClick={()=> {setCurrentVisitorID(visit.idNumber); setCurrentInviteID(visit.inviteID);}}
+                                                            onClick={()=> {setCurrentVisitorID(visit.idNumber); 
+                                                                setCurrentInviteID(visit.inviteID);
+                                                                }}
                                                         >
                                                             Sign In
                                                         </a>
                                                     </td>
                                                     ):(
                                                     <td>
-                                                        <button
-                                                            className="btn text-white border-0 bg-red-800 max-w-md"
-                                                            onClick={() =>
-                                                                signOut(
-                                                                    visit.inviteID
-                                                                )
-                                                            }
+                                                        <a
+                                                            href="#signOut-modal"
+                                                            className="btn modal-button text-white border-0 bg-red-800 max-w-md"
+                                                            onClick={()=> {setCurrentVisitorID(visit.idNumber); 
+                                                                setCurrentInviteID(visit.inviteID);
+                                                                }}
                                                         >Sign Out  
-                                                        </button>
+                                                        </a>
                                                     </td>
                                                     )}
                                                 </tr>
@@ -170,13 +169,18 @@ const ReceptionistDashboard = () => {
                 </div>                
             </div>
 
-                <input type="checkbox" id="QRScan-modal" className="modal-toggle" />
-                <div className="modal fade" id="QRScan-modal">
-                    <div className="modal-box flex flex-wrap">
-                        <label htmlFor="QRScan-modal" className="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
-                        <QRScanner />
-                    </div>                
-                </div>
+            <div className="modal cursor-pointer" id="signOut-modal">
+                <div className="modal-box">
+                    <SignOutPopUp visitorID={currentVisitorID} inviteID={currentInviteID} />
+                </div>                
+            </div>
+
+            <div className="modal fade" id="QRScan-modal">
+                <div className="modal-box flex flex-wrap">
+                    <label htmlFor="QRScan-modal" className="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
+                    <QRScanner />
+                </div>                
+            </div>
         </Layout>
     );
 };
