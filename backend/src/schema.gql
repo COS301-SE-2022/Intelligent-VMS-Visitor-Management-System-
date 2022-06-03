@@ -36,6 +36,7 @@ type Invite {
   requiresParking: Boolean!
   inviteState: String!
   notes: String!
+  signOutDate: String!
 }
 
 input VisitorInputType {
@@ -85,5 +86,6 @@ type Mutation {
   unreservedParking(invitationID: String!): Boolean!
   freeParking(parkingNumber: Float!): Parking!
   ceatedParkings(N: Float!): Boolean!
+  signOut(inviteID: String!): Invite!
   signIn(inviteID: String!, notes: String!): Invite!
 }
