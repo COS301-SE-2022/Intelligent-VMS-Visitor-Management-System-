@@ -52,7 +52,8 @@ const useAuth = create(
                         case 1:
                             return [
                                 { content: "Create Invite", path: "/createInvite" },
-                                { content: "Dashboard", path: "/visitorDashboard" },
+                                { content: "Visitor Dashboard", path: "/visitorDashboard" },
+                                { content: "Receptionist Dashboard", path: "/receptionistDashboard" },
                                 { content: "Logout", path: "/", onClick: () => get().logout() },
                             ];
                         

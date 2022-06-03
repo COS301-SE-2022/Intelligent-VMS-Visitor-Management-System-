@@ -34,6 +34,8 @@ type Invite {
   inviteID: String!
   inviteDate: String!
   requiresParking: Boolean!
+  inviteState: String!
+  notes: String!
 }
 
 input VisitorInputType {
@@ -62,6 +64,7 @@ type Query {
   getReservations: ParkingReservation!
   getAmountOfUsedParkingsByDate(startDate: DateTime!, endDate: DateTime!): Float!
   helloResident: String!
+  helloReceptionist: String!
 }
 
 """
@@ -82,4 +85,5 @@ type Mutation {
   unreservedParking(invitationID: String!): Boolean!
   freeParking(parkingNumber: Float!): Parking!
   ceatedParkings(N: Float!): Boolean!
+  signIn(inviteID: String!, notes: String!): Invite!
 }
