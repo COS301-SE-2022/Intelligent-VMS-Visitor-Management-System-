@@ -159,7 +159,7 @@ export class ParkingService {
             {
                 const resInvite = await this.inviteService.getInvite(reservations[j].invitationID);
 
-                if(resInvite && resInvite.visitDate == invite.visitDate)
+                if(resInvite && resInvite.inviteDate === invite.inviteDate)
                 {
                     temp =false;
                     break;
@@ -228,7 +228,9 @@ export class ParkingService {
         for(let i=0;i<ParkingReservations.length;i++){
             const resInvite = await this.inviteService.getInvite(ParkingReservations[i].invitationID);
             
-            if(resInvite.visitDate == invite.visitDate)
+            console.log(resInvite.inviteDate);
+            console.log(invite.inviteDate);
+            if(resInvite.inviteDate === invite.inviteDate)
                 throw new InvalidQuery(`Parking number ${parkingNumber} already reserved.`);
         }
 
@@ -489,6 +491,30 @@ export class ParkingService {
             else
                 throw new ExternalError("Error outside the parking.service");
         }
+
+    async getTotalUsedParkingInRange(
+        startDate: Date,
+        endDate: Date
+    ){
+        let count = 0;
+
+        const Reservations = await this.queryBus.execute(
+            new GetReservationsQuery()
+        )
+
+        //TODO (Kyle) : Is there a more efficient way?
+        for(let i=0;i<Reservations.length;i++){
+            
+            const resInvite = await this.inviteService.getInvite(Reservations[i].invitationID);
+    
+            let resDate = new Date(resInvite.inviteDate);
+            if(resDate.getTime >= startDate.getTime && resDate.getTime <= endDate.getTime)
+                count++;
+        }
+
+        return count;
+
+    }
 
     //TODO (Larisa): Check doubles ie double reservation
     //TODO (Larisa) : Add disable and enable parking commands

@@ -38,6 +38,14 @@ export class ParkingResolver {
         return this.parkingService.getReservations();
     }
 
+    @Query((returns) => Number, { name: "getAmountOfUsedParkingsInRange" })
+    async getAmountOfUsedParkingsByDate(
+        @Args("startDate") startDate: Date,
+        @Args("endDate") endDate: Date,
+    ) {
+        return this.parkingService.getTotalUsedParkingInRange(startDate,endDate);
+    }
+
     //MUTATION
 
     @Mutation((returns) => Parking, { name: "assignParking" })
