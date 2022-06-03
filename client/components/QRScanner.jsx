@@ -24,11 +24,11 @@ const QrScanner = ({showCondition}) => {
       };
 
     return (
-        <div className="w-full flex justify-center items-center">
-                    <div className="popup max-w-lg rounded-lg" >
-                        <video className = "rounded-lg" ref = {videoRef} autoPlay={true} id="videoElement"></video>
-                    </div> 
-                    <QrReader
+        <div className="w-auto flex justify-center items-center">
+                        <video className = "relative rounded-lg" ref = {videoRef} autoPlay={true} id="videoElement">
+                        </video>
+                     
+                    <QrReader className = "rounded-lg"
                       onResult={(result, error) => {
                         if (!!result) {
                           setData(result?.text);
