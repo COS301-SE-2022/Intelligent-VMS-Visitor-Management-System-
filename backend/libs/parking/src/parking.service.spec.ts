@@ -33,7 +33,7 @@ describe('ParkingService', () => {
                     invite.idDocType ="RSA-ID";
                     invite.idNumber = "0012120178087";
                     invite.userEmail = "admin@mail.com";
-                    invite.visitDate = new Date("2022-05-15");
+                    invite.inviteDate = "2022-05-14";
                     invite.visitorEmail = "larisabotha@gmail.com";
                     invite.inviteID = "cb7c7938-1c41-427d-833e-2c6b77e0e26b";
 
@@ -46,7 +46,7 @@ describe('ParkingService', () => {
                     invite.idDocType ="RSA-ID";
                     invite.idNumber = "0012120178087";
                     invite.userEmail = "admin@mail.com";
-                    invite.visitDate = new Date("2022-05-15");
+                    invite.inviteDate = "2022-05-15";
                     invite.visitorEmail = "larisabotha@icloud.com";
                     invite.inviteID = "f11ae766-ce23-4f27-b428-83cff1afbf04";
 
