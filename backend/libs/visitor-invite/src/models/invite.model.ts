@@ -31,4 +31,7 @@ export class Invite {
     @Field((type) => String)
     notes?: string
 
+    @Field((type)=> String)
+    signOutDate?: Date
+
 }
