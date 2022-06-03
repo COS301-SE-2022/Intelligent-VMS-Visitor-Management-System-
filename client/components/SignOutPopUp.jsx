@@ -3,13 +3,11 @@ import React, { useEffect, useRef, useState, setState } from "react";
 import Layout from "./Layout";
 
 
-const SignInPopUp = ({visitorID,inviteID}) => {
-    const [notes, setNotes] = useState("");
+const SignOutPopUp = ({visitorID,inviteID}) => {
     const client = useApolloClient();
-   
-
+  
     return (
-      <div className="relative max-w-sm flex flex-col justify-center text-center">
+      <div className="relative max-w-sm flex-col justify-center text-center">
           
           <a href="#">
           <svg
@@ -41,20 +39,11 @@ const SignInPopUp = ({visitorID,inviteID}) => {
               h22.322c14.359,0,25.999-11.64,25.999-25.999v-12.14c0-14.359-11.645-25.999-25.999-25.999H118.42z"/>
               
             </svg>
-          <h1 className="font-bold text-center text-3xl mt-5 ">Confirm Sign-in</h1>
-          <p className="max-w-5/6">Confirm sign-in of visitor with id {visitorID}</p>
-          <input type="text" onChange={(evt) => { console.log(evt.target.value); }} maxLength="100" placeholder="Add some observations.." className="input input-bordered w-5/6 mt-5 ml-5" />
-          <a href ="#" onClick={()=>{
-                            client.mutate({
-                              mutation: gql`
-                                  mutation {
-                                    signIn(inviteID: "${inviteID}", notes: "bhgv"){
-                                      inviteID
-                                    }
-                                  }
-                              `
-                          }) 
-                          window.location.reload(true);                          
+          <h1 className="font-bold text-center text-3xl mt-5 ">Confirm Sign-Out</h1>
+          <p>Confirm sign-out of visitor with id {visitorID}</p>
+          <a href="#" onClick={()=>{
+                            alert(inviteID);
+                            window.location.reload(true);                        
                           }
                         
                         } className="btn btn-primary w-5/6 m-5">Sign in</a>
@@ -62,4 +51,4 @@ const SignInPopUp = ({visitorID,inviteID}) => {
     );
 };
 
-export default SignInPopUp;
+export default SignOutPopUp;
