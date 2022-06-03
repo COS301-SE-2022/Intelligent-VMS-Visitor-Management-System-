@@ -175,9 +175,10 @@ const ReceptionistDashboard = () => {
                 </div>                
             </div>
 
+            <input type="checkbox" id="QRScan-modal" className="modal-toggle" />
             <div className="modal fade" id="QRScan-modal">
                 <div className="modal-box flex flex-wrap">
-                    <label htmlFor="QRScan-modal" className="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
+                    <label htmlFor="QRScan-modal" className="btn btn-sm btn-circle absolute right-2 top-2 z-10">✕</label>
                     <QRScanner />
                 </div>                
             </div>
