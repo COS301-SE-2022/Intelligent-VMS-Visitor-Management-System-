@@ -5,7 +5,7 @@ import { VisitorInviteModule } from '@vms/visitor-invite';
 import { Invite, InviteSchema } from '@vms/visitor-invite/schema/invite.schema';
 import { SignInService } from '../sign-in/sign-in.service';
 import { SignOutService } from '../sign-out/sign-out.service';
-import { SignInInviteCommandHandler } from './commands/handler/signInInviteCommand.handler';
+import { SignInInviteCommandHandler, SignOutInviteCommandHandler } from './commands/handler';
 import { ReceptionistResolver } from './receptionist.resolver';
 import { ReceptionistService } from './receptionist.service';
 
@@ -15,14 +15,15 @@ import { ReceptionistService } from './receptionist.service';
     VisitorInviteModule,
     MongooseModule.forFeature([
       { name: Invite.name, schema: InviteSchema },
-  ]),
+    ]),
   ],
   providers: [ReceptionistService,
-              SignInService,
-              SignOutService,
-              ReceptionistResolver,
-              SignInInviteCommandHandler,
-              VisitorInviteModule,],
+    SignInService,
+    SignOutService,
+    ReceptionistResolver,
+    SignInInviteCommandHandler,
+    SignOutInviteCommandHandler,
+    VisitorInviteModule,],
   exports: [ReceptionistService],
 })
-export class ReceptionistModule {}
+export class ReceptionistModule { }
