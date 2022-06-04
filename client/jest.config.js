@@ -6,11 +6,15 @@ const createJestConfig = nextJest({
 
 const customJestConfig = {
   moduleDirectories: ['node_modules', '<rootDir>/'],
+  setupFiles: ["jest-canvas-mock"],
   testEnvironment: 'jest-environment-jsdom',
   coverageDirectory: "./coverage",
   coveragePathIgnorePatterns: [
     "node_modules",
-    "authStore.js"
+    "authStore.js",
+  ],
+  modulePathIgnorePatterns: [
+      "__mocks__",
   ],
 }
 

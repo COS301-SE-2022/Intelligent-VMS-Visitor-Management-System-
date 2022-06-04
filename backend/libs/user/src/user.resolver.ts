@@ -35,4 +35,24 @@ export class UserResolver {
             password: password,
         });
     }
+
+    @Mutation((returns) => String, { name: "signup"})
+    async signup(
+        @Args("email") email: string,
+        @Args("password") password: string,
+        @Args("type") type: string,
+        @Args("idNumber") idNumber: string
+    ) {
+        return (await this.authService.signup({
+            email: email,
+            password: password,
+            type: type,
+            idNumber: idNumber
+        })).accepted[0];
+    }
+
+    @Mutation((returns) => Boolean, { name: "verify"})
+    async verify(@Args("verifyID") verifyID: string, @Args("email") email: string) {
+        return this.authService.verifyNewAccount(verifyID, email); 
+    }
 }

@@ -3,7 +3,7 @@ import "@testing-library/jest-dom";
 import { MockedProvider } from "@apollo/client/testing";
 import Expire from "../pages/expire";
 
-describe("Login", () => {
+describe("Expire", () => {
     it("renders a heading", () => {
         render(
             <MockedProvider>

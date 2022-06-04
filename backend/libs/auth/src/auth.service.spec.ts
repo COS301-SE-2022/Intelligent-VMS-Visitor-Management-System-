@@ -2,14 +2,16 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { JwtService } from "@nestjs/jwt";
 import { AuthService } from "./auth.service";
 import { UserService } from "@vms/user";
-import { QueryBus } from "@nestjs/cqrs";
+import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import { Model } from "mongoose";
 import { getModelToken } from "@nestjs/mongoose";
+import {CACHE_MANAGER} from "@nestjs/common";
 
 import { LoginFailed } from "./errors/loginFailed.error";
 import * as bcrypt from "bcrypt";
 import { User, UserDocument } from "@vms/user/schema/user.schema";
 import {GetUserQuery} from "@vms/user/queries/impl/getUser.query";
+import {MailService} from "@vms/mail";
 
 describe("AuthService", () => {
     let service: AuthService;
@@ -17,6 +19,7 @@ describe("AuthService", () => {
     let jwtService: JwtService;
     let queryBus: QueryBus;
     let mockUserModel: Model<UserDocument>;
+    let cache: Cache;
 
     const queryBusMock = {
         execute: jest.fn((query) => {
@@ -32,6 +35,7 @@ describe("AuthService", () => {
             providers: [AuthService, 
                 JwtService, 
                 UserService, 
+                CommandBus,
                 {
                   provide: QueryBus,
                   useValue: queryBusMock
@@ -40,6 +44,15 @@ describe("AuthService", () => {
                     provide: getModelToken(User.name),
                     useValue: Model,
                 },
+                {
+                      provide: CACHE_MANAGER,
+                      useValue: {
+                        get: () => 'any value',
+                        set: () => jest.fn(),
+                    },
+
+                },
+                MailService,
             ],
         })
             .useMocker((token) => {
@@ -58,6 +71,7 @@ describe("AuthService", () => {
         userService = module.get<UserService>(UserService);
         jwtService = module.get<JwtService>(JwtService);
         mockUserModel = module.get<Model<UserDocument>>(getModelToken(User.name));
+        cache = module.get<Cache>(CACHE_MANAGER);
     });
 
     it("should be defined", () => {

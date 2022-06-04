@@ -3,6 +3,12 @@ import { Document } from "mongoose";
 
 export type InviteDocument = Invite & Document;
 
+export enum InviteState{
+    signedIn,
+    inActive,
+    signedOut,
+}
+
 @Schema()
 export class Invite {
     @Prop()
@@ -26,9 +32,24 @@ export class Invite {
     @Prop()
     inviteID: string;
 
-    // TODO (Kyle): notes will vary in length is there a more efficient way to store it?
     @Prop()
-    notes: string;
+    notes?: string;
+
+    //TODO (Kyle) DEFAULT SHOULD BE INACTIVE
+    @Prop()
+    inviteState: string
+
+    @Prop()
+    visitorName: string;
+    
+    @Prop()
+    signOutDate: string;
+
+    @Prop()
+    signInDate: string;
+
+    @Prop()
+    creationDate: string;
 }
 
 export const InviteSchema = SchemaFactory.createForClass(Invite);

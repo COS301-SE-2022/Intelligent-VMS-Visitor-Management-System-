@@ -16,6 +16,9 @@ const useAuth = create(
 				set((state) => ({
 					access_token: ""
 				}));
+				set((state) => ({
+                    verified: false
+				}));
 			},
             decodedToken: () => {
                 try {
@@ -30,13 +33,13 @@ const useAuth = create(
                 if(token) {
                     return token.permission;
                 } else {
-                    return -1;
+                    return -999;
                 }
             },
             navLinks: () => {
                 const permission = get().permission();
                 
-                if(permission !== -1) {
+                if(permission > -1) {
                     switch(permission) {
                         case 0:
                             return [
@@ -49,7 +52,8 @@ const useAuth = create(
                         case 1:
                             return [
                                 { content: "Create Invite", path: "/createInvite" },
-                                { content: "Dashboard", path: "/visitorDashboard" },
+                                { content: "Visitor Dashboard", path: "/visitorDashboard" },
+                                { content: "Receptionist Dashboard", path: "/receptionistDashboard" },
                                 { content: "Logout", path: "/", onClick: () => get().logout() },
                             ];
                         
@@ -61,6 +65,11 @@ const useAuth = create(
                                 { content: "Logout", path: "/", onClick: () => get().logout() },
                             ];
                     }
+                } else if(permission === -1 || permission === -2){
+                    return [
+                        { content: "Authorize", path: "/authorize" },
+                        { content: "Logout", path: "/", onClick: () => get().logout() },
+                    ]
                 } else {
                     return [
                         { content: "Login", path: "/login" },
@@ -85,6 +94,12 @@ const useAuth = create(
                     numParkingSpots: get().numParkingSpots-1
                 }));
             },
+            verified: false,
+            setVerify: () => {
+                set((state) => ({
+                    verified: true                     
+                }));
+            }
 		}),
 		{ name: "auth" }
 	)
