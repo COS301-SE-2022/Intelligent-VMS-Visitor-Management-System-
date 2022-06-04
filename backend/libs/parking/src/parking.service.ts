@@ -492,7 +492,7 @@ export class ParkingService {
                 throw new ExternalError("Error outside the parking.service");
         }
 
-    async getTotalUsedParkingInRange(
+    async getUsedParkingInRange(
         startDate: Date,
         endDate: Date
     ){
