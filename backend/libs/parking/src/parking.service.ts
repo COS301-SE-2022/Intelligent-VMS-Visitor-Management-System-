@@ -497,6 +497,7 @@ export class ParkingService {
         endDate: Date
     ){
         let count = 0;
+        let parkingReservations = [];
 
         const Reservations = await this.queryBus.execute(
             new GetReservationsQuery()
@@ -509,10 +510,13 @@ export class ParkingService {
     
             let resDate = new Date(resInvite.inviteDate);
             if(resDate.getTime >= startDate.getTime && resDate.getTime <= endDate.getTime)
+            {
                 count++;
+                parkingReservations.push(Reservations[i]);
+            }
         }
 
-        return count;
+        return parkingReservations;
 
     }
 
