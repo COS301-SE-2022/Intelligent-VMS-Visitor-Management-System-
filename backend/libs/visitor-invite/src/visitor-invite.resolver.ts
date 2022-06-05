@@ -84,8 +84,8 @@ export class VisitorInviteResolver {
     @UseGuards(GqlAuthGuard, RolesGuard)
     @Roles("admin", "resident", "receptionist")
     @Query((returns) => [Invite], { name: "getNumInvitesPerDateOfUser"})
-    async getNumInvitesPerDateOfUser(@Args("dateStart") dateStart: string, @Args("dateEnd") dateEnd: string, @CurrentUser() user: User) {
-        return this.visitorInviteService.getNumInvitesPerDateOfUser(dateStart, dateEnd, user.email);
+    async getNumInvitesPerDateOfUser(@Args("dateStart") dateStart: string, @Args("dateEnd") dateEnd: string, @Args("email") email: string) {
+        return this.visitorInviteService.getNumInvitesPerDateOfUser(dateStart, dateEnd, email);
     }
 
     // Get Number of total open invites per resident

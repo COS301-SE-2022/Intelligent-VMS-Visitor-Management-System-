@@ -63,7 +63,7 @@ type Query {
   getInvites: [Invite!]!
   getTotalNumberOfVisitors: Float!
   getNumInvitesPerDate(dateStart: String!, dateEnd: String!): [Invite!]!
-  getNumInvitesPerDateOfUser(dateStart: String!, dateEnd: String!): [Invite!]!
+  getNumInvitesPerDateOfUser(dateStart: String!, dateEnd: String!, email: String!): [Invite!]!
   getTotalNumberOfInvitesOfResident(email: String!): Float!
   getInvitesByName(name: String!): [SearchInvite!]!
   helloParking: String!
