@@ -39,6 +39,11 @@ type Invite {
   signOutDate: String!
 }
 
+type SearchInvite {
+  visitorEmail: String!
+  visitorName: String!
+}
+
 input VisitorInputType {
   id: Float!
   name: String!
@@ -58,20 +63,17 @@ type Query {
   getInvites: [Invite!]!
   getTotalNumberOfVisitors: Float!
   getNumInvitesPerDate(dateStart: String!, dateEnd: String!): [Invite!]!
-  getTotalNumberOfInvitesOfResident: Float!
+  getNumInvitesPerDateOfUser(dateStart: String!, dateEnd: String!): [Invite!]!
+  getTotalNumberOfInvitesOfResident(email: String!): Float!
+  getInvitesByName(name: String!): [SearchInvite!]!
   helloParking: String!
   getAvailableParking: Float!
   getFreeParking: Parking!
   getReservations: ParkingReservation!
-  getAmountOfUsedParkingsInRange(startDate: DateTime!, endDate: DateTime!): Float!
+  getAmountOfUsedParkingsInRange(startDate: String!, endDate: String!): Float!
   helloResident: String!
   helloReceptionist: String!
 }
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
 
 type Mutation {
   createVisitor(input: VisitorInputType!): Visitor!
