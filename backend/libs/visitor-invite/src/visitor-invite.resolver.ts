@@ -6,8 +6,11 @@ import { GqlAuthGuard } from "@vms/auth/guards/GqlAuthGuard.guard";
 import { VisitorInviteService } from "./visitor-invite.service";
 
 import { Invite } from "./models/invite.model";
-import {CurrentUser} from "@vms/auth/decorators/CurrentUserDecorator.decorator";
+import { SearchInvite } from "./models/searchInvite.model";
+
 import { User } from "@vms/user/models/user.model";
+
+import { CurrentUser } from "@vms/auth/decorators/CurrentUserDecorator.decorator";
 import { RolesGuard } from "@vms/user/guards/roles.guard";
 import { Roles } from "@vms/user/decorators/roles.decorator";
 
@@ -77,12 +80,28 @@ export class VisitorInviteResolver {
         return this.visitorInviteService.getNumInvitesPerDate(dateStart, dateEnd);
     }
 
+    // Get Number of invites in date range
+    @UseGuards(GqlAuthGuard, RolesGuard)
+    @Roles("admin", "resident", "receptionist")
+    @Query((returns) => [Invite], { name: "getNumInvitesPerDateOfUser"})
+    async getNumInvitesPerDateOfUser(@Args("dateStart") dateStart: string, @Args("dateEnd") dateEnd: string, @CurrentUser() user: User) {
+        return this.visitorInviteService.getNumInvitesPerDateOfUser(dateStart, dateEnd, user.email);
+    }
+
     // Get Number of total open invites per resident
     @UseGuards(GqlAuthGuard, RolesGuard)
     @Roles("resident", "receptionist", "admin")
     @Query((returns) => Number, { name: "getTotalNumberOfInvitesOfResident"})
-    async getTotalNumberOfVisitorsOfResident(@CurrentUser() user: User) {
-        return this.visitorInviteService.getTotalNumberOfInvitesOfResident(user.email);
+    async getTotalNumberOfVisitorsOfResident(@Args("email") email: string) {
+        return this.visitorInviteService.getTotalNumberOfInvitesOfResident(email);
+    }
+
+    // Get the invites associated with given name
+    @UseGuards(GqlAuthGuard, RolesGuard)
+    @Roles("admin")
+    @Query((returns) => [SearchInvite], { name: "getInvitesByName"})
+    async getInvitesByName(@Args("name") name: string) {
+        return await this.visitorInviteService.getInvitesByName(name);
     }
 
 }

@@ -40,8 +40,8 @@ export class ParkingResolver {
 
     @Query((returns) => Number, { name: "getAmountOfUsedParkingsInRange" })
     async getAmountOfUsedParkingsByDate(
-        @Args("startDate") startDate: Date,
-        @Args("endDate") endDate: Date,
+        @Args("startDate") startDate: string,
+        @Args("endDate") endDate: string,
     ) {
         return this.parkingService.getTotalUsedParkingInRange(startDate,endDate);
     }

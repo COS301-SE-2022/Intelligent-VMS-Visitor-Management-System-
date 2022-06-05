@@ -493,23 +493,22 @@ export class ParkingService {
         }
 
     async getTotalUsedParkingInRange(
-        startDate: Date,
-        endDate: Date
+        startDate: string,
+        endDate: string
     ){
-        let count = 0;
+        const count = 0;
+        const start = Date.parse(startDate);
+        const end = Date.parse(endDate);
 
         const Reservations = await this.queryBus.execute(
             new GetReservationsQuery()
         )
 
-        //TODO (Kyle) : Is there a more efficient way?
-        for(let i=0;i<Reservations.length;i++){
-            
+        // TODO: This needs to be done differently, request should be made once
+        for(let i=0;i < Reservations.length;i++) {
             const resInvite = await this.inviteService.getInvite(Reservations[i].invitationID);
     
-            let resDate = new Date(resInvite.inviteDate);
-            if(resDate.getTime >= startDate.getTime && resDate.getTime <= endDate.getTime)
-                count++;
+            const resDate = new Date(resInvite.inviteDate);
         }
 
         return count;
