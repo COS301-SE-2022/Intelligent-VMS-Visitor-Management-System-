@@ -11,7 +11,7 @@ export class getTrayFromInviteQueryHandler implements IQueryHandler {
     ) {}
 
     async execute(query: getTrayFromInviteQuery) {
-        const { inviteID } = query;
+        const {inviteID} = query;
         const tray = await this.trayModel.findOne({inviteID:inviteID});
         return tray;
     }

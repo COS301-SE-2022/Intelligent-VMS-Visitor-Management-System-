@@ -8,8 +8,7 @@ import { Tray, TrayDocument } from "../../../schema/tray.schema";
 @CommandHandler(removeTrayByInviteIDCommand)
 export class RemoveParkingCommandHandler implements ICommandHandler<removeTrayByInviteIDCommand> {
   constructor(
-      @InjectModel(Tray.name) private trayModel: Model<TrayDocument>,
-  ) {}
+      @InjectModel(Tray.name) private trayModel: Model<TrayDocument>) {}
 
   async execute(command: removeTrayByInviteIDCommand) {
     const { inviteID } = command;

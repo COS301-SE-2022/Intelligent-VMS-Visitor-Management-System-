@@ -10,8 +10,7 @@ export class getTrayFromInviteQueryHandler implements IQueryHandler {
         @InjectModel(Tray.name) private trayModel: Model<TrayDocument>,
     ) {}
 
-    async execute(query: getTrayListQuery) {
-        
+    async execute() {
         const trayList = await this.trayModel.find();
         return trayList;
     }

@@ -1,3 +1,3 @@
 export class getTrayFromInviteQuery {
-    constructor(public readonly inviteID) {}
+    constructor(public readonly inviteID:string) {}
 }

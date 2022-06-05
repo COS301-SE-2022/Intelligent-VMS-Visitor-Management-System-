@@ -10,7 +10,7 @@ export class getNumberOfTraysQueryHandler implements IQueryHandler {
         @InjectModel(Tray.name) private trayModel: Model<TrayDocument>,
     ) {}
 
-    async execute(query: getNumberOfTraysQuery) {
+    async execute() {
         const trays = await this.trayModel.find();
         return trays.length;
     }

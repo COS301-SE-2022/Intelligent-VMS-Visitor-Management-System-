@@ -31,11 +31,13 @@ export class SignInService {
             if (trayList) {
                 for (let index = 0; index < trayList.length; index++) {
                     if (trayList[index].trayID!=index) {
-                        return index;//say we have 2 trays and tray[0] has id 0 and tray[1] has id 2 then
+                        return index;
+                        //say we have 2 trays and tray[0] has id 0 and tray[1] has id 2 then
                         //next tray should have id 1
                     }
                 }
-                return trayList.length; //if it reaches this point and we have say 4 trays it means their id's are
+                return trayList.length; 
+                //if it reaches this point and we have say 4 trays it means their id's are
                 //0,1,2,3 and so next tray number should be 4   
             }
             else{
@@ -43,18 +45,13 @@ export class SignInService {
             }
         }
 
-        //TODO(Daniel)
-        //tray ID is generated from the number of Trays
         async generateTray(inviteID: string,containsResidentID: boolean,containsVisitorID: boolean){
             console.log("generating tray");
             return this.commandBus.execute(new generateTrayCommand(await this.generateTrayID(),inviteID, containsResidentID,containsVisitorID));
         }
         
-
         //TODO(Daniel)
-        async bulkSignIn(
-
-        ){
+        async bulkSignIn(){
             console.log("do some stuff here");
         }
 

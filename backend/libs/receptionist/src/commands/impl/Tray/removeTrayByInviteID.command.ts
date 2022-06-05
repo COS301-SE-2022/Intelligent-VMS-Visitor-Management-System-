@@ -1,3 +1,3 @@
 export class removeTrayByInviteIDCommand {
-    constructor( public readonly inviteID: string) {}
+    constructor(public readonly inviteID: string) {}
   }
