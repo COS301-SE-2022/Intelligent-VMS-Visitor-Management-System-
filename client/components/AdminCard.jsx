@@ -1,4 +1,4 @@
-const AdminCard = ({description, Icon, dataval, unit}) => {
+const AdminCard = ({ description, Icon, dataval, unit }) => {
     return (
         <div className="stat bg-primary text-primary-content">
             <div className="stat-figure">

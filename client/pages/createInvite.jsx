@@ -10,25 +10,25 @@ import Layout from "../components/Layout";
 import ErrorAlert from "../components/ErrorAlert";
 
 const CreateInvite = () => {
-    /* Get Instance of NextJS router to redirect to different pages */
+    // Get Instance of NextJS router to redirect to different pages
     const router = useRouter();
 
-    /* Get Apollo client from provider */
+    // Get Apollo client from provider
     const client = useApolloClient();
 
-    /* Manipulate state for showing error alert */
+    // Manipulate state for showing error alert
     const [showErrorAlert, setShowErrorAlert] = useState(false);
 
-    /* Manipulate state for showing error alert */
+    // Manipulate state for showing error alert
     const [errorMessage, setErrorMessage] = useState("");
 
-    /* Get Data From JWT Token */
+    // Get Data From JWT Token
     const jwtTokenData = useAuth((state) => state.decodedToken)();
 
-    /* Get number of parking spots available */
+    // Get number of parking spots available
     const numParkingSpotsAvailable = useAuth((state) => state.numParkingSpots);
 
-    /* Car Animation Framer Motion Variant */
+    // Car Animation Framer Motion Variant
     const driveAway = {
         initial: {
             scale: 1.2,
@@ -55,19 +55,31 @@ const CreateInvite = () => {
                         const errors = {};
                         if (!values.email) {
                             errors.email = "Required";
-                        } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)) {
+                        } else if (
+                            !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(
+                                values.email
+                            )
+                        ) {
                             errors.email = "Invalid email address";
-                        } else if(!values.name) {
+                        } else if (!values.name) {
                             errors.name = "Required";
-                        } else if(!/[A-Za-z]+/i.test(values.name)) {
-                            errors.name = "Name contains non alphabetic characters";
+                        } else if (!/[A-Za-z]+/i.test(values.name)) {
+                            errors.name =
+                                "Name contains non alphabetic characters";
                         } else if (!values.idValue) {
                             errors.idValue = "Required";
-                        } else if ((values.idDoc === "RSA-ID" || values.idDoc === "Drivers-License") &&
-                             !/^(((\d{2}((0[13578]|1[02])(0[1-9]|[12]\d|3[01])|(0[13456789]|1[012])(0[1-9]|[12]\d|30)|02(0[1-9]|1\d|2[0-8])))|([02468][048]|[13579][26])0229))(( |-)(\d{4})( |-)(\d{3})|(\d{7}))$/i.test(values.idValue)
+                        } else if (
+                            (values.idDoc === "RSA-ID" ||
+                                values.idDoc === "Drivers-License") &&
+                            !/^(((\d{2}((0[13578]|1[02])(0[1-9]|[12]\d|3[01])|(0[13456789]|1[012])(0[1-9]|[12]\d|30)|02(0[1-9]|1\d|2[0-8])))|([02468][048]|[13579][26])0229))(( |-)(\d{4})( |-)(\d{3})|(\d{7}))$/i.test(
+                                values.idValue
+                            )
                         ) {
                             errors.idValue = "Invalid RSA ID Number";
-                        } else if (values.idDoc === "UP-Student-ID" && !/^\d{8}$/i.test(values.idValue)) {
+                        } else if (
+                            values.idDoc === "UP-Student-ID" &&
+                            !/^\d{8}$/i.test(values.idValue)
+                        ) {
                             errors.idValue = "Invalid UP student number";
                         } else if (!values.visitDate) {
                             errors.visitDate = "Please add a date";
@@ -90,25 +102,27 @@ const CreateInvite = () => {
                         }
                         `;
 
-                        client.mutate({
-                            mutation: CREATE_INVITE,
-                        }).then((res) => {
-                                if(res.data.createInvite) {
+                        client
+                            .mutate({
+                                mutation: CREATE_INVITE,
+                            })
+                            .then((res) => {
+                                if (res.data.createInvite) {
                                     router.push("/visitorDashboard");
                                     setShowErrorAlert(false);
                                     setSubmitting(false);
                                 }
-                        }).catch((err) => {
-                            console.log(err);
-                            setSubmitting(false);
-                            if (err.message === "Unauthorized") {
-                                router.push("/expire");
-                                return;
-                            } else {
-                                setErrorMessage(err.message);
-                                setShowErrorAlert(true);
-                            }
-                        });
+                            })
+                            .catch((err) => {
+                                setSubmitting(false);
+                                if (err.message === "Unauthorized") {
+                                    router.push("/expire");
+                                    return;
+                                } else {
+                                    setErrorMessage(err.message);
+                                    setShowErrorAlert(true);
+                                }
+                            });
                     }}
                 >
                     {({
@@ -185,9 +199,7 @@ const CreateInvite = () => {
                                 value={values.name}
                             />
                             <span className="text-error">
-                                {errors.name &&
-                                    touched.name &&
-                                    errors.name}
+                                {errors.name && touched.name && errors.name}
                             </span>
 
                             <input

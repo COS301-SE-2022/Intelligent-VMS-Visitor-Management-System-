@@ -1,13 +1,13 @@
 import { render, screen } from "@testing-library/react";
 import { renderHook, act } from "@testing-library/react-hooks/server";
 import "@testing-library/jest-dom";
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { MockedProvider } from "@apollo/client/testing";
 import { gql } from "@apollo/client";
 import { GraphQLError } from "graphql";
 import * as nextRouter from "next/router";
 
-import ResizeObserver from './__mocks__/resizeObserver.mock';
+import ResizeObserver from "./__mocks__/resizeObserver.mock";
 
 import AdminDashboard from "../pages/adminDashboard";
 import useAuth from "../store/authStore";
@@ -17,10 +17,9 @@ nextRouter.useRouter = jest.fn();
 nextRouter.useRouter.mockImplementation(() => ({ route: "/" }));
 
 describe("AdminDashboard", () => {
-
     it("renders a heading", () => {
-        jest.mock('react-chartjs-2', () => ({
-          Line: () => null,
+        jest.mock("react-chartjs-2", () => ({
+            Line: () => null,
         }));
         const authHook = renderHook(() => useAuth());
         const dateRangeHook = renderHook(() => useDateRange(4));
@@ -45,8 +44,8 @@ describe("AdminDashboard", () => {
 
     it("redirects to unauthorized page when api error is unauthorized", async () => {
         const useRouter = jest.spyOn(require("next/router"), "useRouter");
-        jest.mock('react-chartjs-2', () => ({
-          Line: () => null,
+        jest.mock("react-chartjs-2", () => ({
+            Line: () => null,
         }));
         const setStateMock = jest.fn();
         const stateMock = () => [useState, setStateMock];
@@ -84,6 +83,4 @@ describe("AdminDashboard", () => {
             //expect(router.push).toHaveBeenCalledWith("/expire");
         });
     });
-
-
 });

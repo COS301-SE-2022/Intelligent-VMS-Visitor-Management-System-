@@ -89,22 +89,25 @@ const SignUp = () => {
                     }}
                     onSubmit={(values, { setSubmitting }) => {
                         verify();
-                        
-                        client.mutate({
-                            mutation: gql`
+
+                        client
+                            .mutate({
+                                mutation: gql`
                                 mutation {
                                     signup(email: "${values.email}", password: "${values.password}", type: "${values.userType}", idNumber: "${values.idNumber}")
                                 }
                             `,
-                        }).then((res) => {
-                            if(res.data.signup) {
-                                router.push("/verify");
+                            })
+                            .then((res) => {
+                                if (res.data.signup) {
+                                    router.push("/verify");
+                                    setSubmitting(false);
+                                }
+                            })
+                            .catch((err) => {
+                                console.error(err.message);
                                 setSubmitting(false);
-                            }
-                        }).catch((err) => {
-                            console.error(err.message);
-                            setSubmitting(false);
-                        });
+                            });
                     }}
                 >
                     {({
