@@ -1,8 +1,8 @@
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { generateTrayCommand } from "../impl/generateTray.command";
+import { generateTrayCommand } from "../../impl/Tray/generateTray.command";
 import { Model } from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
-import { Tray, TrayDocument } from "../../schema/tray.schema";
+import { Tray, TrayDocument } from "../../../schema/tray.schema";
 
 @CommandHandler(generateTrayCommand)
 export class CreateUserCommandHandler implements ICommandHandler {
