@@ -28,8 +28,6 @@ export class ParkingService {
                 @Inject(forwardRef(() => VisitorInviteService))
                 private inviteService: VisitorInviteService) {}
 
-    //////////////////////////////////////COMMANDS
-
     /*
     Create more visitor parking
 
@@ -79,6 +77,7 @@ export class ParkingService {
             throw new ExternalError("Error outside the parking.service");
         }
     }
+
     /*
     Use the invitation to assign the reserved parking
 
@@ -155,36 +154,31 @@ export class ParkingService {
                 new GetParkingReservationsQuery(parkingNumber));
 
             temp = true;
-            for(let j=0;j<reservations.length;j++)
-            {
+            for(let j=0;j<reservations.length;j++) {
                 const resInvite = await this.inviteService.getInvite(reservations[j].invitationID);
-
-                if(resInvite && resInvite.inviteDate === invite.inviteDate)
-                {
+                if(resInvite && resInvite.inviteDate === invite.inviteDate) {
                     temp =false;
                     break;
                 }
             }
 
-            if(temp)
-            {
+            if(temp) {
                 parkingNumber = i;
                 break;
             }
         }
 
-        if(parkingNumber == -1)
+        if(parkingNumber == -1) {
             throw new ParkingNotFound("There are no parking available");
+        }
 
         //Send to db
-        const parkingReservation = await this.commandBus.execute(
-            new ReserveParkingCommand(invitationID,parkingNumber));
-          
-        if(parkingReservation)
-        return parkingReservation;
-        else
-        throw new ExternalError("Error outside the parking.service");
-            
+        const parkingReservation = await this.commandBus.execute(new ReserveParkingCommand(invitationID,parkingNumber));
+        if(parkingReservation) {
+            return parkingReservation;
+        } else {
+            throw new ExternalError("Error outside the parking.service");
+        }
     }
 
     /*
@@ -492,26 +486,24 @@ export class ParkingService {
                 throw new ExternalError("Error outside the parking.service");
         }
 
-    async getTotalUsedParkingInRange(
-        startDate: string,
-        endDate: string
-    ){
-        const count = 0;
-        const start = Date.parse(startDate);
-        const end = Date.parse(endDate);
+    async getTotalUsedParkingInRange(startDate: string, endDate: string){
+        const parkingReservations = [];
+        const start = new Date(startDate);
+        const end = new Date(endDate);
 
-        const Reservations = await this.queryBus.execute(
-            new GetReservationsQuery()
-        )
+        const Reservations = await this.queryBus.execute(new GetReservationsQuery());
 
         // TODO: This needs to be done differently, request should be made once
         for(let i=0;i < Reservations.length;i++) {
             const resInvite = await this.inviteService.getInvite(Reservations[i].invitationID);
     
             const resDate = new Date(resInvite.inviteDate);
+            if(resDate.getTime >= start.getTime && resDate.getTime <= end.getTime) {
+                parkingReservations.push(Reservations[i]);
+            }
         }
 
-        return count;
+        return parkingReservations;
 
     }
 
