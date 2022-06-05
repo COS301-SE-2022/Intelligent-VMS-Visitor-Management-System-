@@ -24,4 +24,10 @@ export class ReceptionistService {
     ){
         console.log("do some stuff here");
     }
+
+    async getTrayByInviteID(
+        inviteID:string
+    ){
+        console.log("getTrayByInviteID");
+    }
 }

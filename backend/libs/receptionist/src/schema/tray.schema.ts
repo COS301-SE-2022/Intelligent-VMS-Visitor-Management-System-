@@ -10,6 +10,14 @@ export class Tray {
 
     @Prop()
     trayID: number;
+
+    @Prop()
+    containsResidentID: boolean;
+
+    @Prop()
+    containsVisitorID: boolean;
+//TO-DO (daniel) expand tray so that 1 resident can have more than one invite / have those ID's put into
+//a single tray
 }
 
 export const TraySchema = SchemaFactory.createForClass(Tray);
