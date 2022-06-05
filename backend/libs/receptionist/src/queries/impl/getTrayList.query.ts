@@ -1,0 +1,3 @@
+export class getTrayListQuery {
+    constructor() {}
+}
