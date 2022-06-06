@@ -12,7 +12,7 @@ import LineChart from "../components/LineChart";
 import AnalyticsReport from "../components/AnalyticsReport";
 
 import { AiOutlineDoubleLeft } from "react-icons/ai";
-import { BiBuildingHouse, BiMailSend } from "react-icons/bi";
+import { BiBuildingHouse } from "react-icons/bi";
 
 import useDateRange from "../hooks/useDateRange.hook";
 
@@ -20,14 +20,12 @@ const UserAnalytics = () => {
     const router = useRouter();
     const { name, email } = router.query;
 
-    const [startDate, endDate, dateMap, setDateMap, setStartDate] = useDateRange("2022-06-01", 7);
+    const [startDate, endDate, dateMap, setDateMap, setStartDate] = useDateRange(new Date(Date.now()), 7);
 
     // Visitor invite data object for chart
     const [visitorVals, setVisitorVals] = useState({ data: [], labels: [] });
     
     const [numInvites, setNumInvites] = useState(0);
-
-    const chartRef = useRef(null);
 
     const { loading, error, data } = useQuery(gql`
         query {
@@ -39,10 +37,15 @@ const UserAnalytics = () => {
         }
     `);
 
+    const getTotalNumberOfInvites = useQuery(gql`
+        query {
+            getNumberOfInvitesOfVisitor(email: "${email}")
+        }
+    `);
+
     useEffect(() => {
         if(!loading && !error) {
             const invites = data.getNumInvitesPerDateOfUser;
-            setNumInvites(invites.length);
             invites.forEach((invite) => {
                 dateMap.set(
                     invite.inviteDate,
@@ -56,9 +59,20 @@ const UserAnalytics = () => {
                 labels: Array.from(dateMap.keys()),
             });
         } else if(error) {
+            if(error.message === "Unauthorized") {
+                router.push("/expire");
+            }
             console.error(error);
         }
-    }, [loading, error]);
+
+
+    }, [loading, error, router]);
+
+    useEffect(() => {
+        if(!getTotalNumberOfInvites.loading && !getTotalNumberOfInvites.error) {
+            setNumInvites(getTotalNumberOfInvites.data.getNumberOfInvitesOfVisitor);
+        }
+    }, [getTotalNumberOfInvites]);
 
     return (
         <Layout>
@@ -87,9 +101,8 @@ const UserAnalytics = () => {
                     />
                 </div>
                 <div className="flex justify-center">
-                    <div className="w-1/2">
+                    <div className="w-3/4 ">
                     <DownloadChart
-                        ref={chartRef}
                         title={"Visitor Weekly Visits"}
                         filename="visitor-forecast.png"
                         Chart={LineChart}
@@ -97,9 +110,10 @@ const UserAnalytics = () => {
                         datavals={visitorVals.data}
                         setStart={setStartDate}
                     />
+                    {loading && <p>Loading</p>}
                     </div>
                 </div>
-                <Link href={`/viewReport?email=${email}&startDate=${startDate}&endDate=${endDate}&name=${name}`} >
+                <Link href={`/viewReport?email=${email}&startDate=${startDate}&endDate=${endDate}&name=${name}&total=${numInvites}`} >
                     <a className="btn btn-primary">Generate PDF Report</a>
                 </Link>
             </div>

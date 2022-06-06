@@ -20,6 +20,13 @@ nextRouter.useRouter = jest.fn();
 nextRouter.useRouter.mockImplementation(() => ({ route: "/" }));
 
 describe("CreateInvite", () => {
+    const authHook = renderHook(() => useAuth());
+    authHook.hydrate();
+    act(() => {
+        authHook.result.current.login(
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJhZG1pbkBtYWlsLmNvbSIsImlhdCI6MTUxNjIzOTAyMiwicGVybWlzc2lvbiI6MH0.bh6yTWV0lN9A0_xOGcgqN_za3M35BewXpJNuuprcaJ8"
+        );
+    });
     it("renders a heading", () => {
         render(
             <MockedProvider>

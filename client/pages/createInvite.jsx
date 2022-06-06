@@ -1,7 +1,7 @@
-import { useState } from "react";
 import { useRouter } from "next/router";
+import { useState, useEffect } from "react";
 import { Formik, Field } from "formik";
-import { gql, useApolloClient } from "@apollo/client";
+import { gql, useQuery, useApolloClient } from "@apollo/client";
 import { motion } from "framer-motion";
 
 import useAuth from "../store/authStore.js";
@@ -18,6 +18,11 @@ const CreateInvite = () => {
 
     // Manipulate state for showing error alert
     const [showErrorAlert, setShowErrorAlert] = useState(false);
+
+    // Number of invites allowed to be sent/open of resident
+    const [numInvitesAllowed, setNumInvitesAllowed] = useState(0);
+
+    const [limitReached, setLimitReached] = useState(false);
 
     // Manipulate state for showing error alert
     const [errorMessage, setErrorMessage] = useState("");
@@ -38,6 +43,43 @@ const CreateInvite = () => {
             x: 900,
         },
     };
+
+    const numInvitesQuery = useQuery(gql`
+        query {
+            getNumInvitesPerResident {
+                value
+          }
+        }
+    `);
+
+    const numInvitesOfResidentQuery = useQuery(gql`
+        query {
+             getTotalNumberOfInvitesOfResident(email: "${jwtTokenData.email}") 
+        }
+    `);
+
+    useEffect(() => {
+        if(!numInvitesQuery.loading && !numInvitesQuery.error) {
+            setNumInvitesAllowed(numInvitesQuery.data.getNumInvitesPerResident.value);
+        } else if(numInvitesQuery.error) {
+            if(numInvitesQuery.error.message === "Unauthorized") {
+                router.push("/expire");
+            }
+        }
+
+        if(!numInvitesOfResidentQuery.loading && !numInvitesOfResidentQuery.error && numInvitesAllowed !== 0) {
+            const numSent = numInvitesOfResidentQuery.data.getTotalNumberOfInvitesOfResident
+            if(numSent >= numInvitesAllowed && jwtTokenData.permission === 2) {
+                setErrorMessage("Invite Limit Reached");
+                setLimitReached(true);
+                setShowErrorAlert(true);
+            } else {
+                setLimitReached(false);
+                setShowErrorAlert(false);
+            }
+        }
+
+    }, [numInvitesQuery, numInvitesOfResidentQuery, numInvitesAllowed, limitReached])
 
     return (
         <Layout>
@@ -136,7 +178,7 @@ const CreateInvite = () => {
                     }) => (
                         <form
                             onSubmit={handleSubmit}
-                            className="md:p-26 prose form-control space-y-4 rounded-none bg-base-300 p-14 md:rounded-xl"
+                            className="md:p-26 prose form-control space-y-4 rounded-none bg-base-300 p-14 md:rounded-xl mt-3"
                         >
                             <h1>
                                 Let&apos;s{" "}
@@ -254,7 +296,7 @@ const CreateInvite = () => {
                             <button
                                 className="btn btn-primary"
                                 type="submit"
-                                disabled={isSubmitting}
+                                disabled={isSubmitting || limitReached}
                             >
                                 Invite
                             </button>

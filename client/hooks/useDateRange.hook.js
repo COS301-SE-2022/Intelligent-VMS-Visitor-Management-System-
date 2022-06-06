@@ -22,7 +22,6 @@ const useDateRange = (start, range) => {
             endDate.setFullYear(startDate.getFullYear());
             endDate.setMonth(startDate.getMonth());
             endDate.setDate(startDate.getDate() + range);
-            console.log(startDate, endDate);
             dateMap.clear();
             for(let i = 0; i < range; i++) {
                 const dateKey = new Date(startDate);
