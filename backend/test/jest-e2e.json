@@ -30,6 +30,8 @@
     "@vms/mail/(.*)": "<rootDir>/../libs/mail/src/$1",
     "@vms/mail": "<rootDir>/../libs/mail/src",
     "@vms/receptionist/(.*)": "<rootDir>/../libs/receptionist/src/$1",
-    "@vms/receptionist": "<rootDir>/../libs/receptionist/src"
+    "@vms/receptionist": "<rootDir>/../libs/receptionist/src",
+    "@vms/restrictions/(.*)": "<rootDir>/../libs/restrictions/src/$1",
+    "@vms/restrictions": "<rootDir>/../libs/restrictions/src"
   }
 }
