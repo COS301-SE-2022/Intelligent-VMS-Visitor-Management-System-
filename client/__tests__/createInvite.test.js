@@ -73,9 +73,7 @@ describe("CreateInvite", () => {
             "valid@mail.com"
         );
 
-        await user.selectOptions(screen.getByRole("combobox"), [
-            "RSA-ID",
-        ]);
+        await user.selectOptions(screen.getByRole("combobox"), ["RSA-ID"]);
 
         await user.type(
             screen.getByPlaceholderText("Enter ID number"),
@@ -100,7 +98,7 @@ describe("CreateInvite", () => {
         );
 
         const user = userEvent.setup();
-        
+
         await user.click(screen.getByPlaceholderText("Visitor Email"));
 
         await user.type(
@@ -153,7 +151,7 @@ describe("CreateInvite", () => {
 
         // Create user event generator
         const user = userEvent.setup();
-        
+
         // Type in visitor email in field
         await user.type(
             screen.getByPlaceholderText("Visitor Email"),
@@ -161,9 +159,7 @@ describe("CreateInvite", () => {
         );
 
         // Select RSA-ID option from comboxbox
-        await user.selectOptions(screen.getByRole("combobox"), [
-            "RSA-ID",
-        ]);
+        await user.selectOptions(screen.getByRole("combobox"), ["RSA-ID"]);
 
         // Type ID number into field
         await user.type(
@@ -293,5 +289,4 @@ describe("CreateInvite", () => {
             expect(router.push).toHaveBeenCalledWith("/visitorDashboard");
         });
     });
-
 });

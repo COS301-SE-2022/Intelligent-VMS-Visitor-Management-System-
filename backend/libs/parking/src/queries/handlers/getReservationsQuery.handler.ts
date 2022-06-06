@@ -4,7 +4,6 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { ParkingReservation, ParkingReservationDocument } from "../../schema/reservation.schema";
 
-
 @QueryHandler(GetReservationsQuery)
 export class GetReservationsQueryHandler implements IQueryHandler {
   constructor(
@@ -12,7 +11,6 @@ export class GetReservationsQueryHandler implements IQueryHandler {
   ) {}
 
   async execute(query: GetReservationsQuery):Promise<ParkingReservation[]> {
-    
     return await this.parkingReservationModel.find();
   }
 }

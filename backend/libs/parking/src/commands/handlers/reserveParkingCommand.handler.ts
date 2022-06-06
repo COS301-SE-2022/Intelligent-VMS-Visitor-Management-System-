@@ -4,7 +4,6 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { ParkingReservation, ParkingReservationDocument } from "../../schema/reservation.schema";
 
-
 @CommandHandler(ReserveParkingCommand)
 export class ReserveParkingCommandHandler implements ICommandHandler<ReserveParkingCommand> {
   constructor(
@@ -13,7 +12,6 @@ export class ReserveParkingCommandHandler implements ICommandHandler<ReservePark
 
   //db stuff for reserving parking
   async execute(command: ReserveParkingCommand):Promise<ParkingReservation> {
-    
     const { invitationID, parkingNumber } = command;
 
     const parkingReservation = new ParkingReservation();

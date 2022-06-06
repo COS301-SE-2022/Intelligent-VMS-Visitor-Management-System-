@@ -1,8 +1,10 @@
 import { Field, ObjectType } from "@nestjs/graphql";
-import { InviteState } from "../schema/invite.schema";
 
 @ObjectType()
 export class Invite {
+    @Field((type) => String)
+    userEmail: string;
+
     @Field((type) => String)
     visitorEmail: string;
 
@@ -26,9 +28,12 @@ export class Invite {
 
     //Graphql doesnt like enums
     @Field((type) => String)
-    inviteState: String
+    inviteState: string
 
     @Field((type) => String)
     notes?: string
+
+    @Field((type)=> String)
+    signOutDate?: Date
 
 }
