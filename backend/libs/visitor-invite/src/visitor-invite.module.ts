@@ -12,6 +12,7 @@ import { VisitorInviteResolver } from "./visitor-invite.resolver";
 import { CreateInviteCommandHandler } from "./commands/handlers/createInviteCommand.handler";
 import { CancelInviteCommandHandler } from "./commands/handlers/cancelInviteCommand.handler";
 import { GetInvitesQueryHandler } from "./queries/handlers/getInvites.handler";
+import { GetInvitesByDateQueryHandler } from "./queries/handlers/getInvitesByDate.handler";
 import { GetInviteQueryHandler } from "./queries/handlers/getInvite.handler";
 import { getNumberOfVisitors } from "./queries/handlers/getNumberOfVisitors.handler";
 import { GetInvitesInRangeQueryHandler } from "./queries/handlers/getInvitesInRange.handler";
@@ -33,6 +34,7 @@ import { GetInvitesInRangeQueryHandler } from "./queries/handlers/getInvitesInRa
         CancelInviteCommandHandler,
         GetInvitesQueryHandler,
         GetInviteQueryHandler,
+        GetInvitesByDateQueryHandler,
         GetInvitesInRangeQueryHandler,
         getNumberOfVisitors
     ],

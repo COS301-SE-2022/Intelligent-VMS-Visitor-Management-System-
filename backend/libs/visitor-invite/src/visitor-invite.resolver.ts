@@ -11,7 +11,7 @@ import { User } from "@vms/user/models/user.model";
 import { RolesGuard } from "@vms/user/guards/roles.guard";
 import { Roles } from "@vms/user/decorators/roles.decorator";
 
-@UseGuards(GqlAuthGuard)
+//@UseGuards(GqlAuthGuard)
 @Resolver((of) => Invite)
 export class VisitorInviteResolver {
     constructor(
@@ -84,6 +84,14 @@ export class VisitorInviteResolver {
     async getTotalNumberOfVisitorsOfResident(@CurrentUser() user: User) {
         return this.visitorInviteService.getTotalNumberOfInvitesOfResident(user.email);
     }
+
+     //Get all invites in the database
+     @UseGuards(GqlAuthGuard, RolesGuard)
+     @Roles("receptionist", "admin")
+     @Query((returns) => [Invite], { name: "getInvitesByDate" })
+     async getAllInvites(@Args("date") date: string) {
+         return this.visitorInviteService.getInvitesByDate(date)
+     }
 
 }
 

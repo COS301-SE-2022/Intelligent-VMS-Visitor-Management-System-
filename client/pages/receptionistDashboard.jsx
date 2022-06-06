@@ -11,19 +11,22 @@ import SignOutPopUp from "../components/SignOutPopUp";
 
 const ReceptionistDashboard = () => {
     
-    const [showSignIn, setShowSignIn] = useState(false);
-    const [showQR, setShowQR] = useState(false);
     const [currentVisitorID,setCurrentVisitorID] = useState("");
     const [currentInviteID,setCurrentInviteID] = useState("");
-
+    
     const [visitorData, setIsVisitorData] = useState([]);
     const [showErrorAlert, scanPopup] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
 
+
+    let today = new Date();
+    const formatYmd = today => today.toISOString().slice(0, 10);
+    let todayString = formatYmd(new Date());
+
     const router = useRouter();
     const { loading, error, data } = useQuery(gql`
         query {
-            getInvites {
+            getInvitesByDate( date: "${todayString}" ) {
                 inviteID
                 inviteDate
                 idNumber
@@ -36,13 +39,6 @@ const ReceptionistDashboard = () => {
     function refreshPage() {
         window.location.reload(true);
       }
-
-    const click = (inviteID) => {
-        setCurrentVisitorID(visit.idNumber); 
-        setCurrentInviteID(visit.inviteID);
-        refreshPage;
-        alert("here");
-    };
 
     const search = (inviteID) => {
         //TODO (Stefan)
@@ -62,7 +58,7 @@ const ReceptionistDashboard = () => {
 
     useEffect(() => {
         if (!loading && !error) {
-            const invites = data.getInvites;
+            const invites = data.getInvitesByDate;
             setIsVisitorData(invites);
         } else if (error) {
             if (error.message === "Unauthorized") {
@@ -85,7 +81,7 @@ const ReceptionistDashboard = () => {
         <Layout>
             <input type="text" placeholder="Search.." className="ml-5 input input-bordered input-primary w-4/6" />
             <button onClick={search} className="ml-5 mt-5 mb-5 btn btn-primary">Search</button>
-            <label htmlFor="QRScan-modal" className="modal-button mr-5 mt-5 mb-5 float-right btn btn-primary">Scan to Search</label>
+            <a href="#QRScan-modal" className="modal-button mr-5 mt-5 mb-5 float-right btn btn-primary">Scan to Search</a>
             <h1 className="mt-5 mb-5 p-3 text-left text-4xl font-bold base-100">
                 Today&apos;s Invites
             </h1>
@@ -110,11 +106,11 @@ const ReceptionistDashboard = () => {
                                 <th>Visitor ID</th>
                                 <th></th>
                             </tr>
-                        </thead>
+                </thead>
                         {visitorData.length > 0 ? (
                             <tbody>
                                 {visitorData.map((visit, idx) => {
-                                        if (new Date(visit.inviteDate).getTime == new Date("2022-06-02").getTime && visit.inviteState !=="signedOut"){
+                                        
                                             return(
                                                 <tr className="hover" key={idx}>
                                                     <th>{idx + 1}</th>
@@ -147,7 +143,7 @@ const ReceptionistDashboard = () => {
                                                     )}
                                                 </tr>
                                             )
-                                            }
+                                            
                                 })}
                             </tbody>
                         ) : (
@@ -175,13 +171,13 @@ const ReceptionistDashboard = () => {
                 </div>                
             </div>
 
-            <input type="checkbox" id="QRScan-modal" className="modal-toggle" />
             <div className="modal fade" id="QRScan-modal">
                 <div className="modal-box flex flex-wrap">
-                    <label htmlFor="QRScan-modal" className="btn btn-sm btn-circle absolute right-2 top-2 z-10">✕</label>
                     <QRScanner />
                 </div>                
             </div>
+
+            
         </Layout>
     );
 };
@@ -195,4 +191,3 @@ export async function getStaticProps(context) {
 }
 
 export default ReceptionistDashboard;
-
