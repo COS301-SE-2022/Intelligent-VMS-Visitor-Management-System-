@@ -1,5 +1,5 @@
 import { QueryHandler, IQueryHandler } from "@nestjs/cqrs";
-import { GetInviteByNameQuery } from "../impl/getInviteByName.query";
+import { GetInviteByNameQuery } from "../impl/getInviteByNameForSearch.query";
 import { Model } from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
 import { Invite, InviteDocument } from "../../schema/invite.schema";
