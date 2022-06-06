@@ -104,5 +104,12 @@ export class VisitorInviteResolver {
         return await this.visitorInviteService.getInvitesByName(name);
     }
 
+    @UseGuards(GqlAuthGuard, RolesGuard)
+    @Roles("admin")
+    @Query((returns) => Number, { name: "getNumberOfInvitesOfVisitor"})
+    async getNumberOfInvitesOfVisitor(@Args("email") email: string) {
+        return await this.visitorInviteService.getTotalNumberOfInvitesVisitor(email);
+    }
+
 }
 

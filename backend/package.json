@@ -139,7 +139,8 @@
       "^@vms/resident(|/.*)$": "<rootDir>/libs/resident/src/$1",
       "^@vms/parking(|/.*)$": "<rootDir>/libs/parking/src/$1",
       "^@vms/mail(|/.*)$": "<rootDir>/libs/mail/src/$1",
-      "^@vms/receptionist(|/.*)$": "<rootDir>/libs/receptionist/src/$1"
+      "^@vms/receptionist(|/.*)$": "<rootDir>/libs/receptionist/src/$1",
+      "^@vms/restrictions(|/.*)$": "<rootDir>/libs/restrictions/src/$1"
     }
   }
 }
