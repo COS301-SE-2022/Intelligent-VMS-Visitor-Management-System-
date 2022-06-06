@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { FiDownload } from "react-icons/fi";
 
-const DownloadChart = ({ title, filename, Chart, labelvals, datavals }) => {
+const DownloadChart = ({ title, filename, Chart, labelvals, datavals, setStart }) => {
     const chartRef = useRef(null);
     const downloadLinkRef = useRef(null);
     const [loading, setLoading] = useState(false);
@@ -31,6 +31,22 @@ const DownloadChart = ({ title, filename, Chart, labelvals, datavals }) => {
                 >
                     <FiDownload className="text-xl text-primary-content" />
                 </a>
+                
+                <div>
+                <input
+                    type="date"
+                    name="visitDate"
+                    placeholder="Visit Date"
+                    className="input input-bordered w-full"
+                    onChange={(e) => {
+                        const date = new Date(e.target.value);
+
+                        if(!isNaN(date)) {
+                            setStart(date);
+                        }
+                    }}
+                />
+                </div>
             </div>
         </div>
     );

@@ -10,7 +10,6 @@ const Verify = () => {
 
     useEffect(() => {
         const { id, email } = router.query;
-        console.log(id, email);
         if (
             /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/.test(
                 id

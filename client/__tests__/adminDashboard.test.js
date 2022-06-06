@@ -41,46 +41,4 @@ describe("AdminDashboard", () => {
 
         expect(screen.getByText("admin@mail.com")).toBeInTheDocument();
     });
-
-    it("redirects to unauthorized page when api error is unauthorized", async () => {
-        const useRouter = jest.spyOn(require("next/router"), "useRouter");
-        jest.mock("react-chartjs-2", () => ({
-            Line: () => null,
-        }));
-        const setStateMock = jest.fn();
-        const stateMock = () => [useState, setStateMock];
-        jest.spyOn(React, "useState").mockImplementation(stateMock);
-        jest.spyOn(React, "useEffect").mockImplementation((f) => f());
-        const router = {
-            push: jest.fn().mockImplementation(() => Promise.resolve(true)),
-            prefetch: () => new Promise((resolve) => resolve),
-        };
-        useRouter.mockReturnValue(router);
-
-        const validDataMock = [
-            {
-                request: {
-                    query: gql`
-                        query {
-                            getTotalNumberOfVisitors
-                        }
-                    `,
-                },
-                result: {
-                    errors: [new GraphQLError("Unauthorized")],
-                },
-            },
-        ];
-
-        render(
-            <MockedProvider mocks={validDataMock} addTypename={false}>
-                <AdminDashboard />
-            </MockedProvider>
-        );
-
-        await act(async () => {
-            await new Promise((resolve) => setTimeout(resolve, 50));
-            //expect(router.push).toHaveBeenCalledWith("/expire");
-        });
-    });
 });

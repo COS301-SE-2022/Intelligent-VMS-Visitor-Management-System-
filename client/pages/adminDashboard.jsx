@@ -8,12 +8,24 @@ import LineChart from "../components/LineChart";
 import DownloadChart from "../components/DownloadChart";
 import VisitorSearchResults from "../components/VisitorSearchResults";
 
+import useDateRange from "../hooks/useDateRange.hook";
+import useAuth from "../store/authStore";
+
 import { AiOutlinePlus, AiOutlineMinus, AiOutlineCar } from "react-icons/ai";
 import { BiBuildingHouse, BiMailSend } from "react-icons/bi";
 import { FaSearch } from "react-icons/fa";
 
-import useDateRange from "../hooks/useDateRange.hook";
-import useAuth from "../store/authStore";
+const getFormattedDateString = (date) => {
+    if(date instanceof Date) {
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        return [
+            date.getFullYear(),
+            (month > 9 ? "" : "0") + month,
+            (day > 9 ? "" : "0") + day,
+        ].join("-");
+    }
+};
 
 const AdminDashboard = () => {
     // NextJS Page Router
@@ -26,7 +38,9 @@ const AdminDashboard = () => {
     const [visitorVals, setVisitorVals] = useState({ data: [], labels: [] });
 
     // Date Range Hook
-    const [startDate, endDate, dateMap, setDateMap] = useDateRange(7);
+    const [startDate, endDate, dateMap, setDateMap, setStartDate] = useDateRange(getFormattedDateString(new Date(Date.now())), 7);
+
+    const [start, setStart] = useState(startDate);
 
     // State for invites for today
     const [todayInvites, setTodayInvites] = useState(0);
@@ -51,23 +65,17 @@ const AdminDashboard = () => {
     const numInviteInDateRangeQuery = useQuery(gql`
         query {
             getNumInvitesPerDate(
-                dateStart: "${startDate}",
+                dateStart: "${start}",
                 dateEnd: "${endDate}"
             ) {
                 inviteDate
             }
         }
-    `);
+    `, { fetchPolicy: "no-cache", });
 
     const numParkingSpotsAvailableQuery = useQuery(gql`
         query {
             getAvailableParking
-        }
-    `);
-
-    const numParkingSpotsUsedQuery = useQuery(gql`
-        query {
-            getAmountOfUsedParkingsInRange
         }
     `);
 
@@ -90,10 +98,12 @@ const AdminDashboard = () => {
         ) {
             const invites = numInviteInDateRangeQuery.data.getNumInvitesPerDate;
             invites.forEach((invite) => {
-                dateMap.set(
-                    invite.inviteDate,
-                    dateMap.get(invite.inviteDate) + 1
-                );
+                if(!isNaN(dateMap.get(invite.inviteDate))) {
+                    dateMap.set(
+                        invite.inviteDate,
+                        dateMap.get(invite.inviteDate) + 1
+                    );
+                }
             });
 
             setDateMap(new Map(dateMap));
@@ -102,7 +112,9 @@ const AdminDashboard = () => {
                 labels: Array.from(dateMap.keys()),
             });
 
+            console.log(dateMap);
             setTodayInvites(dateMap.get(startDate));
+
         } else if (numInviteInDateRangeQuery.error) {
         }
 
@@ -120,12 +132,8 @@ const AdminDashboard = () => {
         numInvitesQuery,
         numInviteInDateRangeQuery,
         numParkingSpotsAvailableQuery,
-        router,
-        dateMap,
         startDate,
         setNumParkingSpotsAvailable,
-        setDateMap,
-        setTodayInvites,
     ]);
 
     return (
@@ -193,6 +201,7 @@ const AdminDashboard = () => {
                             Chart={LineChart}
                             labelvals={visitorVals.labels}
                             datavals={visitorVals.data}
+                            setStart={setStartDate}
                         />
                         <DownloadChart
                             title={"Parking Forecast"}

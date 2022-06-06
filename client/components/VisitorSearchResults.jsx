@@ -22,7 +22,7 @@ const VisitorSearchResults = ({ name }) => {
                     searchQuery.loading ? <div className="progress progress-primary"></div> :
                     searchQuery.data?.getInvitesByName.map((visitor, idx) => {
                         return (
-                            <Link href={"/userAnalytics?name=" + name + "&email=" + visitor.visitorEmail} key={idx}>
+                            <Link href={"/userAnalytics?name=" + visitor.visitorName + "&email=" + visitor.visitorEmail} key={idx}>
                                 <a className="flex p-3 items-center space-x-3 rounded-lg hover:bg-base-300 cursor-pointer">
                                     <div className="avatar placeholder online">
                                         <div className="w-16 rounded-full bg-neutral-focus text-neutral-content">
