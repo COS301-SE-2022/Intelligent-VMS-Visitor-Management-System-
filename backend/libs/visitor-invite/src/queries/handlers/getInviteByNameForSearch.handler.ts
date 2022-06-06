@@ -5,7 +5,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Invite, InviteDocument } from "../../schema/invite.schema";
 
 @QueryHandler(GetInviteByNameQuery)
-export class GetInviteByNameQueryHandler implements IQueryHandler {
+export class GetInviteByNameForSearchQueryHandler implements IQueryHandler {
     constructor(@InjectModel(Invite.name) private inviteModel: Model<InviteDocument>) {}
 
     async execute(query: GetInviteByNameQuery) {
