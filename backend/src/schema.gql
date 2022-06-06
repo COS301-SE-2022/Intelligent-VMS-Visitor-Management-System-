@@ -46,6 +46,11 @@ type SearchInvite {
   visitorName: String!
 }
 
+type Restriction {
+  name: String!
+  value: Int!
+}
+
 input VisitorInputType {
   id: Float!
   name: String!
@@ -68,6 +73,7 @@ type Query {
   getNumInvitesPerDateOfUser(dateStart: String!, dateEnd: String!, email: String!): [Invite!]!
   getTotalNumberOfInvitesOfResident(email: String!): Float!
   getInvitesByName(name: String!): [SearchInvite!]!
+  getNumberOfInvitesOfVisitor(email: String!): Float!
   helloParking: String!
   getAvailableParking: Float!
   getFreeParking: Parking!
@@ -75,6 +81,7 @@ type Query {
   getAmountOfUsedParkingsInRange(startDate: String!, endDate: String!): [ParkingReservation!]!
   helloResident: String!
   helloReceptionist: String!
+  getNumInvitesPerResident: Restriction!
 }
 
 type Mutation {
@@ -92,4 +99,5 @@ type Mutation {
   ceatedParkings(N: Float!): Boolean!
   signOut(inviteID: String!): Invite!
   signIn(inviteID: String!, notes: String!): Invite!
+  setNumInvitesPerResident(numInvites: Float!): Restriction!
 }
