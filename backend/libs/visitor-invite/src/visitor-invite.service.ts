@@ -18,6 +18,7 @@ import { ReserveParkingCommand } from "@vms/parking/commands/impl/reserveParking
 import { GetAvailableParkingQuery } from '@vms/parking/queries/impl/getAvailableParking.query';
 import { ParkingNotFound } from "@vms/parking/errors/parkingNotFound.error";
 import { MailService } from "@vms/mail";
+import {GetInvitesInRangeByEmailQuery} from "./queries/impl/getInvitesInRangeByEmail.query";
 
 @Injectable()
 export class VisitorInviteService {
@@ -130,7 +131,7 @@ export class VisitorInviteService {
     // Get invites in date range for an user
     async getNumInvitesPerDateOfUser(dateStart: string, dateEnd: string, email: string) {
        this._validateDate(dateStart, dateEnd);
-       return await this.queryBus.execute(new GetInvitesInRangeQuery(dateStart, dateEnd));
+       return await this.queryBus.execute(new GetInvitesInRangeByEmailQuery(dateStart, dateEnd, email));
     }
 
     // Get Number of total open invites per resident

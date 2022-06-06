@@ -3,6 +3,9 @@ import { Field, ObjectType } from "@nestjs/graphql";
 @ObjectType()
 export class Invite {
     @Field((type) => String)
+    userEmail: string;
+
+    @Field((type) => String)
     visitorEmail: string;
 
     @Field((type) => String)

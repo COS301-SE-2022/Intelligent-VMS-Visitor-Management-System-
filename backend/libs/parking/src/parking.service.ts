@@ -1,24 +1,30 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
+
 import { AssignParkingCommand } from './commands/impl/assignParking.command';
 import { FreeParkingCommand } from './commands/impl/freeParking.command';
 import { ReserveParkingCommand } from './commands/impl/reserveParking.command';
-import { ParkingNotFound } from "./errors/parkingNotFound.error";
-import { GetAvailableParkingQuery } from './queries/impl/getAvailableParking.query';
-import { GetFreeParkingQuery } from './queries/impl/getFreeParking.query';
-import { UnreserveParkingCommand } from './commands/impl/unreserveParking.command';
-import { AddParkingCommand } from './commands/impl/addParking.command';
-import { ExternalError } from './errors/externalError.error';
-import { VisitorInviteService } from '@vms/visitor-invite/visitor-invite.service';
-import { InvalidQuery } from './errors/invalidQuery.error';
-import { GetInviteReservationQuery } from './queries/impl/getInviteReservation.query';
-import { CreateNParkingSpotsCommand } from './commands/impl/createNParkingSpots.command';
-import { InviteNotFound } from '@vms/visitor-invite/errors/inviteNotFound.error';
-import { ReservationNotFound } from './errors/reservationNotFound.error';
-import { GetReservationsQuery } from './queries/impl/getReservations.query';
-import { GetParkingReservationsQuery } from './queries/impl/getParkingReservations.query';
 import { EnableParkingSpaceCommand } from './commands/impl/enableParkingSpace.command';
 import { DisableParkingSpaceCommand } from './commands/impl/disableParkingSpace.command';
+import { UnreserveParkingCommand } from './commands/impl/unreserveParking.command';
+import { CreateNParkingSpotsCommand } from './commands/impl/createNParkingSpots.command';
+import { AddParkingCommand } from './commands/impl/addParking.command';
+
+import { GetAvailableParkingQuery } from './queries/impl/getAvailableParking.query';
+import { GetFreeParkingQuery } from './queries/impl/getFreeParking.query';
+import { GetInviteReservationQuery } from './queries/impl/getInviteReservation.query';
+import { GetReservationsQuery } from './queries/impl/getReservations.query';
+import { GetParkingReservationsQuery } from './queries/impl/getParkingReservations.query';
+import { GetReservationInRangeQuery } from "./queries/impl/getReservationsInRange.query";
+
+import { InvalidQuery } from './errors/invalidQuery.error';
+import { ReservationNotFound } from './errors/reservationNotFound.error';
+import { ParkingNotFound } from "./errors/parkingNotFound.error";
+import { ExternalError } from './errors/externalError.error';
+
+import { InviteNotFound } from '@vms/visitor-invite/errors/inviteNotFound.error';
+import { VisitorInviteService } from '@vms/visitor-invite/visitor-invite.service';
+
 
 @Injectable()
 export class ParkingService {
@@ -487,24 +493,8 @@ export class ParkingService {
         }
 
     async getTotalUsedParkingInRange(startDate: string, endDate: string){
-        const parkingReservations = [];
-        const start = new Date(startDate);
-        const end = new Date(endDate);
-
-        const Reservations = await this.queryBus.execute(new GetReservationsQuery());
-
-        // TODO: This needs to be done differently, request should be made once
-        for(let i=0;i < Reservations.length;i++) {
-            const resInvite = await this.inviteService.getInvite(Reservations[i].invitationID);
-    
-            const resDate = new Date(resInvite.inviteDate);
-            if(resDate.getTime >= start.getTime && resDate.getTime <= end.getTime) {
-                parkingReservations.push(Reservations[i]);
-            }
-        }
-
-        return parkingReservations;
-
+        //TODO (Larisa) add date validation logic here
+         return await this.queryBus.execute(new GetReservationInRangeQuery(startDate, endDate));
     }
 
     //TODO (Larisa): Check doubles ie double reservation
