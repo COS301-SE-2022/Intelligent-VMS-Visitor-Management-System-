@@ -26,7 +26,7 @@ export class Invite {
 
     //Graphql doesnt like enums
     @Field((type) => String)
-    inviteState: String
+    inviteState: string
 
     @Field((type) => String)
     notes?: string
