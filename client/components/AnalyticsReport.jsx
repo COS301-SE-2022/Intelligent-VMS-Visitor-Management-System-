@@ -31,7 +31,7 @@ const AnalyticsReport = ({ data, name, total, startDate, endDate }) => {
                 <div className="px-3 text-primary-content">
                     <h2 className="text-base font-bold">Total Number Of Invites</h2>
                     <p className="text-xl text-primary font-bold">{total}</p>
-                    <div className="divider">Visitation Data for: <span className="font-bold">{startDate}</span>to<span className="font-bold">{endDate}</span></div>
+                    <div className="divider"></div>
                     <h2 className="text-base font-bold">Visitation Dates</h2>
                     <div className="flex-col">
                         {!data || data.length === 0 ? <div>Nothing to show...</div> : data.map((val, idx) => {
