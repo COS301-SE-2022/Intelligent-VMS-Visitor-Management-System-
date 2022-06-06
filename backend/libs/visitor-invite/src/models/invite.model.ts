@@ -1,8 +1,10 @@
 import { Field, ObjectType } from "@nestjs/graphql";
-import { InviteState } from "../schema/invite.schema";
 
 @ObjectType()
 export class Invite {
+    @Field((type) => String)
+    userEmail: string;
+
     @Field((type) => String)
     visitorEmail: string;
 
