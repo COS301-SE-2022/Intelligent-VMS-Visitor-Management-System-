@@ -13,6 +13,7 @@ import { CreateInviteCommandHandler } from "./commands/handlers/createInviteComm
 import { CancelInviteCommandHandler } from "./commands/handlers/cancelInviteCommand.handler";
 import { GetInvitesQueryHandler } from "./queries/handlers/getInvites.handler";
 import { GetInviteQueryHandler } from "./queries/handlers/getInvite.handler";
+import { GetInviteByNameQueryHandler } from "./queries/handlers/getInviteByName.handler";
 import { getNumberOfVisitors } from "./queries/handlers/getNumberOfVisitors.handler";
 import { GetInvitesInRangeQueryHandler } from "./queries/handlers/getInvitesInRange.handler";
 
@@ -34,7 +35,8 @@ import { GetInvitesInRangeQueryHandler } from "./queries/handlers/getInvitesInRa
         GetInvitesQueryHandler,
         GetInviteQueryHandler,
         GetInvitesInRangeQueryHandler,
-        getNumberOfVisitors
+        getNumberOfVisitors,
+        GetInviteByNameQueryHandler
     ],
     exports: [VisitorInviteService],
 })
