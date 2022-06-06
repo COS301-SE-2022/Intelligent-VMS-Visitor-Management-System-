@@ -21,12 +21,8 @@ type Parking {
   enabled: Boolean!
 }
 
-type ParkingReservation {
-  invitationID: String!
-  parkingNumber: String!
-}
-
 type Invite {
+  userEmail: String!
   visitorEmail: String!
   visitorName: String!
   idDocType: String!
@@ -37,6 +33,12 @@ type Invite {
   inviteState: String!
   notes: String!
   signOutDate: String!
+}
+
+type ParkingReservation {
+  invitationID: String!
+  parkingNumber: String!
+  inviteData: [Invite!]!
 }
 
 type SearchInvite {
@@ -70,7 +72,7 @@ type Query {
   getAvailableParking: Float!
   getFreeParking: Parking!
   getReservations: ParkingReservation!
-  getAmountOfUsedParkingsInRange(startDate: String!, endDate: String!): Float!
+  getAmountOfUsedParkingsInRange(startDate: String!, endDate: String!): [ParkingReservation!]!
   helloResident: String!
   helloReceptionist: String!
 }
