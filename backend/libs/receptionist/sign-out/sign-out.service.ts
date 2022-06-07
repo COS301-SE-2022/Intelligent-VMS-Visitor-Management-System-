@@ -16,6 +16,7 @@ export class SignOutService {
     async signOut(
         invitationId: string,
     ) {
+        const trayNumber = await this.removeTrayByInviteID(invitationId);
         this.removeTrayByInviteID(invitationId);
         //return await this.commandBus.execute(new SignOutInviteCommand(invitationId, new Date()));
     }
