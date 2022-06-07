@@ -9,9 +9,9 @@ import Layout from "../components/Layout";
 import ErrorAlert from "../components/ErrorAlert";
 
 const Login = () => {
-    const login = useAuth((state) => state.login);
-    const logout = useAuth((state) => state.logout);
-    const verify = useAuth((state) => state.setVerify);
+    const login = useAuth((state) => {return state.login});
+    const logout = useAuth((state) => {return state.logout});
+    const verify = useAuth((state) => {return state.setVerify});
     const router = useRouter();
 
     const [showErrorAlert, setShowErrorAlert] = useState(false);
@@ -89,7 +89,7 @@ const Login = () => {
                         handleBlur,
                         handleSubmit,
                         isSubmitting,
-                    }) => (
+                    }) => {return (
                         <form
                             onSubmit={handleSubmit}
                             className="prose form-control space-y-4 rounded-xl border bg-base-300 p-14 md:p-28"
@@ -131,7 +131,7 @@ const Login = () => {
                                 Login
                             </button>
                         </form>
-                    )}
+                    )}}
                 </Formik>
 
                 <ErrorAlert

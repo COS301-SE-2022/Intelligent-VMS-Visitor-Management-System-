@@ -105,9 +105,9 @@ const VisitorDashboard = () => {
                                                 <button
                                                     className="btn btn-square btn-primary"
                                                     onClick={() =>
-                                                        cancelInvite(
+                                                        {return cancelInvite(
                                                             visit.inviteID
-                                                        )
+                                                        )}
                                                     }
                                                 >
                                                     <svg

@@ -60,10 +60,10 @@ const AdminDashboard = () => {
     const [name, setName] = useState("");
 
     const [numParkingSpotsAvailable, setNumParkingSpotsAvailable] = useState(0);
-    const updateParkingSpots = useAuth((state) => state.updateParkingSpots);
+    const updateParkingSpots = useAuth((state) => {return state.updateParkingSpots});
 
     // JWT Token data from Model
-    const decodedToken = useAuth((state) => state.decodedToken)();
+    const decodedToken = useAuth((state) => {return state.decodedToken})();
     
     const numInvitesPerResidentQuery = useQuery(gql`
         query {
@@ -331,7 +331,7 @@ const AdminDashboard = () => {
                     </h3>
                     <input
                         onChange={(e) =>
-                            updateParkingSpots(Number(e.target.value))
+                            {return updateParkingSpots(Number(e.target.value))}
                         }
                         className="input input-bordered w-full max-w-xs"
                         type="number"
