@@ -12,6 +12,7 @@ import { GetNumberOfInvitesOfResidentQuery } from "./queries/impl/getNumberOfInv
 import { GetInvitesByNameQuery } from "./queries/impl/getInvitesByName.query";
 import { GetInvitesInRangeByEmailQuery } from "./queries/impl/getInvitesInRangeByEmail.query";
 import { GetTotalNumberOfInvitesVisitorQuery } from "./queries/impl/getTotalNumberOfInvitesVisitor.query";
+import { GetInvitesByNameForSearchQuery } from "./queries/impl/getInviteByNameForSearch.query";
 
 import { InviteNotFound } from "./errors/inviteNotFound.error";
 import { DateFormatError } from "./errors/dateFormat.error";
@@ -151,8 +152,8 @@ export class VisitorInviteService {
     }
 
     //Searching for receptionist by name
-    async getInvitesByNameForReceptionistSearch(name: string) {
-        return await this.queryBus.execute(new GetInvitesByNameQuery(name));
+    async getInvitesByNameForSearch(name: string) {
+        return await this.queryBus.execute(new GetInvitesByNameForSearchQuery(name));
     }
 
     //Searching for receptionist by ID
