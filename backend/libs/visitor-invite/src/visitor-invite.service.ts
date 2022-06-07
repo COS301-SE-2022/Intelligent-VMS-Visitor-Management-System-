@@ -78,6 +78,7 @@ export class VisitorInviteService {
         return this.queryBus.execute(new GetInvitesQuery(email));
     }
 
+    //Get invite by ID
     async getInvite(inviteID: string) {
         return this.queryBus.execute(new GetInviteQuery(inviteID));
     }
@@ -148,6 +149,12 @@ export class VisitorInviteService {
     async getInvitesByNameForReceptionistSearch(name: string) {
         return await this.queryBus.execute(new GetInvitesByNameQuery(name));
     }
+
+    //Searching for receptionist by ID
+    async getInvitesByIDForReceptionistSearch(inviteID: string) {
+        return await this.queryBus.execute(new GetInviteQuery(inviteID));
+    }
+
 
     
 }
