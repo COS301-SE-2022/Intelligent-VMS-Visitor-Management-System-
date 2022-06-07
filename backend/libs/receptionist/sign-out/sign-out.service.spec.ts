@@ -68,7 +68,9 @@ describe('SignOutService', () => {
   });
 
   it("should sign out", async()=>{
-    
+    //Arrange
+    //jest.spyOn(service, 'getTrayNumber').mockReturnValueOnce(Promise.resolve(12123123));
+
   })
 
   describe("removeTrayByInviteID", () => {
