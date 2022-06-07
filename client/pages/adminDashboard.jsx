@@ -46,7 +46,6 @@ const AdminDashboard = () => {
     // Start Date State
     const [start, setStart] = useState(startDate);
 
-
     // Initial number of invites per resident for fallback
     const [initialNumInvitesPerResident, setInitialNumInvitesPerResident] = useState(1);
 

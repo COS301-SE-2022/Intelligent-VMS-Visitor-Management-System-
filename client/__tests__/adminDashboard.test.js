@@ -41,4 +41,5 @@ describe("AdminDashboard", () => {
 
         expect(screen.getByText("admin@mail.com")).toBeInTheDocument();
     });
+
 });

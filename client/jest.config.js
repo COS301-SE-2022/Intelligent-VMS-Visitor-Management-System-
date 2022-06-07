@@ -12,9 +12,11 @@ const customJestConfig = {
   coveragePathIgnorePatterns: [
     "node_modules",
     "authStore.js",
+    "adminDashboard.jsx"
   ],
   modulePathIgnorePatterns: [
       "__mocks__",
+      "lib"
   ],
 }
 

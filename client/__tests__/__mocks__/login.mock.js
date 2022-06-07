@@ -22,3 +22,21 @@ export const validLogin = [{
        } 
     }
 }];
+
+export const errorMock = [{
+        request: {
+            query: gql`
+                mutation {
+                    login(
+                       email: "admin@mail.com",
+                       password: "password"
+                    ) {
+                        access_token
+                    }
+                }
+            `
+    },
+    result: {
+        errors: [new GraphQLError("ERROR")],
+    }
+}];

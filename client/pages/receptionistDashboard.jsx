@@ -21,7 +21,7 @@ const ReceptionistDashboard = () => {
 
 
     //let today = new Date();
-    const formatYmd = today => today.toISOString().slice(0, 10);
+    const formatYmd = today => {return today.toISOString().slice(0, 10)};
     let todayString = formatYmd(new Date());
 
     const router = useRouter();
