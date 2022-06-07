@@ -36,6 +36,7 @@ export class VisitorInviteService {
         Create an invitation for a visitor
     */
     async createInvite(
+        permission: number,
         userEmail: string,
         visitorEmail: string,
         visitorName: string,
@@ -45,15 +46,14 @@ export class VisitorInviteService {
         requiresParking: boolean
     ) {
 
-        // Number of invites allowed set by system admin
-        const numInvitesAllowed = this.restrictionsService.getNumInvitesPerResident();
+        // If permission level is that of resident check invite limit
+        if(permission !== 0 && permission !== 1) {
+            const numInvitesAllowed = this.restrictionsService.getNumInvitesPerResident();
+            const numInvitesSent = this.getTotalNumberOfInvitesOfResident(userEmail);
 
-        // Number of invites used by the current user
-        const numInvitesUsed = this.getTotalNumberOfInvitesOfResident(userEmail);
-
-        // Check if max number of invites reached
-        if(numInvitesUsed >= numInvitesAllowed) {
-            throw new InviteLimitReachedError(`Maximum number of invites reached: ${numInvitesUsed} of ${numInvitesAllowed} used`);
+            if(numInvitesSent >= numInvitesAllowed) {
+                throw new InviteLimitReachedError("Max Number of Invites Sent");
+            }
         }
 
         // Generate inviteID
@@ -74,7 +74,6 @@ export class VisitorInviteService {
 
         // Parking
         if(requiresParking) {
-
             const parking =  await this.queryBus.execute(
                 new GetAvailableParkingQuery()
             );

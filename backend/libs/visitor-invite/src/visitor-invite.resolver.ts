@@ -38,6 +38,7 @@ export class VisitorInviteResolver {
     // Create Invite
     @Mutation((returns) => {return String}, { name: "createInvite" })
     async createInvite(
+        @CurrentUser() user: User,
         @Args("userEmail") userEmail: string,
         @Args("visitorName") visitorName: string,
         @Args("visitorEmail") email: string,
@@ -47,6 +48,7 @@ export class VisitorInviteResolver {
         @Args("requiresParking") requiresParking: boolean,
     ) {
         return this.visitorInviteService.createInvite(
+            user.permission,
             userEmail,
             email,
             visitorName,
