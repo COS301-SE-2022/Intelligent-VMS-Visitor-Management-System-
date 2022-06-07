@@ -20,6 +20,7 @@ import { ReserveParkingCommand } from "@vms/parking/commands/impl/reserveParking
 import { GetAvailableParkingQuery } from '@vms/parking/queries/impl/getAvailableParking.query';
 import { ParkingNotFound } from "@vms/parking/errors/parkingNotFound.error";
 import { MailService } from "@vms/mail";
+import { GetInvitesByDateQuery } from "./queries/impl/getInvitesByDate.query";
 
 @Injectable()
 export class VisitorInviteService {
@@ -138,6 +139,11 @@ export class VisitorInviteService {
         return await this.queryBus.execute(new GetNumberOfInvitesOfResidentQuery(email)); 
     }
 
+    // Get All Invites regardless of user
+    async getInvitesByDate(date: string) {
+        return await this.queryBus.execute(new GetInvitesByDateQuery(date)); 
+    }
+    
     // Get Invite data by visitor name
     async getInvitesByName(name: string) {
         return await this.queryBus.execute(new GetInvitesByNameQuery(name));
