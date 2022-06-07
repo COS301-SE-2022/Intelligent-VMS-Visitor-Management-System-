@@ -12,7 +12,7 @@ export class SignOutService {
         @Inject(forwardRef(() => VisitorInviteService))
         private inviteService: VisitorInviteService) { }
 
-    //TODO(Tabitha)
+    
     async signOut(
         invitationId: string,
     ) {
