@@ -14,7 +14,7 @@ import { CurrentUser } from "@vms/auth/decorators/CurrentUserDecorator.decorator
 import { RolesGuard } from "@vms/user/guards/roles.guard";
 import { Roles } from "@vms/user/decorators/roles.decorator";
 
-@UseGuards(GqlAuthGuard)
+//@UseGuards(GqlAuthGuard)
 @Resolver((of) => Invite)
 export class VisitorInviteResolver {
     constructor(
@@ -127,6 +127,14 @@ export class VisitorInviteResolver {
     async getNumberOfInvitesOfVisitor(@Args("email") email: string) {
         return await this.visitorInviteService.getTotalNumberOfInvitesVisitor(email);
     }
+
+     //Get all invites in the database
+     @UseGuards(GqlAuthGuard, RolesGuard)
+     @Roles("receptionist", "admin")
+     @Query((returns) => [Invite], { name: "getInvitesByDate" })
+     async getAllInvites(@Args("date") date: string) {
+         return this.visitorInviteService.getInvitesByDate(date)
+     }
 
 }
 

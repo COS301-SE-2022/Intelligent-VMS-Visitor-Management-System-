@@ -10,19 +10,24 @@ import SignInPopUp from "../components/SignInPopUp";
 import SignOutPopUp from "../components/SignOutPopUp";
 
 const ReceptionistDashboard = () => {
-    const [showSignIn, setShowSignIn] = useState(false);
-    const [showQR, setShowQR] = useState(false);
-    const [currentVisitorID, setCurrentVisitorID] = useState("");
-    const [currentInviteID, setCurrentInviteID] = useState("");
-
-    const [visitorData, setIsVisitorData] = useState([]);
-    const [showErrorAlert, scanPopup] = useState(false);
+    
+    const [currentVisitorID,setCurrentVisitorID] = useState("");
+    const [currentInviteID,setCurrentInviteID] = useState("");
+    
+    const [visitorData, setVisitorData] = useState([]);
+    const [reload, setReload] = useState(false);
+    const [showErrorAlert, setShowErrorAlert] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+
+
+    //let today = new Date();
+    const formatYmd = today => today.toISOString().slice(0, 10);
+    let todayString = formatYmd(new Date());
 
     const router = useRouter();
     const { loading, error, data } = useQuery(gql`
         query {
-            getInvites {
+            getInvitesByDate( date: "${todayString}" ) {
                 inviteID
                 inviteDate
                 idNumber
@@ -36,20 +41,8 @@ const ReceptionistDashboard = () => {
         window.location.reload(true);
     }
 
-    const click = (inviteID) => {
-        setCurrentVisitorID(visit.idNumber);
-        setCurrentInviteID(visit.inviteID);
-        refreshPage;
-        alert("here");
-    };
-
     const search = (inviteID) => {
         //TODO (Stefan)
-    };
-
-    const scan = (inviteID) => {
-        // this.state={scanPopup: !this.state.scanPopup}
-        //TODO (Larisa)
     };
 
     const signOut = (inviteID) => {
@@ -59,16 +52,16 @@ const ReceptionistDashboard = () => {
     };
 
     useEffect(() => {
-        if (!loading && !error) {
-            const invites = data.getInvites;
-            setIsVisitorData(invites);
+        if ((!loading && !error) || reload) {
+            const invites = data.getInvitesByDate;
+            setVisitorData(invites);
         } else if (error) {
             if (error.message === "Unauthorized") {
                 router.push("/expire");
                 return;
             }
 
-            setIsVisitorData([
+            setVisitorData([
                 {
                     visitorEmail: "ERROR",
                     idDocType: "ERROR",
@@ -76,7 +69,7 @@ const ReceptionistDashboard = () => {
                 },
             ]);
         }
-    }, [loading, error, router, data]);
+    }, [loading, error, router, data, reload]);
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
     return (
@@ -119,26 +112,21 @@ const ReceptionistDashboard = () => {
                                 <th>Visitor ID</th>
                                 <th></th>
                             </tr>
-                        </thead>
+                </thead>
                         {visitorData.length > 0 ? (
                             <tbody>
                                 {visitorData.map((visit, idx) => {
-                                    if (
-                                        new Date(visit.inviteDate).getTime ==
-                                            new Date("2022-06-02").getTime &&
-                                        visit.inviteState !== "signedOut"
-                                    ) {
-                                        return (
-                                            <tr className="hover" key={idx}>
-                                                <th>{idx + 1}</th>
-                                                <td>{visit.visitorName}</td>
-                                                <td>{visit.idNumber}</td>
-
-                                                {visit.inviteState ===
-                                                "inActive" ? (
+                                        
+                                            return(
+                                                <tr className="hover" key={idx}>
+                                                    <th>{idx + 1}</th>
+                                                    <td>{visit.visitorName}</td>
+                                                    <td>{visit.idNumber}</td>
+                                                    
+                                                    {visit.inviteState === "inActive" ? (
                                                     <td>
-                                                        <a
-                                                            href="#signIn-modal"
+                                                        <label
+                                                            htmlFor="signIn-modal"
                                                             className="modal-button btn max-w-md border-0 bg-green-800 text-white"
                                                             onClick={() => {
                                                                 setCurrentVisitorID(
@@ -150,12 +138,13 @@ const ReceptionistDashboard = () => {
                                                             }}
                                                         >
                                                             Sign In
-                                                        </a>
+                                                        </label>
                                                     </td>
                                                 ) : (
+                                                    
                                                     <td>
-                                                        <a
-                                                            href="#signOut-modal"
+                                                        <label
+                                                            htmlFor="signOut-modal"
                                                             className="modal-button btn max-w-md border-0 bg-red-800 text-white"
                                                             onClick={() => {
                                                                 setCurrentVisitorID(
@@ -167,12 +156,14 @@ const ReceptionistDashboard = () => {
                                                             }}
                                                         >
                                                             Sign Out
-                                                        </a>
+                                                        </label> 
+                                                          
                                                     </td>
-                                                )}
-                                            </tr>
-                                        );
-                                    }
+
+                                                    )}
+                                                </tr>
+                                            )
+                                            
                                 })}
                             </tbody>
                         ) : (
@@ -187,8 +178,14 @@ const ReceptionistDashboard = () => {
             </div>
             <ErrorAlert message={errorMessage} showConditon={showErrorAlert} />
 
-            <div className="modal cursor-pointer" id="signIn-modal">
+            <input type="checkbox" id="signIn-modal" className="modal-toggle" />
+            <div className="fade modal cursor-pointer" id="signIn-modal">     
                 <div className="modal-box">
+                    <label
+                        htmlFor="signIn-modal"
+                        className = "btn btn-circle btn-sm" >
+                        ✕
+                    </label>
                     <SignInPopUp
                         visitorID={currentVisitorID}
                         inviteID={currentInviteID}
@@ -196,8 +193,15 @@ const ReceptionistDashboard = () => {
                 </div>
             </div>
 
-            <div className="modal cursor-pointer" id="signOut-modal">
+            <input type="checkbox" id="signOut-modal" className="modal-toggle" />
+            <div className="fade modal cursor-pointer" id="signOut-modal">
                 <div className="modal-box">
+                    <label
+                        htmlFor="signOut-modal"
+                        className = "btn btn-circle btn-sm" 
+                        onClick={()=> {setReload(true)}}>
+                        ✕
+                    </label>
                     <SignOutPopUp
                         visitorID={currentVisitorID}
                         inviteID={currentInviteID}
@@ -217,16 +221,11 @@ const ReceptionistDashboard = () => {
                     <QRScanner />
                 </div>
             </div>
+
+            
         </Layout>
     );
 };
 
-export async function getStaticProps(context) {
-    return {
-        props: {
-            protected: true,
-        },
-    };
-}
 
 export default ReceptionistDashboard;
