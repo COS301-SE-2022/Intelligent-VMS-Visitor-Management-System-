@@ -6,6 +6,7 @@ import { CqrsModule } from "@nestjs/cqrs";
 import { AuthModule } from "@vms/auth";
 import { ParkingModule } from "@vms/parking";
 import { MailModule } from "@vms/mail";
+import { RestrictionsModule } from "@vms/restrictions";
 
 import { Invite, InviteSchema } from "./schema/invite.schema";
 import { VisitorInviteResolver } from "./visitor-invite.resolver";
@@ -28,6 +29,7 @@ import { GetTotalNumberOfInvitesVisitorQueryHandler } from "./queries/handlers/g
         AuthModule,
         forwardRef(() => {return ParkingModule}),
         MailModule,
+        RestrictionsModule,
         MongooseModule.forFeature([
             { name: Invite.name, schema: InviteSchema },
         ]),

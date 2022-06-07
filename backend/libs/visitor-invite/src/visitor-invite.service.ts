@@ -12,21 +12,25 @@ import { GetNumberOfInvitesOfResidentQuery } from "./queries/impl/getNumberOfInv
 import { GetInvitesByNameQuery } from "./queries/impl/getInvitesByName.query";
 import { GetInvitesInRangeByEmailQuery } from "./queries/impl/getInvitesInRangeByEmail.query";
 import { GetTotalNumberOfInvitesVisitorQuery } from "./queries/impl/getTotalNumberOfInvitesVisitor.query";
+import { GetInvitesByDateQuery } from "./queries/impl/getInvitesByDate.query";
 
 import { InviteNotFound } from "./errors/inviteNotFound.error";
 import { DateFormatError } from "./errors/dateFormat.error";
+import { InviteLimitReachedError } from "./errors/inviteLimitReached.error";
 
 import { ReserveParkingCommand } from "@vms/parking/commands/impl/reserveParking.command";
 import { GetAvailableParkingQuery } from '@vms/parking/queries/impl/getAvailableParking.query';
 import { ParkingNotFound } from "@vms/parking/errors/parkingNotFound.error";
 import { MailService } from "@vms/mail";
-import { GetInvitesByDateQuery } from "./queries/impl/getInvitesByDate.query";
+import { RestrictionsService } from "@vms/restrictions";
 
 @Injectable()
 export class VisitorInviteService {
     constructor(private readonly commandBus: CommandBus, 
                 private readonly queryBus: QueryBus, 
-                private readonly mailService: MailService) {}
+                private readonly mailService: MailService,
+                private readonly restrictionsService: RestrictionsService
+               ) {}
 
     /*
         Create an invitation for a visitor
@@ -40,6 +44,17 @@ export class VisitorInviteService {
         inviteDate: string,
         requiresParking: boolean
     ) {
+
+        // Number of invites allowed set by system admin
+        const numInvitesAllowed = this.restrictionsService.getNumInvitesPerResident();
+
+        // Number of invites used by the current user
+        const numInvitesUsed = this.getTotalNumberOfInvitesOfResident(userEmail);
+
+        // Check if max number of invites reached
+        if(numInvitesUsed >= numInvitesAllowed) {
+            throw new InviteLimitReachedError(`Maximum number of invites reached: ${numInvitesUsed} of ${numInvitesAllowed} used`);
+        }
 
         // Generate inviteID
         const inviteID = randomUUID();
