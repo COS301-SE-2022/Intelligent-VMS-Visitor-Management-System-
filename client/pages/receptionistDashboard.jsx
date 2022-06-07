@@ -46,8 +46,20 @@ const ReceptionistDashboard = () => {
         window.location.reload(true);
     }
 
-    const search = (inviteID) => {
+    const search = (name) => {
         //TODO (Stefan)
+        //CHANGE TO LAZY QUERY!!!!!!!!!!!!!!!!!
+        const searchQuery = useQuery(gql`          
+        query {
+            getInvitesByName(name: "${name}") {
+                inviteID
+                inviteDate
+                idNumber
+                visitorName
+                inviteState
+            }
+        }
+    `);
     };
 
     const signOut = (inviteID) => {
