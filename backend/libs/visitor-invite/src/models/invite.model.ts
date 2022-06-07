@@ -1,4 +1,5 @@
 import { Field, ObjectType } from "@nestjs/graphql";
+import { InviteState } from "../schema/invite.schema";
 
 @ObjectType()
 export class Invite {
