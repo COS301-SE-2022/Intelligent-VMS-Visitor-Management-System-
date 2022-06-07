@@ -50,57 +50,6 @@ const ReceptionistDashboard = () => {
     const client = useApolloClient();
     const search = (name) => {
         //TODO (Stefan)
-        //CHANGE TO LAZY QUERY!!!!!!!!!!!!!!!!!
-        //setSearch(true);
-        // const searchQuery = useLazyQuery(gql`
-        // query {
-        //     getInvitesByName(name: "${name}") {
-        //         inviteID
-        //         inviteDate
-        //         idNumber
-        //         visitorName
-        //         inviteState
-        //     }
-        // }
-        // `);
-
-        // const dataArr = searchQuery.data?.getInvitesByNameForSearch();
-        // setVisitorData(dataArr);
-        // const [getInvitesName, { loading, error, data }] = useLazyQuery(gql`
-        //     query {
-        //         getInvitesByNameForSearch( name: "${name}" ) {
-        //             inviteID
-        //             inviteDate
-        //             idNumber
-        //             visitorName
-        //             inviteState
-        //         }
-        //     }
-        // `);
-        // getInvitesName();
-
-        // useEffect(() => {
-        //     if ((!loading && !error) || reload) {
-        //         const invites = data.getInvitesByNameForSearch;
-        //         setVisitorData(invites);
-        //     } else if (error) {
-        //         if (error.message === "Unauthorized") {
-        //             router.push("/expire");
-        //             return;
-        //         }
-
-        //         setVisitorData([
-        //             {
-        //                 visitorEmail: "ERROR",
-        //                 idDocType: "ERROR",
-        //                 isNumber: "ERROR",
-        //             },
-        //         ]);
-        //     }
-        // }, [loading, error, router, data, reload]);
-        //setSearch(false);
-        // alert("HELLO");
-        // console.log("HELLO WORLD");
         setSearch(true);
         client.query({
             query: gql`
