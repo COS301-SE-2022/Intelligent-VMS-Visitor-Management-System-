@@ -13,7 +13,7 @@ export class SignOutInviteCommandHandler implements ICommandHandler<SignOutInvit
     ) { }
 
     async execute(command: SignOutInviteCommand): Promise<Invite> {
-        const { inviteId, signOutDate } = command;
+        const { inviteId, signOutDate,trayNumber } = command;
         return await this.inviteModel.findOneAndUpdate({ inviteID: inviteId }, { inviteState: "signedOut", signOutDate });
     }
 }
