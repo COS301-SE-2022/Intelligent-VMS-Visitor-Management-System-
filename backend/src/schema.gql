@@ -70,17 +70,17 @@ type Query {
   getInvites: [Invite!]!
   getTotalNumberOfVisitors: Float!
   getNumInvitesPerDate(dateStart: String!, dateEnd: String!): [Invite!]!
-  getTotalNumberOfInvitesOfResident: Float!
-  getInvitesByDate(date: String!): [Invite!]!
   getNumInvitesPerDateOfUser(dateStart: String!, dateEnd: String!, email: String!): [Invite!]!
   getTotalNumberOfInvitesOfResident(email: String!): Float!
   getInvitesByName(name: String!): [SearchInvite!]!
+  getInvitesByNameForSearch(name: String!): [Invite!]!
+  getInvitesByIDForSearch(inviteID: String!): Invite!
   getNumberOfInvitesOfVisitor(email: String!): Float!
+  getInvitesByDate(date: String!): [Invite!]!
   helloParking: String!
   getAvailableParking: Float!
   getFreeParking: Parking!
   getReservations: ParkingReservation!
-  getUsedParkingsInRange(startDate: DateTime!, endDate: DateTime!): Float!
   getAmountOfUsedParkingsInRange(startDate: String!, endDate: String!): [ParkingReservation!]!
   helloResident: String!
   helloReceptionist: String!
