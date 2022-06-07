@@ -112,5 +112,13 @@ export class VisitorInviteResolver {
         return await this.visitorInviteService.getTotalNumberOfInvitesVisitor(email);
     }
 
+     //Get all invites in the database
+     @UseGuards(GqlAuthGuard, RolesGuard)
+     @Roles("receptionist", "admin")
+     @Query((returns) => [Invite], { name: "getInvitesByDate" })
+     async getAllInvites(@Args("date") date: string) {
+         return this.visitorInviteService.getInvitesByDate(date)
+     }
+
 }
 
