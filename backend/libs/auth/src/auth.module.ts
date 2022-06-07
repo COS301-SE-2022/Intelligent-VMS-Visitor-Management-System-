@@ -12,15 +12,15 @@ import { AuthService } from "./auth.service";
 
 @Module({
     imports: [
-        forwardRef(() => UserModule),
+        forwardRef(() => {return UserModule}),
         PassportModule,
         CacheModule.register(),
         JwtModule.registerAsync({
             imports: [ConfigModule],
-            useFactory: async (configService: ConfigService) => ({
+            useFactory: async (configService: ConfigService) => {return ({
                 secret: configService.get<string>("JWT_SECRET"),
                 signOptions: { expiresIn: "1h" },
-            }),
+            })},
             inject: [ConfigService],
         }),
     ],

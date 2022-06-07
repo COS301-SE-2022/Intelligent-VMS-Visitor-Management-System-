@@ -25,7 +25,7 @@ import { GetTotalNumberOfInvitesVisitorQueryHandler } from "./queries/handlers/g
     imports: [
         CqrsModule,
         AuthModule,
-        forwardRef(() => ParkingModule),
+        forwardRef(() => {return ParkingModule}),
         MailModule,
         MongooseModule.forFeature([
             { name: Invite.name, schema: InviteSchema },

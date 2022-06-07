@@ -12,7 +12,7 @@ import { CreateUserCommandHandler } from "./commands/handlers/createUser.handler
 
 @Module({
     imports: [
-        forwardRef(() => AuthModule),
+        forwardRef(() => {return AuthModule}),
         CqrsModule,
         MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     ],

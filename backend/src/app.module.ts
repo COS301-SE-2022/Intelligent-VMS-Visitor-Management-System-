@@ -28,7 +28,7 @@ import { RestrictionsModule } from "@vms/restrictions";
             playground: true,
             autoSchemaFile: join(process.cwd(), "src/schema.gql"),
             installSubscriptionHandlers: true,
-            context: ({ req }) => ({ req }),
+            context: ({ req }) => {return ({ req })},
             buildSchemaOptions: {
                 directives: [
                     new GraphQLDirective({
