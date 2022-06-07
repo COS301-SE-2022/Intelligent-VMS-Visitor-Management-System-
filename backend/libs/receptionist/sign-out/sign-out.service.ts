@@ -2,6 +2,7 @@ import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { SignOutInviteCommand } from '@vms/receptionist/commands/impl';
 import { VisitorInviteService } from '@vms/visitor-invite';
+import { removeTrayByInviteIDCommand } from '@vms/receptionist/commands/impl/Tray/removeTrayByInviteID.command';
 
 @Injectable()
 export class SignOutService {
@@ -15,14 +16,12 @@ export class SignOutService {
     async signOut(
         invitationId: string,
     ) {
+        this.removeTrayByInviteID(invitationId);
         return await this.commandBus.execute(new SignOutInviteCommand(invitationId, new Date()));
     }
 
-    //TODO(Daniel)
-    async getTrayNumber(
-
-    ) {
-        console.log("do some stuff here");
+    async removeTrayByInviteID(invitationID:string){
+        return await this.commandBus.execute(new removeTrayByInviteIDCommand(invitationID));   
     }
 
 

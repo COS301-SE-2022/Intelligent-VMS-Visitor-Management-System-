@@ -1,8 +1,8 @@
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { CreateUserCommand } from "../impl/createUser.command";
 import { Model } from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
 import { User, UserDocument } from "../../schema/user.schema";
+import { CreateUserCommand } from "../impl/createUser.command";
 
 @CommandHandler(CreateUserCommand)
 export class CreateUserCommandHandler implements ICommandHandler {

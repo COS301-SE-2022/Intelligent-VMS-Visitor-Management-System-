@@ -14,7 +14,6 @@ export class GetFreeParkingQueryHandler implements IQueryHandler {
 
   //db stuff for getting free parking
   async execute(query: GetFreeParkingQuery): Promise<ParkingModule[]> {
-  
     return await this.parkingModel.find({visitorEmail:""});
   }
 }

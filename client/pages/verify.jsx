@@ -10,35 +10,40 @@ const Verify = () => {
 
     useEffect(() => {
         const { id, email } = router.query;
-        console.log(id, email);
-        if(/^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/.test(id)) {
-            client.mutate({
-                mutation: gql`
+        if (
+            /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/.test(
+                id
+            )
+        ) {
+            client
+                .mutate({
+                    mutation: gql`
                     mutation {
                         verify(verifyID: "${id}", email: "${email}") 
                     }
-                `
-            }).then((res) => {
-                router.push("/authorize");
-            }).catch((err) => {
-                console.error(err);
-            });
+                `,
+                })
+                .then((res) => {
+                    router.push("/authorize");
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
         }
     }, [router, client]);
 
     return (
         <Layout>
-            <div className="flex flex-col min-h-[80vh] items-center justify-center">
+            <div className="flex min-h-[80vh] flex-col items-center justify-center">
                 <ul className="steps mb-3 mt-2 text-xs md:text-base">
                     <li className="step step-primary">
-                            Tell Us About Yourself
+                        Tell Us About Yourself
                     </li>
                     <li className="step step-primary">Verify Email</li>
                     <li className="step">Authorize Account</li>
                 </ul>
 
                 <div className="mockup-window flex flex-col justify-center space-y-10 border bg-base-300 p-10">
-
                     <h1 className="text-xl font-bold md:text-2xl lg:text-3xl">
                         Please check your email to verify your account
                     </h1>

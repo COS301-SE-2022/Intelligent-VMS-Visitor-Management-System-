@@ -9,6 +9,9 @@ import { GetInviteQuery } from "./queries/impl/getInvite.query";
 import { GetNumberVisitorQuery } from "./queries/impl/getNumberOfVisitors.query";
 import { GetInvitesInRangeQuery } from "./queries/impl/getInvitesInRange.query";
 import { GetNumberOfInvitesOfResidentQuery } from "./queries/impl/getNumberOfInvitesOfResident.query";
+import { GetInvitesByNameQuery } from "./queries/impl/getInvitesByName.query";
+import { GetInvitesInRangeByEmailQuery } from "./queries/impl/getInvitesInRangeByEmail.query";
+import { GetTotalNumberOfInvitesVisitorQuery } from "./queries/impl/getTotalNumberOfInvitesVisitor.query";
 
 import { InviteNotFound } from "./errors/inviteNotFound.error";
 import { DateFormatError } from "./errors/dateFormat.error";
@@ -26,9 +29,7 @@ export class VisitorInviteService {
                 private readonly mailService: MailService) {}
 
     /*
-        =================
         Create an invitation for a visitor
-        =================
     */
     async createInvite(
         userEmail: string,
@@ -107,10 +108,10 @@ export class VisitorInviteService {
         return this.queryBus.execute(new GetNumberVisitorQuery());
     } 
 
-    // Get invites in date range
-    async getNumInvitesPerDate(dateStart: string, dateEnd: string) {
-        const start = Date.parse(dateStart);
-        const end = Date.parse(dateEnd);
+    // Check if given dates are valid
+    _validateDate(startDate: string, endDate: string) {
+        const start = Date.parse(startDate);
+        const end = Date.parse(endDate);
 
         if(isNaN(start) || isNaN(end)) {
             throw new DateFormatError("Given Date is not of the form yyyy-mm-dd");
@@ -118,7 +119,19 @@ export class VisitorInviteService {
             throw new DateFormatError("Start date can not be later than the end date");
         }
 
+        return true;
+    }
+
+    // Get invites in date range
+    async getNumInvitesPerDate(dateStart: string, dateEnd: string) {
+       this._validateDate(dateStart, dateEnd);
        return await this.queryBus.execute(new GetInvitesInRangeQuery(dateStart, dateEnd));
+    }
+
+    // Get invites in date range for an user
+    async getNumInvitesPerDateOfUser(dateStart: string, dateEnd: string, email: string) {
+       this._validateDate(dateStart, dateEnd);
+       return await this.queryBus.execute(new GetInvitesInRangeByEmailQuery(dateStart, dateEnd, email));
     }
 
     // Get Number of total open invites per resident
@@ -129,5 +142,15 @@ export class VisitorInviteService {
     // Get All Invites regardless of user
     async getInvitesByDate(date: string) {
         return await this.queryBus.execute(new GetInvitesByDateQuery(date)); 
+    }
+    
+    // Get Invite data by visitor name
+    async getInvitesByName(name: string) {
+        return await this.queryBus.execute(new GetInvitesByNameQuery(name));
+    }
+
+    // Get total number of invites of the given visitor
+    async getTotalNumberOfInvitesVisitor(email: string) {
+        return await this.queryBus.execute(new GetTotalNumberOfInvitesVisitorQuery(email));
     }
 }

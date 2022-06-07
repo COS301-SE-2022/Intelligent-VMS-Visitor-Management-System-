@@ -9,6 +9,7 @@ import { SignOutService } from '../sign-out/sign-out.service';
 import { SignInInviteCommandHandler, SignOutInviteCommandHandler } from './commands/handler';
 import { ReceptionistResolver } from './receptionist.resolver';
 import { ReceptionistService } from './receptionist.service';
+import { Tray,TraySchema } from './schema/tray.schema';
 
 @Module({
   imports: [
@@ -17,6 +18,9 @@ import { ReceptionistService } from './receptionist.service';
     ParkingModule,
     MongooseModule.forFeature([
       { name: Invite.name, schema: InviteSchema },
+    ]),
+    MongooseModule.forFeature([
+      { name: Tray.name, schema: TraySchema },
     ]),
   ],
   providers: [

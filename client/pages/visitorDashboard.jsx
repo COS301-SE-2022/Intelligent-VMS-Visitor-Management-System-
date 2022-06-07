@@ -104,7 +104,7 @@ const VisitorDashboard = () => {
                                             <td>{visit.idNumber}</td>
                                             <td>
                                                 <button
-                                                    className="btn btn-primary btn-square"
+                                                    className="btn btn-square btn-primary"
                                                     onClick={() =>
                                                         cancelInvite(
                                                             visit.inviteID

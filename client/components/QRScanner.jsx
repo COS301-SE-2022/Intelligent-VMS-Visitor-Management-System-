@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import { QrReader } from 'react-qr-reader';
+import { QrReader } from "react-qr-reader";
 
-import useVideo from "../hooks/useVideo.hook"; 
+import useVideo from "../hooks/useVideo.hook";
 
 const QrScanner = () => {
 
@@ -24,14 +24,14 @@ const QrScanner = () => {
     }, []);*/
 
     return (
- <div show= {show} className="relative flex-col justify-center items-center text-center">
+ <div className="relative flex-col justify-center items-center text-center">
      <div>
         <video className = "relative rounded-lg" ref={videoRef} id="videoElement" />
         <QrReader className="hidden" videoId="videoElement"
                     onResult={(result, error) => {
                         if (result) {
-                          const qrData = JSON.parse(result?.text);
-                            if(qrData.inviteID) {
+                            const qrData = JSON.parse(result?.text);
+                            if (qrData.inviteID) {
                                 setData(qrData.inviteID);
                                 setShow(false);
                                 alert(data);

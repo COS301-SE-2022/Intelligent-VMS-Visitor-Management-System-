@@ -21,12 +21,8 @@ type Parking {
   enabled: Boolean!
 }
 
-type ParkingReservation {
-  invitationID: String!
-  parkingNumber: String!
-}
-
 type Invite {
+  userEmail: String!
   visitorEmail: String!
   visitorName: String!
   idDocType: String!
@@ -37,6 +33,22 @@ type Invite {
   inviteState: String!
   notes: String!
   signOutDate: String!
+}
+
+type ParkingReservation {
+  invitationID: String!
+  parkingNumber: String!
+  inviteData: [Invite!]!
+}
+
+type SearchInvite {
+  visitorEmail: String!
+  visitorName: String!
+}
+
+type Restriction {
+  name: String!
+  value: Int!
 }
 
 input VisitorInputType {
@@ -60,19 +72,20 @@ type Query {
   getNumInvitesPerDate(dateStart: String!, dateEnd: String!): [Invite!]!
   getTotalNumberOfInvitesOfResident: Float!
   getInvitesByDate(date: String!): [Invite!]!
+  getNumInvitesPerDateOfUser(dateStart: String!, dateEnd: String!, email: String!): [Invite!]!
+  getTotalNumberOfInvitesOfResident(email: String!): Float!
+  getInvitesByName(name: String!): [SearchInvite!]!
+  getNumberOfInvitesOfVisitor(email: String!): Float!
   helloParking: String!
   getAvailableParking: Float!
   getFreeParking: Parking!
   getReservations: ParkingReservation!
   getUsedParkingsInRange(startDate: DateTime!, endDate: DateTime!): Float!
+  getAmountOfUsedParkingsInRange(startDate: String!, endDate: String!): [ParkingReservation!]!
   helloResident: String!
   helloReceptionist: String!
+  getNumInvitesPerResident: Restriction!
 }
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
 
 type Mutation {
   createVisitor(input: VisitorInputType!): Visitor!
@@ -89,4 +102,5 @@ type Mutation {
   ceatedParkings(N: Float!): Boolean!
   signOut(inviteID: String!): Invite!
   signIn(inviteID: String!, notes: String!): Invite!
+  setNumInvitesPerResident(numInvites: Float!): Restriction!
 }

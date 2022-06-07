@@ -1,12 +1,10 @@
 import { gql, useApolloClient } from "@apollo/client";
 import React, { useEffect, useRef, useState, setState } from "react";
-import { ImEnter } from "react-icons/im"; 
+import { ImEnter } from "react-icons/im";
 
-
-const SignInPopUp = ({visitorID,inviteID}) => {
+const SignInPopUp = ({ visitorID, inviteID }) => {
     const [notes, setNotes] = useState("");
     const client = useApolloClient();
-   
 
     return (
       <div className="relative flex-col justify-center items-center text-center">
