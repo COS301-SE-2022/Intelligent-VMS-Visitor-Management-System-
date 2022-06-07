@@ -18,6 +18,7 @@ export class SignOutService {
     ) {
         const trayNumber = await this.removeTrayByInviteID(invitationId);
         await this.commandBus.execute(new SignOutInviteCommand(invitationId, new Date(), trayNumber));
+        return trayNumber;
     }
 
     async removeTrayByInviteID(invitationID:string){
