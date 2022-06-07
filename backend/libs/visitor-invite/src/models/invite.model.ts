@@ -37,4 +37,7 @@ export class Invite {
     @Field((type)=> String)
     signOutDate?: Date
 
+    @Field((type)=> Number)
+    trayNumber?: number
+
 }
