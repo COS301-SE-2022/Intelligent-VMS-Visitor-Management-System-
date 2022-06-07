@@ -100,7 +100,7 @@ export class VisitorInviteResolver {
     @UseGuards(GqlAuthGuard, RolesGuard)
     @Roles("admin")
     @Query((returns) => [SearchInvite], { name: "getInvitesByName"})
-    async getInvitesByNameForSearch(@Args("name") name: string) {
+    async getInvitesByName(@Args("name") name: string) {
         return await this.visitorInviteService.getInvitesByName(name);
     }
 
