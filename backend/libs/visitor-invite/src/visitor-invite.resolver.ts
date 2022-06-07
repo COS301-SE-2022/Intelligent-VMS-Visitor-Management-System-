@@ -105,7 +105,7 @@ export class VisitorInviteResolver {
     }
 
     // Get the invites associated with given name for receptionist search
-    //@UseGuards(GqlAuthGuard, RolesGuard)
+    @UseGuards(GqlAuthGuard, RolesGuard)
     @Roles("receptionist")
     @Query((returns) => [Invite], { name: "getInvitesByNameForReceptionist"})
     async getInvitesByNameForReceptionistSearch(@Args("name") name: string) {
