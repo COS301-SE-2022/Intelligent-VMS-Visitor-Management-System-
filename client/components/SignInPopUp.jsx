@@ -15,9 +15,13 @@ const SignInPopUp = ({ visitorID, inviteID }) => {
           </div>
           
           <h1 className="font-bold text-center text-3xl mt-5 ">Confirm Sign-in</h1>
-          <p className="max-w-5/6">Confirm sign-in of visitor with id {visitorID}</p>
+          <p className="max-w-5/6">Confirm sign-in of visitor with id {" "}  
+            <span className="font-bold">
+                {visitorID}
+            </span>
+          </p>
           <input type="text" onChange={(evt) => setNotes(evt.target.value)} maxLength="100" placeholder="Add some observations.." className="input input-bordered w-5/6 mt-5 ml-5" />
-          <a href ="#" onClick={()=>{
+          <a className="btn btn-primary w-5/6 m-5 modal-button" href="#" onClick={()=>{
                             client.mutate({
                               mutation: gql`
                                   mutation {
@@ -26,11 +30,10 @@ const SignInPopUp = ({ visitorID, inviteID }) => {
                                     }
                                   }
                               `
-                          }) 
-                          //window.location.reload(true);                          
+                          })                      
         }
                         
-                        } className="btn btn-primary w-5/6 m-5">Sign in</a>
+                        }>Sign in</a>
       </div>
     );
 };

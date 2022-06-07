@@ -16,7 +16,6 @@ export class SignInService {
         @Inject(forwardRef(() => VisitorInviteService))
         private inviteService: VisitorInviteService) {}
 
-        //TODO(Larisa)
         async signIn(
             invitationID:string,
             notes: string
