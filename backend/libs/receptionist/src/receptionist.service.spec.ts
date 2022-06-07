@@ -5,6 +5,7 @@ import { ParkingService } from '@vms/parking';
 import { VisitorInviteService } from '@vms/visitor-invite';
 import { getTrayFromInviteQuery } from './queries/impl/getTrayFromInvite.query';
 import { ReceptionistService } from './receptionist.service';
+import { RestrictionsService } from "@vms/restrictions";
 import { Tray } from './schema/tray.schema';
 
 describe('ReceptionistService', () => {
@@ -40,6 +41,7 @@ describe('ReceptionistService', () => {
         VisitorInviteService,
         ParkingService,
         MailService,
+        RestrictionsService,
         {
           provide: QueryBus, useValue: queryBusMock
         },
