@@ -30,11 +30,12 @@ export class ReceptionistResolver {
     }
 
 
-    @Mutation((returns) => Invite, { name: "signIn" })
+    @Mutation((returns) => Number, { name: "signIn" })
     async signIn(
         @Args("inviteID") inviteID: string,
         @Args("notes") notes: string,
+        @Args("time") time: string,
     ) {
-        return this.signInService.signIn(inviteID, notes);
+        return this.signInService.signIn(inviteID, notes, time);
     }
 }

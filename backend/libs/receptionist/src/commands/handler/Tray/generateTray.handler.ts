@@ -5,7 +5,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Tray, TrayDocument } from "../../../schema/tray.schema";
 
 @CommandHandler(generateTrayCommand)
-export class CreateUserCommandHandler implements ICommandHandler {
+export class generateTrayCommandHandler implements ICommandHandler {
     constructor(
         @InjectModel(Tray.name) private trayModel: Model<TrayDocument>,
     ) {}

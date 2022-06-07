@@ -16,6 +16,7 @@ const ReceptionistDashboard = () => {
     
     const [visitorData, setVisitorData] = useState([]);
     const [reload, setReload] = useState(false);
+    const [searching, setSearch] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
 
@@ -52,7 +53,7 @@ const ReceptionistDashboard = () => {
     };
 
     useEffect(() => {
-        if ((!loading && !error) || reload) {
+        if ((!loading && !error)) {
             const invites = data.getInvitesByDate;
             setVisitorData(invites);
         } else if (error) {
@@ -69,7 +70,7 @@ const ReceptionistDashboard = () => {
                 },
             ]);
         }
-    }, [loading, error, router, data, reload]);
+    }, [loading, error, router, data]);
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
     return (
@@ -88,10 +89,12 @@ const ReceptionistDashboard = () => {
             >
                 Scan to Search
             </label>
-            <h1 className="base-100 mt-5 mb-5 p-3 text-left text-4xl font-bold">
-                Today&apos;s Invites
-            </h1>
 
+
+            <h1 className="base-100 mt-5 mb-5 p-3 text-left text-4xl font-bold">
+            Today&apos;s Invites
+            </h1>
+        
             {/* <div className="mx-5 grid grid-cols-3 gap-4 content-evenly h-10 bg-base-300 rounded-md content-center">
                 <div className="ml-2">Invitation Id</div>
                 <div className="">Visitor Id</div>
@@ -102,7 +105,7 @@ const ReceptionistDashboard = () => {
                     <progress className="progress progress-primary w-56">
                         progress
                     </progress>
-                ) : (
+                ) : ( 
                     //TODO (Larisa) dont use table
                     <table className="mb-5 table w-full">
                         <thead>
@@ -112,7 +115,7 @@ const ReceptionistDashboard = () => {
                                 <th>Visitor ID</th>
                                 <th></th>
                             </tr>
-                </thead>
+                        </thead>
                         {visitorData.length > 0 ? (
                             <tbody>
                                 {visitorData.map((visit, idx) => {
@@ -199,7 +202,7 @@ const ReceptionistDashboard = () => {
                     <label
                         htmlFor="signOut-modal"
                         className = "btn btn-circle btn-sm" 
-                        onClick={()=> {setReload(true)}}>
+                        >
                         ✕
                     </label>
                     <SignOutPopUp
@@ -226,6 +229,12 @@ const ReceptionistDashboard = () => {
         </Layout>
     );
 };
-
+    export async function getStaticProps(context) {
+        return {
+        props: {
+            protected: true,
+        },
+    };
+    }
 
 export default ReceptionistDashboard;

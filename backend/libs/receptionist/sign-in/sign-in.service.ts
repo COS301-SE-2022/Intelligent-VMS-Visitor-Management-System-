@@ -7,32 +7,45 @@ import { VisitorInviteService } from '@vms/visitor-invite';
 import { GetInviteQuery } from '@vms/visitor-invite/queries/impl/getInvite.query';
 import { generateTrayCommand } from '../src/commands/impl/Tray/generateTray.command';
 import { getTrayListQuery } from '@vms/receptionist/queries/impl/getTrayList.query';
+import { ReceptionistService } from '../src/receptionist.service';
+import { ParkingService } from '@vms/parking';
 
 @Injectable()
 export class SignInService {
 
     constructor(private commandBus: CommandBus, 
         private queryBus: QueryBus,
+        private parkingService: ParkingService,
+        private receptionistService: ReceptionistService,
         @Inject(forwardRef(() => VisitorInviteService))
         private inviteService: VisitorInviteService) {}
 
         async signIn(
             invitationID:string,
-            notes: string
+            notes: string,
+            signInTime: string
         ){
-            const invite = await this.queryBus.execute(new GetInviteQuery(invitationID));
+            const invite = await this.inviteService.getInvite(invitationID);
             if(invite.requiresParking)
             {
-                const reservation = await this.queryBus.execute(new GetInviteReservationQuery(invitationID))
-                await this.commandBus.execute(
-                    new AssignParkingCommand(invite.visitorEmail,reservation.parkingNumber));
+                this.parkingService.assignParking(invitationID);
             }
 
-            this.generateTray(invitationID,true,true);
-            return await this.commandBus.execute(
-                new SignInInviteCommand(invitationID,notes));
+            const today = new Date();
+            if(new Date(invite.inviteDate).getDate() == today.getDate())
+            {
+                await this.commandBus.execute(
+                    new SignInInviteCommand(invitationID,notes,signInTime));
 
-            
+                this.generateTray(invitationID,true,true);
+
+                const tray = await this.receptionistService.getTrayByInviteID(invitationID);
+                return tray.trayID;
+            }else{
+                return -1;
+            }
+
+                        
         }
 
         async generateTrayID(){

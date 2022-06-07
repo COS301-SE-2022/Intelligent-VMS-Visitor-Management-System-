@@ -32,7 +32,7 @@ type Invite {
   requiresParking: Boolean!
   inviteState: String!
   notes: String!
-  signOutDate: String!
+  signOutTime: String!
 }
 
 type ParkingReservation {
@@ -70,17 +70,15 @@ type Query {
   getInvites: [Invite!]!
   getTotalNumberOfVisitors: Float!
   getNumInvitesPerDate(dateStart: String!, dateEnd: String!): [Invite!]!
-  getTotalNumberOfInvitesOfResident: Float!
-  getInvitesByDate(date: String!): [Invite!]!
   getNumInvitesPerDateOfUser(dateStart: String!, dateEnd: String!, email: String!): [Invite!]!
   getTotalNumberOfInvitesOfResident(email: String!): Float!
   getInvitesByName(name: String!): [SearchInvite!]!
   getNumberOfInvitesOfVisitor(email: String!): Float!
+  getInvitesByDate(date: String!): [Invite!]!
   helloParking: String!
   getAvailableParking: Float!
   getFreeParking: Parking!
   getReservations: ParkingReservation!
-  getUsedParkingsInRange(startDate: DateTime!, endDate: DateTime!): Float!
   getAmountOfUsedParkingsInRange(startDate: String!, endDate: String!): [ParkingReservation!]!
   helloResident: String!
   helloReceptionist: String!
@@ -101,6 +99,6 @@ type Mutation {
   freeParking(parkingNumber: Float!): Parking!
   ceatedParkings(N: Float!): Boolean!
   signOut(inviteID: String!): Invite!
-  signIn(inviteID: String!, notes: String!): Invite!
+  signIn(inviteID: String!, notes: String!, time: String!): Float!
   setNumInvitesPerResident(numInvites: Float!): Restriction!
 }

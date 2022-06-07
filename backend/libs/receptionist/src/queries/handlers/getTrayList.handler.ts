@@ -5,7 +5,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Tray, TrayDocument } from "../../schema/tray.schema";
 
 @QueryHandler(getTrayListQuery)
-export class getTrayFromInviteQueryHandler implements IQueryHandler {
+export class getTrayListQueryHandler implements IQueryHandler {
     constructor(
         @InjectModel(Tray.name) private trayModel: Model<TrayDocument>,
     ) {}

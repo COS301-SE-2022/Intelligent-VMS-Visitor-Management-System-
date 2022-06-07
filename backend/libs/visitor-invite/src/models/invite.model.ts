@@ -34,6 +34,6 @@ export class Invite {
     notes?: string
 
     @Field((type)=> String)
-    signOutDate?: Date
+    signOutTime?: Date
 
 }
