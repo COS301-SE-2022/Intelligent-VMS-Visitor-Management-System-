@@ -67,6 +67,10 @@ describe('SignOutService', () => {
     expect(service).toBeDefined();
   });
 
+  it("should sign out", async()=>{
+    
+  })
+
   describe("removeTrayByInviteID", () => {
     it("should delete the first tray", async () => {
       const deleteTray=await service.removeTrayByInviteID("someArbitraryString");
