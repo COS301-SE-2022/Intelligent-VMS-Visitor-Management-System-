@@ -1,5 +1,5 @@
 import { useState, useEffect, setState } from "react";
-import { gql, useQuery, useApolloClient } from "@apollo/client";
+import { gql, useQuery, useApolloClient, useLazyQuery } from "@apollo/client";
 
 import Layout from "../components/Layout";
 import ErrorAlert from "../components/ErrorAlert";
@@ -49,17 +49,40 @@ const ReceptionistDashboard = () => {
     const search = (name) => {
         //TODO (Stefan)
         //CHANGE TO LAZY QUERY!!!!!!!!!!!!!!!!!
-        const searchQuery = useQuery(gql`          
-        query {
-            getInvitesByName(name: "${name}") {
-                inviteID
-                inviteDate
-                idNumber
-                visitorName
-                inviteState
+        setSearch(true);
+        const [getInvitesName, { loading, error, data }] = useLazyQuery(gql`
+            query {
+                getInvitesByNameForSearch( name: "${name}" ) {
+                    inviteID
+                    inviteDate
+                    idNumber
+                    visitorName
+                    inviteState
+                }
             }
-        }
-    `);
+        `);
+        getInvitesName();
+
+        useEffect(() => {
+            if ((!loading && !error) || reload) {
+                const invites = data.getInvitesByNameForSearch;
+                setVisitorData(invites);
+            } else if (error) {
+                if (error.message === "Unauthorized") {
+                    router.push("/expire");
+                    return;
+                }
+
+                setVisitorData([
+                    {
+                        visitorEmail: "ERROR",
+                        idDocType: "ERROR",
+                        isNumber: "ERROR",
+                    },
+                ]);
+            }
+        }, [loading, error, router, data, reload]);
+        
     };
 
     const signOut = (inviteID) => {
