@@ -10,6 +10,8 @@ import { GetNumberVisitorQuery } from "./queries/impl/getNumberOfVisitors.query"
 import { GetInvitesInRangeQuery } from "./queries/impl/getInvitesInRange.query";
 import { GetNumberOfInvitesOfResidentQuery } from "./queries/impl/getNumberOfInvitesOfResident.query";
 import { GetInvitesByNameQuery } from "./queries/impl/getInvitesByName.query";
+import { GetInvitesInRangeByEmailQuery } from "./queries/impl/getInvitesInRangeByEmail.query";
+import { GetTotalNumberOfInvitesVisitorQuery } from "./queries/impl/getTotalNumberOfInvitesVisitor.query";
 
 import { InviteNotFound } from "./errors/inviteNotFound.error";
 import { DateFormatError } from "./errors/dateFormat.error";
@@ -18,7 +20,6 @@ import { ReserveParkingCommand } from "@vms/parking/commands/impl/reserveParking
 import { GetAvailableParkingQuery } from '@vms/parking/queries/impl/getAvailableParking.query';
 import { ParkingNotFound } from "@vms/parking/errors/parkingNotFound.error";
 import { MailService } from "@vms/mail";
-import {GetInvitesInRangeByEmailQuery} from "./queries/impl/getInvitesInRangeByEmail.query";
 
 @Injectable()
 export class VisitorInviteService {
@@ -27,9 +28,7 @@ export class VisitorInviteService {
                 private readonly mailService: MailService) {}
 
     /*
-        =================
         Create an invitation for a visitor
-        =================
     */
     async createInvite(
         userEmail: string,
@@ -157,4 +156,8 @@ export class VisitorInviteService {
 
 
     
+    // Get total number of invites of the given visitor
+    async getTotalNumberOfInvitesVisitor(email: string) {
+        return await this.queryBus.execute(new GetTotalNumberOfInvitesVisitorQuery(email));
+    }
 }

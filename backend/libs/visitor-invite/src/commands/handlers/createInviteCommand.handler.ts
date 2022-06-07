@@ -20,6 +20,7 @@ export class CreateInviteCommandHandler implements ICommandHandler {
         invite.idNumber = IDNumber;
         invite.inviteDate = inviteDate;
         invite.inviteID = inviteID;
+        invite.inviteState = "inActive";
         return await this.inviteModel.create(invite);
     }
 }

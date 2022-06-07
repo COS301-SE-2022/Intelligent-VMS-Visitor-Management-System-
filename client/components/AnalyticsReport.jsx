@@ -5,7 +5,7 @@ import { FaSearch } from "react-icons/fa";
 
 import { Line } from "react-chartjs-2";
 
-const AnalyticsReport = ({ data, name }) => {
+const AnalyticsReport = ({ data, name, total, startDate, endDate }) => {
 
     const inputRef = useRef(null);
     
@@ -17,6 +17,8 @@ const AnalyticsReport = ({ data, name }) => {
           pdf.save("download.pdf");
         });
     };
+    
+    // width: '210mm', minHeight: '297mm', marginLeft: 'auto', marginRight: 'auto'
 
     return(
         <div className="flex-col">
@@ -27,14 +29,19 @@ const AnalyticsReport = ({ data, name }) => {
                     </div>
                 </div>
                 <div className="px-3 text-primary-content">
+                    <h2 className="text-base font-bold">Total Number Of Invites</h2>
+                    <p className="text-xl text-primary font-bold">{total}</p>
+                    <div className="divider"></div>
                     <h2 className="text-base font-bold">Visitation Dates</h2>
-                    {!data ? <div>Nothing to show...</div> : data.map((val, idx) => {
-                        return (
-                            <div key={idx}>
-                                <p>{val.inviteDate}: {val.userEmail} invited {val.visitorName} and used {val.idDocType} for ID.</p> 
-                            </div>
-                        );
-                    })}
+                    <div className="flex-col">
+                        {!data || data.length === 0 ? <div>Nothing to show...</div> : data.map((val, idx) => {
+                            return (
+                                <div className="block" key={idx}>
+                                    <p className="text-sm">{idx+1}. {val.inviteDate}: {val.userEmail} invited <br/> {val.visitorName} and used {val.idDocType} for ID.</p> 
+                                </div>
+                            );
+                        })}
+                    </div>
                 </div>
             </div>
             <div className="w-full flex justify-center my-3">

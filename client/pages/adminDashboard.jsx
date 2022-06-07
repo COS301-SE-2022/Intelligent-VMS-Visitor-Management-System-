@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useState, useEffect, useRef } from "react";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useQuery, useMutation } from "@apollo/client";
 
 import Layout from "../components/Layout";
 import AdminCard from "../components/AdminCard";
@@ -14,7 +14,9 @@ import useAuth from "../store/authStore";
 import { AiOutlinePlus, AiOutlineMinus, AiOutlineCar } from "react-icons/ai";
 import { BiBuildingHouse, BiMailSend } from "react-icons/bi";
 import { FaSearch } from "react-icons/fa";
+import { MdBlock, MdDataSaverOn, MdDataSaverOff } from "react-icons/md";
 
+// Returns string in format yyyy-mm-dd given Date Object
 const getFormattedDateString = (date) => {
     if(date instanceof Date) {
         const month = date.getMonth() + 1;
@@ -28,6 +30,7 @@ const getFormattedDateString = (date) => {
 };
 
 const AdminDashboard = () => {
+
     // NextJS Page Router
     const router = useRouter();
 
@@ -40,7 +43,15 @@ const AdminDashboard = () => {
     // Date Range Hook
     const [startDate, endDate, dateMap, setDateMap, setStartDate] = useDateRange(getFormattedDateString(new Date(Date.now())), 7);
 
+    // Start Date State
     const [start, setStart] = useState(startDate);
+
+
+    // Initial number of invites per resident for fallback
+    const [initialNumInvitesPerResident, setInitialNumInvitesPerResident] = useState(1);
+
+    // State to track whether the restrictions have changed
+    const [restrictionsChanged, setRestrictionsChanged] = useState(false);
 
     // State for invites for today
     const [todayInvites, setTodayInvites] = useState(0);
@@ -49,12 +60,21 @@ const AdminDashboard = () => {
     const [name, setName] = useState("");
 
     const [numParkingSpotsAvailable, setNumParkingSpotsAvailable] = useState(0);
-    const incParkingSpots = useAuth((state) => state.incParkingSpots);
-    const decParkingSpots = useAuth((state) => state.decParkingSpots);
     const updateParkingSpots = useAuth((state) => state.updateParkingSpots);
 
     // JWT Token data from Model
     const decodedToken = useAuth((state) => state.decodedToken)();
+    
+    const numInvitesPerResidentQuery = useQuery(gql`
+        query {
+            getNumInvitesPerResident {
+                value
+          }
+        }
+    `);
+    
+    // Number of invites per resident state
+    const [numInvitesPerResident, setNumInvitesPerResident] = useState(1);
 
     const numInvitesQuery = useQuery(gql`
         query {
@@ -78,6 +98,25 @@ const AdminDashboard = () => {
             getAvailableParking
         }
     `);
+
+    const [setNumInvitesPerResidentMutation, { data, loading, error }] = useMutation(gql`
+        mutation {
+          setNumInvitesPerResident(numInvites: ${numInvitesPerResident}) {
+            value
+          }
+        }
+    `);
+
+    const cancelRestrictions = () => {
+        setNumInvitesPerResident(initialNumInvitesPerResident);
+        setRestrictionsChanged(false);
+    };
+
+    const saveRestrictions = () => {
+       setInitialNumInvitesPerResident(numInvitesPerResident);
+       setNumInvitesPerResidentMutation();
+       setRestrictionsChanged(false); 
+    };
 
     useEffect(() => {
         // Num invites
@@ -112,7 +151,6 @@ const AdminDashboard = () => {
                 labels: Array.from(dateMap.keys()),
             });
 
-            console.log(dateMap);
             setTodayInvites(dateMap.get(startDate));
 
         } else if (numInviteInDateRangeQuery.error) {
@@ -128,12 +166,24 @@ const AdminDashboard = () => {
             setNumParkingSpotsAvailable(numParkingspots);
         } else if (numParkingSpotsAvailableQuery.error) {
         }
+        
+        if(
+            !numInvitesPerResidentQuery.loading &&
+            !numInvitesPerResidentQuery.error
+        ) {
+
+            setNumInvitesPerResident(numInvitesPerResidentQuery.data.getNumInvitesPerResident.value);
+            setInitialNumInvitesPerResident(numInvitesPerResident);
+        } else if(numInvitesPerResident.error) {
+        }
+
     }, [
         numInvitesQuery,
         numInviteInDateRangeQuery,
         numParkingSpotsAvailableQuery,
         startDate,
         setNumParkingSpotsAvailable,
+        numInvitesPerResidentQuery
     ]);
 
     return (
@@ -212,36 +262,65 @@ const AdminDashboard = () => {
                         />
                     </div>
 
-                    <div className="w-100 text-tertiary-content card items-center justify-center space-y-2 bg-base-200 p-4 text-2xl font-bold">
-                        <h1 className="text-sm md:text-xl lg:text-2xl">
-                            Number of Parking Spots Available
-                        </h1>
-                        <div className="flex select-none space-x-4">
-                            <button
-                                className="btn btn-circle text-3xl"
-                                onClick={incParkingSpots}
-                            >
-                                <AiOutlinePlus className="text-primary" />
-                            </button>
+                    <h1 className="flex flex-col lg:flex-row items-center font-bold text-2xl space-x-3">
+                        <span className="text-primary mr-3 text-xl md:text-3xl"><MdBlock /></span> System Restrictions 
+                        <span>
+                            { restrictionsChanged && 
+                                <div className="space-x-5">
+                                    <button onClick={saveRestrictions} className="btn btn-sm lg:btn-md btn-primary space-x-3">
+                                        <span><MdDataSaverOn className="text-xl mr-3"/></span> Save Changes
+                                    </button>
+                                    <button onClick={cancelRestrictions} className="btn btn-sm lg:btn-md btn-secondary space-x-3">
+                                        <span><MdDataSaverOff className="text-xl mr-3"/></span> Cancel Changes
+                                    </button>
+                                </div>
+                            }
+                        </span>
+                    </h1>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="card bg-base-300">
+                            <div className="card-body">
+                                <h2 className="card-title">Invites Per Resident <div className="badge badge-secondary">Resident</div></h2>
+                                <p>Number of invites a resident is allowed to have open/sent at a time.</p>
+                                <div className="card-actions justify-start flex items-center">
+                                    <div className="flex items-center space-x-3">
+                                        <button className="btn btn-circle" onClick={() => {
+                                            setNumInvitesPerResident(numInvitesPerResident+1);
+                                            setRestrictionsChanged(true);
+                                        }}>
+                                            <AiOutlinePlus className="text-xl md:text-2xl lg:text-3xl"/>
+                                        </button>
+                                        <p className="text-secondary font-bold text-4xl">{numInvitesPerResident}</p>
+                                        <button className="btn btn-circle" onClick={() => {
+                                            numInvitesPerResident > 1 && setNumInvitesPerResident(numInvitesPerResident-1);
+                                            setRestrictionsChanged(true);
+                                        }}>
+                                            <AiOutlineMinus className="text-xl md:text-2xl lg:text-3xl"/>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-                            <a
-                                href="#parking-modal"
-                                className="bg-tertiary modal-button btn text-3xl font-bold text-secondary md:text-4xl lg:text-5xl"
-                            >
-                                {numParkingSpotsAvailable}
-                            </a>
-
-                            <button
-                                className="btn btn-circle text-3xl"
-                                onClick={() =>
-                                    numParkingSpotsAvailable > 0 &&
-                                    decParkingSpots()
-                                }
-                            >
-                                <AiOutlineMinus className="text-primary" />
-                            </button>
+                        <div className="card bg-base-300">
+                            <div className="card-body">
+                                <h2 className="card-title">Parking Spots Available <div className="badge badge-secondary">User</div></h2>
+                                <p>Number of parking spots left in the building.</p>
+                                <div className="card-actions justify-start flex items-center">
+                                    <div className="flex items-center space-x-3">
+                                        <button className="btn btn-circle">
+                                            <AiOutlinePlus className="text-xl md:text-2xl lg:text-3xl"/>
+                                        </button>
+                                        <p className="text-secondary font-bold text-4xl">{numParkingSpotsAvailable}</p>
+                                        <button className="btn btn-circle">
+                                            <AiOutlineMinus className="text-xl md:text-2xl lg:text-3xl"/>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
+
                 </div>
             </div>
 

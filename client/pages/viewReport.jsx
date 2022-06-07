@@ -7,7 +7,7 @@ import AnalyticsReport from "../components/AnalyticsReport";
 
 const ViewReport = () => {
     const router = useRouter();
-    const { email, startDate, endDate, name } = router.query;
+    const { email, startDate, endDate, name, total } = router.query;
 
     const { loading, error, data } = useQuery(gql`
         query {
@@ -31,7 +31,7 @@ const ViewReport = () => {
 
     return(
         <Layout>
-            <AnalyticsReport name={name} data={data && data.getNumInvitesPerDateOfUser} />
+            <AnalyticsReport name={name} data={data && data.getNumInvitesPerDateOfUser} total={total} startDate={startDate} endDate={endDate}/>
         </Layout>
     );
 };

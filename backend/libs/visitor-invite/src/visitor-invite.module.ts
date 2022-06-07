@@ -11,6 +11,7 @@ import { Invite, InviteSchema } from "./schema/invite.schema";
 import { VisitorInviteResolver } from "./visitor-invite.resolver";
 import { CreateInviteCommandHandler } from "./commands/handlers/createInviteCommand.handler";
 import { CancelInviteCommandHandler } from "./commands/handlers/cancelInviteCommand.handler";
+
 import { GetInvitesQueryHandler } from "./queries/handlers/getInvites.handler";
 import { GetInviteQueryHandler } from "./queries/handlers/getInvite.handler";
 import { GetInviteByNameForSearchQueryHandler } from "./queries/handlers/getInviteByNameForSearch.handler";
@@ -18,6 +19,8 @@ import { getNumberOfVisitors } from "./queries/handlers/getNumberOfVisitors.hand
 import { GetInvitesInRangeQueryHandler } from "./queries/handlers/getInvitesInRange.handler";
 import { GetInvitesByNameQueryHandler } from "./queries/handlers/getInvitesByName.handler";
 import { GetInvitesInRangeByEmailQueryHandler } from "./queries/handlers/getInvitesInRangeByEmail.handler";
+import { GetTotalNumberOfInvitesOfResidentQueryHandler } from "./queries/handlers/getTotalNumberOfInvitesOfResident.handler";
+import { GetTotalNumberOfInvitesVisitorQueryHandler } from "./queries/handlers/getTotalNumberOfInvitesVisitor.handler";
 
 @Module({
     imports: [
@@ -41,6 +44,8 @@ import { GetInvitesInRangeByEmailQueryHandler } from "./queries/handlers/getInvi
         GetInvitesByNameQueryHandler,
         GetInviteByNameForSearchQueryHandler,
         GetInvitesInRangeByEmailQueryHandler,
+        GetTotalNumberOfInvitesOfResidentQueryHandler,
+        GetTotalNumberOfInvitesVisitorQueryHandler,
         getNumberOfVisitors
 
     ],

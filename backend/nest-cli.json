@@ -91,6 +91,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/receptionist/tsconfig.lib.json"
       }
+    },
+    "restrictions": {
+      "type": "library",
+      "root": "libs/restrictions",
+      "entryFile": "index",
+      "sourceRoot": "libs/restrictions/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/restrictions/tsconfig.lib.json"
+      }
     }
   },
   "compilerOptions": {
