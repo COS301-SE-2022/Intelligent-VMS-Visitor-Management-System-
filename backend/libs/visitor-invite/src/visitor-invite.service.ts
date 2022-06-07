@@ -143,4 +143,11 @@ export class VisitorInviteService {
     async getInvitesByName(name: string) {
         return await this.queryBus.execute(new GetInvitesByNameQuery(name));
     }
+
+    //Searching for receptionist by name
+    async getInvitesByNameForReceptionistSearch(name: string) {
+        return await this.queryBus.execute(new GetInvitesByNameQuery(name));
+    }
+
+    
 }
