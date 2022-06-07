@@ -37,6 +37,11 @@ const ReceptionistDashboard = () => {
         }
     `);
 
+    //STEFAN SE CODE
+    const [searching, setSearch] = useState(false);
+    
+    //--------------------------------------------------------------------
+
     function refreshPage() {
         window.location.reload(true);
     }
@@ -71,6 +76,9 @@ const ReceptionistDashboard = () => {
         }
     }, [loading, error, router, data, reload]);
 
+    const [notes, setNotes] = useState("");
+
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
     return (
         <Layout>
@@ -78,8 +86,9 @@ const ReceptionistDashboard = () => {
                 type="text"
                 placeholder="Search.."
                 className="input input-bordered input-primary ml-5 w-4/6"
+                onChange={(evt) => setNotes(evt.target.value)}
             />
-            <button onClick={search} className="btn btn-primary ml-5 mt-5 mb-5">
+            <button onClick={search(notes)} className="btn btn-primary ml-5 mt-5 mb-5">
                 Search
             </button>
             <label
@@ -88,9 +97,17 @@ const ReceptionistDashboard = () => {
             >
                 Scan to Search
             </label>
-            <h1 className="base-100 mt-5 mb-5 p-3 text-left text-4xl font-bold">
+            
+            {searching? (
+                <h1 className="base-100 mt-5 mb-5 p-3 text-left text-4xl font-bold">
+                Search Results:
+                </h1>
+            ):(
+                <h1 className="base-100 mt-5 mb-5 p-3 text-left text-4xl font-bold">
                 Today&apos;s Invites
-            </h1>
+                </h1>
+            )}
+
 
             {/* <div className="mx-5 grid grid-cols-3 gap-4 content-evenly h-10 bg-base-300 rounded-md content-center">
                 <div className="ml-2">Invitation Id</div>
@@ -221,7 +238,7 @@ const ReceptionistDashboard = () => {
                     <QRScanner />
                 </div>
             </div>
-
+        
             
         </Layout>
     );
