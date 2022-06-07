@@ -1,16 +1,15 @@
 import { QueryHandler, IQueryHandler } from "@nestjs/cqrs";
-import { GetInviteByNameQuery } from "../impl/getInviteByNameForSearch.query";
+import { GetInvitesByNameForSearchQuery } from "../impl/getInviteByNameForSearch.query";
 import { Model } from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
 import { Invite, InviteDocument } from "../../schema/invite.schema";
 
-@QueryHandler(GetInviteByNameQuery)
-export class GetInviteByNameForSearchQueryHandler implements IQueryHandler {
+@QueryHandler(GetInvitesByNameForSearchQuery)
+export class GetInvitesByNameForSearchQueryHandler implements IQueryHandler {
     constructor(@InjectModel(Invite.name) private inviteModel: Model<InviteDocument>) {}
 
-    async execute(query: GetInviteByNameQuery) {
-        const { name } = query; 
-        const invite = await this.inviteModel.findOne({ name: name });
-        return invite;
+    async execute(query: GetInvitesByNameForSearchQuery) {
+        const { name } = query;
+        return await this.inviteModel.aggregate(([{ $search: { "autocomplete": { "path": "visitorName", "query": name} } }, { $limit: 20 }]));
     }
 }

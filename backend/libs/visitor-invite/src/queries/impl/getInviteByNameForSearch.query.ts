@@ -1,3 +1,3 @@
-export class GetInviteByNameQuery {
+export class GetInvitesByNameForSearchQuery {
     constructor(public readonly name: string) {}
 }
