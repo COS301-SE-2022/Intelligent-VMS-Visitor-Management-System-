@@ -15,7 +15,7 @@ import { CancelInviteCommandHandler } from "./commands/handlers/cancelInviteComm
 import { GetInvitesQueryHandler } from "./queries/handlers/getInvites.handler";
 import { GetInvitesByDateQueryHandler } from "./queries/handlers/getInvitesByDate.handler";
 import { GetInviteQueryHandler } from "./queries/handlers/getInvite.handler";
-import { GetInviteByNameForSearchQueryHandler } from "./queries/handlers/getInviteByNameForSearch.handler";
+import { GetInvitesByNameForSearchQueryHandler } from "./queries/handlers/getInviteByNameForSearch.handler";
 import { getNumberOfVisitors } from "./queries/handlers/getNumberOfVisitors.handler";
 import { GetInvitesInRangeQueryHandler } from "./queries/handlers/getInvitesInRange.handler";
 import { GetInvitesByNameQueryHandler } from "./queries/handlers/getInvitesByName.handler";
@@ -44,7 +44,7 @@ import { GetTotalNumberOfInvitesVisitorQueryHandler } from "./queries/handlers/g
         GetInvitesInRangeQueryHandler,
         getNumberOfVisitors,
         GetInvitesByNameQueryHandler,
-        GetInviteByNameForSearchQueryHandler,
+        GetInvitesByNameForSearchQueryHandler,
         GetInvitesInRangeByEmailQueryHandler,
         GetTotalNumberOfInvitesOfResidentQueryHandler,
         GetTotalNumberOfInvitesVisitorQueryHandler,
