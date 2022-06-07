@@ -104,6 +104,7 @@ export class VisitorInviteResolver {
         return await this.visitorInviteService.getInvitesByName(name);
     }
 
+    // Get the total number of invites an user currently has
     @UseGuards(GqlAuthGuard, RolesGuard)
     @Roles("admin")
     @Query((returns) => {return Number}, { name: "getNumberOfInvitesOfVisitor"})

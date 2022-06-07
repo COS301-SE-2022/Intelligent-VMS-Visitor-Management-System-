@@ -39,6 +39,7 @@ export class VisitorInviteService {
         inviteDate: string,
         requiresParking: boolean
     ) {
+
         // Generate inviteID
         const inviteID = randomUUID();
 
