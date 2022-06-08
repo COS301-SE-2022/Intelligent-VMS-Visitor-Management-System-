@@ -371,7 +371,7 @@ describe("CreateInvite", () => {
 
         act(() => {
             result.current.login(
-                process.env.RESIDENT_TOKEN
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJlc2lkZW50QG1haWwuY29tIiwicGVybWlzc2lvbiI6MiwiaWF0IjoxNjU0NjI3Njk2LCJleHAiOjE5NTQ2MzEyOTZ9.qn7_4l11R7ootmnyin-D2tbtJ4mUbiEBoX_Tz4sVBCc"
             );
         });
 
@@ -389,12 +389,11 @@ describe("CreateInvite", () => {
 
     it("should show allow invite to be created when invite limit is not reached", async () => {
         const { result, hydrate } = renderHook(() => useAuth());
-
         hydrate();
 
         act(() => {
             result.current.login(
-                process.env.RESIDENT_TOKEN
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJlc2lkZW50QG1haWwuY29tIiwicGVybWlzc2lvbiI6MiwiaWF0IjoxNjU0NjI3Njk2LCJleHAiOjE5NTQ2MzEyOTZ9.qn7_4l11R7ootmnyin-D2tbtJ4mUbiEBoX_Tz4sVBCc"
             );
         });
 
@@ -417,7 +416,7 @@ describe("CreateInvite", () => {
 
         act(() => {
             result.current.login(
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJhZG1pbkBtYWlsLmNvbSIsImlhdCI6MTUxNjIzOTAyMiwicGVybWlzc2lvbiI6MH0.bh6yTWV0lN9A0_xOGcgqN_za3M35BewXpJNuuprcaJ8"
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJlc2lkZW50QG1haWwuY29tIiwicGVybWlzc2lvbiI6MiwiaWF0IjoxNjU0NjI3Njk2LCJleHAiOjE5NTQ2MzEyOTZ9.qn7_4l11R7ootmnyin-D2tbtJ4mUbiEBoX_Tz4sVBCc"
             );
         });
 
