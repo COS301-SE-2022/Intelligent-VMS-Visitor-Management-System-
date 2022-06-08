@@ -15,7 +15,7 @@ const SignOutPopUp = ({ visitorID, inviteID }) => {
 
             <h1 className="font-bold text-center text-3xl mt-5 ">Confirm Sign-Out</h1>
             <p>Confirm sign-out of visitor with id {visitorID}</p>
-            <a href="#" onClick={async () => {
+            <label htmlFor="signIn-modal" className="btn btn-primary w-5/6 modal-button" onClick={async () => {
                 await client.mutate({
                     mutation: gql`
                     mutation {
@@ -27,7 +27,7 @@ const SignOutPopUp = ({ visitorID, inviteID }) => {
                     alert('tray number is: ' + res.data.signOut);
                 })
             }
-            } className="btn btn-primary w-5/6 m-5">Sign out</a>
+            } >Sign out</label>
         </div>
     );
 };
