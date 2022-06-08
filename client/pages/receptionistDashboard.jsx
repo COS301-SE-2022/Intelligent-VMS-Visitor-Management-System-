@@ -169,13 +169,13 @@ const ReceptionistDashboard = () => {
                 type="text"
                 placeholder="Search.."
                 className="input input-bordered input-primary ml-5 w-4/6"
-                onChange={(evt) => setName(evt.target.value)}
+                onChange={(evt) => {setName(evt.target.value);
+                    if(searching === true && evt.target.value === "")
+                    resetDefaultResults();
+                }}
             />
             <button onClick={search} className="btn btn-primary ml-5 mt-5 mb-5">
                 Search
-            </button>
-            <button onClick= {resetDefaultResults} className="btn btn-primary ml-5 mt-5 mb-5">
-                Today&apos;s Invites
             </button>
             <label
                 htmlFor="QRScan-modal"
