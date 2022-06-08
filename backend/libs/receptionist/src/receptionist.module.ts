@@ -11,9 +11,11 @@ import { generateTrayCommandHandler } from './commands/handler/Tray/generateTray
 import { getTrayFromInviteQueryHandler } from './queries/handlers/getTrayFromInvite.handler';
 import { getTrayListQueryHandler } from './queries/handlers/getTrayList.handler';
 import { getTrayListQuery } from './queries/impl/getTrayList.query';
+import { removeTrayByInviteIDCommand } from './commands/impl/Tray/removeTrayByInviteID.command';
 import { ReceptionistResolver } from './receptionist.resolver';
 import { ReceptionistService } from './receptionist.service';
 import { Tray,TraySchema } from './schema/tray.schema';
+import {RemoveTrayByInviteIDCommandHandler} from './commands/handler/Tray/removeTrayByInviteID.handler';
 
 @Module({
   imports: [
@@ -22,10 +24,9 @@ import { Tray,TraySchema } from './schema/tray.schema';
     ParkingModule,
     MongooseModule.forFeature([
       { name: Invite.name, schema: InviteSchema },
-    ]),
-    MongooseModule.forFeature([
       { name: Tray.name, schema: TraySchema },
     ]),
+  
   ],
   providers: [
     ReceptionistService,
@@ -37,6 +38,8 @@ import { Tray,TraySchema } from './schema/tray.schema';
     getTrayFromInviteQueryHandler,
     getTrayListQueryHandler,
     generateTrayCommandHandler,
+    removeTrayByInviteIDCommand,
+    RemoveTrayByInviteIDCommandHandler,
     VisitorInviteModule,],
   exports: [ReceptionistService],
 })

@@ -33,6 +33,7 @@ type Invite {
   inviteState: String!
   notes: String!
   signOutTime: String!
+  trayNumber: Float!
 }
 
 type ParkingReservation {
@@ -98,7 +99,7 @@ type Mutation {
   unreservedParking(invitationID: String!): Boolean!
   freeParking(parkingNumber: Float!): Parking!
   ceatedParkings(N: Float!): Boolean!
-  signOut(inviteID: String!): Invite!
-  signIn(inviteID: String!, notes: String!, time: String!): Float!
+  signOut(inviteID: String!): Float!
+  signIn(inviteID: String!, notes: String!): Invite!
   setNumInvitesPerResident(numInvites: Float!): Restriction!
 }

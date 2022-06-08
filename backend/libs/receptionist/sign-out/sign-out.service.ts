@@ -12,12 +12,13 @@ export class SignOutService {
         @Inject(forwardRef(() => VisitorInviteService))
         private inviteService: VisitorInviteService) { }
 
-    //TODO(Tabitha)
+    
     async signOut(
         invitationId: string,
     ) {
-        this.removeTrayByInviteID(invitationId);
-        return await this.commandBus.execute(new SignOutInviteCommand(invitationId, new Date()));
+        const trayNumber = await this.removeTrayByInviteID(invitationId);
+        await this.commandBus.execute(new SignOutInviteCommand(invitationId, new Date(), trayNumber));
+        return trayNumber;
     }
 
     async removeTrayByInviteID(invitationID:string){
