@@ -32,7 +32,7 @@ const SignUp = () => {
     const router = useRouter();
 
     useEffect(() => {
-        if (verified && (permission === -1 || permission === -2)) {
+        if (verified && permission === -999) {
             router.push("/verify");
         } else if (permission >= 0) {
             router.push("/");
