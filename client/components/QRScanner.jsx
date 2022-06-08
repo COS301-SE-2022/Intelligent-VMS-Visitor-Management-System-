@@ -7,9 +7,7 @@ import useVideo from "../hooks/useVideo.hook";
 const QrScanner = ({ setShowScanner, setVisitorData, setSearch }) => {
 
     const client = useApolloClient();
-    const search = (name) => {
-        //TODO (Stefan)
-        //alert("HOS MANNE");
+    const search = () => {
         setSearch(true);
         client.query({
             query: gql`
@@ -25,7 +23,6 @@ const QrScanner = ({ setShowScanner, setVisitorData, setSearch }) => {
             `,
         })
             .then((res) => {
-                //alert(res.data);
                 const visitor = [];
                 visitor[0] = res.data.getInvitesByIDForSearch; 
                 setVisitorData(visitor);
@@ -62,7 +59,7 @@ const QrScanner = ({ setShowScanner, setVisitorData, setSearch }) => {
                                     if (qrData.inviteID) {
                                         setData(qrData.inviteID); 
                                         setShowScanner(false);
-                                        search("test");
+                                        search();
                                         //alert(qrData.inviteID);
                                     } else {
                                         setInvalid(true);
