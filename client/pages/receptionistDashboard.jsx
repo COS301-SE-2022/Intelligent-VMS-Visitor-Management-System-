@@ -1,5 +1,5 @@
 import { useState, useEffect, setState } from "react";
-import { gql, useQuery, useApolloClient } from "@apollo/client";
+import { gql, useQuery, useApolloClient, useLazyQuery } from "@apollo/client";
 
 import Layout from "../components/Layout";
 import ErrorAlert from "../components/ErrorAlert";
@@ -18,7 +18,6 @@ const ReceptionistDashboard = () => {
     
     const [visitorData, setVisitorData] = useState([]);
     const [reload, setReload] = useState(false);
-    const [searching, setSearch] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
 
@@ -26,7 +25,7 @@ const ReceptionistDashboard = () => {
 
 
     //let today = new Date();
-    const formatYmd = today => today.toISOString().slice(0, 10);
+    const formatYmd = today => {return today.toISOString().slice(0, 10)};
     let todayString = formatYmd(new Date());
 
     const router = useRouter();
@@ -42,9 +41,39 @@ const ReceptionistDashboard = () => {
         }
     `);
 
+    //STEFAN SE CODE
+    const [searching, setSearch] = useState(false);
+
+    //--------------------------------------------------------------------
+
     function refreshPage() {
         window.location.reload(true);
     }
+
+
+    const client = useApolloClient();
+    const search = (name) => {
+        //TODO (Stefan)
+        setSearch(true);
+        client.query({
+            query: gql`
+                query{
+                    getInvitesByNameForSearch( name: "${visitorName}" ) {
+                        inviteID
+                        inviteDate
+                        idNumber
+                        visitorName
+                        inviteState
+                    }
+                }
+            `,
+        })
+            .then((res) => {
+                //alert(res.data);
+                setVisitorData(res.data.getInvitesByNameForSearch);
+            })
+    };
+
 
 
     const signOut = (inviteID) => {
@@ -52,6 +81,29 @@ const ReceptionistDashboard = () => {
         //change the state of the invite
         //free the parking
     };
+
+    const resetDefaultResults = () => {
+        setSearch(false);
+
+        if ((!loading && !error) || reload) {
+            const invites = data.getInvitesByDate;
+            setVisitorData(invites);
+        } else if (error) {
+            if (error.message === "Unauthorized") {
+                router.push("/expire");
+                return;
+            }
+
+            setVisitorData([
+                {
+                    visitorEmail: "ERROR",
+                    idDocType: "ERROR",
+                    isNumber: "ERROR",
+                },
+            ]);
+        }
+    };
+
 
     useEffect(() => {
         if ((!loading && !error)) {
@@ -73,6 +125,13 @@ const ReceptionistDashboard = () => {
         }
     }, [loading, error, router, data]);
 
+
+
+
+    //const [notes, setNotes] = useState("");
+    const [visitorName, setName] = useState("");
+
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
     return (
         <Layout>
@@ -80,9 +139,13 @@ const ReceptionistDashboard = () => {
                 type="text"
                 placeholder="Search.."
                 className="input input-bordered input-primary ml-5 w-4/6"
+                onChange={(evt) => setName(evt.target.value)}
             />
             <button className="btn btn-primary ml-5 mt-5 mb-5">
                 Search
+            </button>
+            <button onClick= {resetDefaultResults} className="btn btn-primary ml-5 mt-5 mb-5">
+                Today&apos;s Invites
             </button>
             <label
                 htmlFor="QRScan-modal"
@@ -90,6 +153,18 @@ const ReceptionistDashboard = () => {
             >
                 Scan to Search
             </label>
+
+            {searching ? (
+                <h1 className="base-100 mt-5 mb-5 p-3 text-left text-4xl font-bold">
+                    Search Results:
+                </h1>
+
+            ) : (
+                <h1 className="base-100 mt-5 mb-5 p-3 text-left text-4xl font-bold">
+                    Today&apos;s Invites
+                </h1>
+            )}
+
 
 
             <h1 className="base-100 mt-5 mb-5 p-3 text-left text-4xl font-bold">
@@ -120,59 +195,54 @@ const ReceptionistDashboard = () => {
                         {visitorData.length > 0 ? (
                             <tbody>
                                 {visitorData.map((visit, idx) => {
-                                        
-                                            return(
-                                                
-                                                <tr data-toggle="modal" data-target="#Info-modal" className="hover clickable" key={idx}>
-                                                    <th>{idx + 1}</th>
-                                                    <td>{visit.visitorName}</td>
-                                                    <td>{visit.idNumber}</td>
-                                                    
-                                                    {visit.inviteState === "inActive" ? (
-                                                    <td>
-                                                        <label
-                                                            htmlFor="signIn-modal"
-                                                            className="modal-button btn max-w-md border-0 bg-green-800 text-white"
-                                                            onClick={() => {
-                                                                setCurrentVisitorID(
-                                                                    visit.idNumber
-                                                                );
-                                                                setCurrentInviteID(
-                                                                    visit.inviteID
-                                                                );
-                                                            }}
-                                                        >
-                                                            Sign In
-                                                        </label>
-                                                    </td>
-                                                ) : (
-                                                    
-                                                    <td>
-                                                        <label
-                                                            htmlFor="signOut-modal"
-                                                            className="modal-button btn max-w-md border-0 bg-red-800 text-white"
-                                                            onClick={() => {
-                                                                setCurrentVisitorID(
-                                                                    visit.idNumber
-                                                                );
-                                                                setCurrentInviteID(
-                                                                    visit.inviteID
-                                                                );
-                                                            }}
-                                                        >
-                                                            Sign Out
-                                                        </label> 
-                                                          
-                                                    </td>
 
-                                                    )}
-                                                </tr>
-                                                
-                                                
-                                                
-                                            )
-                                           
-                                            
+                                    return (
+                                        <tr className="hover" key={idx}>
+                                            <th>{idx + 1}</th>
+                                            <td>{visit.visitorName}</td>
+                                            <td>{visit.idNumber}</td>
+
+                                            {visit.inviteState === "inActive" ? (
+                                                <td>
+                                                    <label
+                                                        htmlFor="signIn-modal"
+                                                        className="modal-button btn max-w-md border-0 bg-green-800 text-white"
+                                                        onClick={() => {
+                                                            setCurrentVisitorID(
+                                                                visit.idNumber
+                                                            );
+                                                            setCurrentInviteID(
+                                                                visit.inviteID
+                                                            );
+                                                        }}
+                                                    >
+                                                        Sign In
+                                                    </label>
+                                                </td>
+                                            ) : (
+
+                                                <td>
+                                                    <label
+                                                        htmlFor="signOut-modal"
+                                                        className="modal-button btn max-w-md border-0 bg-red-800 text-white"
+                                                        onClick={() => {
+                                                            setCurrentVisitorID(
+                                                                visit.idNumber
+                                                            );
+                                                            setCurrentInviteID(
+                                                                visit.inviteID
+                                                            );
+                                                        }}
+                                                    >
+                                                        Sign Out
+                                                    </label>
+
+                                                </td>
+
+                                            )}
+                                        </tr>
+                                    )
+
                                 })}
                             </tbody>
                         ) : (
@@ -188,11 +258,11 @@ const ReceptionistDashboard = () => {
             <ErrorAlert message={errorMessage} showConditon={showErrorAlert} />
 
             <input type="checkbox" id="signIn-modal" className="modal-toggle" />
-            <div className="fade modal cursor-pointer" id="signIn-modal">     
+            <div className="fade modal cursor-pointer" id="signIn-modal">
                 <div className="modal-box">
                     <label
                         htmlFor="signIn-modal"
-                        className = "btn btn-circle btn-sm" >
+                        className="btn btn-circle btn-sm" >
                         ✕
                     </label>
                     <SignInPopUp

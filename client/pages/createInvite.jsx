@@ -22,16 +22,17 @@ const CreateInvite = () => {
     // Number of invites allowed to be sent/open of resident
     const [numInvitesAllowed, setNumInvitesAllowed] = useState(0);
 
+    // Invite limit reached state
     const [limitReached, setLimitReached] = useState(false);
 
     // Manipulate state for showing error alert
     const [errorMessage, setErrorMessage] = useState("");
 
     // Get Data From JWT Token
-    const jwtTokenData = useAuth((state) => state.decodedToken)();
+    const jwtTokenData = useAuth((state) => {return state.decodedToken})();
 
     // Get number of parking spots available
-    const numParkingSpotsAvailable = useAuth((state) => state.numParkingSpots);
+    const numParkingSpotsAvailable = useAuth((state) => {return state.numParkingSpots});
 
     // Car Animation Framer Motion Variant
     const driveAway = {
@@ -175,7 +176,7 @@ const CreateInvite = () => {
                         handleBlur,
                         handleSubmit,
                         isSubmitting,
-                    }) => (
+                    }) => {return (
                         <form
                             onSubmit={handleSubmit}
                             className="md:p-26 prose form-control space-y-4 rounded-none bg-base-300 p-14 md:rounded-xl mt-3"
@@ -301,7 +302,7 @@ const CreateInvite = () => {
                                 Invite
                             </button>
                         </form>
-                    )}
+                    )}}
                 </Formik>
 
                 <ErrorAlert

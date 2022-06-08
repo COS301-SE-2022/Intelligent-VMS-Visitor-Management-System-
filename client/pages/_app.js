@@ -12,8 +12,8 @@ import "../styles/globals.css";
 function MyApp({ Component, pageProps }) {
     const router = useRouter();
 
-    const access_token = useAuth((state) => state.access_token);
-    const permission = useAuth((state) => state.permission)();
+    const access_token = useAuth((state) => {return state.access_token});
+    const permission = useAuth((state) => {return state.permission})();
     const client = new ApolloClient({
         uri: process.env.BACKEND_GRAPHQL_URL,
         cache: new InMemoryCache(),

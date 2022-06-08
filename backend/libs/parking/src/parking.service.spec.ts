@@ -7,6 +7,8 @@ import {AssignParkingCommand} from './commands/impl/assignParking.command';
 import {ReserveParkingCommand} from './commands/impl/reserveParking.command';
 import { VisitorInviteService } from '@vms/visitor-invite';
 import { MailService } from '@vms/mail/mail.service';
+import { RestrictionsService } from "@vms/restrictions";
+
 import { Parking } from './models/parking.model';
 import { GetInviteQuery } from '@vms/visitor-invite/queries/impl/getInvite.query';
 import { Invite } from '@vms/visitor-invite/schema/invite.schema';
@@ -153,6 +155,7 @@ describe('ParkingService', () => {
             ParkingService, 
             VisitorInviteService,
             MailService,
+            RestrictionsService,
             {
                     provide: QueryBus, useValue: queryBusMock
             },

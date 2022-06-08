@@ -2,9 +2,9 @@ import { Field, Int, ObjectType } from "@nestjs/graphql";
 
 @ObjectType()
 export class Restriction {
-    @Field((type) => String)
+    @Field((type) => {return String})
     name: string;
 
-    @Field((type) => Int)
+    @Field((type) => {return Int})
     value: number;
 }

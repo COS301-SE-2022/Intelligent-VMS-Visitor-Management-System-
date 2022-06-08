@@ -23,7 +23,7 @@ const SignOutPopUp = ({ visitorID, inviteID }) => {
                     }
                 `
                 }).then(res => {
-                    console.log('we got back data : ', res.data.signOut);
+                    
                     alert('tray number is: ' + res.data.signOut);
                 })
             }

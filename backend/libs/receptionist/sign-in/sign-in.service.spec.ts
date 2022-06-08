@@ -14,6 +14,7 @@ import { Tray } from '@vms/receptionist/schema/tray.schema';
 import { VisitorInviteService } from '@vms/visitor-invite';
 import { Invite } from '@vms/visitor-invite/models/invite.model';
 import { GetInviteQuery } from '@vms/visitor-invite/queries/impl/getInvite.query';
+import { RestrictionsService } from "@vms/restrictions";
 import { SignInService } from './sign-in.service';
 
 describe('SignInService', () => {
@@ -165,6 +166,7 @@ describe('SignInService', () => {
         ReceptionistService,
         ParkingService,
         MailService,
+        RestrictionsService,
         {
           provide: QueryBus, useValue: queryBusMock
         },

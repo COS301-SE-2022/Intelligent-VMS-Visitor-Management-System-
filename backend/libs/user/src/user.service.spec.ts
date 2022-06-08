@@ -10,7 +10,7 @@ describe("UserService", () => {
     let service: UserService;
     let mockUserModel: Model<UserDocument>;
     const queryBusMock = {
-        execute: jest.fn(() => ({data: 'email'}))
+        execute: jest.fn(() => {return {data: 'email'}})
     }
 
     beforeEach(async () => {

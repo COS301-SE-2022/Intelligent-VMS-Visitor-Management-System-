@@ -46,7 +46,6 @@ const AdminDashboard = () => {
     // Start Date State
     const [start, setStart] = useState(startDate);
 
-
     // Initial number of invites per resident for fallback
     const [initialNumInvitesPerResident, setInitialNumInvitesPerResident] = useState(1);
 
@@ -60,10 +59,10 @@ const AdminDashboard = () => {
     const [name, setName] = useState("");
 
     const [numParkingSpotsAvailable, setNumParkingSpotsAvailable] = useState(0);
-    const updateParkingSpots = useAuth((state) => state.updateParkingSpots);
+    const updateParkingSpots = useAuth((state) => {return state.updateParkingSpots});
 
     // JWT Token data from Model
-    const decodedToken = useAuth((state) => state.decodedToken)();
+    const decodedToken = useAuth((state) => {return state.decodedToken})();
     
     const numInvitesPerResidentQuery = useQuery(gql`
         query {
@@ -284,14 +283,14 @@ const AdminDashboard = () => {
                                 <p>Number of invites a resident is allowed to have open/sent at a time.</p>
                                 <div className="card-actions justify-start flex items-center">
                                     <div className="flex items-center space-x-3">
-                                        <button className="btn btn-circle" onClick={() => {
+                                        <button aria-label="increaseInvites" className="btn btn-circle" onClick={() => {
                                             setNumInvitesPerResident(numInvitesPerResident+1);
                                             setRestrictionsChanged(true);
                                         }}>
                                             <AiOutlinePlus className="text-xl md:text-2xl lg:text-3xl"/>
                                         </button>
                                         <p className="text-secondary font-bold text-4xl">{numInvitesPerResident}</p>
-                                        <button className="btn btn-circle" onClick={() => {
+                                        <button aria-label="decreaseInvites" className="btn btn-circle" onClick={() => {
                                             numInvitesPerResident > 1 && setNumInvitesPerResident(numInvitesPerResident-1);
                                             setRestrictionsChanged(true);
                                         }}>
@@ -331,7 +330,7 @@ const AdminDashboard = () => {
                     </h3>
                     <input
                         onChange={(e) =>
-                            updateParkingSpots(Number(e.target.value))
+                            {return updateParkingSpots(Number(e.target.value))}
                         }
                         className="input input-bordered w-full max-w-xs"
                         type="number"

@@ -2,13 +2,13 @@ import { Field, ObjectType } from "@nestjs/graphql";
 
 @ObjectType()
 export class Parking {
-    @Field((type) => String)
+    @Field((type) => {return String})
     visitorEmail?: string;
 
-    @Field((type) => String)
+    @Field((type) => {return String})
     parkingNumber: number;
 
-    @Field((type) => Boolean)
+    @Field((type) => {return Boolean})
     enabled: boolean;
 
 }

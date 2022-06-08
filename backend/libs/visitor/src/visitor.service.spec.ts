@@ -8,10 +8,10 @@ describe("VisitorService", () => {
     let service: VisitorService;
     let model: Model<Visitor>;
     const visitorModelMock={
-         find:jest.fn(()=>({
-        exec: jest.fn(()=>({data:[]}))
-    })),
-    create:jest.fn(()=>({data:{}})),
+         find:jest.fn(()=>{return {
+        exec: jest.fn(()=>{return {data:[]}})
+    }}),
+    create:jest.fn(()=>{return {data:{}}}),
 
     }
 
