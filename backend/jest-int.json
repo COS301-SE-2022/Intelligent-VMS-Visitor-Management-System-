@@ -1,9 +1,37 @@
 {
-    "moduleFileExtensions": ["js","json","ts"],
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
     "rootDir": ".",
     "testEnvironment": "node",
-    "testRegex": "int-spec.ts$",
+    "testRegex": ".int-spec.ts$",
     "transform": {
-        "^.+\\.(t|j)s$": "ts-jest"
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "moduleNameMapper": {
+      "@vms/my-library/(.*)": "<rootDir>/libs/my-library/src/$1",
+      "@vms/my-library": "<rootDir>/libs/my-library/src",
+      "@vms/database/(.*)": "<rootDir>/libs/database/src/$1",
+      "@vms/database": "<rootDir>/libs/database/src",
+      "@vms/visitor/(.*)": "<rootDir>/libs/visitor/src/$1",
+      "@vms/visitor": "<rootDir>/libs/visitor/src",
+      "@user/user/(.*)": "<rootDir>/libs/user/src/$1",
+      "@user/user": "<rootDir>/libs/user/src",
+      "@vms/auth/(.*)": "<rootDir>/libs/auth/src/$1",
+      "@vms/auth": "<rootDir>/libs/auth/src",
+      "@vms/visitor-invite/(.*)": "<rootDir>/libs/visitor-invite/src/$1",
+      "@vms/visitor-invite": "<rootDir>/libs/visitor-invite/src",
+      "@vms/resident/(.*)": "<rootDir>/libs/resident/src/$1",
+      "@vms/resident": "<rootDir>/libs/resident/src",
+      "@vms/parking/(.*)": "<rootDir>/libs/parking/src/$1",
+      "@vms/parking": "<rootDir>/libs/parking/src",
+      "@vms/mail/(.*)": "<rootDir>/libs/mail/src/$1",
+      "@vms/mail": "<rootDir>/libs/mail/src",
+      "@vms/receptionist/(.*)": "<rootDir>/libs/receptionist/src/$1",
+      "@vms/receptionist": "<rootDir>/libs/receptionist/src",
+      "@vms/restrictions/(.*)": "<rootDir>/libs/restrictions/src/$1",
+      "@vms/restrictions": "<rootDir>/libs/restrictions/src"
     }
-}
+  }

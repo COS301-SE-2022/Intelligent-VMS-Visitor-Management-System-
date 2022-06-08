@@ -1,16 +1,15 @@
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { MongooseModule } from "@nestjs/mongoose";
-import { Test, TestingModule } from "@nestjs/testing";
 import { VisitorInviteService } from "@vms/visitor-invite";
-import { ParkingModule } from "./parking.module";
+import { Test, TestingModule } from "@nestjs/testing";
 import { ParkingService } from "./parking.service";
+import { forwardRef } from "@nestjs/common";
 
 describe('ParkingService Int', () => {
     let service: ParkingService;
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
-            imports: [
-                ParkingModule,
+           /* imports: [
                 MongooseModule.forRootAsync({
                     imports: [ConfigModule],
                     useFactory: async (configService: ConfigService) => ({
@@ -18,7 +17,7 @@ describe('ParkingService Int', () => {
                     }),
                     inject: [ConfigService],
                 }),
-            ],
+            ],*/
             providers: [
                 ParkingService, 
                 VisitorInviteService
