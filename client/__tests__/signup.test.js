@@ -9,7 +9,7 @@ import * as nextRouter from "next/router";
 import { validSignup } from "./__mocks__/signup.mock";
 
 import useAuth from "../store/authStore";
-import SignUp from "../pages/signup";
+import SignUp from "../pages/signUp";
 
 // Setup router mock hook
 nextRouter.useRouter = jest.fn();
