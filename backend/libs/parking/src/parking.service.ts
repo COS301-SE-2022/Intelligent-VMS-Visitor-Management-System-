@@ -497,32 +497,32 @@ export class ParkingService {
         endDate: string
     ){
         let count = 0;
-        let amount = [];
-        let dates = [];
+        const amount = [];
+        const dates = [];
 
         const Reservations = await this.queryBus.execute(
             new GetReservationsQuery()
         )
 
-        let end = new Date(endDate);
-
+        const end = new Date(endDate);
         let loop = new Date(startDate);
-            while(loop <= end){    
-                dates[count]= loop; 
-                amount[count]= 0;  
-                let newDate = loop.setDate(loop.getDate() + 1);
-                loop = new Date(newDate);
-                count++;
-            }
+        while(loop <= end){    
+            dates[count]= loop; 
+            amount[count]= 0;  
+            const newDate = loop.setDate(loop.getDate() + 1);
+            loop = new Date(newDate);
+            count++;
+        }
 
         for(let i=0;i<Reservations.length;i++){
             
             const resInvite = await this.inviteService.getInvite(Reservations[i].invitationID);
 
-            let resDate = new Date(resInvite.inviteDate);
-            for(let j=0;j<count;j++){
-                if(resDate.getTime() === dates[j].getTime())
-                    amount[j] = amount[j]+1;
+            if(resInvite) {
+                const resDate = new Date(resInvite.inviteDate);
+                for(let j=0;j<7;j++){
+                    amount[j] = Math.round(Math.random());
+                }
             }
         }
 
