@@ -7,6 +7,7 @@ import { Invite, InviteSchema } from '@vms/visitor-invite/schema/invite.schema';
 import { SignInService } from '../sign-in/sign-in.service';
 import { SignOutService } from '../sign-out/sign-out.service';
 import { SignInInviteCommandHandler, SignOutInviteCommandHandler } from './commands/handler';
+import { removeTrayByInviteIDCommand } from './commands/impl/Tray/removeTrayByInviteID.command';
 import { ReceptionistResolver } from './receptionist.resolver';
 import { ReceptionistService } from './receptionist.service';
 import { Tray,TraySchema } from './schema/tray.schema';
@@ -18,9 +19,10 @@ import { Tray,TraySchema } from './schema/tray.schema';
     ParkingModule,
     MongooseModule.forFeature([
       { name: Invite.name, schema: InviteSchema },
+      { name: Tray.name, schema: TraySchema },
     ]),
     MongooseModule.forFeature([
-      { name: Tray.name, schema: TraySchema },
+     
     ]),
   ],
   providers: [
@@ -30,6 +32,7 @@ import { Tray,TraySchema } from './schema/tray.schema';
     ReceptionistResolver,
     SignInInviteCommandHandler,
     SignOutInviteCommandHandler,
+    //removeTrayByInviteIDCommandHandler,
     VisitorInviteModule,],
   exports: [ReceptionistService],
 })
