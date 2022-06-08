@@ -30,7 +30,7 @@ import { Tray,TraySchema } from './schema/tray.schema';
     ReceptionistResolver,
     SignInInviteCommandHandler,
     SignOutInviteCommandHandler,
-    //removeTrayByInviteIDCommandHandler,
+    removeTrayByInviteIDCommand,
     VisitorInviteModule,],
   exports: [ReceptionistService],
 })
