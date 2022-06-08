@@ -29,6 +29,8 @@ const Verify = () => {
                 .catch((err) => {
                     console.error(err);
                 });
+        } else {
+            console.error("Invalid ID");
         }
     }, [router, client]);
 
