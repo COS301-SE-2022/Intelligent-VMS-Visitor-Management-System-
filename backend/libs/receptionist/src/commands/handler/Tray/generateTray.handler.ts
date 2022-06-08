@@ -5,13 +5,13 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Tray, TrayDocument } from "../../../schema/tray.schema";
 
 @CommandHandler(generateTrayCommand)
-export class CreateUserCommandHandler implements ICommandHandler {
+export class generateTrayCommandHandler implements ICommandHandler {
     constructor(
         @InjectModel(Tray.name) private trayModel: Model<TrayDocument>,
     ) {}
 
-    async execute(command: generateTrayCommand) {
+    async execute(command: generateTrayCommand):Promise<Tray> {
         const { trayID, inviteID, containsResidentID,containsVisitorID } = command;
-        await this.trayModel.create({ trayID: trayID, inviteID: inviteID, containsResidentID: containsResidentID, containsVisitorID: containsVisitorID});
+        return await this.trayModel.create({ trayID: trayID, inviteID: inviteID, containsResidentID: containsResidentID, containsVisitorID: containsVisitorID});
     }
 }

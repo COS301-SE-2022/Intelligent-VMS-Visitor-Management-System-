@@ -77,17 +77,7 @@ describe('ParkingService', () => {
                     return reservations;
                 } else
                 return [];
-                
-            } else if(query instanceof GetInviteReservationQuery){
-                if(query.invitationID === "f11ae766-ce23-4f27-b428-83cff1afbf04" )
-                {
-                    const reservation = new ParkingReservation();
-                    reservation.parkingNumber= 0;
-                    reservation.invitationID= "f11ae766-ce23-4f27-b428-83cff1afbf04"
-                    return reservation;
-                } else
-                return [];
-                
+                                
             } else if(query instanceof GetReservationsQuery){
                 return [];
                 

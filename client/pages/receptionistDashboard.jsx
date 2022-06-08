@@ -8,21 +8,35 @@ import { useRouter } from "next/router";
 import QRScanner from "../components/QRScanner";
 import SignInPopUp from "../components/SignInPopUp";
 import SignOutPopUp from "../components/SignOutPopUp";
+import VisitInfoModal from "../components/VisitInfoModal";
 
 const ReceptionistDashboard = () => {
-
-    const [currentVisitorID, setCurrentVisitorID] = useState("");
-    const [currentInviteID, setCurrentInviteID] = useState("");
-
+    
+    const [currentVisitorID,setCurrentVisitorID] = useState("");
+    const [currentInviteID,setCurrentInviteID] = useState("");
+    const [currentName,setCurrentName] = useState("");
+    
     const [visitorData, setVisitorData] = useState([]);
     const [reload, setReload] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+    const [showScanner, setShowScanner] = useState(false);
 
+    let ti;
 
     //let today = new Date();
-    const formatYmd = today => {return today.toISOString().slice(0, 10)};
-    let todayString = formatYmd(new Date());
+    const getFormattedDateString = (date) => {
+        if(date instanceof Date) {
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+            return [
+                date.getFullYear(),
+                (month > 9 ? "" : "0") + month,
+                (day > 9 ? "" : "0") + day,
+            ].join("-");
+        }
+    };
+    const todayString = getFormattedDateString(new Date());
 
     const router = useRouter();
     const { loading, error, data } = useQuery(gql`
@@ -46,7 +60,6 @@ const ReceptionistDashboard = () => {
         window.location.reload(true);
     }
 
-
     const client = useApolloClient();
     const search = (name) => {
         //TODO (Stefan)
@@ -66,7 +79,10 @@ const ReceptionistDashboard = () => {
         })
             .then((res) => {
                 //alert(res.data);
-                setVisitorData(res.data.getInvitesByNameForSearch);
+                const visitors = res.data.getInvitesByNameForSearch.filter((invite) => {
+                    return invite.inviteDate === todayString && invite.inviteState !== "signedOut"
+                });
+                setVisitorData(visitors);
             })
     };
 
@@ -102,7 +118,7 @@ const ReceptionistDashboard = () => {
 
 
     useEffect(() => {
-        if ((!loading && !error) || reload) {
+        if ((!loading && !error)) {
             const invites = data.getInvitesByDate;
             setVisitorData(invites);
         } else if (error) {
@@ -119,9 +135,7 @@ const ReceptionistDashboard = () => {
                 },
             ]);
         }
-    }, [loading, error, router, data, reload]);
-
-
+    }, [loading, error, router, data]);
 
 
     //const [notes, setNotes] = useState("");
@@ -146,6 +160,7 @@ const ReceptionistDashboard = () => {
             <label
                 htmlFor="QRScan-modal"
                 className="modal-button btn btn-primary float-right mr-5 mt-5 mb-5"
+                onClick={() => setShowScanner(true) }
             >
                 Scan to Search
             </label>
@@ -161,7 +176,7 @@ const ReceptionistDashboard = () => {
                 </h1>
             )}
 
-
+        
             {/* <div className="mx-5 grid grid-cols-3 gap-4 content-evenly h-10 bg-base-300 rounded-md content-center">
                 <div className="ml-2">Invitation Id</div>
                 <div className="">Visitor Id</div>
@@ -172,7 +187,7 @@ const ReceptionistDashboard = () => {
                     <progress className="progress progress-primary w-56">
                         progress
                     </progress>
-                ) : (
+                ) : ( 
                     //TODO (Larisa) dont use table
                     <table className="mb-5 table w-full">
                         <thead>
@@ -186,7 +201,6 @@ const ReceptionistDashboard = () => {
                         {visitorData.length > 0 ? (
                             <tbody>
                                 {visitorData.map((visit, idx) => {
-
                                     return (
                                         <tr className="hover" key={idx}>
                                             <th>{idx + 1}</th>
@@ -211,9 +225,8 @@ const ReceptionistDashboard = () => {
                                                     </label>
                                                 </td>
                                             ) : (
-
                                                 <td>
-                                                    <label
+                                                     <label
                                                         htmlFor="signOut-modal"
                                                         className="modal-button btn max-w-md border-0 bg-red-800 text-white"
                                                         onClick={() => {
@@ -227,7 +240,6 @@ const ReceptionistDashboard = () => {
                                                     >
                                                         Sign Out
                                                     </label>
-
                                                 </td>
 
                                             )}
@@ -268,8 +280,8 @@ const ReceptionistDashboard = () => {
                 <div className="modal-box">
                     <label
                         htmlFor="signOut-modal"
-                        className="btn btn-circle btn-sm"
-                        onClick={() => { setReload(true) }}>
+                        className = "btn btn-circle btn-sm" 
+                        >
                         ✕
                     </label>
                     <SignOutPopUp
@@ -279,23 +291,43 @@ const ReceptionistDashboard = () => {
                 </div>
             </div>
 
-            <input type="checkbox" id="QRScan-modal" className="modal-toggle" />
+            <input type="checkbox" id="QRScan-modal" className="modal-toggle" onChange={() => {}}checked={showScanner ? true : false} />
             <div className="fade modal" id="QRScan-modal">
                 <div className="modal-box flex flex-wrap">
                     <label
                         htmlFor="QRScan-modal"
                         className="btn btn-circle btn-sm absolute right-2 top-2 z-10"
+                        onClick={() => setShowScanner(false)}
                     >
                         ✕
                     </label>
-                    <QRScanner />
+                    <QRScanner setShowScanner={setShowScanner} />
                 </div>
             </div>
 
+            <input type="checkbox" id="Info-modal" className="modal-toggle" />
+            <div className="fade modal" id="Info-modal">
+                <div className="modal-box flex flex-wrap">
+                    <label
+                        htmlFor="Info-modal"
+                        className="btn btn-circle btn-sm absolute right-2 top-2 z-10"
+                    >
+                        ✕
+                    </label>
+                    <VisitInfoModal name={currentName} />
+                </div>
+            </div>
 
+            
         </Layout>
     );
 };
-
+    export async function getStaticProps(context) {
+        return {
+        props: {
+            protected: true,
+        },
+    };
+    }
 
 export default ReceptionistDashboard;

@@ -20,20 +20,21 @@ const SignInPopUp = ({ visitorID, inviteID }) => {
                 {visitorID}
             </span>
           </p>
-          <input type="text" onChange={(evt) => {return setNotes(evt.target.value)}} maxLength="100" placeholder="Add some observations.." className="input input-bordered w-5/6 mt-5 ml-5" />
-          <a className="btn btn-primary w-5/6 m-5 modal-button" href="#" onClick={()=>{
-                            client.mutate({
+          <input type="text" onChange={(evt) => setNotes(evt.target.value)} maxLength="100" placeholder="Add some observations.." className="input input-bordered w-5/6 mt-5 ml-5" />
+          <label className="btn btn-primary w-5/6 m-5 modal-button" htmlFor="signIn-modal" onClick={async ()=>{
+                            const time = new Date();
+                            await client.mutate({
                               mutation: gql`
                                   mutation {
-                                    signIn(inviteID: "${inviteID}", notes: "${notes}"){
-                                      inviteID
-                                    }
+                                    signIn(inviteID: "${inviteID}", notes: "${notes}", time: "${time.toLocaleTimeString()}") 
                                   }
                               `
-                          })                      
-        }
+                            }).then(res => {
+                              alert('tray number is: ' + res.data.signIn);
+                            })           
+                        }
                         
-                        }>Sign in</a>
+                        }>Sign in</label>
       </div>
     );
 };

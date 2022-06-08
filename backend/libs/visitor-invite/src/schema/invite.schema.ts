@@ -43,13 +43,13 @@ export class Invite {
     visitorName: string;
     
     @Prop()
-    signOutDate: string;
+    signOutTime: string;
 
     @Prop()
-    signInDate: string;
+    signInTime: string;
 
     @Prop()
-    creationDate: string;
+    creationTime: string;
 }
 
 export const InviteSchema = SchemaFactory.createForClass(Invite);

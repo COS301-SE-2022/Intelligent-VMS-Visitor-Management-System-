@@ -94,6 +94,7 @@ const VisitorDashboard = () => {
                         </thead>
                         {visitorData.length > 0 ? (
                             <tbody>
+                                
                                 {visitorData.map((visit, idx) => {
                                     return (
                                         <tr className="hover" key={idx}>
