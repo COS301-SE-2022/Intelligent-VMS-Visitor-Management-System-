@@ -37,7 +37,7 @@ type Invite {
   requiresParking: Boolean!
   inviteState: String!
   notes: String!
-  signOutDate: String!
+  signOutTime: String!
   trayNumber: Float!
 }
 
@@ -99,5 +99,6 @@ type Mutation {
   ceatedParkings(N: Float!): Boolean!
   setNumInvitesPerResident(numInvites: Float!): Restriction!
   signOut(inviteID: String!): Float!
-  signIn(inviteID: String!, notes: String!): Invite!
+  signIn(inviteID: String!, notes: String!, time: String!): Float!
+  setNumInvitesPerResident(numInvites: Float!): Restriction!
 }

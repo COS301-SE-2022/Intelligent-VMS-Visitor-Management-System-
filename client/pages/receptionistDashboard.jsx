@@ -8,16 +8,20 @@ import { useRouter } from "next/router";
 import QRScanner from "../components/QRScanner";
 import SignInPopUp from "../components/SignInPopUp";
 import SignOutPopUp from "../components/SignOutPopUp";
+import VisitInfoModal from "../components/VisitInfoModal";
 
 const ReceptionistDashboard = () => {
-
-    const [currentVisitorID, setCurrentVisitorID] = useState("");
-    const [currentInviteID, setCurrentInviteID] = useState("");
-
+    
+    const [currentVisitorID,setCurrentVisitorID] = useState("");
+    const [currentInviteID,setCurrentInviteID] = useState("");
+    const [currentName,setCurrentName] = useState("");
+    
     const [visitorData, setVisitorData] = useState([]);
     const [reload, setReload] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+
+    let ti;
 
 
     //let today = new Date();
@@ -102,7 +106,7 @@ const ReceptionistDashboard = () => {
 
 
     useEffect(() => {
-        if ((!loading && !error) || reload) {
+        if ((!loading && !error)) {
             const invites = data.getInvitesByDate;
             setVisitorData(invites);
         } else if (error) {
@@ -119,7 +123,7 @@ const ReceptionistDashboard = () => {
                 },
             ]);
         }
-    }, [loading, error, router, data, reload]);
+    }, [loading, error, router, data]);
 
 
 
@@ -137,7 +141,7 @@ const ReceptionistDashboard = () => {
                 className="input input-bordered input-primary ml-5 w-4/6"
                 onChange={(evt) => setName(evt.target.value)}
             />
-            <button onClick={search} className="btn btn-primary ml-5 mt-5 mb-5">
+            <button className="btn btn-primary ml-5 mt-5 mb-5">
                 Search
             </button>
             <button onClick= {resetDefaultResults} className="btn btn-primary ml-5 mt-5 mb-5">
@@ -161,7 +165,7 @@ const ReceptionistDashboard = () => {
                 </h1>
             )}
 
-
+        
             {/* <div className="mx-5 grid grid-cols-3 gap-4 content-evenly h-10 bg-base-300 rounded-md content-center">
                 <div className="ml-2">Invitation Id</div>
                 <div className="">Visitor Id</div>
@@ -172,7 +176,7 @@ const ReceptionistDashboard = () => {
                     <progress className="progress progress-primary w-56">
                         progress
                     </progress>
-                ) : (
+                ) : ( 
                     //TODO (Larisa) dont use table
                     <table className="mb-5 table w-full">
                         <thead>
@@ -268,8 +272,8 @@ const ReceptionistDashboard = () => {
                 <div className="modal-box">
                     <label
                         htmlFor="signOut-modal"
-                        className="btn btn-circle btn-sm"
-                        onClick={() => { setReload(true) }}>
+                        className = "btn btn-circle btn-sm" 
+                        >
                         ✕
                     </label>
                     <SignOutPopUp
@@ -292,10 +296,29 @@ const ReceptionistDashboard = () => {
                 </div>
             </div>
 
+            <input type="checkbox" id="Info-modal" className="modal-toggle" />
+            <div className="fade modal" id="Info-modal">
+                <div className="modal-box flex flex-wrap">
+                    <label
+                        htmlFor="Info-modal"
+                        className="btn btn-circle btn-sm absolute right-2 top-2 z-10"
+                    >
+                        ✕
+                    </label>
+                    <VisitInfoModal name={currentName} />
+                </div>
+            </div>
 
+            
         </Layout>
     );
 };
-
+    export async function getStaticProps(context) {
+        return {
+        props: {
+            protected: true,
+        },
+    };
+    }
 
 export default ReceptionistDashboard;
