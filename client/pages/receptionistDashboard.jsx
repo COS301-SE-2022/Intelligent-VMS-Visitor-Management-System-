@@ -165,11 +165,6 @@ const ReceptionistDashboard = () => {
                 </h1>
             )}
 
-
-
-            <h1 className="base-100 mt-5 mb-5 p-3 text-left text-4xl font-bold">
-            Today&apos;s Invites
-            </h1>
         
             {/* <div className="mx-5 grid grid-cols-3 gap-4 content-evenly h-10 bg-base-300 rounded-md content-center">
                 <div className="ml-2">Invitation Id</div>

@@ -18,10 +18,10 @@ const QrScanner = () => {
     // Video Player Hook
     const [playingVideo, setPlayingVideo] = useVideo(videoRef);
 
-    /*useEffect(() => {
+    useEffect(() => {
         // Stop video on component unmount
     
-    }, []);*/
+    }, []);
 
     return (
  <div className="relative flex-col justify-center items-center text-center">
@@ -32,14 +32,10 @@ const QrScanner = () => {
                         if (result) {
                             const qrData = JSON.parse(result?.text);
                             if (qrData.inviteID) {
-                                setData(qrData.inviteID);
-                                setShow(false);
-                                alert(data);
-                                //setInvalid(true);
+                                setData(qrData.inviteID); 
+                                alert(qrData.inviteID);
                             } else {
                                 setInvalid(true);
-                                /*console.log("Invalid QR");
-                                alert("jhv");*/
                             }
                         } 
                       }}
