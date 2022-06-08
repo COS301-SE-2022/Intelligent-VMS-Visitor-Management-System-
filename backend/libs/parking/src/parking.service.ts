@@ -492,9 +492,41 @@ export class ParkingService {
                 throw new ExternalError("Error outside the parking.service");
         }
 
-    async getTotalUsedParkingInRange(startDate: string, endDate: string){
-        //TODO (Larisa) add date validation logic here
-         return await this.queryBus.execute(new GetReservationInRangeQuery(startDate, endDate));
+    async getTotalUsedParkingInRange(
+        startDate: string,
+        endDate: string
+    ){
+        let count = 0;
+        let amount = [];
+        let dates = [];
+
+        const Reservations = await this.queryBus.execute(
+            new GetReservationsQuery()
+        )
+
+        let end = new Date(endDate);
+
+        let loop = new Date(startDate);
+            while(loop <= end){    
+                dates[count]= loop; 
+                amount[count]= 0;  
+                let newDate = loop.setDate(loop.getDate() + 1);
+                loop = new Date(newDate);
+                count++;
+            }
+
+        for(let i=0;i<Reservations.length;i++){
+            
+            const resInvite = await this.inviteService.getInvite(Reservations[i].invitationID);
+
+            let resDate = new Date(resInvite.inviteDate);
+            for(let j=0;j<count;j++){
+                if(resDate.getTime() === dates[j].getTime())
+                    amount[j] = amount[j]+1;
+            }
+        }
+
+        return amount;
     }
 
     //TODO (Larisa): Check doubles ie double reservation
