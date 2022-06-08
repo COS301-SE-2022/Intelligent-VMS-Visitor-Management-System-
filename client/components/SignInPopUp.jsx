@@ -1,7 +1,6 @@
 import { gql, useApolloClient } from "@apollo/client";
 import React, { useEffect, useRef, useState, setState } from "react";
 import { ImEnter } from "react-icons/im";
-import { setVisitorData} from "../pages/receptionistDashboard"
 
 const SignInPopUp = ({ visitorID, inviteID }) => {
     const [notes, setNotes] = useState("");
@@ -22,17 +21,18 @@ const SignInPopUp = ({ visitorID, inviteID }) => {
             </span>
           </p>
           <input type="text" onChange={(evt) => setNotes(evt.target.value)} maxLength="100" placeholder="Add some observations.." className="input input-bordered w-5/6 mt-5 ml-5" />
-          <label className="btn btn-primary w-5/6 m-5 modal-button" htmlFor="signIn-modal" onClick={()=>{
+          <label className="btn btn-primary w-5/6 m-5 modal-button" htmlFor="signIn-modal" onClick={async ()=>{
                             const time = new Date();
-                            const trayNr = client.mutate({
+                            await client.mutate({
                               mutation: gql`
                                   mutation {
                                     signIn(inviteID: "${inviteID}", notes: "${notes}", time: "${time.toLocaleTimeString()}") 
                                   }
                               `
-                          }) 
-                          alert(trayNr);                  
-        }
+                            }).then(res => {
+                              alert('tray number is: ' + res.data.signIn);
+                            })           
+                        }
                         
                         }>Sign in</label>
       </div>

@@ -11,6 +11,7 @@ import { ReceptionistService } from '../src/receptionist.service';
 import { ParkingService } from '@vms/parking';
 import { InviteNotFound } from '../src/errors/inviteNotFound.error';
 import { InvalidSignIn } from '../src/errors/invalidSignIn.error';
+import { Tray } from '@vms/receptionist/models/tray.model';
 
 @Injectable()
 export class SignInService {
@@ -43,9 +44,9 @@ export class SignInService {
                         this.parkingService.assignParking(invitationID);
                     }
 
-                    this.generateTray(invitationID,true,true);
+                    const tray = await this.generateTray(invitationID,true,true);
 
-                    const tray = await this.receptionistService.getTrayByInviteID(invitationID);
+                    //const tray = await this.receptionistService.getTrayByInviteID(invitationID);
   
                     return tray.trayID;
 
@@ -79,7 +80,7 @@ export class SignInService {
             }
         }
 
-        async generateTray(inviteID: string,containsResidentID: boolean,containsVisitorID: boolean){
+        async generateTray(inviteID: string,containsResidentID: boolean,containsVisitorID: boolean):Promise<Tray>{
             console.log("generating tray");
             return this.commandBus.execute(new generateTrayCommand(await this.generateTrayID(),inviteID, containsResidentID,containsVisitorID));
         }

@@ -100,6 +100,6 @@ type Mutation {
   freeParking(parkingNumber: Float!): Parking!
   ceatedParkings(N: Float!): Boolean!
   signOut(inviteID: String!): Float!
-  signIn(inviteID: String!, notes: String!): Invite!
+  signIn(inviteID: String!, notes: String!, time: String!): Float!
   setNumInvitesPerResident(numInvites: Float!): Restriction!
 }

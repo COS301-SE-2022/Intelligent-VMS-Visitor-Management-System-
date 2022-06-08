@@ -22,6 +22,8 @@ const ReceptionistDashboard = () => {
     const [showErrorAlert, setShowErrorAlert] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
 
+    let ti;
+
 
     //let today = new Date();
     const formatYmd = today => today.toISOString().slice(0, 10);
@@ -120,7 +122,8 @@ const ReceptionistDashboard = () => {
                                 {visitorData.map((visit, idx) => {
                                         
                                             return(
-                                                <tr data-toggle="modal" data-target="#signIn-modal" className="hover clickable" key={idx}>
+                                                
+                                                <tr data-toggle="modal" data-target="#Info-modal" className="hover clickable" key={idx}>
                                                     <th>{idx + 1}</th>
                                                     <td>{visit.visitorName}</td>
                                                     <td>{visit.idNumber}</td>
@@ -165,7 +168,10 @@ const ReceptionistDashboard = () => {
                                                     )}
                                                 </tr>
                                                 
+                                                
+                                                
                                             )
+                                           
                                             
                                 })}
                             </tbody>
