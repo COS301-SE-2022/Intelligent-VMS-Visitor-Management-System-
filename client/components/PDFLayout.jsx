@@ -1,4 +1,4 @@
-const PDFLayout = ({ children }) => (
+const PDFLayout = ({ children }) => {return (
   <html>
     <head>
       <meta charSet="utf8" />
@@ -7,6 +7,6 @@ const PDFLayout = ({ children }) => (
       {children}
     </body>
   </html>
-);
+)};
 
 export default PDFLayout;

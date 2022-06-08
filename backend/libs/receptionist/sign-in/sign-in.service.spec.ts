@@ -6,6 +6,7 @@ import { generateTrayCommand } from '@vms/receptionist/commands/impl/Tray/genera
 import { getTrayListQuery } from '@vms/receptionist/queries/impl/getTrayList.query';
 import { Tray } from '@vms/receptionist/schema/tray.schema';
 import { VisitorInviteService } from '@vms/visitor-invite';
+import { RestrictionsService } from "@vms/restrictions";
 import { SignInService } from './sign-in.service';
 
 describe('SignInService', () => {
@@ -55,6 +56,7 @@ describe('SignInService', () => {
         VisitorInviteService,
         ParkingService,
         MailService,
+        RestrictionsService,
         {
           provide: QueryBus, useValue: queryBusMock
         },

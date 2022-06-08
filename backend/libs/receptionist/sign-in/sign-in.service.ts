@@ -13,7 +13,7 @@ export class SignInService {
 
     constructor(private commandBus: CommandBus, 
         private queryBus: QueryBus,
-        @Inject(forwardRef(() => VisitorInviteService))
+        @Inject(forwardRef(() => {return VisitorInviteService}))
         private inviteService: VisitorInviteService) {}
 
         async signIn(

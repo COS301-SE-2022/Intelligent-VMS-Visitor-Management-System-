@@ -15,6 +15,11 @@ type User {
   access_token: String
 }
 
+type Restriction {
+  name: String!
+  value: Int!
+}
+
 type Parking {
   visitorEmail: String!
   parkingNumber: String!
@@ -45,11 +50,6 @@ type ParkingReservation {
 type SearchInvite {
   visitorEmail: String!
   visitorName: String!
-}
-
-type Restriction {
-  name: String!
-  value: Int!
 }
 
 input VisitorInputType {
@@ -83,9 +83,9 @@ type Query {
   getFreeParking: Parking!
   getReservations: ParkingReservation!
   getAmountOfUsedParkingsInRange(startDate: String!, endDate: String!): [ParkingReservation!]!
+  getNumInvitesPerResident: Restriction!
   helloResident: String!
   helloReceptionist: String!
-  getNumInvitesPerResident: Restriction!
 }
 
 type Mutation {
@@ -101,7 +101,7 @@ type Mutation {
   unreservedParking(invitationID: String!): Boolean!
   freeParking(parkingNumber: Float!): Parking!
   ceatedParkings(N: Float!): Boolean!
+  setNumInvitesPerResident(numInvites: Float!): Restriction!
   signOut(inviteID: String!): Float!
   signIn(inviteID: String!, notes: String!): Invite!
-  setNumInvitesPerResident(numInvites: Float!): Restriction!
 }

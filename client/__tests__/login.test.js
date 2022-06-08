@@ -6,7 +6,7 @@ import { MockedProvider } from "@apollo/client/testing";
 
 import * as nextRouter from "next/router";
 
-import { validLogin } from "./__mocks__/login.mock";
+import { validLogin, errorMock } from "./__mocks__/login.mock";
 
 import useAuth from "../store/authStore";
 import Login from "../pages/login";
@@ -111,5 +111,23 @@ describe("Login", () => {
             await new Promise((resolve) => setTimeout(resolve, 50));
             expect(router.push).toHaveBeenCalledWith("/createInvite");
         });
+    });
+
+    it("should show an error message for any other API error", async () => {
+        render(
+            <MockedProvider mocks={errorMock} addTypename={false}>
+                <Login />
+            </MockedProvider>
+        );
+
+        const user = userEvent.setup();
+        await user.type(screen.getByPlaceholderText("Email"), "admin@mail.com");
+        await user.type(screen.getByPlaceholderText("Password"), "password");
+        await user.click(screen.getByRole("button"));
+
+        await waitFor(async () => {
+            await new Promise((resolve) => setTimeout(resolve, 50));
+        });
+
     });
 });

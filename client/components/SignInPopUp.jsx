@@ -20,7 +20,7 @@ const SignInPopUp = ({ visitorID, inviteID }) => {
                 {visitorID}
             </span>
           </p>
-          <input type="text" onChange={(evt) => setNotes(evt.target.value)} maxLength="100" placeholder="Add some observations.." className="input input-bordered w-5/6 mt-5 ml-5" />
+          <input type="text" onChange={(evt) => {return setNotes(evt.target.value)}} maxLength="100" placeholder="Add some observations.." className="input input-bordered w-5/6 mt-5 ml-5" />
           <a className="btn btn-primary w-5/6 m-5 modal-button" href="#" onClick={()=>{
                             client.mutate({
                               mutation: gql`

@@ -5,6 +5,7 @@ import { ParkingService } from '@vms/parking';
 import { removeTrayByInviteIDCommand } from '@vms/receptionist/commands/impl/Tray/removeTrayByInviteID.command';
 import { Tray } from '@vms/receptionist/schema/tray.schema';
 import { VisitorInviteService } from '@vms/visitor-invite';
+import { RestrictionsService } from "@vms/restrictions";
 import { SignOutService } from './sign-out.service';
 
 describe('SignOutService', () => {
@@ -51,6 +52,7 @@ describe('SignOutService', () => {
         VisitorInviteService,
         ParkingService,
         MailService,
+        RestrictionsService,
         {
           provide: QueryBus, useValue: queryBusMock
         },

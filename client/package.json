@@ -5,11 +5,13 @@
     "build": "next build",
     "start": "next start",
     "format": "prettier --write \"pages/**/*.js\" \"components/**/*.jsx\" \"pages/**/*.jsx\" \"__tests__/**/*.test.js\"",
-    "test": "jest",
-    "lint": "next lint",
+    "test": "jest -c jest.config.js",
+    "test:integration": "jest -c jest.config.js ./__tests__/integration --env=jsdom --transformIgnorePatterns \"node_modules/(?!apollo-server)/\"",
+    "lint": "next lint --fix",
     "cypress": "cypress open",
     "cypress:headless": "cypress run",
-    "test:cov": "jest --coverage"
+    "test:cov": "jest --coverage",
+    "test:integration:cov": "jest --coverage ./__tests__/integration --env=jsdom --transformIgnorePatterns \"node_modules/(?!apollo-server)/\""
   },
   "dependencies": {
     "@apollo/client": "^3.6.2",
@@ -18,7 +20,11 @@
     "@testing-library/react": "^12.0.4",
     "@testing-library/react-hooks": "^8.0.0",
     "@testing-library/user-event": "^14.2.0",
+    "apollo-server": "^3.8.2",
+    "apollo-server-integration-testing": "^3.0.0",
+    "apollo-server-testing": "^2.25.3",
     "chart.js": "^3.8.0",
+    "cross-fetch": "^3.1.5",
     "cypress": "^9.6.0",
     "daisyui": "^2.14.3",
     "formik": "^2.2.9",
@@ -39,6 +45,9 @@
     "react-icons": "^4.3.1",
     "react-qr-reader": "^3.0.0-beta-1",
     "react-test-renderer": "^18.1.0",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.6",
+    "supertest": "^6.2.3",
     "zustand": "^4.0.0-rc.1"
   },
   "devDependencies": {

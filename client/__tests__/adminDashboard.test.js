@@ -1,11 +1,10 @@
 import { render, screen } from "@testing-library/react";
 import { renderHook, act } from "@testing-library/react-hooks/server";
 import "@testing-library/jest-dom";
-import React, { useState } from "react";
 import { MockedProvider } from "@apollo/client/testing";
-import { gql } from "@apollo/client";
-import { GraphQLError } from "graphql";
+
 import * as nextRouter from "next/router";
+import React, { useState } from "react";
 
 import ResizeObserver from "./__mocks__/resizeObserver.mock";
 
@@ -41,4 +40,5 @@ describe("AdminDashboard", () => {
 
         expect(screen.getByText("admin@mail.com")).toBeInTheDocument();
     });
+
 });

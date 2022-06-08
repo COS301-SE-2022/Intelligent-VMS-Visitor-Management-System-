@@ -12,27 +12,35 @@ import { GetNumberOfInvitesOfResidentQuery } from "./queries/impl/getNumberOfInv
 import { GetInvitesByNameQuery } from "./queries/impl/getInvitesByName.query";
 import { GetInvitesInRangeByEmailQuery } from "./queries/impl/getInvitesInRangeByEmail.query";
 import { GetTotalNumberOfInvitesVisitorQuery } from "./queries/impl/getTotalNumberOfInvitesVisitor.query";
+
+import { GetInvitesByDateQuery } from "./queries/impl/getInvitesByDate.query";
+
 import { GetInvitesByNameForSearchQuery } from "./queries/impl/getInviteByNameForSearch.query";
+
 
 import { InviteNotFound } from "./errors/inviteNotFound.error";
 import { DateFormatError } from "./errors/dateFormat.error";
+import { InviteLimitReachedError } from "./errors/inviteLimitReached.error";
 
 import { ReserveParkingCommand } from "@vms/parking/commands/impl/reserveParking.command";
 import { GetAvailableParkingQuery } from '@vms/parking/queries/impl/getAvailableParking.query';
 import { ParkingNotFound } from "@vms/parking/errors/parkingNotFound.error";
 import { MailService } from "@vms/mail";
-import { GetInvitesByDateQuery } from "./queries/impl/getInvitesByDate.query";
+import { RestrictionsService } from "@vms/restrictions";
 
 @Injectable()
 export class VisitorInviteService {
     constructor(private readonly commandBus: CommandBus, 
                 private readonly queryBus: QueryBus, 
-                private readonly mailService: MailService) {}
+                private readonly mailService: MailService,
+                private readonly restrictionsService: RestrictionsService
+               ) {}
 
     /*
         Create an invitation for a visitor
     */
     async createInvite(
+        permission: number,
         userEmail: string,
         visitorEmail: string,
         visitorName: string,
@@ -41,6 +49,17 @@ export class VisitorInviteService {
         inviteDate: string,
         requiresParking: boolean
     ) {
+
+        // If permission level is that of resident check invite limit
+        if(permission !== 0 && permission !== 1) {
+            const numInvitesAllowed = this.restrictionsService.getNumInvitesPerResident();
+            const numInvitesSent = this.getTotalNumberOfInvitesOfResident(userEmail);
+
+            if(numInvitesSent >= numInvitesAllowed) {
+                throw new InviteLimitReachedError("Max Number of Invites Sent");
+            }
+        }
+
         // Generate inviteID
         const inviteID = randomUUID();
 
@@ -59,7 +78,6 @@ export class VisitorInviteService {
 
         // Parking
         if(requiresParking) {
-
             const parking =  await this.queryBus.execute(
                 new GetAvailableParkingQuery()
             );
