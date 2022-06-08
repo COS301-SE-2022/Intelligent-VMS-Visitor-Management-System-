@@ -493,30 +493,40 @@ export class ParkingService {
         }
 
     async getUsedParkingInRange(
-        startDate: Date,
-        endDate: Date
+        startDate: string,
+        endDate: string
     ){
         let count = 0;
-        let parkingReservations = [];
+        let amount = [];
+        let dates = [];
 
         const Reservations = await this.queryBus.execute(
             new GetReservationsQuery()
         )
 
-        //TODO (Kyle) : Is there a more efficient way?
+        var end = new Date(endDate);
+
+        var loop = new Date(startDate);
+            while(loop <= end){    
+                dates[count]= loop; 
+                amount[count]= 0;  
+                var newDate = loop.setDate(loop.getDate() + 1);
+                loop = new Date(newDate);
+                count++;
+            }
+
         for(let i=0;i<Reservations.length;i++){
             
             const resInvite = await this.inviteService.getInvite(Reservations[i].invitationID);
-    
+
             let resDate = new Date(resInvite.inviteDate);
-            if(resDate.getTime >= startDate.getTime && resDate.getTime <= endDate.getTime)
-            {
-                count++;
-                parkingReservations.push(Reservations[i]);
+            for(let j=0;j<count;j++){
+                if(resDate.getTime() === dates[j].getTime())
+                    amount[j] = amount[j]+1;
             }
         }
 
-        return parkingReservations;
+        return amount;
 
     }
 
