@@ -74,6 +74,8 @@ type Query {
   getNumInvitesPerDateOfUser(dateStart: String!, dateEnd: String!, email: String!): [Invite!]!
   getTotalNumberOfInvitesOfResident(email: String!): Float!
   getInvitesByName(name: String!): [SearchInvite!]!
+  getInvitesByNameForSearch(name: String!): [Invite!]!
+  getInvitesByIDForSearch(inviteID: String!): Invite!
   getNumberOfInvitesOfVisitor(email: String!): Float!
   getInvitesByDate(date: String!): [Invite!]!
   helloParking: String!

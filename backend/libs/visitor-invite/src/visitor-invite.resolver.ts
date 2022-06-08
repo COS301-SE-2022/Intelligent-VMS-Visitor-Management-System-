@@ -104,6 +104,23 @@ export class VisitorInviteResolver {
         return await this.visitorInviteService.getInvitesByName(name);
     }
 
+    // Get the invites associated with given name for receptionist search
+    @UseGuards(GqlAuthGuard, RolesGuard)
+    @Roles("receptionist")
+    @Query((returns) => [Invite], { name: "getInvitesByNameForSearch"})
+    async getInvitesByNameForReceptionistSearch(@Args("name") name: string) {
+        return await this.visitorInviteService.getInvitesByNameForSearch(name);
+    }
+
+    // Get the invites associated with given ID for receptionist search
+    @UseGuards(GqlAuthGuard, RolesGuard)
+    @Roles("receptionist")
+    @Query((returns) => Invite, { name: "getInvitesByIDForSearch"})
+    async getInvitesByIDForReceptionistSearch(@Args("inviteID") inviteID: string) {
+        return await this.visitorInviteService.getInvite(inviteID);
+    }
+
+
     @UseGuards(GqlAuthGuard, RolesGuard)
     @Roles("admin")
     @Query((returns) => Number, { name: "getNumberOfInvitesOfVisitor"})
