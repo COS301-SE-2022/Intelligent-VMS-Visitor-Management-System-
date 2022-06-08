@@ -22,8 +22,8 @@ export class ReceptionistResolver {
     }
 
 
-    @Mutation((returns) => Invite, { name: "signOut" })
-    async getSignedOutInvite( 
+    @Mutation((returns) => Number, { name: "signOut" })
+    async signOutInvite( 
         @Args("inviteID") inviteID: string,
     ){
         return await this.signOutService.signOut(inviteID);
