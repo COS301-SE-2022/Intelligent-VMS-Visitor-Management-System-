@@ -1,39 +1,48 @@
-import { ConfigModule, ConfigService } from "@nestjs/config";
-import { MongooseModule } from "@nestjs/mongoose";
-import { VisitorInviteService } from "@vms/visitor-invite";
-import { Test, TestingModule } from "@nestjs/testing";
-import { ParkingService } from "./parking.service";
-import { forwardRef } from "@nestjs/common";
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
+import { Test, TestingModule } from '@nestjs/testing';
+import mongoose from 'mongoose';
+import {MongoMemoryServer} from 'mongodb-memory-server';
+import { ParkingService } from './parking.service';
+import { VisitorInviteService } from '@vms/visitor-invite';
+import { MailService } from '@vms/mail';
+import { RestrictionsService } from '@vms/restrictions';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 
 describe('ParkingService Int', () => {
-    let service: ParkingService;
-    beforeEach(async () => {
-        const module: TestingModule = await Test.createTestingModule({
-           /* imports: [
-                MongooseModule.forRootAsync({
-                    imports: [ConfigModule],
-                    useFactory: async (configService: ConfigService) => ({
-                        uri: configService.get<string>("MONGO_TEST_DB_CONNECTION_STRING"),
-                    }),
-                    inject: [ConfigService],
-                }),
-            ],*/
-            providers: [
-                ParkingService, 
-                VisitorInviteService
-            ],
-        }).compile();
+  let service: ParkingService;
+  let mongod: MongoMemoryServer;
 
-        await module.init()
+  beforeEach(async () => {
+    let mongod = await MongoMemoryServer.create();
+    const module = await Test.createTestingModule({
+      imports: [
+        MongooseModule.forRootAsync({
+          useFactory: async () => ({
+            uri: mongod.getUri(),
+          }),
+        }),
+      ],
+      providers:[
+          ParkingService,
+          CommandBus,
+          QueryBus,
+      ]
+     
+    }).compile();
 
-        service = module.get(ParkingService);
-    });
+    service = module.get<ParkingService>(ParkingService);
 
-    describe("addParking", () => {
-        it("should return a new parking space", async () => {
-            let parking;         
-            parking = await service.addParking();
-            expect(parking).toBeDefined();
-          });
-      });
-})
+    await module.init()
+  });
+
+  afterEach(async () => {
+    //await module.close();
+    await mongoose.disconnect();
+    await mongod.stop();
+  });
+
+  it('should be defined', () => {
+    expect(service).toBeDefined();
+  });
+});

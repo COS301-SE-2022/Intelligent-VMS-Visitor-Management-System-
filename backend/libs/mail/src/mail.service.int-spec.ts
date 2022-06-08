@@ -2,19 +2,15 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import mongoose from 'mongoose';
+import { MailService } from './mail.service';
 import {MongoMemoryServer} from 'mongodb-memory-server';
-import { VisitorInviteService } from '@vms/visitor-invite';
-import { MailService } from '@vms/mail';
-import { RestrictionsService } from '@vms/restrictions';
-import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { ParkingService } from '@vms/parking';
 
-describe('VisitorInviteService Int', () => {
-  let service: VisitorInviteService;
+describe('MailService Int', () => {
+  let service: MailService;
   let mongod: MongoMemoryServer;
 
   beforeEach(async () => {
-    let mongod = await MongoMemoryServer.create();
+    mongod = await MongoMemoryServer.create();
     const module = await Test.createTestingModule({
       imports: [
         MongooseModule.forRootAsync({
@@ -23,16 +19,7 @@ describe('VisitorInviteService Int', () => {
           }),
         }),
       ],
-      providers:[
-          VisitorInviteService,
-          ParkingService,
-          CommandBus,
-          QueryBus,
-      ]
-     
     }).compile();
-
-    service = module.get<VisitorInviteService>(VisitorInviteService);
 
     await module.init()
   });
@@ -43,7 +30,5 @@ describe('VisitorInviteService Int', () => {
     await mongod.stop();
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
+  it.todo('should be defined');
 });

@@ -29,10 +29,11 @@ export class SignInService {
             }
 
             this.generateTray(invitationID,true,true);
+
+            //TODO (Larisa) CATCH ERROR ON FRONTEND
             return await this.commandBus.execute(
                 new SignInInviteCommand(invitationID,notes));
-
-            
+  
         }
 
         async generateTrayID(){
