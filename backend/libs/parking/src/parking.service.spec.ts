@@ -164,7 +164,7 @@ describe('ParkingService', () => {
             VisitorInviteService,
             MailService,
             {
-                    provide: QueryBus, useValue: queryBusMock
+                provide: QueryBus, useValue: queryBusMock
             },
             {
                 provide: CommandBus, useValue: commandBusMock
