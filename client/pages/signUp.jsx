@@ -9,9 +9,9 @@ import Layout from "../components/Layout";
 import useAuth from "../store/authStore";
 
 const SignUp = () => {
-    const permission = useAuth((state) => state.permission)();
-    const verify = useAuth((state) => state.setVerify);
-    const verified = useAuth((state) => state.verified);
+    const permission = useAuth((state) => {return state.permission})();
+    const verify = useAuth((state) => {return state.setVerify});
+    const verified = useAuth((state) => {return state.verified});
 
     const flyEmojiAway = {
         initial: {
@@ -89,22 +89,25 @@ const SignUp = () => {
                     }}
                     onSubmit={(values, { setSubmitting }) => {
                         verify();
-                        
-                        client.mutate({
-                            mutation: gql`
+
+                        client
+                            .mutate({
+                                mutation: gql`
                                 mutation {
                                     signup(email: "${values.email}", password: "${values.password}", type: "${values.userType}", idNumber: "${values.idNumber}")
                                 }
                             `,
-                        }).then((res) => {
-                            if(res.data.signup) {
-                                router.push("/verify");
+                            })
+                            .then((res) => {
+                                if (res.data.signup) {
+                                    router.push("/verify");
+                                    setSubmitting(false);
+                                }
+                            })
+                            .catch((err) => {
+                                console.error(err.message);
                                 setSubmitting(false);
-                            }
-                        }).catch((err) => {
-                            console.error(err.message);
-                            setSubmitting(false);
-                        });
+                            });
                     }}
                 >
                     {({
@@ -115,7 +118,7 @@ const SignUp = () => {
                         handleBlur,
                         handleSubmit,
                         isSubmitting,
-                    }) => (
+                    }) => {return (
                         <form
                             onSubmit={handleSubmit}
                             className="prose form-control space-y-4 rounded-xl border p-14"
@@ -217,7 +220,7 @@ const SignUp = () => {
                                 </motion.span>
                             </motion.button>
                         </form>
-                    )}
+                    )}}
                 </Formik>
             </div>
         </Layout>

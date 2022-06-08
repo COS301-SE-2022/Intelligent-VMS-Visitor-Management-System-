@@ -9,7 +9,10 @@ const Authorize = () => {
                         <h3 className="text-2xl font-bold">
                             Woops: you are unauthorized
                         </h3>
-                        <p>Please wait for an admin or receptionist to authorize your account</p>
+                        <p>
+                            Please wait for an admin or receptionist to
+                            authorize your account
+                        </p>
                     </div>
                 </div>
             </div>

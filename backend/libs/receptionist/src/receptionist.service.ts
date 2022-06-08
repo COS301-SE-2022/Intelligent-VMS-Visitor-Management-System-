@@ -1,6 +1,7 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { VisitorInviteService } from '@vms/visitor-invite';
+import { getTrayFromInviteQuery } from './queries/impl/getTrayFromInvite.query';
 
 @Injectable()
 export class ReceptionistService {
@@ -11,17 +12,12 @@ export class ReceptionistService {
 
         }
 
-    //TODO (Stefan)
-    async getInviteByName(
+    
 
-    ){
-        console.log("do some stuff here");
+    async getTrayByInviteID(inviteID:string){
+        const tray =  this.queryBus.execute(new getTrayFromInviteQuery(inviteID))
+        console.log("getTrayByInviteID");
+        return tray;
     }
 
-    //TODO(Sefan)
-    async getInviteByID(
-
-    ){
-        console.log("do some stuff here");
-    }
 }

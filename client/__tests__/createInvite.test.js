@@ -11,15 +11,25 @@ import useAuth from "../store/authStore";
 
 import {
     inviteUnauthMock,
+    unAuthInvitesMock,
     inviteDataErrorMock,
+    inviteLimitReached,
+    inviteLimitNotReached,
     inviteDataMock,
 } from "./__mocks__/createInvite.mock";
 
 // Setup router mock hook
 nextRouter.useRouter = jest.fn();
-nextRouter.useRouter.mockImplementation(() => ({ route: "/" }));
+nextRouter.useRouter.mockImplementation(() => ({route: "/"}));
 
 describe("CreateInvite", () => {
+    const authHook = renderHook(() => useAuth());
+    authHook.hydrate();
+    act(() => {
+        authHook.result.current.login(
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJhZG1pbkBtYWlsLmNvbSIsImlhdCI6MTUxNjIzOTAyMiwicGVybWlzc2lvbiI6MH0.bh6yTWV0lN9A0_xOGcgqN_za3M35BewXpJNuuprcaJ8"
+        );
+    });
     it("renders a heading", () => {
         render(
             <MockedProvider>
@@ -73,9 +83,7 @@ describe("CreateInvite", () => {
             "valid@mail.com"
         );
 
-        await user.selectOptions(screen.getByRole("combobox"), [
-            "RSA-ID",
-        ]);
+        await user.selectOptions(screen.getByRole("combobox"), ["RSA-ID"]);
 
         await user.type(
             screen.getByPlaceholderText("Enter ID number"),
@@ -100,7 +108,7 @@ describe("CreateInvite", () => {
         );
 
         const user = userEvent.setup();
-        
+
         await user.click(screen.getByPlaceholderText("Visitor Email"));
 
         await user.type(
@@ -153,7 +161,7 @@ describe("CreateInvite", () => {
 
         // Create user event generator
         const user = userEvent.setup();
-        
+
         // Type in visitor email in field
         await user.type(
             screen.getByPlaceholderText("Visitor Email"),
@@ -161,9 +169,7 @@ describe("CreateInvite", () => {
         );
 
         // Select RSA-ID option from comboxbox
-        await user.selectOptions(screen.getByRole("combobox"), [
-            "RSA-ID",
-        ]);
+        await user.selectOptions(screen.getByRole("combobox"), ["RSA-ID"]);
 
         // Type ID number into field
         await user.type(
@@ -175,6 +181,36 @@ describe("CreateInvite", () => {
         await user.click(screen.getByRole("button"));
 
         expect(screen.getByText("Required")).toBeDefined();
+    });
+
+    it("redirects to expire page when query error is unauthorized", async () => {
+        const { result, hydrate } = renderHook(() => useAuth());
+
+        hydrate();
+
+        act(() => {
+            result.current.login(
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJhZG1pbkBtYWlsLmNvbSIsImlhdCI6MTUxNjIzOTAyMiwicGVybWlzc2lvbiI6MH0.bh6yTWV0lN9A0_xOGcgqN_za3M35BewXpJNuuprcaJ8"
+            );
+        });
+
+        const useRouter = jest.spyOn(require("next/router"), "useRouter");
+        const router = {
+            push: jest.fn().mockImplementation(() => Promise.resolve(true)),
+            prefetch: () => new Promise((resolve) => resolve),
+        };
+        useRouter.mockReturnValue(router);
+
+        render(
+            <MockedProvider mocks={unAuthInvitesMock} addTypename={false}>
+                <CreateInvite />
+            </MockedProvider>
+        );
+
+        await waitFor(async () => {
+            await new Promise((resolve) => setTimeout(resolve, 30));
+            expect(router.push).toHaveBeenCalledWith("/expire");
+        });
     });
 
     it("redirects to unauthorized page when api error is unauthorized", async () => {
@@ -235,6 +271,40 @@ describe("CreateInvite", () => {
         });
     });
 
+    it("should show an error message when name is invalid", async () => {
+        render(
+            <MockedProvider>
+                <CreateInvite />
+            </MockedProvider>
+        );
+
+        // Create user event generator
+        const user = userEvent.setup();
+
+        // Type in visitor email in field
+        await user.type(
+            screen.getByPlaceholderText("Visitor Email"),
+            "visitor@mail.com"
+        );
+
+        // Select RSA-ID option from comboxbox
+        await user.selectOptions(screen.getByRole("combobox"), ["RSA-ID"]);
+
+        // Type ID number into field
+        await user.type(
+            screen.getByPlaceholderText("Enter ID number"),
+            "0109195273080"
+        );
+
+        await user.type(
+            screen.getByPlaceholderText("Enter Visitor Name"),
+            "12232"
+        );
+
+        await user.click(screen.getByRole("button"));
+
+    });
+
     it("redirects to visitor dashboard when data is valid", async () => {
         const { result, hydrate } = renderHook(() => useAuth());
 
@@ -291,6 +361,73 @@ describe("CreateInvite", () => {
         await waitFor(async () => {
             await new Promise((resolve) => setTimeout(resolve, 50));
             expect(router.push).toHaveBeenCalledWith("/visitorDashboard");
+        });
+    });
+
+    it("should show when the invite limit is reached", async () => {
+        const { result, hydrate } = renderHook(() => useAuth());
+
+        hydrate();
+
+        act(() => {
+            result.current.login(
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJlc2lkZW50QG1haWwuY29tIiwicGVybWlzc2lvbiI6MiwiaWF0IjoxNjU0NjI3Njk2LCJleHAiOjE5NTQ2MzEyOTZ9.qn7_4l11R7ootmnyin-D2tbtJ4mUbiEBoX_Tz4sVBCc"
+            );
+        });
+
+        render(
+            <MockedProvider mocks={inviteLimitReached} addTypename={false}>
+                <CreateInvite />
+            </MockedProvider>
+        ); 
+
+        await waitFor(async () => {
+            await new Promise((resolve) => setTimeout(resolve, 30));
+            expect(screen.getByRole("button")).toBeDisabled();
+        });
+    });
+
+    it("should show allow invite to be created when invite limit is not reached", async () => {
+        const { result, hydrate } = renderHook(() => useAuth());
+        hydrate();
+
+        act(() => {
+            result.current.login(
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJlc2lkZW50QG1haWwuY29tIiwicGVybWlzc2lvbiI6MiwiaWF0IjoxNjU0NjI3Njk2LCJleHAiOjE5NTQ2MzEyOTZ9.qn7_4l11R7ootmnyin-D2tbtJ4mUbiEBoX_Tz4sVBCc"
+            );
+        });
+
+        render(
+            <MockedProvider mocks={inviteLimitNotReached} addTypename={false}>
+                <CreateInvite />
+            </MockedProvider>
+        ); 
+
+        await waitFor(async () => {
+            await new Promise((resolve) => setTimeout(resolve, 30));
+            expect(screen.getByRole("button")).toBeEnabled();
+        });
+    });
+
+    it("should show an error alert if given an error from api", async () => {
+        const { result, hydrate } = renderHook(() => useAuth());
+
+        hydrate();
+
+        act(() => {
+            result.current.login(
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJlc2lkZW50QG1haWwuY29tIiwicGVybWlzc2lvbiI6MiwiaWF0IjoxNjU0NjI3Njk2LCJleHAiOjE5NTQ2MzEyOTZ9.qn7_4l11R7ootmnyin-D2tbtJ4mUbiEBoX_Tz4sVBCc"
+            );
+        });
+
+        render(
+            <MockedProvider mocks={inviteDataErrorMock} addTypename={false}>
+                <CreateInvite />
+            </MockedProvider>
+        ); 
+
+        await waitFor(async () => {
+            await new Promise((resolve) => setTimeout(resolve, 30));
         });
     });
 

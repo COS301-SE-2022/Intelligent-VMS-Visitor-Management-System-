@@ -15,18 +15,19 @@ type User {
   access_token: String
 }
 
+type Restriction {
+  name: String!
+  value: Int!
+}
+
 type Parking {
   visitorEmail: String!
   parkingNumber: String!
   enabled: Boolean!
 }
 
-type ParkingReservation {
-  invitationID: String!
-  parkingNumber: String!
-}
-
 type Invite {
+  userEmail: String!
   visitorEmail: String!
   visitorName: String!
   idDocType: String!
@@ -37,6 +38,18 @@ type Invite {
   inviteState: String!
   notes: String!
   signOutDate: String!
+  trayNumber: Float!
+}
+
+type ParkingReservation {
+  invitationID: String!
+  parkingNumber: String!
+  inviteData: [Invite!]!
+}
+
+type SearchInvite {
+  visitorEmail: String!
+  visitorName: String!
 }
 
 input VisitorInputType {
@@ -58,12 +71,19 @@ type Query {
   getInvites: [Invite!]!
   getTotalNumberOfVisitors: Float!
   getNumInvitesPerDate(dateStart: String!, dateEnd: String!): [Invite!]!
-  getTotalNumberOfInvitesOfResident: Float!
+  getNumInvitesPerDateOfUser(dateStart: String!, dateEnd: String!, email: String!): [Invite!]!
+  getTotalNumberOfInvitesOfResident(email: String!): Float!
+  getInvitesByName(name: String!): [SearchInvite!]!
+  getInvitesByNameForSearch(name: String!): [Invite!]!
+  getInvitesByIDForSearch(inviteID: String!): Invite!
+  getNumberOfInvitesOfVisitor(email: String!): Float!
+  getInvitesByDate(date: String!): [Invite!]!
   helloParking: String!
   getAvailableParking: Float!
   getFreeParking: Parking!
   getReservations: ParkingReservation!
-  getUsedParkingsInRange(startDate: String!, endDate: String!): [Float!]!
+  getAmountOfUsedParkingsInRange(startDate: String!, endDate: String!): [ParkingReservation!]!
+  getNumInvitesPerResident: Restriction!
   helloResident: String!
   helloReceptionist: String!
 }
@@ -81,6 +101,7 @@ type Mutation {
   unreservedParking(invitationID: String!): Boolean!
   freeParking(parkingNumber: Float!): Parking!
   ceatedParkings(N: Float!): Boolean!
-  signOut(inviteID: String!): Invite!
+  setNumInvitesPerResident(numInvites: Float!): Restriction!
+  signOut(inviteID: String!): Float!
   signIn(inviteID: String!, notes: String!): Invite!
 }

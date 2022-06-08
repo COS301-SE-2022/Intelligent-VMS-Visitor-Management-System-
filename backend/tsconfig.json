@@ -77,6 +77,12 @@
       ],
       "@vms/receptionist/*": [
         "libs/receptionist/src/*"
+      ],
+      "@vms/restrictions": [
+        "libs/restrictions/src"
+      ],
+      "@vms/restrictions/*": [
+        "libs/restrictions/src/*"
       ]
     }
   }

@@ -6,7 +6,7 @@ import { BiRightArrowAlt } from "react-icons/bi";
 import useAuth from "../store/authStore";
 
 const Hero = () => {
-    const decodedToken = useAuth((state) => state.decodedToken)();
+    const decodedToken = useAuth((state) => {return state.decodedToken})();
 
     const spinArrow = {
         initial: {

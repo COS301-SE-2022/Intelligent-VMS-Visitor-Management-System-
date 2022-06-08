@@ -11,7 +11,7 @@ import { ResidentService } from "./resident.service";
 import { CurrentUser } from "@vms/auth/decorators/CurrentUserDecorator.decorator";
 import { User } from "@vms/user/models/user.model";
 
-@Resolver((of) => Resident)
+@Resolver((of) => {return Resident})
 @UseGuards(GqlAuthGuard, RolesGuard)
 @Roles("resident", "admin")
 export class ResidentResolver {
@@ -21,7 +21,7 @@ export class ResidentResolver {
     ) {}
 
     // Test endpoint query
-    @Query((returns) => String, { name: "helloResident" })
+    @Query((returns) => {return String}, { name: "helloResident" })
     async hello(@CurrentUser() user: User) {
         return "👋 from resident resolver " + user.email;
     }

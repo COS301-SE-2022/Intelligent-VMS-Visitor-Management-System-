@@ -4,7 +4,6 @@ import { Model } from "mongoose";
 import { ParkingReservation, ParkingReservationDocument } from "../../schema/reservation.schema";
 import { GetParkingReservationsQuery } from "../impl/getParkingReservations.query";
 
-
 @QueryHandler(GetParkingReservationsQuery)
 export class GetParkingReservationsQueryHandler implements IQueryHandler {
   constructor(

@@ -14,17 +14,19 @@ import { FreeParkingCommandHandler } from "./commands/handlers/freeParkingComman
 import { AssignParkingCommandHandler } from "./commands/handlers/assignParkingCommand.handler";
 import { GetAvailableParkingQueryHandler } from './queries/handlers/getAvailableParkingQuery.handler';
 import { GetFreeParkingQueryHandler } from './queries/handlers/getFreeParkingQuery.handler';
-import { VisitorInviteModule} from '@vms/visitor-invite';
 import { CreateNParkingSpotsCommandHandler } from './commands/handlers/createNParkingSpots.handler';
 import { GetReservationsQueryHandler } from './queries/handlers/getReservationsQuery.handler';
 import { GetInviteReservationQueryHandler } from './queries/handlers/getInviteReservationQuery.handler';
 import { GetParkingReservationsQueryHandler } from './queries/handlers/getParkingReservationsQuery.handler';
+import { GetReservationsInRangeQueryHandler } from "./queries/handlers/getReservationsInRangeQuery.handler";
+
+import { VisitorInviteModule} from '@vms/visitor-invite';
 
 @Module({
   imports: [
     CqrsModule,
     AuthModule,
-    forwardRef(() => VisitorInviteModule),
+    forwardRef(() => {return VisitorInviteModule}),
     MongooseModule.forFeature([
       { name: Parking.name, schema: ParkingSchema },
     ]),
@@ -46,7 +48,9 @@ import { GetParkingReservationsQueryHandler } from './queries/handlers/getParkin
     CreateNParkingSpotsCommandHandler,
     GetReservationsQueryHandler,
     GetInviteReservationQueryHandler,
-    GetParkingReservationsQueryHandler],
+    GetParkingReservationsQueryHandler,
+    GetReservationsInRangeQueryHandler
+  ],
 
   exports: [ParkingService],
 })

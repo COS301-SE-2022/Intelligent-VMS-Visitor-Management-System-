@@ -16,6 +16,7 @@ import { ResidentModule } from "@vms/resident";
 import { ParkingModule } from "@vms/parking";
 import { MailModule } from "@vms/mail";
 import { ReceptionistModule } from "@vms/receptionist";
+import { RestrictionsModule } from "@vms/restrictions";
 
 @Module({
     imports: [
@@ -27,7 +28,7 @@ import { ReceptionistModule } from "@vms/receptionist";
             playground: true,
             autoSchemaFile: join(process.cwd(), "src/schema.gql"),
             installSubscriptionHandlers: true,
-            context: ({ req }) => ({ req }),
+            context: ({ req }) => {return ({ req })},
             buildSchemaOptions: {
                 directives: [
                     new GraphQLDirective({
@@ -46,6 +47,7 @@ import { ReceptionistModule } from "@vms/receptionist";
         ParkingModule,
         MailModule,
         ReceptionistModule,
+        RestrictionsModule,
     ],
     controllers: [AppController],
     providers: [AppService],

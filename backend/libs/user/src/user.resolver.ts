@@ -10,22 +10,22 @@ import { UserService } from "./user.service";
 import { User } from "./models/user.model";
 import { LoginUser } from "./dto/loginUser.dto";
 
-@Resolver((of) => User)
+@Resolver((of) => {return User})
 export class UserResolver {
     constructor(
-        @Inject(forwardRef(() => AuthService))
+        @Inject(forwardRef(() => {return AuthService}))
         private authService: AuthService,
         private userService: UserService,
     ) {}
 
     @UseGuards(GqlAuthGuard)
-    @Query((returns) => String, { name: "helloUser" })
+    @Query((returns) => {return String}, { name: "helloUser" })
     async hello(@CurrentUser() user: User) {
         return "👋 from to " + user.email + " " + user.permission;
     }
 
     @UseGuards(LocalAuthGuard)
-    @Mutation((returns) => LoginUser, { name: "login" })
+    @Mutation((returns) => {return LoginUser}, { name: "login" })
     async login(
         @Args("email") email: string,
         @Args("password") password: string,
@@ -36,7 +36,7 @@ export class UserResolver {
         });
     }
 
-    @Mutation((returns) => String, { name: "signup"})
+    @Mutation((returns) => {return String}, { name: "signup"})
     async signup(
         @Args("email") email: string,
         @Args("password") password: string,
@@ -51,7 +51,7 @@ export class UserResolver {
         })).accepted[0];
     }
 
-    @Mutation((returns) => Boolean, { name: "verify"})
+    @Mutation((returns) => {return Boolean}, { name: "verify"})
     async verify(@Args("verifyID") verifyID: string, @Args("email") email: string) {
         return this.authService.verifyNewAccount(verifyID, email); 
     }
