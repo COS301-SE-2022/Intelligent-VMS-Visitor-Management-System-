@@ -2,7 +2,7 @@ import { gql, useApolloClient } from "@apollo/client";
 import React, { useEffect, useRef, useState, setState } from "react";
 import { ImExit } from "react-icons/im";
 
-const SignOutPopUp = ({ visitorID, inviteID }) => {
+const SignOutPopUp = ({ visitorID, inviteID, refetch }) => {
     const client = useApolloClient();
 
     return (
@@ -15,7 +15,7 @@ const SignOutPopUp = ({ visitorID, inviteID }) => {
 
             <h1 className="font-bold text-center text-3xl mt-5 ">Confirm Sign-Out</h1>
             <p>Confirm sign-out of visitor with id {visitorID}</p>
-            <label htmlFor="signIn-modal" className="btn btn-primary w-5/6 modal-button" onClick={async () => {
+            <label htmlFor="signOut-modal" className="btn btn-primary w-5/6 mt-5 mb-5 modal-button" onClick={async () => {
                 await client.mutate({
                     mutation: gql`
                     mutation {
@@ -25,6 +25,7 @@ const SignOutPopUp = ({ visitorID, inviteID }) => {
                 }).then(res => {
                     
                     alert('tray number is: ' + res.data.signOut);
+                    refetch();
                 })
             }
             } >Sign out</label>

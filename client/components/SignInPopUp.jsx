@@ -2,7 +2,7 @@ import { gql, useApolloClient } from "@apollo/client";
 import React, { useEffect, useRef, useState, setState } from "react";
 import { ImEnter } from "react-icons/im";
 
-const SignInPopUp = ({ visitorID, inviteID }) => {
+const SignInPopUp = ({ visitorID, inviteID, refetch }) => {
     const [notes, setNotes] = useState("");
     const client = useApolloClient();
 
@@ -20,18 +20,25 @@ const SignInPopUp = ({ visitorID, inviteID }) => {
                 {visitorID}
             </span>
           </p>
-          <input type="text" onChange={(evt) => setNotes(evt.target.value)} maxLength="100" placeholder="Add some observations.." className="input input-bordered w-5/6 mt-5 ml-5" />
-          <label className="btn btn-primary w-5/6 modal-button" htmlFor="signIn-modal" onClick={async ()=>{
+          <input type="text" onChange={(evt) => setNotes(evt.target.value)} maxLength="100" placeholder="Add some observations.." className="input input-bordered w-5/6 mt-5" />
+          <label className="btn btn-primary w-5/6 mt-5 mb-5 modal-button" htmlFor="signIn-modal" onClick={ ()=>{
                             const time = new Date();
-                            await client.mutate({
+                            client.mutate({
                               mutation: gql`
                                   mutation {
                                     signIn(inviteID: "${inviteID}", notes: "${notes}", time: "${time.toLocaleTimeString()}") 
                                   }
                               `
-                            }).then(res => {
+                            }
+                            ).then((res) => {
                               alert('tray number is: ' + res.data.signIn);
-                            })           
+                              
+                            });
+
+                            refetch();
+                              
+                              
+                                       
                         }
                         
                         }>Sign in</label>

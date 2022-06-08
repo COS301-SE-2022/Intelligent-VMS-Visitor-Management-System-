@@ -1,8 +1,8 @@
-const ReceptionistSignButton = ({ htmlFor, text }) => {
+const ReceptionistSignButton = ({ htmlFor, text, colour }) => {
     return (
         <label
             htmlFor={htmlFor}
-            className={`modal-button btn max-w-md border-0 text-white bg-secondary`}
+            className={`mmodal-button btn max-w-md border-0 ${colour} text-white`}
             >
                 { text }
         </label>

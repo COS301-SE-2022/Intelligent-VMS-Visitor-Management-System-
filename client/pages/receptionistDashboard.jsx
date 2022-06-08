@@ -9,6 +9,7 @@ import QRScanner from "../components/QRScanner";
 import SignInPopUp from "../components/SignInPopUp";
 import SignOutPopUp from "../components/SignOutPopUp";
 import VisitInfoModal from "../components/VisitInfoModal";
+import ReceptionistSignButton from "../components/ReceptionistSignButton";
 
 const ReceptionistDashboard = () => {
     
@@ -22,9 +23,6 @@ const ReceptionistDashboard = () => {
     const [errorMessage, setErrorMessage] = useState("");
     const [showScanner, setShowScanner] = useState(false);
 
-    let ti;
-
-    //let today = new Date();
     const getFormattedDateString = (date) => {
         if(date instanceof Date) {
             const month = date.getMonth() + 1;
@@ -36,6 +34,7 @@ const ReceptionistDashboard = () => {
             ].join("-");
         }
     };
+
     const todayString = getFormattedDateString(new Date());
 
     const router = useRouter();
@@ -50,6 +49,31 @@ const ReceptionistDashboard = () => {
             }
         }
     `);
+
+    const refetch = () => {
+        client.query({
+            query: gql`
+                query{
+                    getInvitesByDate( date: "2022-06-02" ) {
+                        inviteID
+                        inviteDate
+                        idNumber
+                        visitorName
+                        inviteState
+                  
+                    }
+                }
+            `,
+            }).then(res => {
+              const invites = [];
+              invites = res.data.getInvitesByDate.filter((invite) => {
+                return invite.inviteState !== "signedOut"
+              });
+
+              setVisitorData(invites);
+
+            })
+    }
 
     //STEFAN SE CODE
     const [searching, setSearch] = useState(false);
@@ -86,19 +110,13 @@ const ReceptionistDashboard = () => {
             })
     };
 
-
-
-    const signOut = (inviteID) => {
-        //TODO (Tabitha)
-        //change the state of the invite
-        //free the parking
-    };
-
     const resetDefaultResults = () => {
         setSearch(false);
 
         if ((!loading && !error) || reload) {
-            const invites = data.getInvitesByDate;
+            const invites = data.getInvitesByDate.filter((invite) => {
+                return invite.inviteState !== "signedOut"
+            });
             setVisitorData(invites);
         } else if (error) {
             if (error.message === "Unauthorized") {
@@ -119,7 +137,9 @@ const ReceptionistDashboard = () => {
 
     useEffect(() => {
         if ((!loading && !error)) {
-            const invites = data.getInvitesByDate;
+            const invites = data.getInvitesByDate.filter((invite) => {
+                return invite.inviteState !== "signedOut"
+            });
             setVisitorData(invites);
         } else if (error) {
             if (error.message === "Unauthorized") {
@@ -209,37 +229,11 @@ const ReceptionistDashboard = () => {
 
                                             {visit.inviteState === "inActive" ? (
                                                 <td>
-                                                    <label
-                                                        htmlFor="signIn-modal"
-                                                        className="modal-button btn max-w-md border-0 bg-green-800 text-white"
-                                                        onClick={() => {
-                                                            setCurrentVisitorID(
-                                                                visit.idNumber
-                                                            );
-                                                            setCurrentInviteID(
-                                                                visit.inviteID
-                                                            );
-                                                        }}
-                                                    >
-                                                        Sign In
-                                                    </label>
+                                                    <ReceptionistSignButton text="Sign In" htmlFor="signIn-modal" colour="bg-green-800" />
                                                 </td>
                                             ) : (
                                                 <td>
-                                                     <label
-                                                        htmlFor="signOut-modal"
-                                                        className="modal-button btn max-w-md border-0 bg-red-800 text-white"
-                                                        onClick={() => {
-                                                            setCurrentVisitorID(
-                                                                visit.idNumber
-                                                            );
-                                                            setCurrentInviteID(
-                                                                visit.inviteID
-                                                            );
-                                                        }}
-                                                    >
-                                                        Sign Out
-                                                    </label>
+                                                     <ReceptionistSignButton text="Sign Out" htmlFor="signOut-modal" colour="bg-red-800" />
                                                 </td>
 
                                             )}
@@ -271,6 +265,7 @@ const ReceptionistDashboard = () => {
                     <SignInPopUp
                         visitorID={currentVisitorID}
                         inviteID={currentInviteID}
+                        refetch={refetch}
                     />
                 </div>
             </div>
@@ -287,6 +282,7 @@ const ReceptionistDashboard = () => {
                     <SignOutPopUp
                         visitorID={currentVisitorID}
                         inviteID={currentInviteID}
+                        refetch={refetch}
                     />
                 </div>
             </div>
