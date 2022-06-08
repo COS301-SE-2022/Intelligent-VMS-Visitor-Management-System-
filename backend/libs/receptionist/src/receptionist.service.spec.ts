@@ -1,4 +1,5 @@
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { ConfigService } from "@nestjs/config";
 import { Test, TestingModule } from '@nestjs/testing';
 import { MailService } from '@vms/mail';
 import { ParkingService } from '@vms/parking';
@@ -41,6 +42,7 @@ describe('ReceptionistService', () => {
         VisitorInviteService,
         ParkingService,
         MailService,
+        ConfigService,
         RestrictionsService,
         {
           provide: QueryBus, useValue: queryBusMock
