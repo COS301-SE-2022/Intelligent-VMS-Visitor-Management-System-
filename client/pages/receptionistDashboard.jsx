@@ -10,16 +10,20 @@ import SignInPopUp from "../components/SignInPopUp";
 import SignOutPopUp from "../components/SignOutPopUp";
 import VisitInfoModal from "../components/VisitInfoModal";
 import ReceptionistSignButton from "../components/ReceptionistSignButton";
+import InfoAlert from "../components/InfoAlert";
 
 const ReceptionistDashboard = () => {
     
     const [currentVisitorID,setCurrentVisitorID] = useState("");
     const [currentInviteID,setCurrentInviteID] = useState("");
+    const [currentVisitorName,setCurrentVisitorName] = useState("");
     const [currentName,setCurrentName] = useState("");
+    const [trayNr, setTrayNr] = useState("");
     
     const [visitorData, setVisitorData] = useState([]);
     const [reload, setReload] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [showInfoAlert, setShowInfoAlert] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [showScanner, setShowScanner] = useState(false);
 
@@ -238,11 +242,15 @@ const ReceptionistDashboard = () => {
                                                         setCurrentInviteID(
                                                             visit.inviteID
                                                         );
+                                                        setCurrentVisitorName(
+                                                            visit.visitorName
+                                                        );
                                                         
                                                     }}
                                                     text="Sign In" 
                                                     colour="bg-green-800" 
-                                                    htmlFor="signIn-modal" />
+                                                    htmlFor="signIn-modal" 
+                                                    />
                                                         
                                                 </td>
                                             ) : (
@@ -279,6 +287,7 @@ const ReceptionistDashboard = () => {
                 )}
             </div>
             <ErrorAlert message={errorMessage} showConditon={showErrorAlert} />
+            <InfoAlert visitorName={currentVisitorName} showConditon={showInfoAlert} trayNr={trayNr}/>
 
             <input type="checkbox" id="signIn-modal" className="modal-toggle" />
             <div className="fade modal cursor-pointer" id="signIn-modal">
@@ -292,6 +301,8 @@ const ReceptionistDashboard = () => {
                         visitorID={currentVisitorID}
                         inviteID={currentInviteID}
                         refetch={refetch}
+                        setTrayNr={setTrayNr}
+                        setShowInfoAlert={setShowInfoAlert}
                     />
                 </div>
             </div>

@@ -2,7 +2,8 @@ import { gql, useApolloClient } from "@apollo/client";
 import React, { useEffect, useRef, useState, setState } from "react";
 import { ImEnter } from "react-icons/im";
 
-const SignInPopUp = ({ visitorID, inviteID, refetch, currentInviteID }) => {
+
+const SignInPopUp = ({ visitorID, inviteID, refetch, setShowInfoAlert, setTrayNr }) => {
     const [notes, setNotes] = useState("");
     const client = useApolloClient();
 
@@ -31,7 +32,9 @@ const SignInPopUp = ({ visitorID, inviteID, refetch, currentInviteID }) => {
                               `
                             }
                             ).then((res) => {
-                              alert('tray number is: ' + res.data.signIn);
+                              setTrayNr(res.data.signIn);
+                              setShowInfoAlert(true);
+                              //alert('tray number is: ' + res.data.signIn);
                               //refetch();
                             });
 
