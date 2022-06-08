@@ -5,9 +5,11 @@ import { gql, useApolloClient } from "@apollo/client";
 import useVideo from "../hooks/useVideo.hook";
 
 const QrScanner = ({ setShowScanner, setVisitorData, setSearch }) => {
-
+    //ApolloClient
     const client = useApolloClient();
+    //Search function that actually queries the database
     const search = () => {
+        //setting the searching variable to true in order to update the table heading
         setSearch(true);
         client.query({
             query: gql`
@@ -23,6 +25,7 @@ const QrScanner = ({ setShowScanner, setVisitorData, setSearch }) => {
             `,
         })
             .then((res) => {
+                //creating an array of 1 element to send to VisitorData
                 const visitor = [];
                 visitor[0] = res.data.getInvitesByIDForSearch; 
                 setVisitorData(visitor);
@@ -35,7 +38,6 @@ const QrScanner = ({ setShowScanner, setVisitorData, setSearch }) => {
     const videoRef = useRef(null);
 
     // QR Data State
-    // TODO (Stefan) this data variable holds the result of the scan
     const [data, setData] = useState('No result');
 
     // Video Player Hook
