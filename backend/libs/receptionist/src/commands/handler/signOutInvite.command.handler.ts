@@ -15,7 +15,7 @@ export class SignOutInviteCommandHandler implements ICommandHandler<SignOutInvit
     async execute(command: SignOutInviteCommand): Promise<Invite> {
         const { inviteId, signOutDate,trayNumber } = command;
         await this.trayModel.findOneAndUpdate({ inviteID: inviteId }, { containsVisitorID: false, containsResidentID: false });
-       return await this.inviteModel.findOneAndUpdate({ inviteID: inviteId }, { inviteState: "signedOut", signOutDate });
+       return await this.inviteModel.findOneAndUpdate({ inviteID: inviteId }, { inviteState: "inActive", signOutDate });
         
     }
 }
