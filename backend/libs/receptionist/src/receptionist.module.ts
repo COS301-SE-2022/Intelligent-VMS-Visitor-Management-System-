@@ -21,9 +21,7 @@ import { Tray,TraySchema } from './schema/tray.schema';
       { name: Invite.name, schema: InviteSchema },
       { name: Tray.name, schema: TraySchema },
     ]),
-    MongooseModule.forFeature([
-     
-    ]),
+  
   ],
   providers: [
     ReceptionistService,
