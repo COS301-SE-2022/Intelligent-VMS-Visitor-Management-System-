@@ -8,11 +8,13 @@ import { useRouter } from "next/router";
 import QRScanner from "../components/QRScanner";
 import SignInPopUp from "../components/SignInPopUp";
 import SignOutPopUp from "../components/SignOutPopUp";
+import VisitInfoModal from "../components/VisitInfoModal";
 
 const ReceptionistDashboard = () => {
     
     const [currentVisitorID,setCurrentVisitorID] = useState("");
     const [currentInviteID,setCurrentInviteID] = useState("");
+    const [currentName,setCurrentName] = useState("");
     
     const [visitorData, setVisitorData] = useState([]);
     const [reload, setReload] = useState(false);
@@ -42,9 +44,6 @@ const ReceptionistDashboard = () => {
         window.location.reload(true);
     }
 
-    const search = (inviteID) => {
-        //TODO (Stefan)
-    };
 
     const signOut = (inviteID) => {
         //TODO (Tabitha)
@@ -80,7 +79,7 @@ const ReceptionistDashboard = () => {
                 placeholder="Search.."
                 className="input input-bordered input-primary ml-5 w-4/6"
             />
-            <button onClick={search} className="btn btn-primary ml-5 mt-5 mb-5">
+            <button className="btn btn-primary ml-5 mt-5 mb-5">
                 Search
             </button>
             <label
@@ -121,7 +120,7 @@ const ReceptionistDashboard = () => {
                                 {visitorData.map((visit, idx) => {
                                         
                                             return(
-                                                <tr className="hover" key={idx}>
+                                                <tr data-toggle="modal" data-target="#signIn-modal" className="hover clickable" key={idx}>
                                                     <th>{idx + 1}</th>
                                                     <td>{visit.visitorName}</td>
                                                     <td>{visit.idNumber}</td>
@@ -165,6 +164,7 @@ const ReceptionistDashboard = () => {
 
                                                     )}
                                                 </tr>
+                                                
                                             )
                                             
                                 })}
@@ -222,6 +222,19 @@ const ReceptionistDashboard = () => {
                         ✕
                     </label>
                     <QRScanner />
+                </div>
+            </div>
+
+            <input type="checkbox" id="Info-modal" className="modal-toggle" />
+            <div className="fade modal" id="Info-modal">
+                <div className="modal-box flex flex-wrap">
+                    <label
+                        htmlFor="Info-modal"
+                        className="btn btn-circle btn-sm absolute right-2 top-2 z-10"
+                    >
+                        ✕
+                    </label>
+                    <VisitInfoModal name={currentName} />
                 </div>
             </div>
 

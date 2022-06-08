@@ -9,6 +9,8 @@ import { generateTrayCommand } from '../src/commands/impl/Tray/generateTray.comm
 import { getTrayListQuery } from '@vms/receptionist/queries/impl/getTrayList.query';
 import { ReceptionistService } from '../src/receptionist.service';
 import { ParkingService } from '@vms/parking';
+import { InviteNotFound } from '../src/errors/inviteNotFound.error';
+import { InvalidSignIn } from '../src/errors/invalidSignIn.error';
 
 @Injectable()
 export class SignInService {
@@ -26,23 +28,30 @@ export class SignInService {
             signInTime: string
         ){
             const invite = await this.inviteService.getInvite(invitationID);
-            if(invite.requiresParking)
-            {
-                this.parkingService.assignParking(invitationID);
-            }
+            if(!invite){
+                throw new InviteNotFound(`Invitation with ID ${invitationID} not found`);
+            } else {
+                
+                const today = new Date();
+                if(new Date(invite.inviteDate).getDate() == today.getDate())
+                {
+                    await this.commandBus.execute(
+                        new SignInInviteCommand(invitationID,notes,signInTime));
 
-            const today = new Date();
-            if(new Date(invite.inviteDate).getDate() == today.getDate())
-            {
-                await this.commandBus.execute(
-                    new SignInInviteCommand(invitationID,notes,signInTime));
+                    if(invite.requiresParking)
+                    {
+                        this.parkingService.assignParking(invitationID);
+                    }
 
-                this.generateTray(invitationID,true,true);
+                    this.generateTray(invitationID,true,true);
 
-                const tray = await this.receptionistService.getTrayByInviteID(invitationID);
-                return tray.trayID;
-            }else{
-                return -1;
+                    const tray = await this.receptionistService.getTrayByInviteID(invitationID);
+  
+                    return tray.trayID;
+
+                }else{
+                    throw new InvalidSignIn(`The date on invitation with ID ${invitationID} does not match the sign in date`)
+                }
             }
 
                         
