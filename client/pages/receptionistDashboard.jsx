@@ -65,7 +65,7 @@ const ReceptionistDashboard = () => {
             `,
         })
             .then((res) => {
-                alert(res.data);
+                //alert(res.data);
                 setVisitorData(res.data.getInvitesByNameForSearch);
             })
     };
@@ -76,6 +76,28 @@ const ReceptionistDashboard = () => {
         //TODO (Tabitha)
         //change the state of the invite
         //free the parking
+    };
+
+    const resetDefaultResults = () => {
+        setSearch(false);
+
+        if ((!loading && !error) || reload) {
+            const invites = data.getInvitesByDate;
+            setVisitorData(invites);
+        } else if (error) {
+            if (error.message === "Unauthorized") {
+                router.push("/expire");
+                return;
+            }
+
+            setVisitorData([
+                {
+                    visitorEmail: "ERROR",
+                    idDocType: "ERROR",
+                    isNumber: "ERROR",
+                },
+            ]);
+        }
     };
 
 
@@ -118,7 +140,7 @@ const ReceptionistDashboard = () => {
             <button onClick={search} className="btn btn-primary ml-5 mt-5 mb-5">
                 Search
             </button>
-            <button onClick={() => { setSearch(false); }} className="btn btn-primary ml-5 mt-5 mb-5">
+            <button onClick= {resetDefaultResults} className="btn btn-primary ml-5 mt-5 mb-5">
                 Today&apos;s Invites
             </button>
             <label
