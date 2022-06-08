@@ -301,7 +301,7 @@ const ReceptionistDashboard = () => {
                     >
                         ✕
                     </label>
-                    <QRScanner setShowScanner={setShowScanner} setVisitorData={setVisitorData} />
+                    <QRScanner setShowScanner={setShowScanner} setVisitorData={setVisitorData} setSearch={setSearch} />
                 </div>
             </div>
 

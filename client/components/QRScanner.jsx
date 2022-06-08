@@ -1,9 +1,36 @@
 import React, { useEffect, useRef, useState } from "react";
 import { QrReader } from "react-qr-reader";
+import { gql, useApolloClient } from "@apollo/client";
 
 import useVideo from "../hooks/useVideo.hook";
 
-const QrScanner = ({ setShowScanner }) => {
+const QrScanner = ({ setShowScanner, setVisitorData, setSearch }) => {
+
+    const client = useApolloClient();
+    const search = (name) => {
+        //TODO (Stefan)
+        //alert("HOS MANNE");
+        setSearch(true);
+        client.query({
+            query: gql`
+                query{
+                    getInvitesByIDForSearch( inviteID: "63a28d62-e726-4768-8b63-eb7b8604d18f" ) {
+                        inviteID
+                        inviteDate
+                        idNumber
+                        visitorName
+                        inviteState
+                    }
+                }
+            `,
+        })
+            .then((res) => {
+                //alert(res.data);
+                alert("IN THEN");
+                const visitors = res.data.getInvitesByIDForSearch;
+                setVisitorData(visitors);
+            })
+    };
 
     const [invalid,setInvalid] = useState(false);
 
@@ -35,6 +62,7 @@ const QrScanner = ({ setShowScanner }) => {
                                     if (qrData.inviteID) {
                                         setData(qrData.inviteID); 
                                         setShowScanner(false);
+                                        search("test");
                                         //alert(qrData.inviteID);
                                     } else {
                                         setInvalid(true);
