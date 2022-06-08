@@ -89,12 +89,12 @@ const SignUp = () => {
                     }}
                     onSubmit={(values, { setSubmitting }) => {
                         verify();
-
+                        
                         client
                             .mutate({
                                 mutation: gql`
                                 mutation {
-                                    signup(email: "${values.email}", password: "${values.password}", type: "${values.userType}", idNumber: "${values.idNumber}")
+                                    signup(email: "${values.email}", password: "${values.password}", type: "${values.userType}", idNumber: "1")
                                 }
                             `,
                             })
@@ -181,6 +181,7 @@ const SignUp = () => {
                                         type="radio"
                                         name="userType"
                                         value="resident"
+                                        aria-label="resident"
                                     />
                                 </label>
                                 <label className="flex items-center space-x-3">
@@ -194,6 +195,7 @@ const SignUp = () => {
                                         type="radio"
                                         name="userType"
                                         value="receptionist"
+                                        aria-label="receptionist"
                                     />
                                 </label>
                             </div>
