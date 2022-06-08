@@ -12,7 +12,11 @@ import { GetNumberOfInvitesOfResidentQuery } from "./queries/impl/getNumberOfInv
 import { GetInvitesByNameQuery } from "./queries/impl/getInvitesByName.query";
 import { GetInvitesInRangeByEmailQuery } from "./queries/impl/getInvitesInRangeByEmail.query";
 import { GetTotalNumberOfInvitesVisitorQuery } from "./queries/impl/getTotalNumberOfInvitesVisitor.query";
+
 import { GetInvitesByDateQuery } from "./queries/impl/getInvitesByDate.query";
+
+import { GetInvitesByNameForSearchQuery } from "./queries/impl/getInviteByNameForSearch.query";
+
 
 import { InviteNotFound } from "./errors/inviteNotFound.error";
 import { DateFormatError } from "./errors/dateFormat.error";
@@ -93,6 +97,7 @@ export class VisitorInviteService {
         return this.queryBus.execute(new GetInvitesQuery(email));
     }
 
+    //Get invite by ID
     async getInvite(inviteID: string) {
         return this.queryBus.execute(new GetInviteQuery(inviteID));
     }
@@ -164,6 +169,18 @@ export class VisitorInviteService {
         return await this.queryBus.execute(new GetInvitesByNameQuery(name));
     }
 
+    //Searching for receptionist by name
+    async getInvitesByNameForSearch(name: string) {
+        return await this.queryBus.execute(new GetInvitesByNameForSearchQuery(name));
+    }
+
+    //Searching for receptionist by ID
+    async getInvitesByIDForReceptionistSearch(inviteID: string) {
+        return await this.queryBus.execute(new GetInviteQuery(inviteID));
+    }
+
+
+    
     // Get total number of invites of the given visitor
     async getTotalNumberOfInvitesVisitor(email: string) {
         return await this.queryBus.execute(new GetTotalNumberOfInvitesVisitorQuery(email));

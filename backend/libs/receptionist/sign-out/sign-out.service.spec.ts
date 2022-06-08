@@ -69,6 +69,15 @@ describe('SignOutService', () => {
     expect(service).toBeDefined();
   });
 
+  it("should sign out", async()=>{
+    //Arrange
+    jest.spyOn(service, 'removeTrayByInviteID').mockReturnValueOnce(Promise.resolve(123));
+    //Act
+    const resp = await service.signOut('dwvsdvsd');
+    //Assert
+    expect(resp).toEqual(123);
+  })
+
   describe("removeTrayByInviteID", () => {
     it("should delete the first tray", async () => {
       const deleteTray=await service.removeTrayByInviteID("someArbitraryString");
