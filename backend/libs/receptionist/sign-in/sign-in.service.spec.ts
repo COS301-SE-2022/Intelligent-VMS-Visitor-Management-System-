@@ -39,7 +39,14 @@ describe('SignInService', () => {
           generateTray.containsResidentID=true;
           generateTray.containsVisitorID=true;
           return generateTray;
-        } else 
+        } else if(command.inviteID==="f11ae766-ce23-4f27-b428-83cff1afbf04"){
+          const generateTray= new Tray();
+          generateTray.trayID=0;
+          generateTray.inviteID="cf11ae766-ce23-4f27-b428-83cff1afbf04";
+          generateTray.containsResidentID=true;
+          generateTray.containsVisitorID=true;
+          return generateTray;
+        }else 
         return null;
      }else if(command instanceof AssignParkingCommand) {
             const parking = new Parking();
