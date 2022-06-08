@@ -11,6 +11,7 @@ import { removeTrayByInviteIDCommand } from './commands/impl/Tray/removeTrayByIn
 import { ReceptionistResolver } from './receptionist.resolver';
 import { ReceptionistService } from './receptionist.service';
 import { Tray,TraySchema } from './schema/tray.schema';
+import {RemoveTrayByInviteIDCommandHandler} from './commands/handler/Tray/removeTrayByInviteID.handler';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { Tray,TraySchema } from './schema/tray.schema';
     SignInInviteCommandHandler,
     SignOutInviteCommandHandler,
     removeTrayByInviteIDCommand,
+    RemoveTrayByInviteIDCommandHandler,
     VisitorInviteModule,],
   exports: [ReceptionistService],
 })
