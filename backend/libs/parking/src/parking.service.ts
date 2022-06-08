@@ -27,7 +27,7 @@ export class ParkingService {
 
     constructor(private commandBus: CommandBus, 
                 private queryBus: QueryBus,
-                @Inject(forwardRef(() => VisitorInviteService))
+                @Inject(forwardRef(() => {return VisitorInviteService}))
                 private inviteService: VisitorInviteService) {}
 
     /*

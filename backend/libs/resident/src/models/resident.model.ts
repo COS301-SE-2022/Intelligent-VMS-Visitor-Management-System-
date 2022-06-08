@@ -4,6 +4,6 @@ import { User } from "@vms/user/models/user.model";
 
 @ObjectType()
 export class Resident extends User {
-    @Field((type) => [Invite])
+    @Field((type) => {return [Invite]})
     visitors: Invite[];
 }

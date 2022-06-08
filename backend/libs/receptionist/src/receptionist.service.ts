@@ -12,23 +12,12 @@ export class ReceptionistService {
 
         }
 
-    //TODO (Stefan)
-    async getInviteByName(
-
-    ){
-        console.log("do some stuff here");
-    }
-
-    //TODO(Sefan)
-    async getInviteByID(
-
-    ){
-        console.log("do some stuff here");
-    }
+    
 
     async getTrayByInviteID(inviteID:string){
         const tray =  this.queryBus.execute(new getTrayFromInviteQuery(inviteID))
         console.log("getTrayByInviteID");
         return tray;
     }
+
 }

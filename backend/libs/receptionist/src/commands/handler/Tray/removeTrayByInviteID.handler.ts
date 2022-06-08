@@ -6,7 +6,7 @@ import { Tray, TrayDocument } from "../../../schema/tray.schema";
 
 
 @CommandHandler(removeTrayByInviteIDCommand)
-export class RemoveParkingCommandHandler implements ICommandHandler<removeTrayByInviteIDCommand> {
+export class RemoveTrayByInviteIDCommandHandler implements ICommandHandler<removeTrayByInviteIDCommand> {
   constructor(
       @InjectModel(Tray.name) private trayModel: Model<TrayDocument>) {}
 

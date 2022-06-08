@@ -8,7 +8,7 @@ import { Invite } from "@vms/visitor-invite/models/invite.model";
 import { stringify } from "querystring";
 
 //@UseGuards(GqlAuthGuard)
-@Resolver((of) => Invite)
+@Resolver((of) => {return Invite})
 export class ReceptionistResolver {
     constructor(
         private receptionistService: ReceptionistService,
@@ -16,21 +16,22 @@ export class ReceptionistResolver {
         private signOutService: SignOutService
     ) { }
 
-    @Query((returns) => String, { name: "helloReceptionist" })
+    @Query((returns) => {return String}, { name: "helloReceptionist" })
     async hello() {
         return "👋 from Receptionist";
     }
 
 
-    @Mutation((returns) => Invite, { name: "signOut" })
-    async getSignedOutInvite( 
+
+    @Mutation((returns) => Number, { name: "signOut" })
+    async signOutInvite( 
         @Args("inviteID") inviteID: string,
     ){
         return await this.signOutService.signOut(inviteID);
     }
 
 
-    @Mutation((returns) => Invite, { name: "signIn" })
+    @Mutation((returns) => {return Invite}, { name: "signIn" })
     async signIn(
         @Args("inviteID") inviteID: string,
         @Args("notes") notes: string,

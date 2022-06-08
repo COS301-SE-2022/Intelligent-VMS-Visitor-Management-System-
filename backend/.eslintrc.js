@@ -23,6 +23,7 @@ module.exports = {
     'camelcase': ['error', {
         properties: 'always',
         allow: ["access_token"]
-    }]
+    }],
+    "arrow-body-style": ["error", "always"]
   },
 };

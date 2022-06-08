@@ -14,30 +14,31 @@ import { CurrentUser } from "@vms/auth/decorators/CurrentUserDecorator.decorator
 import { RolesGuard } from "@vms/user/guards/roles.guard";
 import { Roles } from "@vms/user/decorators/roles.decorator";
 
-//@UseGuards(GqlAuthGuard)
-@Resolver((of) => Invite)
+@UseGuards(GqlAuthGuard)
+@Resolver((of) => {return Invite})
 export class VisitorInviteResolver {
     constructor(
-        @Inject(forwardRef(() => AuthService))
+        @Inject(forwardRef(() => {return AuthService}))
         private authService: AuthService,
         private visitorInviteService: VisitorInviteService,
     ) {}
 
     // Test endpoint
-    @Query((returns) => String, { name: "helloInvite" })
+    @Query((returns) => {return String}, { name: "helloInvite" })
     async hello() {
         return "👋 from Invite";
     }
 
     // Returns the invites issued by the current user
-    @Query((returns) => [Invite], { name: "getInvites"})
+    @Query((returns) => {return [Invite]}, { name: "getInvites"})
     async getInvites(@CurrentUser() user: User) {
         return this.visitorInviteService.getInvites(user.email);
     }
 
     // Create Invite
-    @Mutation((returns) => String, { name: "createInvite" })
+    @Mutation((returns) => {return String}, { name: "createInvite" })
     async createInvite(
+        @CurrentUser() user: User,
         @Args("userEmail") userEmail: string,
         @Args("visitorName") visitorName: string,
         @Args("visitorEmail") email: string,
@@ -47,6 +48,7 @@ export class VisitorInviteResolver {
         @Args("requiresParking") requiresParking: boolean,
     ) {
         return this.visitorInviteService.createInvite(
+            user.permission,
             userEmail,
             email,
             visitorName,
@@ -58,7 +60,7 @@ export class VisitorInviteResolver {
     }
 
     // Cancel Invite with inviteID
-    @Mutation((returns) => Boolean, { name: "cancelInvite" })
+    @Mutation((returns) => {return Boolean}, { name: "cancelInvite" })
     async cancelInvite(@CurrentUser() user: User, @Args("inviteID") inviteID: string) {
         const res = await this.visitorInviteService.cancelInvite(user.email, inviteID);
         return res.acknowledged;
@@ -67,7 +69,7 @@ export class VisitorInviteResolver {
     //Get total number of invites in the database
     @UseGuards(GqlAuthGuard, RolesGuard)
     @Roles("admin")
-    @Query((returns) => Number, { name: "getTotalNumberOfVisitors" })
+    @Query((returns) => {return Number}, { name: "getTotalNumberOfVisitors" })
     async getTotalNumberOfVisitors() {
         return this.visitorInviteService.getTotalNumberOfVisitors()
     }
@@ -75,7 +77,7 @@ export class VisitorInviteResolver {
     // Get Number of invites in date range
     @UseGuards(GqlAuthGuard, RolesGuard)
     @Roles("admin")
-    @Query((returns) => [Invite], { name: "getNumInvitesPerDate"})
+    @Query((returns) => {return [Invite]}, { name: "getNumInvitesPerDate"})
     async getNumInvitesPerDate(@Args("dateStart") dateStart: string, @Args("dateEnd") dateEnd: string) {
         return this.visitorInviteService.getNumInvitesPerDate(dateStart, dateEnd);
     }
@@ -83,7 +85,7 @@ export class VisitorInviteResolver {
     // Get Number of invites in date range
     @UseGuards(GqlAuthGuard, RolesGuard)
     @Roles("admin", "resident", "receptionist")
-    @Query((returns) => [Invite], { name: "getNumInvitesPerDateOfUser"})
+    @Query((returns) => {return [Invite]}, { name: "getNumInvitesPerDateOfUser"})
     async getNumInvitesPerDateOfUser(@Args("dateStart") dateStart: string, @Args("dateEnd") dateEnd: string, @Args("email") email: string) {
         return this.visitorInviteService.getNumInvitesPerDateOfUser(dateStart, dateEnd, email);
     }
@@ -91,7 +93,7 @@ export class VisitorInviteResolver {
     // Get Number of total open invites per resident
     @UseGuards(GqlAuthGuard, RolesGuard)
     @Roles("resident", "receptionist", "admin")
-    @Query((returns) => Number, { name: "getTotalNumberOfInvitesOfResident"})
+    @Query((returns) => {return Number}, { name: "getTotalNumberOfInvitesOfResident"})
     async getTotalNumberOfVisitorsOfResident(@Args("email") email: string) {
         return this.visitorInviteService.getTotalNumberOfInvitesOfResident(email);
     }
@@ -99,14 +101,32 @@ export class VisitorInviteResolver {
     // Get the invites associated with given name
     @UseGuards(GqlAuthGuard, RolesGuard)
     @Roles("admin")
-    @Query((returns) => [SearchInvite], { name: "getInvitesByName"})
+    @Query((returns) => {return [SearchInvite]}, { name: "getInvitesByName"})
     async getInvitesByName(@Args("name") name: string) {
         return await this.visitorInviteService.getInvitesByName(name);
     }
 
+
+    // Get the invites associated with given name for receptionist search
+    @UseGuards(GqlAuthGuard, RolesGuard)
+    @Roles("receptionist")
+    @Query((returns) => [Invite], { name: "getInvitesByNameForSearch"})
+    async getInvitesByNameForReceptionistSearch(@Args("name") name: string) {
+        return await this.visitorInviteService.getInvitesByNameForSearch(name);
+    }
+
+    // Get the invites associated with given ID for receptionist search
+    @UseGuards(GqlAuthGuard, RolesGuard)
+    @Roles("receptionist")
+    @Query((returns) => Invite, { name: "getInvitesByIDForSearch"})
+    async getInvitesByIDForReceptionistSearch(@Args("inviteID") inviteID: string) {
+        return await this.visitorInviteService.getInvite(inviteID);
+    }
+
+
     @UseGuards(GqlAuthGuard, RolesGuard)
     @Roles("admin")
-    @Query((returns) => Number, { name: "getNumberOfInvitesOfVisitor"})
+    @Query((returns) => {return Number}, { name: "getNumberOfInvitesOfVisitor"})
     async getNumberOfInvitesOfVisitor(@Args("email") email: string) {
         return await this.visitorInviteService.getTotalNumberOfInvitesVisitor(email);
     }

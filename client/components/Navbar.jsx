@@ -6,7 +6,7 @@ import { CgMenuRight } from "react-icons/cg";
 import useAuth from "../store/authStore";
 
 const Navbar = () => {
-    const navlinks = useAuth((state) => state.navLinks)();
+    const navlinks = useAuth((state) => {return state.navLinks})();
 
     return (
         <nav className="navbar w-full bg-neutral sm:rounded-xl">

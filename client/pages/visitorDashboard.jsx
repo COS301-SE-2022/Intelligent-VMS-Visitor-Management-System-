@@ -34,7 +34,7 @@ const VisitorDashboard = () => {
             `,
             })
             .then((res) => {
-                if (res.data.cancelInvite === true) {
+                if (res.data.cancelInvite) {
                     setIsVisitorData(
                         visitorData.filter((invite) => {
                             return invite.inviteID !== inviteID;
@@ -94,7 +94,6 @@ const VisitorDashboard = () => {
                         </thead>
                         {visitorData.length > 0 ? (
                             <tbody>
-                                {alert(visitorData.length)}
                                 {visitorData.map((visit, idx) => {
                                     return (
                                         <tr className="hover" key={idx}>
@@ -104,11 +103,12 @@ const VisitorDashboard = () => {
                                             <td>{visit.idNumber}</td>
                                             <td>
                                                 <button
+                                                    aria-label="cancel"
                                                     className="btn btn-square btn-primary"
-                                                    onClick={() =>
+                                                    onClick={() => {
                                                         cancelInvite(
                                                             visit.inviteID
-                                                        )
+                                                        )}
                                                     }
                                                 >
                                                     <svg

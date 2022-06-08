@@ -26,7 +26,7 @@ import { VisitorInviteModule} from '@vms/visitor-invite';
   imports: [
     CqrsModule,
     AuthModule,
-    forwardRef(() => VisitorInviteModule),
+    forwardRef(() => {return VisitorInviteModule}),
     MongooseModule.forFeature([
       { name: Parking.name, schema: ParkingSchema },
     ]),

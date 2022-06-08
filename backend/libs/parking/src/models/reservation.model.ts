@@ -3,13 +3,13 @@ import { Invite } from "@vms/visitor-invite/models/invite.model";
 
 @ObjectType()
 export class ParkingReservation {
-    @Field((type) => String)
+    @Field((type) => {return String})
     invitationID: string;
 
-    @Field((type) => String)
+    @Field((type) => {return String})
     parkingNumber: number;
 
-    @Field((type) => [Invite])
+    @Field((type) => {return [Invite]})
     inviteData?: Invite;
 }
 
