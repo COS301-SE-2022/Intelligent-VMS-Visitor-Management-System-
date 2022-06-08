@@ -504,13 +504,13 @@ export class ParkingService {
             new GetReservationsQuery()
         )
 
-        var end = new Date(endDate);
+        let end = new Date(endDate);
 
-        var loop = new Date(startDate);
+        let loop = new Date(startDate);
             while(loop <= end){    
                 dates[count]= loop; 
                 amount[count]= 0;  
-                var newDate = loop.setDate(loop.getDate() + 1);
+                let newDate = loop.setDate(loop.getDate() + 1);
                 loop = new Date(newDate);
                 count++;
             }
@@ -527,7 +527,6 @@ export class ParkingService {
         }
 
         return amount;
-
     }
 
     //TODO (Larisa): Check doubles ie double reservation
