@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { ConfigService } from "@nestjs/config";
 import { CommandBus, IQuery, QueryBus } from "@nestjs/cqrs";
 import { ParkingService } from './parking.service';
 import { GetAvailableParkingQuery } from './queries/impl/getAvailableParking.query';
@@ -156,6 +157,7 @@ describe('ParkingService', () => {
             VisitorInviteService,
             MailService,
             RestrictionsService,
+            ConfigService,
             {
                     provide: QueryBus, useValue: queryBusMock
             },

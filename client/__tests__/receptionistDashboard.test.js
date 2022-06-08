@@ -11,6 +11,8 @@ describe("Receptionist Dashboard", () => {
                 <ReceptionistDashboard />
             </MockedProvider>
         );
+        
+        expect(screen.getAllByText("Today's Invites")).toBeDefined();
     });
 });
 
