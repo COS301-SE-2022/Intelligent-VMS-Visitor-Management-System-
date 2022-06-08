@@ -6,7 +6,7 @@ const createJestConfig = nextJest({
 
 const customJestConfig = {
   moduleDirectories: ['node_modules', '<rootDir>/'],
-  setupFiles: ["jest-canvas-mock"],
+  setupFiles: ["jest-canvas-mock", "./setupTests"],
   transform: {
     "^.+\\.(js|jsx)$": "babel-jest"
   },
