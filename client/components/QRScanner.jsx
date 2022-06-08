@@ -14,7 +14,7 @@ const QrScanner = ({ setShowScanner, setVisitorData, setSearch }) => {
         client.query({
             query: gql`
                 query{
-                    getInvitesByIDForSearch( inviteID: "63a28d62-e726-4768-8b63-eb7b8604d18f" ) {
+                    getInvitesByIDForSearch( inviteID: "9f296b2e-514c-47bf-ac1b-192e3c66508d" ) {
                         inviteID
                         inviteDate
                         idNumber
@@ -26,9 +26,9 @@ const QrScanner = ({ setShowScanner, setVisitorData, setSearch }) => {
         })
             .then((res) => {
                 //alert(res.data);
-                alert("IN THEN");
-                const visitors = res.data.getInvitesByIDForSearch;
-                setVisitorData(visitors);
+                const visitor = [];
+                visitor[0] = res.data.getInvitesByIDForSearch; 
+                setVisitorData(visitor);
             })
     };
 
