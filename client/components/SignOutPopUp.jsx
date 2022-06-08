@@ -25,7 +25,7 @@ const SignOutPopUp = ({ visitorID, inviteID, refetch }) => {
                 }).then(res => {
                     
                     alert('tray number is: ' + res.data.signOut);
-                    refetch();
+                    //refetch();
                 })
             }
             } >Sign out</label>

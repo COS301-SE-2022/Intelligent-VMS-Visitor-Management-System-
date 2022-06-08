@@ -229,11 +229,37 @@ const ReceptionistDashboard = () => {
 
                                             {visit.inviteState === "inActive" ? (
                                                 <td>
-                                                    <ReceptionistSignButton text="Sign In" htmlFor="signIn-modal" colour="bg-green-800" />
+                                                    
+                                                    <ReceptionistSignButton 
+                                                    onClick={() => {
+                                                        setCurrentVisitorID(
+                                                            visit.idNumber
+                                                        );
+                                                        setCurrentInviteID(
+                                                            visit.inviteID
+                                                        );
+                                                        
+                                                    }}
+                                                    text="Sign In" 
+                                                    colour="bg-green-800" 
+                                                    htmlFor="signIn-modal" />
+                                                        
                                                 </td>
                                             ) : (
                                                 <td>
-                                                     <ReceptionistSignButton text="Sign Out" htmlFor="signOut-modal" colour="bg-red-800" />
+                                                     <ReceptionistSignButton 
+                                                     onClick={() => {
+                                                        setCurrentVisitorID(
+                                                            visit.idNumber
+                                                        );
+                                                        setCurrentInviteID(
+                                                            visit.inviteID
+                                                        );
+                                                        
+                                                    }}
+                                                     text="Sign Out" 
+                                                     htmlFor="signOut-modal" 
+                                                     colour="bg-red-800" />
                                                 </td>
 
                                             )}
