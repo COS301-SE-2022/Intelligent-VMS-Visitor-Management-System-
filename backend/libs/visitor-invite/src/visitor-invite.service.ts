@@ -9,6 +9,10 @@ import { GetInviteQuery } from "./queries/impl/getInvite.query";
 import { GetNumberVisitorQuery } from "./queries/impl/getNumberOfVisitors.query";
 import { GetInvitesInRangeQuery } from "./queries/impl/getInvitesInRange.query";
 import { GetNumberOfInvitesOfResidentQuery } from "./queries/impl/getNumberOfInvitesOfResident.query";
+import { GetInvitesByNameQuery } from "./queries/impl/getInvitesByName.query";
+import { GetInvitesInRangeByEmailQuery } from "./queries/impl/getInvitesInRangeByEmail.query";
+import { GetTotalNumberOfInvitesVisitorQuery } from "./queries/impl/getTotalNumberOfInvitesVisitor.query";
+import { GetInvitesByNameForSearchQuery } from "./queries/impl/getInviteByNameForSearch.query";
 
 import { InviteNotFound } from "./errors/inviteNotFound.error";
 import { DateFormatError } from "./errors/dateFormat.error";
@@ -17,6 +21,7 @@ import { ReserveParkingCommand } from "@vms/parking/commands/impl/reserveParking
 import { GetAvailableParkingQuery } from '@vms/parking/queries/impl/getAvailableParking.query';
 import { ParkingNotFound } from "@vms/parking/errors/parkingNotFound.error";
 import { MailService } from "@vms/mail";
+import { GetInvitesByDateQuery } from "./queries/impl/getInvitesByDate.query";
 
 @Injectable()
 export class VisitorInviteService {
@@ -25,9 +30,7 @@ export class VisitorInviteService {
                 private readonly mailService: MailService) {}
 
     /*
-        =================
         Create an invitation for a visitor
-        =================
     */
     async createInvite(
         userEmail: string,
@@ -76,6 +79,7 @@ export class VisitorInviteService {
         return this.queryBus.execute(new GetInvitesQuery(email));
     }
 
+    //Get invite by ID
     async getInvite(inviteID: string) {
         return this.queryBus.execute(new GetInviteQuery(inviteID));
     }
@@ -106,10 +110,10 @@ export class VisitorInviteService {
         return this.queryBus.execute(new GetNumberVisitorQuery());
     } 
 
-    // Get invites in date range
-    async getNumInvitesPerDate(dateStart: string, dateEnd: string) {
-        const start = Date.parse(dateStart);
-        const end = Date.parse(dateEnd);
+    // Check if given dates are valid
+    _validateDate(startDate: string, endDate: string) {
+        const start = Date.parse(startDate);
+        const end = Date.parse(endDate);
 
         if(isNaN(start) || isNaN(end)) {
             throw new DateFormatError("Given Date is not of the form yyyy-mm-dd");
@@ -117,11 +121,50 @@ export class VisitorInviteService {
             throw new DateFormatError("Start date can not be later than the end date");
         }
 
+        return true;
+    }
+
+    // Get invites in date range
+    async getNumInvitesPerDate(dateStart: string, dateEnd: string) {
+       this._validateDate(dateStart, dateEnd);
        return await this.queryBus.execute(new GetInvitesInRangeQuery(dateStart, dateEnd));
+    }
+
+    // Get invites in date range for an user
+    async getNumInvitesPerDateOfUser(dateStart: string, dateEnd: string, email: string) {
+       this._validateDate(dateStart, dateEnd);
+       return await this.queryBus.execute(new GetInvitesInRangeByEmailQuery(dateStart, dateEnd, email));
     }
 
     // Get Number of total open invites per resident
     async getTotalNumberOfInvitesOfResident(email: string) {
         return await this.queryBus.execute(new GetNumberOfInvitesOfResidentQuery(email)); 
+    }
+
+    // Get All Invites regardless of user
+    async getInvitesByDate(date: string) {
+        return await this.queryBus.execute(new GetInvitesByDateQuery(date)); 
+    }
+    
+    // Get Invite data by visitor name
+    async getInvitesByName(name: string) {
+        return await this.queryBus.execute(new GetInvitesByNameQuery(name));
+    }
+
+    //Searching for receptionist by name
+    async getInvitesByNameForSearch(name: string) {
+        return await this.queryBus.execute(new GetInvitesByNameForSearchQuery(name));
+    }
+
+    //Searching for receptionist by ID
+    async getInvitesByIDForReceptionistSearch(inviteID: string) {
+        return await this.queryBus.execute(new GetInviteQuery(inviteID));
+    }
+
+
+    
+    // Get total number of invites of the given visitor
+    async getTotalNumberOfInvitesVisitor(email: string) {
+        return await this.queryBus.execute(new GetTotalNumberOfInvitesVisitorQuery(email));
     }
 }

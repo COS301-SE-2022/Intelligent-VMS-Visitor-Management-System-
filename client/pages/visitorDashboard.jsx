@@ -94,6 +94,7 @@ const VisitorDashboard = () => {
                         </thead>
                         {visitorData.length > 0 ? (
                             <tbody>
+                                {alert(visitorData.length)}
                                 {visitorData.map((visit, idx) => {
                                     return (
                                         <tr className="hover" key={idx}>
@@ -103,7 +104,7 @@ const VisitorDashboard = () => {
                                             <td>{visit.idNumber}</td>
                                             <td>
                                                 <button
-                                                    className="btn btn-primary btn-square"
+                                                    className="btn btn-square btn-primary"
                                                     onClick={() =>
                                                         cancelInvite(
                                                             visit.inviteID

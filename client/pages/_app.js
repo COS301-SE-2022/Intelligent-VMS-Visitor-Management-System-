@@ -23,7 +23,14 @@ function MyApp({ Component, pageProps }) {
     });
 
     const isPublicPath = (url) => {
-        const publicPaths = ["/login", "/", "/expire", "/signUp", "/verify", "/authorize"];
+        const publicPaths = [
+            "/login",
+            "/",
+            "/expire",
+            "/signUp",
+            "/verify",
+            "/authorize",
+        ];
         const path = url.split("?")[0];
         return publicPaths.includes(path);
     };
@@ -32,17 +39,23 @@ function MyApp({ Component, pageProps }) {
         if (!isPublicPath(router.asPath) && permission === -999) {
             router.push("/expire");
             return;
-        } else if(!isPublicPath(router.asPath) && (permission === -1 || permission === -2)) {
+        } else if (
+            !isPublicPath(router.asPath) &&
+            (permission === -1 || permission === -2)
+        ) {
             router.push("/authorize");
             return;
         }
     }, [router, permission]);
 
-    if(pageProps.protected && (permission === -1 || permission === -2)) {
+    if (pageProps.protected && (permission === -1 || permission === -2)) {
         return <Layout> Your account is not authorized yet. </Layout>;
     }
 
-    if ((pageProps.protected && permission < 0) || (pageProps.permission < permission && permission !== -999)) {
+    if (
+        (pageProps.protected && permission < 0) ||
+        (pageProps.permission < permission && permission !== -999)
+    ) {
         return <Layout> Woops: you are not supposed to be here </Layout>;
     }
 

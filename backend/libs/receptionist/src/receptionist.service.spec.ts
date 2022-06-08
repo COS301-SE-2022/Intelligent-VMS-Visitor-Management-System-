@@ -3,7 +3,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { MailService } from '@vms/mail';
 import { ParkingService } from '@vms/parking';
 import { VisitorInviteService } from '@vms/visitor-invite';
+import { getTrayFromInviteQuery } from './queries/impl/getTrayFromInvite.query';
 import { ReceptionistService } from './receptionist.service';
+import { Tray } from './schema/tray.schema';
 
 describe('ReceptionistService', () => {
   let service: ReceptionistService;
@@ -16,8 +18,18 @@ describe('ReceptionistService', () => {
   };
 
   const queryBusMock = {
-    execute: jest.fn((command) => {
-        
+    execute: jest.fn((query) => {
+      if(query instanceof getTrayFromInviteQuery) {
+        if (query.inviteID=="someArbitraryString") {
+          const firstTray= new Tray();
+          firstTray.trayID=0;
+          firstTray.inviteID="someArbitraryString";
+          firstTray.containsResidentID=true;
+          firstTray.containsVisitorID=true;
+  
+          return firstTray;
+        }
+      }
     }),
   };
   /*eslint-enable*/
@@ -43,5 +55,12 @@ describe('ReceptionistService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
     expect(inviteService).toBeDefined();
+  });
+
+  describe("generateTrayID", () => {
+    it("should return a valid Tray id", async () => {
+      const getTray=await service.getTrayByInviteID("someArbitraryString");
+      expect( getTray.trayID).toEqual(0);
+    });
   });
 });

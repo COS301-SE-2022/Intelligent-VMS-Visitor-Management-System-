@@ -20,6 +20,13 @@ nextRouter.useRouter = jest.fn();
 nextRouter.useRouter.mockImplementation(() => ({ route: "/" }));
 
 describe("CreateInvite", () => {
+    const authHook = renderHook(() => useAuth());
+    authHook.hydrate();
+    act(() => {
+        authHook.result.current.login(
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJhZG1pbkBtYWlsLmNvbSIsImlhdCI6MTUxNjIzOTAyMiwicGVybWlzc2lvbiI6MH0.bh6yTWV0lN9A0_xOGcgqN_za3M35BewXpJNuuprcaJ8"
+        );
+    });
     it("renders a heading", () => {
         render(
             <MockedProvider>
@@ -73,9 +80,7 @@ describe("CreateInvite", () => {
             "valid@mail.com"
         );
 
-        await user.selectOptions(screen.getByRole("combobox"), [
-            "RSA-ID",
-        ]);
+        await user.selectOptions(screen.getByRole("combobox"), ["RSA-ID"]);
 
         await user.type(
             screen.getByPlaceholderText("Enter ID number"),
@@ -100,7 +105,7 @@ describe("CreateInvite", () => {
         );
 
         const user = userEvent.setup();
-        
+
         await user.click(screen.getByPlaceholderText("Visitor Email"));
 
         await user.type(
@@ -153,7 +158,7 @@ describe("CreateInvite", () => {
 
         // Create user event generator
         const user = userEvent.setup();
-        
+
         // Type in visitor email in field
         await user.type(
             screen.getByPlaceholderText("Visitor Email"),
@@ -161,9 +166,7 @@ describe("CreateInvite", () => {
         );
 
         // Select RSA-ID option from comboxbox
-        await user.selectOptions(screen.getByRole("combobox"), [
-            "RSA-ID",
-        ]);
+        await user.selectOptions(screen.getByRole("combobox"), ["RSA-ID"]);
 
         // Type ID number into field
         await user.type(
@@ -293,5 +296,4 @@ describe("CreateInvite", () => {
             expect(router.push).toHaveBeenCalledWith("/visitorDashboard");
         });
     });
-
 });

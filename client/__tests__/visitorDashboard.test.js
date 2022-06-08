@@ -7,7 +7,6 @@ import { validDataMock, noDataMock } from "./__mocks__/visitorDashboard.mock";
 import VisitorDashboard from "../pages/visitorDashboard";
 
 describe("VisitorDashboard", () => {
-
     it("renders a heading", () => {
         render(
             <MockedProvider>

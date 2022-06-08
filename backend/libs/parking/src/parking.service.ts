@@ -1,24 +1,30 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
+
 import { AssignParkingCommand } from './commands/impl/assignParking.command';
 import { FreeParkingCommand } from './commands/impl/freeParking.command';
 import { ReserveParkingCommand } from './commands/impl/reserveParking.command';
-import { ParkingNotFound } from "./errors/parkingNotFound.error";
-import { GetAvailableParkingQuery } from './queries/impl/getAvailableParking.query';
-import { GetFreeParkingQuery } from './queries/impl/getFreeParking.query';
-import { UnreserveParkingCommand } from './commands/impl/unreserveParking.command';
-import { AddParkingCommand } from './commands/impl/addParking.command';
-import { ExternalError } from './errors/externalError.error';
-import { VisitorInviteService } from '@vms/visitor-invite/visitor-invite.service';
-import { InvalidQuery } from './errors/invalidQuery.error';
-import { GetInviteReservationQuery } from './queries/impl/getInviteReservation.query';
-import { CreateNParkingSpotsCommand } from './commands/impl/createNParkingSpots.command';
-import { InviteNotFound } from '@vms/visitor-invite/errors/inviteNotFound.error';
-import { ReservationNotFound } from './errors/reservationNotFound.error';
-import { GetReservationsQuery } from './queries/impl/getReservations.query';
-import { GetParkingReservationsQuery } from './queries/impl/getParkingReservations.query';
 import { EnableParkingSpaceCommand } from './commands/impl/enableParkingSpace.command';
 import { DisableParkingSpaceCommand } from './commands/impl/disableParkingSpace.command';
+import { UnreserveParkingCommand } from './commands/impl/unreserveParking.command';
+import { CreateNParkingSpotsCommand } from './commands/impl/createNParkingSpots.command';
+import { AddParkingCommand } from './commands/impl/addParking.command';
+
+import { GetAvailableParkingQuery } from './queries/impl/getAvailableParking.query';
+import { GetFreeParkingQuery } from './queries/impl/getFreeParking.query';
+import { GetInviteReservationQuery } from './queries/impl/getInviteReservation.query';
+import { GetReservationsQuery } from './queries/impl/getReservations.query';
+import { GetParkingReservationsQuery } from './queries/impl/getParkingReservations.query';
+import { GetReservationInRangeQuery } from "./queries/impl/getReservationsInRange.query";
+
+import { InvalidQuery } from './errors/invalidQuery.error';
+import { ReservationNotFound } from './errors/reservationNotFound.error';
+import { ParkingNotFound } from "./errors/parkingNotFound.error";
+import { ExternalError } from './errors/externalError.error';
+
+import { InviteNotFound } from '@vms/visitor-invite/errors/inviteNotFound.error';
+import { VisitorInviteService } from '@vms/visitor-invite/visitor-invite.service';
+
 
 @Injectable()
 export class ParkingService {
@@ -27,8 +33,6 @@ export class ParkingService {
                 private queryBus: QueryBus,
                 @Inject(forwardRef(() => VisitorInviteService))
                 private inviteService: VisitorInviteService) {}
-
-    //////////////////////////////////////COMMANDS
 
     /*
     Create more visitor parking
@@ -79,6 +83,7 @@ export class ParkingService {
             throw new ExternalError("Error outside the parking.service");
         }
     }
+
     /*
     Use the invitation to assign the reserved parking
 
@@ -155,36 +160,31 @@ export class ParkingService {
                 new GetParkingReservationsQuery(parkingNumber));
 
             temp = true;
-            for(let j=0;j<reservations.length;j++)
-            {
+            for(let j=0;j<reservations.length;j++) {
                 const resInvite = await this.inviteService.getInvite(reservations[j].invitationID);
-
-                if(resInvite && resInvite.inviteDate === invite.inviteDate)
-                {
+                if(resInvite && resInvite.inviteDate === invite.inviteDate) {
                     temp =false;
                     break;
                 }
             }
 
-            if(temp)
-            {
+            if(temp) {
                 parkingNumber = i;
                 break;
             }
         }
 
-        if(parkingNumber == -1)
+        if(parkingNumber == -1) {
             throw new ParkingNotFound("There are no parking available");
+        }
 
         //Send to db
-        const parkingReservation = await this.commandBus.execute(
-            new ReserveParkingCommand(invitationID,parkingNumber));
-          
-        if(parkingReservation)
-        return parkingReservation;
-        else
-        throw new ExternalError("Error outside the parking.service");
-            
+        const parkingReservation = await this.commandBus.execute(new ReserveParkingCommand(invitationID,parkingNumber));
+        if(parkingReservation) {
+            return parkingReservation;
+        } else {
+            throw new ExternalError("Error outside the parking.service");
+        }
     }
 
     /*
@@ -504,13 +504,13 @@ export class ParkingService {
             new GetReservationsQuery()
         )
 
-        var end = new Date(endDate);
+        let end = new Date(endDate);
 
-        var loop = new Date(startDate);
+        let loop = new Date(startDate);
             while(loop <= end){    
                 dates[count]= loop; 
                 amount[count]= 0;  
-                var newDate = loop.setDate(loop.getDate() + 1);
+                let newDate = loop.setDate(loop.getDate() + 1);
                 loop = new Date(newDate);
                 count++;
             }
@@ -527,7 +527,6 @@ export class ParkingService {
         }
 
         return amount;
-
     }
 
     //TODO (Larisa): Check doubles ie double reservation

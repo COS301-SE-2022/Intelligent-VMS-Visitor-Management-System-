@@ -4,6 +4,9 @@ import { InviteState } from "../schema/invite.schema";
 @ObjectType()
 export class Invite {
     @Field((type) => String)
+    userEmail: string;
+
+    @Field((type) => String)
     visitorEmail: string;
 
     @Field((type) => String)
@@ -26,12 +29,15 @@ export class Invite {
 
     //Graphql doesnt like enums
     @Field((type) => String)
-    inviteState: String
+    inviteState: string
 
     @Field((type) => String)
     notes?: string
 
     @Field((type)=> String)
     signOutDate?: Date
+
+    @Field((type)=> Number)
+    trayNumber?: number
 
 }
