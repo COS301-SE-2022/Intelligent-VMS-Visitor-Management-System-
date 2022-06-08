@@ -73,7 +73,7 @@ describe('SignOutService', () => {
     //Act
     const resp = await service.signOut('dwvsdvsd');
     //Assert
-    expect(resp).toEqual(12123123);
+    expect(resp).toEqual(123);
   })
 
   describe("removeTrayByInviteID", () => {
