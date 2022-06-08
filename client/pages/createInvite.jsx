@@ -22,6 +22,7 @@ const CreateInvite = () => {
     // Number of invites allowed to be sent/open of resident
     const [numInvitesAllowed, setNumInvitesAllowed] = useState(0);
 
+    // Invite limit reached state
     const [limitReached, setLimitReached] = useState(false);
 
     // Manipulate state for showing error alert

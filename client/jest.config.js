@@ -7,16 +7,20 @@ const createJestConfig = nextJest({
 const customJestConfig = {
   moduleDirectories: ['node_modules', '<rootDir>/'],
   setupFiles: ["jest-canvas-mock"],
+  transform: {
+    "^.+\\.(js|jsx)$": "babel-jest"
+  },
+  transformIgnorePatterns: [
+    "/!node_modules\\/apollo-server/"
+  ],
   testEnvironment: 'jest-environment-jsdom',
   coverageDirectory: "./coverage",
   coveragePathIgnorePatterns: [
     "node_modules",
     "authStore.js",
-    "adminDashboard.jsx"
   ],
   modulePathIgnorePatterns: [
       "__mocks__",
-      "lib"
   ],
 }
 

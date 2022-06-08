@@ -5,11 +5,13 @@
     "build": "next build",
     "start": "next start",
     "format": "prettier --write \"pages/**/*.js\" \"components/**/*.jsx\" \"pages/**/*.jsx\" \"__tests__/**/*.test.js\"",
-    "test": "jest",
+    "test": "jest -c jest.config.js",
+    "test:integration": "jest -c jest.config.js ./__tests__/integration --env=jsdom --transformIgnorePatterns \"node_modules/(?!apollo-server)/\"",
     "lint": "next lint --fix",
     "cypress": "cypress open",
     "cypress:headless": "cypress run",
-    "test:cov": "jest --coverage"
+    "test:cov": "jest --coverage",
+    "test:integration:cov": "jest --coverage ./__tests__/integration --env=jsdom --transformIgnorePatterns \"node_modules/(?!apollo-server)/\""
   },
   "dependencies": {
     "@apollo/client": "^3.6.2",

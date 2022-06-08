@@ -283,14 +283,14 @@ const AdminDashboard = () => {
                                 <p>Number of invites a resident is allowed to have open/sent at a time.</p>
                                 <div className="card-actions justify-start flex items-center">
                                     <div className="flex items-center space-x-3">
-                                        <button className="btn btn-circle" onClick={() => {
+                                        <button aria-label="increaseInvites" className="btn btn-circle" onClick={() => {
                                             setNumInvitesPerResident(numInvitesPerResident+1);
                                             setRestrictionsChanged(true);
                                         }}>
                                             <AiOutlinePlus className="text-xl md:text-2xl lg:text-3xl"/>
                                         </button>
                                         <p className="text-secondary font-bold text-4xl">{numInvitesPerResident}</p>
-                                        <button className="btn btn-circle" onClick={() => {
+                                        <button aria-label="decreaseInvites" className="btn btn-circle" onClick={() => {
                                             numInvitesPerResident > 1 && setNumInvitesPerResident(numInvitesPerResident-1);
                                             setRestrictionsChanged(true);
                                         }}>

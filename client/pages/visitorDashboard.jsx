@@ -34,7 +34,7 @@ const VisitorDashboard = () => {
             `,
             })
             .then((res) => {
-                if (res.data.cancelInvite === true) {
+                if (res.data.cancelInvite) {
                     setIsVisitorData(
                         visitorData.filter((invite) => {
                             return invite.inviteID !== inviteID;
