@@ -496,9 +496,8 @@ export class ParkingService {
         startDate: string,
         endDate: string
     ){
-        let count = 0;
         const amount = [];
-        const dates = [];
+        const dates = new Map<number,number>();
 
         const Reservations = await this.queryBus.execute(
             new GetReservationsQuery()
@@ -507,26 +506,24 @@ export class ParkingService {
         const end = new Date(endDate);
         let loop = new Date(startDate);
         while(loop <= end){    
-            dates[count]= loop; 
-            amount[count]= 0;  
+            dates.set(loop.getDate(), 0);
             const newDate = loop.setDate(loop.getDate() + 1);
             loop = new Date(newDate);
-            count++;
         }
 
         for(let i=0;i<Reservations.length;i++){
-            
             const resInvite = await this.inviteService.getInvite(Reservations[i].invitationID);
 
             if(resInvite) {
                 const resDate = new Date(resInvite.inviteDate);
-                for(let j=0;j<7;j++){
-                    amount[j] = Math.round(Math.random());
+                console.log(dates.get(resDate.getDate()));
+                if(dates.get(resDate.getDate()) !== undefined) {
+                    dates.set(resDate.getDate(), dates.get(resDate.getDate())+1);
                 }
             }
         }
 
-        return amount;
+        return Array.from(dates.values());
     }
 
     //TODO (Larisa): Check doubles ie double reservation
