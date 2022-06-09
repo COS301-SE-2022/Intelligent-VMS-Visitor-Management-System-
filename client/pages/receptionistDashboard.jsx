@@ -70,7 +70,6 @@ const ReceptionistDashboard = () => {
                 }
             `,},
             { fetchPolicy: "cache-and-network" }).then(res => {
-              console.log(res.data.getInvitesByDate);
               const data = res.data.getInvitesByDate.filter((invite) => {
                 return invite.inviteState !== "signedOut"               
               });
