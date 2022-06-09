@@ -42,7 +42,7 @@ const ReceptionistDashboard = () => {
     const [todayString, setTodayString] = useState(getFormattedDateString(new Date()));
 
     const router = useRouter();
-    const { loading, error, data } = useQuery(gql`
+    const [invitesQuery, { loading, error, data }] = useLazyQuery(gql`
         query {
             getInvitesByDate( date: "${todayString}" ) {
                 inviteID
@@ -52,8 +52,9 @@ const ReceptionistDashboard = () => {
                 inviteState
             }
         }
-    `);
+    `, { fetchPolicy: "no-cache" });
 
+    
     const refetch = () => {
         client.query({
             query: gql`
@@ -67,15 +68,13 @@ const ReceptionistDashboard = () => {
                   
                     }
                 }
-            `,
-            }).then(res => {
-              const invites = [];
-              invites = res.data.getInvitesByDate.filter((invite) => {
-                return invite.inviteState !== "signedOut"
+            `,},
+            { fetchPolicy: "cache-and-network" }).then(res => {
+              console.log(res.data.getInvitesByDate);
+              const data = res.data.getInvitesByDate.filter((invite) => {
+                return invite.inviteState !== "signedOut"               
               });
-
-              setVisitorData(invites);
-
+              setVisitorData([...data]);
             })
     }
 
@@ -86,7 +85,7 @@ const ReceptionistDashboard = () => {
 
     const client = useApolloClient();
 
-    const search = (name) => {
+    const search = () => {
         //TODO (Stefan)
         setSearch(true);
         client.query({
@@ -138,11 +137,14 @@ const ReceptionistDashboard = () => {
 
 
     useEffect(() => {
+        invitesQuery();
         if ((!loading && !error)) {
-            const invites = data.getInvitesByDate.filter((invite) => {
-                return invite.inviteState !== "signedOut"
-            });
-            setVisitorData(invites);
+            if(data) {
+                const invites = data.getInvitesByDate.filter((invite) => {
+                    return invite.inviteState !== "signedOut"
+                });
+                setVisitorData(invites);
+            }
         } else if (error) {
             if (error.message === "Unauthorized") {
                 router.push("/expire");
@@ -157,6 +159,7 @@ const ReceptionistDashboard = () => {
                 },
             ]);
         }
+
     }, [loading, error, router, data]);
 
 
@@ -221,7 +224,7 @@ const ReceptionistDashboard = () => {
                                     return (
                                         <tr className="hover" key={idx}>
                                             <th>{idx + 1}</th>
-                                            <td>{visit.visitorName}</td>
+                                            <td className="capitalize">{visit.visitorName}</td>
                                             <td>{visit.idNumber}</td>
 
                                             {visit.inviteState === "inActive" ? (
@@ -276,6 +279,8 @@ const ReceptionistDashboard = () => {
                         )}
                     </table>
                 )}
+                <ErrorAlert message={errorMessage} showConditon={showErrorAlert} />
+                <InfoAlert visitorName={currentVisitorName} showConditon={showInfoAlert} trayNr={trayNr}/>
             </div>
 
             <input type="checkbox" id="signIn-modal" className="modal-toggle" />
@@ -289,9 +294,10 @@ const ReceptionistDashboard = () => {
                     <SignInPopUp
                         visitorID={currentVisitorID}
                         inviteID={currentInviteID}
-                        refetch={refetch}
                         setTrayNr={setTrayNr}
                         setShowInfoAlert={setShowInfoAlert}
+                        refetch={invitesQuery}
+                        todayString={todayString}
                     />
                 </div>
             </div>
@@ -308,11 +314,12 @@ const ReceptionistDashboard = () => {
                     <SignOutPopUp
                         visitorID={currentVisitorID}
                         inviteID={currentInviteID}
-                        refetch={refetch}
                         setShowInfoAlert={setShowInfoAlert}
                         setTrayNr={setTrayNr}
+                        refetch={invitesQuery}
                     />
                 </div>
+
             </div>
 
             <input type="checkbox" id="QRScan-modal" className="modal-toggle" onChange={() => {}}checked={showScanner ? true : false} />
@@ -342,8 +349,6 @@ const ReceptionistDashboard = () => {
                 </div>
             </div>
 
-            <ErrorAlert message={errorMessage} showConditon={showErrorAlert} />
-            <InfoAlert visitorName={currentVisitorName} showConditon={showInfoAlert} trayNr={trayNr}/>
             
         </Layout>
     );
