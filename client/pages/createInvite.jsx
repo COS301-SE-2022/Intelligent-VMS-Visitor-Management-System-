@@ -70,6 +70,7 @@ const CreateInvite = () => {
 
         if(!numInvitesOfResidentQuery.loading && !numInvitesOfResidentQuery.error && numInvitesAllowed !== 0) {
             const numSent = numInvitesOfResidentQuery.data.getTotalNumberOfInvitesOfResident
+            console.log(numSent, numInvitesAllowed);
             if(numSent >= numInvitesAllowed && jwtTokenData.permission === 2) {
                 setErrorMessage("Invite Limit Reached");
                 setLimitReached(true);
