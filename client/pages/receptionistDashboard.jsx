@@ -169,6 +169,7 @@ const ReceptionistDashboard = () => {
     //////////////////////////////////////////////////////////////////////////////////////////////////
     return (
         <Layout>
+            <div onClick={()=>resetDefaultResults()}>
             <input
                 type="text"
                 placeholder="Search.."
@@ -351,7 +352,7 @@ const ReceptionistDashboard = () => {
                 </div>
             </div>
 
-            
+            </div>  
         </Layout>
     );
 };
