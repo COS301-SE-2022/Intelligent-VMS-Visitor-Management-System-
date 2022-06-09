@@ -73,7 +73,6 @@ export class SignInService {
                return 0;
             }
         }
-      }
 
         async generateTray(inviteID: string,containsResidentID: boolean,containsVisitorID: boolean):Promise<Tray>{
             console.log("generating tray");
