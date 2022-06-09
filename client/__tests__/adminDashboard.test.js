@@ -1,11 +1,13 @@
 import { render, screen } from "@testing-library/react";
 import { renderHook, act } from "@testing-library/react-hooks/server";
+import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
 import { MockedProvider } from "@apollo/client/testing";
 
 import * as nextRouter from "next/router";
 import React, { useState } from "react";
 
+import { validPageLoad } from "./__mocks__/adminDashboard.mock";
 import ResizeObserver from "./__mocks__/resizeObserver.mock";
 
 import AdminDashboard from "../pages/adminDashboard";
@@ -40,5 +42,34 @@ describe("AdminDashboard", () => {
 
         expect(screen.getByText("admin@mail.com")).toBeInTheDocument();
     });
+
+    it("renders save and cancel buttons", async () => {
+        jest.mock("react-chartjs-2", () => ({
+            Line: () => null,
+        }));
+        const authHook = renderHook(() => useAuth());
+        const dateRangeHook = renderHook(() => useDateRange(7));
+
+        authHook.hydrate();
+        dateRangeHook.hydrate();
+
+        act(() => {
+            authHook.result.current.login(
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJhZG1pbkBtYWlsLmNvbSIsImlhdCI6MTUxNjIzOTAyMiwicGVybWlzc2lvbiI6MH0.bh6yTWV0lN9A0_xOGcgqN_za3M35BewXpJNuuprcaJ8"
+            );
+        });
+
+        render(
+            <MockedProvider mocks={validPageLoad} addTypename={false}>
+                <AdminDashboard />
+            </MockedProvider>
+        );
+
+        const user = userEvent.setup();
+
+        user.click(screen.getByTestId("increaseInvites"));
+
+
+    });    
 
 });

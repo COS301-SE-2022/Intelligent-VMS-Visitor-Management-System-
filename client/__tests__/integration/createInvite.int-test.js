@@ -17,7 +17,7 @@ nextRouter.useRouter = jest.fn();
 nextRouter.useRouter.mockImplementation(() => ({route: "/createInvite"}));
 
 describe("Create Invite Integration", () => {
-
+    
     it("will allow an invite to be sent if num invites sent is less than the amount allowed", async () => {
         const authHook = renderHook(() => useAuth());
 

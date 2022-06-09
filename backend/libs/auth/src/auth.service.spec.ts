@@ -1,4 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
+import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import { AuthService } from "./auth.service";
 import { UserService } from "@vms/user";
@@ -35,6 +36,7 @@ describe("AuthService", () => {
             providers: [AuthService, 
                 JwtService, 
                 UserService, 
+                ConfigService,
                 CommandBus,
                 {
                   provide: QueryBus,

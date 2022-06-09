@@ -12,7 +12,7 @@ export class SignInInviteCommandHandler implements ICommandHandler<SignInInviteC
     ) {}
 
     async execute(command: SignInInviteCommand): Promise<Invite> {
-        const { inviteID, notes } = command;
-        return await this.inviteModel.findOneAndUpdate({ inviteID: inviteID }, {inviteState: "signedIn", notes: notes});
+        const { inviteID, notes, signInTime } = command;
+        return await this.inviteModel.findOneAndUpdate({ inviteID: inviteID }, {inviteState: "signedIn", notes: notes, signInTime: signInTime});
     }
 }

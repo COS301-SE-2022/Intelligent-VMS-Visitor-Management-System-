@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 import { toDataURL } from "qrcode";
 import { createTransport, Transporter } from "nodemailer";
@@ -8,14 +9,12 @@ import SMTPTransport from 'nodemailer/lib/smtp-transport';
 export class MailService {
     transporter: Transporter<SMTPTransport.SentMessageInfo>;
 
-    constructor() {
+    constructor(private configService: ConfigService) {
         this.transporter = createTransport({
-            host: "smtp.mailtrap.io",
-            port: 2525,
-            secure: false,
+            service: "gmail",
             auth: {
-                user: "8a3164c958f015",
-                pass: "6327e7c4877921"
+                user: this.configService.get<string>("EMAIL"),
+                pass: this.configService.get<string>("EMAIL_PASSWORD")
             }
         });
     }
@@ -31,12 +30,17 @@ export class MailService {
             from: '"VMS 👋" <firestorm19091@gmail.com>', // sender address
             to: to, // list of receivers
             subject: "You received an invite", // Subject line
+            attachments: [{
+                filename: "image.png",
+                path: qrCode,
+                cid: "firestorm19091@gmail.com"
+            }],
             html: `<h1>Hello Visitor!👋</h1>
                 <br />
                 <h3>You received an invite from ${from}</h3>
                 <br />
                 <p>Invite ID: ${inviteID}</p>
-                <img src="${qrCode}"/>
+                <img src="cid:firestorm19091@gmail.com" />
                 <br/>
                 <p>Please present QR-Code to frontdesk, you will be asked to present your chosen form of identification</p>
                 ${reserveParking ? "<p>Parking Reserved 🚗</p>" : ""}

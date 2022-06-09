@@ -40,6 +40,9 @@ const AdminDashboard = () => {
     // Visitor invite data object for chart
     const [visitorVals, setVisitorVals] = useState({ data: [], labels: [] });
 
+    // Parking data object for chart
+    const [parkingVals, setParkingVals] = useState({ data: [], labels: [] });
+
     // Date Range Hook
     const [startDate, endDate, dateMap, setDateMap, setStartDate] = useDateRange(getFormattedDateString(new Date(Date.now())), 7);
 
@@ -91,6 +94,12 @@ const AdminDashboard = () => {
             }
         }
     `, { fetchPolicy: "no-cache", });
+
+    const numParkingInDateRangeQuery = useQuery(gql`
+        query {
+            getUsedParkingsInRange(startDate: "${startDate}", endDate: "${endDate}")
+        }
+    `);
 
     const numParkingSpotsAvailableQuery = useQuery(gql`
         query {
@@ -153,6 +162,21 @@ const AdminDashboard = () => {
             setTodayInvites(dateMap.get(startDate));
 
         } else if (numInviteInDateRangeQuery.error) {
+            console.error(numInviteInDateRangeQuery.error);
+        }
+        
+        // Num parking in range
+        if(!numParkingInDateRangeQuery.loading &&
+           !numParkingInDateRangeQuery.error) {
+            const parkingNumbers = numParkingInDateRangeQuery.data.getUsedParkingsInRange;
+
+            setParkingVals({
+                labels: Array.from(dateMap.keys()),
+                data: Array.from(parkingNumbers) 
+            });
+
+        } else if(numInviteInDateRangeQuery.error) {
+            console.error(numInviteInDateRangeQuery.error);
         }
 
         // Parking spots available
@@ -180,7 +204,9 @@ const AdminDashboard = () => {
         numInvitesQuery,
         numInviteInDateRangeQuery,
         numParkingSpotsAvailableQuery,
+        numParkingInDateRangeQuery,    
         startDate,
+        setParkingVals,
         setNumParkingSpotsAvailable,
         numInvitesPerResidentQuery
     ]);
@@ -256,8 +282,9 @@ const AdminDashboard = () => {
                             title={"Parking Forecast"}
                             filename="visitor-forecast.png"
                             Chart={LineChart}
-                            labelvals={visitorVals.labels}
-                            datavals={visitorVals.data}
+                            labelvals={parkingVals.labels}
+                            datavals={parkingVals.data}
+                            setStart={setStartDate}
                         />
                     </div>
 
@@ -283,14 +310,14 @@ const AdminDashboard = () => {
                                 <p>Number of invites a resident is allowed to have open/sent at a time.</p>
                                 <div className="card-actions justify-start flex items-center">
                                     <div className="flex items-center space-x-3">
-                                        <button aria-label="increaseInvites" className="btn btn-circle" onClick={() => {
+                                        <button data-testid="increaseInvites" className="btn btn-circle" onClick={() => {
                                             setNumInvitesPerResident(numInvitesPerResident+1);
                                             setRestrictionsChanged(true);
                                         }}>
                                             <AiOutlinePlus className="text-xl md:text-2xl lg:text-3xl"/>
                                         </button>
                                         <p className="text-secondary font-bold text-4xl">{numInvitesPerResident}</p>
-                                        <button aria-label="decreaseInvites" className="btn btn-circle" onClick={() => {
+                                        <button data-testid="decreaseInvites" className="btn btn-circle" onClick={() => {
                                             numInvitesPerResident > 1 && setNumInvitesPerResident(numInvitesPerResident-1);
                                             setRestrictionsChanged(true);
                                         }}>

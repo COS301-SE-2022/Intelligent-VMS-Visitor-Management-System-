@@ -1,4 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
+import { ConfigService } from "@nestjs/config";
 import { CommandBus, IQuery, QueryBus } from "@nestjs/cqrs";
 import { VisitorInviteService } from "./visitor-invite.service";
 import { GetInvitesQuery } from "./queries/impl/getInvites.query";
@@ -78,6 +79,7 @@ describe("VisitorInviteService", () => {
                 VisitorInviteService, 
                 ParkingService,
                 MailService,
+                ConfigService,
                 RestrictionsService,
                 CommandBus, 
                 {

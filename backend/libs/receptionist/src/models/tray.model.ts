@@ -1,15 +1,19 @@
 //need clarification on this one
 
-// import { Field, Int, ObjectType } from "@nestjs/graphql";
+ import { Field, Int, ObjectType } from "@nestjs/graphql";
 
-// @ObjectType()
-// export class Visitor {
-//     @Field((type) => Int)
-//     id: number;
+ @ObjectType()
+ export class Tray {
+     @Field((type) => Int)
+     trayID: number;
 
-//     @Field((type) => String)
-//     name: string;
+     @Field((type) => String)
+     inviteID: string;
 
-//     @Field((type) => String)
-//     email: string;
-// }
+     @Field((type) => Boolean)
+     containsResidentID: Boolean;
+
+     @Field((type) => Boolean)
+     containsVisitorID: Boolean;
+ }
+
