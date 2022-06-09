@@ -1,11 +1,42 @@
-import { gql, useApolloClient } from "@apollo/client";
+import { gql, useMutation } from "@apollo/client";
 import React, { useEffect, useRef, useState, setState } from "react";
 import { ImEnter } from "react-icons/im";
 
 
-const SignInPopUp = ({ visitorID, inviteID, refetch, setShowInfoAlert, setTrayNr }) => {
+const SignInPopUp = ({ visitorID, inviteID, refetch, setShowInfoAlert, setTrayNr, todayString }) => {
     const [notes, setNotes] = useState("");
-    const client = useApolloClient();
+    const time = new Date();
+    const [signInMutation, { data, loading, error}] = useMutation(gql`
+            mutation {
+                signIn(inviteID: "${inviteID}", notes: "${notes}", time: "${time.toLocaleTimeString()}") 
+            }
+    `, {
+        refetchQueries: [{
+            query: gql`
+            query {
+                getInvitesByDate( date: "${todayString}" ) {
+                    inviteID
+                    inviteDate
+                    idNumber
+                    visitorName
+                    inviteState
+                }
+            }
+            `
+        }]
+    });
+
+    useEffect(() => {
+        if(!loading && !error) {
+            if(data) {
+                console.log(data);
+                setTrayNr(data.signIn);
+                refetch();
+                setShowInfoAlert(true);
+            }
+        } else {
+        }
+    }, [loading,error,data]);
 
     return (
       <div className="relative flex-col justify-center items-center text-center">
@@ -23,28 +54,9 @@ const SignInPopUp = ({ visitorID, inviteID, refetch, setShowInfoAlert, setTrayNr
           </p>
           <input type="text" onChange={(evt) => setNotes(evt.target.value)} maxLength="100" placeholder="Add some observations.." className="input input-bordered w-5/6 mt-5" />
           <label className="btn btn-primary w-5/6 mt-5 mb-5 modal-button" htmlFor="signIn-modal" onClick={ ()=>{
-                            const time = new Date();
-                            client.mutate({
-                              mutation: gql`
-                                  mutation {
-                                    signIn(inviteID: "${inviteID}", notes: "${notes}", time: "${time.toLocaleTimeString()}") 
-                                  }
-                              `
-                            }
-                            ).then((res) => {
-                              setTrayNr(res.data.signIn);
-                              setShowInfoAlert(true);
-                              //alert('tray number is: ' + res.data.signIn);
-                              //refetch();
-                            });
-
-                            
-                              
-                              
-                                       
-                        }
-                        
-                        }>Sign in</label>
+            signInMutation();
+          }}
+            >Sign in</label>
       </div>
     );
 };

@@ -39,10 +39,10 @@ const ReceptionistDashboard = () => {
         }
     };
 
-    const todayString = getFormattedDateString(new Date());
+    const [todayString, setTodayString] = useState(getFormattedDateString(new Date()));
 
     const router = useRouter();
-    const { loading, error, data } = useQuery(gql`
+    const [invitesQuery, { loading, error, data }] = useLazyQuery(gql`
         query {
             getInvitesByDate( date: "${todayString}" ) {
                 inviteID
@@ -52,13 +52,14 @@ const ReceptionistDashboard = () => {
                 inviteState
             }
         }
-    `);
+    `, { fetchPolicy: "no-cache" });
 
+    
     const refetch = () => {
         client.query({
             query: gql`
                 query{
-                    getInvitesByDate( date: "2022-06-02" ) {
+                    getInvitesByDate( date: "${todayString}" ) {
                         inviteID
                         inviteDate
                         idNumber
@@ -67,15 +68,12 @@ const ReceptionistDashboard = () => {
                   
                     }
                 }
-            `,
-            }).then(res => {
-              const invites = [];
-              invites = res.data.getInvitesByDate.filter((invite) => {
-                return invite.inviteState !== "signedOut"
+            `,},
+            { fetchPolicy: "cache-and-network" }).then(res => {
+              const data = res.data.getInvitesByDate.filter((invite) => {
+                return invite.inviteState !== "signedOut"               
               });
-
-              setVisitorData(invites);
-
+              setVisitorData([...data]);
             })
     }
 
@@ -84,12 +82,9 @@ const ReceptionistDashboard = () => {
 
     //--------------------------------------------------------------------
 
-    function refreshPage() {
-        window.location.reload(true);
-    }
-
     const client = useApolloClient();
-    const search = (name) => {
+
+    const search = () => {
         //TODO (Stefan)
         setSearch(true);
         client.query({
@@ -106,12 +101,13 @@ const ReceptionistDashboard = () => {
             `,
         })
             .then((res) => {
-                //alert(res.data);
                 const visitors = res.data.getInvitesByNameForSearch.filter((invite) => {
                     return invite.inviteDate === todayString && invite.inviteState !== "signedOut"
                 });
                 setVisitorData(visitors);
-            })
+            }).catch((err) => {
+                
+            });
     };
 
     const resetDefaultResults = () => {
@@ -140,11 +136,14 @@ const ReceptionistDashboard = () => {
 
 
     useEffect(() => {
+        invitesQuery();
         if ((!loading && !error)) {
-            const invites = data.getInvitesByDate.filter((invite) => {
-                return invite.inviteState !== "signedOut"
-            });
-            setVisitorData(invites);
+            if(data) {
+                const invites = data.getInvitesByDate.filter((invite) => {
+                    return invite.inviteState !== "signedOut"
+                });
+                setVisitorData(invites);
+            }
         } else if (error) {
             if (error.message === "Unauthorized") {
                 router.push("/expire");
@@ -159,6 +158,7 @@ const ReceptionistDashboard = () => {
                 },
             ]);
         }
+
     }, [loading, error, router, data]);
 
 
@@ -202,11 +202,6 @@ const ReceptionistDashboard = () => {
             )}
 
         
-            {/* <div className="mx-5 grid grid-cols-3 gap-4 content-evenly h-10 bg-base-300 rounded-md content-center">
-                <div className="ml-2">Invitation Id</div>
-                <div className="">Visitor Id</div>
-                <div className=""></div>
-            </div> */}
             <div className="flex h-full items-center justify-center overflow-x-auto p-3">
                 {loading ? (
                     <progress className="progress progress-primary w-56">
@@ -229,28 +224,26 @@ const ReceptionistDashboard = () => {
                                     return (
                                         <tr className="hover" key={idx}>
                                             <th>{idx + 1}</th>
-                                            <td>{visit.visitorName}</td>
+                                            <td className="capitalize">{visit.visitorName}</td>
                                             <td>{visit.idNumber}</td>
 
                                             {visit.inviteState === "inActive" ? (
                                                 <td>
-                                                    
                                                     <ReceptionistSignButton 
-                                                    onClick={() => {
-                                                        setCurrentVisitorID(
-                                                            visit.idNumber
-                                                        );
-                                                        setCurrentInviteID(
-                                                            visit.inviteID
-                                                        );
-                                                        setCurrentVisitorName(
-                                                            visit.visitorName
-                                                        );
-                                                        
-                                                    }}
-                                                    text="Sign In" 
-                                                    colour="bg-green-800" 
-                                                    htmlFor="signIn-modal" 
+                                                        onClick={() => {
+                                                            setCurrentVisitorID(
+                                                                visit.idNumber
+                                                            );
+                                                            setCurrentInviteID(
+                                                                visit.inviteID
+                                                            );
+                                                            setCurrentVisitorName(
+                                                                visit.visitorName
+                                                            );
+                                                        }}
+                                                        text="Sign In" 
+                                                        colour="bg-green-800" 
+                                                        htmlFor="signIn-modal" 
                                                     />
                                                         
                                                 </td>
@@ -286,9 +279,9 @@ const ReceptionistDashboard = () => {
                         )}
                     </table>
                 )}
+                <ErrorAlert message={errorMessage} showConditon={showErrorAlert} />
+                <InfoAlert visitorName={currentVisitorName} showConditon={showInfoAlert} trayNr={trayNr}/>
             </div>
-            <ErrorAlert message={errorMessage} showConditon={showErrorAlert} />
-            <InfoAlert visitorName={currentVisitorName} showConditon={showInfoAlert} trayNr={trayNr}/>
 
             <input type="checkbox" id="signIn-modal" className="modal-toggle" />
             <div className="fade modal cursor-pointer" id="signIn-modal">
@@ -301,9 +294,10 @@ const ReceptionistDashboard = () => {
                     <SignInPopUp
                         visitorID={currentVisitorID}
                         inviteID={currentInviteID}
-                        refetch={refetch}
                         setTrayNr={setTrayNr}
                         setShowInfoAlert={setShowInfoAlert}
+                        refetch={invitesQuery}
+                        todayString={todayString}
                     />
                 </div>
             </div>
@@ -320,9 +314,12 @@ const ReceptionistDashboard = () => {
                     <SignOutPopUp
                         visitorID={currentVisitorID}
                         inviteID={currentInviteID}
-                        refetch={refetch}
+                        setShowInfoAlert={setShowInfoAlert}
+                        setTrayNr={setTrayNr}
+                        refetch={invitesQuery}
                     />
                 </div>
+
             </div>
 
             <input type="checkbox" id="QRScan-modal" className="modal-toggle" onChange={() => {}}checked={showScanner ? true : false} />

@@ -97,7 +97,7 @@ const AdminDashboard = () => {
 
     const numParkingInDateRangeQuery = useQuery(gql`
         query {
-            getUsedParkingsInRange(startDate: "${start}", endDate: "${endDate}")
+            getUsedParkingsInRange(startDate: "${startDate}", endDate: "${endDate}")
         }
     `);
 
@@ -169,19 +169,10 @@ const AdminDashboard = () => {
         if(!numParkingInDateRangeQuery.loading &&
            !numParkingInDateRangeQuery.error) {
             const parkingNumbers = numParkingInDateRangeQuery.data.getUsedParkingsInRange;
-            let temp = Array.from(dateMap.values());
-
-            temp = temp.map((v) => {
-                if(Math.round(Math.random()) === 1 && v !== 0) {
-                    return 0; 
-                } else {
-                    return v;
-                }
-            });
 
             setParkingVals({
                 labels: Array.from(dateMap.keys()),
-                data: Array.from(temp) 
+                data: Array.from(parkingNumbers) 
             });
 
         } else if(numInviteInDateRangeQuery.error) {
