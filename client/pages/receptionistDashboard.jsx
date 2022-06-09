@@ -9,22 +9,24 @@ import QRScanner from "../components/QRScanner";
 import SignInPopUp from "../components/SignInPopUp";
 import SignOutPopUp from "../components/SignOutPopUp";
 import VisitInfoModal from "../components/VisitInfoModal";
+import ReceptionistSignButton from "../components/receptionistSignButton";
+import InfoAlert from "../components/InfoAlert";
 
 const ReceptionistDashboard = () => {
     
     const [currentVisitorID,setCurrentVisitorID] = useState("");
     const [currentInviteID,setCurrentInviteID] = useState("");
+    const [currentVisitorName,setCurrentVisitorName] = useState("");
     const [currentName,setCurrentName] = useState("");
+    const [trayNr, setTrayNr] = useState("");
     
     const [visitorData, setVisitorData] = useState([]);
     const [reload, setReload] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [showInfoAlert, setShowInfoAlert] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [showScanner, setShowScanner] = useState(false);
 
-    let ti;
-
-    //let today = new Date();
     const getFormattedDateString = (date) => {
         if(date instanceof Date) {
             const month = date.getMonth() + 1;
@@ -36,6 +38,7 @@ const ReceptionistDashboard = () => {
             ].join("-");
         }
     };
+
     const todayString = getFormattedDateString(new Date());
 
     const router = useRouter();
@@ -50,6 +53,31 @@ const ReceptionistDashboard = () => {
             }
         }
     `);
+
+    const refetch = () => {
+        client.query({
+            query: gql`
+                query{
+                    getInvitesByDate( date: "2022-06-02" ) {
+                        inviteID
+                        inviteDate
+                        idNumber
+                        visitorName
+                        inviteState
+                  
+                    }
+                }
+            `,
+            }).then(res => {
+              const invites = [];
+              invites = res.data.getInvitesByDate.filter((invite) => {
+                return invite.inviteState !== "signedOut"
+              });
+
+              setVisitorData(invites);
+
+            })
+    }
 
     //STEFAN SE CODE
     const [searching, setSearch] = useState(false);
@@ -86,19 +114,13 @@ const ReceptionistDashboard = () => {
             })
     };
 
-
-
-    const signOut = (inviteID) => {
-        //TODO (Tabitha)
-        //change the state of the invite
-        //free the parking
-    };
-
     const resetDefaultResults = () => {
         setSearch(false);
 
         if ((!loading && !error) || reload) {
-            const invites = data.getInvitesByDate;
+            const invites = data.getInvitesByDate.filter((invite) => {
+                return invite.inviteState !== "signedOut"
+            });
             setVisitorData(invites);
         } else if (error) {
             if (error.message === "Unauthorized") {
@@ -119,7 +141,9 @@ const ReceptionistDashboard = () => {
 
     useEffect(() => {
         if ((!loading && !error)) {
-            const invites = data.getInvitesByDate;
+            const invites = data.getInvitesByDate.filter((invite) => {
+                return invite.inviteState !== "signedOut"
+            });
             setVisitorData(invites);
         } else if (error) {
             if (error.message === "Unauthorized") {
@@ -149,13 +173,13 @@ const ReceptionistDashboard = () => {
                 type="text"
                 placeholder="Search.."
                 className="input input-bordered input-primary ml-5 w-4/6"
-                onChange={(evt) => setName(evt.target.value)}
+                onChange={(evt) => {setName(evt.target.value);
+                    if(searching === true && evt.target.value === "")
+                    resetDefaultResults();
+                }}
             />
             <button onClick={search} className="btn btn-primary ml-5 mt-5 mb-5">
                 Search
-            </button>
-            <button onClick= {resetDefaultResults} className="btn btn-primary ml-5 mt-5 mb-5">
-                Today&apos;s Invites
             </button>
             <label
                 htmlFor="QRScan-modal"
@@ -209,37 +233,41 @@ const ReceptionistDashboard = () => {
 
                                             {visit.inviteState === "inActive" ? (
                                                 <td>
-                                                    <label
-                                                        htmlFor="signIn-modal"
-                                                        className="modal-button btn max-w-md border-0 bg-green-800 text-white"
-                                                        onClick={() => {
-                                                            setCurrentVisitorID(
-                                                                visit.idNumber
-                                                            );
-                                                            setCurrentInviteID(
-                                                                visit.inviteID
-                                                            );
-                                                        }}
-                                                    >
-                                                        Sign In
-                                                    </label>
+                                                    
+                                                    <ReceptionistSignButton 
+                                                    onClick={() => {
+                                                        setCurrentVisitorID(
+                                                            visit.idNumber
+                                                        );
+                                                        setCurrentInviteID(
+                                                            visit.inviteID
+                                                        );
+                                                        setCurrentVisitorName(
+                                                            visit.visitorName
+                                                        );
+                                                        
+                                                    }}
+                                                    text="Sign In" 
+                                                    colour="bg-green-800" 
+                                                    htmlFor="signIn-modal" 
+                                                    />
+                                                        
                                                 </td>
                                             ) : (
                                                 <td>
-                                                     <label
-                                                        htmlFor="signOut-modal"
-                                                        className="modal-button btn max-w-md border-0 bg-red-800 text-white"
-                                                        onClick={() => {
-                                                            setCurrentVisitorID(
-                                                                visit.idNumber
-                                                            );
-                                                            setCurrentInviteID(
-                                                                visit.inviteID
-                                                            );
-                                                        }}
-                                                    >
-                                                        Sign Out
-                                                    </label>
+                                                     <ReceptionistSignButton 
+                                                     onClick={() => {
+                                                        setCurrentVisitorID(
+                                                            visit.idNumber
+                                                        );
+                                                        setCurrentInviteID(
+                                                            visit.inviteID
+                                                        );
+                                                        
+                                                    }}
+                                                     text="Sign Out" 
+                                                     htmlFor="signOut-modal" 
+                                                     colour="bg-red-800" />
                                                 </td>
 
                                             )}
@@ -259,6 +287,7 @@ const ReceptionistDashboard = () => {
                 )}
             </div>
             <ErrorAlert message={errorMessage} showConditon={showErrorAlert} />
+            <InfoAlert visitorName={currentVisitorName} showConditon={showInfoAlert} trayNr={trayNr}/>
 
             <input type="checkbox" id="signIn-modal" className="modal-toggle" />
             <div className="fade modal cursor-pointer" id="signIn-modal">
@@ -271,6 +300,9 @@ const ReceptionistDashboard = () => {
                     <SignInPopUp
                         visitorID={currentVisitorID}
                         inviteID={currentInviteID}
+                        refetch={refetch}
+                        setTrayNr={setTrayNr}
+                        setShowInfoAlert={setShowInfoAlert}
                     />
                 </div>
             </div>
@@ -287,6 +319,7 @@ const ReceptionistDashboard = () => {
                     <SignOutPopUp
                         visitorID={currentVisitorID}
                         inviteID={currentInviteID}
+                        refetch={refetch}
                     />
                 </div>
             </div>
