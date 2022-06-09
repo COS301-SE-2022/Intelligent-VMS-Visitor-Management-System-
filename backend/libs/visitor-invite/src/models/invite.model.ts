@@ -34,8 +34,11 @@ export class Invite {
     @Field((type) => {return String})
     notes?: string
 
-    @Field((type)=> {return String})
-    signOutDate?: Date
+    @Field((type)=> String)
+    signOutTime?: Date
+
+    @Field((type)=> String)
+    signInTime?: String
 
     @Field((type)=> Number)
     trayNumber?: number
