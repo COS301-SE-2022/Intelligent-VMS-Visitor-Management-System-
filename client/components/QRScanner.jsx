@@ -1,18 +1,46 @@
 import React, { useEffect, useRef, useState } from "react";
 import { QrReader } from "react-qr-reader";
+import { gql, useApolloClient } from "@apollo/client";
 
 import useVideo from "../hooks/useVideo.hook";
 
-const QrScanner = ({ setShowScanner }) => {
+const QrScanner = ({ setShowScanner, setVisitorData, setSearch }) => {
+    //ApolloClient
+    const client = useApolloClient();
+
+    // QR Data State
+    const [data, setData] = useState("");
+
+    //Search function that actually queries the database
+    const search = (data) => {
+        //setting the searching variable to true in order to update the table heading
+        setSearch(true);
+        client.query({
+            query: gql`
+                query{
+                    getInvitesByIDForSearch( inviteID: "${data}" ) {
+                        inviteID
+                        inviteDate
+                        idNumber
+                        visitorName
+                        inviteState
+                    }
+                }
+            `,
+        }).then((res) => {
+                //creating an array of 1 element to send to VisitorData
+                const visitor = [];
+                visitor[0] = res.data.getInvitesByIDForSearch; 
+                setVisitorData(visitor);
+        }).catch((err) => {
+            console.log(err);
+        });
+    };
 
     const [invalid,setInvalid] = useState(false);
 
     // DOM Reference to Video element
     const videoRef = useRef(null);
-
-    // QR Data State
-    // TODO (Stefan) this data variable holds the result of the scan
-    const [data, setData] = useState('No result');
 
     // Video Player Hook
     //const [playingVideo, setPlayingVideo] = useVideo(videoRef);
@@ -35,7 +63,7 @@ const QrScanner = ({ setShowScanner }) => {
                                     if (qrData.inviteID) {
                                         setData(qrData.inviteID); 
                                         setShowScanner(false);
-                                        //alert(qrData.inviteID);
+                                        search(qrData.inviteID);
                                     } else {
                                         setInvalid(true);
                                     }
