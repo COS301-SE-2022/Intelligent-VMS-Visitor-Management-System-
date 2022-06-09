@@ -29,6 +29,8 @@ The VMS is an intelligent visitor management system that allows provides a platf
 
 <a href="https://docs.google.com/document/d/1OsMC2hIJGSJeZnEgSzadCk7NotpZuxzixN3h4vJuv9I/view?usp=sharing">📊 SRS Document</a>
 
+<a href="https://docs.google.com/document/d/1xGIGt2TF3m_zBTq8HFQvbrWQS1P7GJDmd-BllNjurzk/edit?usp=sharing">🏠 Architecture Requirements Document</a>
+
 <a href="https://docs.google.com/document/d/1Kf-5MxLnLUtDd3b5bp-AUGTrLjr4tCdsoLqV4UA1I04/edit">🧶 Coding Standards Document</a>
 
 <a href="#">🚧 Demo Video</a>
@@ -111,7 +113,7 @@ I am good at devoting myself to a task and learning everything required to compl
 #### 🏡 Git Structure
 ```
 ├── client // Frontend of system
-│   ├── __tests__ // Unit tests
+│   ├── __tests__ // Unit tests & Integration tests
 │   ├── components // React components used in pages
 │   ├── pages // Pages of the site
 │   ├── store // Global state store
@@ -123,6 +125,7 @@ I am good at devoting myself to a task and learning everything required to compl
 │   ├── src // Entry point and bundler
 │   ├── test // e2e and integration tests
 ```
+See Coding Guidelines Document for more in depth file structure.
 
 #### ⏰ Git organization and management
 
