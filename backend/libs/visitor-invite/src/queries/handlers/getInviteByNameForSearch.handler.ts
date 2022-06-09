@@ -9,7 +9,27 @@ export class GetInvitesByNameForSearchQueryHandler implements IQueryHandler {
     constructor(@InjectModel(Invite.name) private inviteModel: Model<InviteDocument>) {}
 
     async execute(query: GetInvitesByNameForSearchQuery) {
+        //return await this.inviteModel.aggregate(([{ $search: { "autocomplete": { "path": "visitorName", "query": name} } ]));
         const { name } = query;
-        return await this.inviteModel.aggregate(([{ $search: { "autocomplete": { "path": "visitorName", "query": name} } }, { $limit: 20 }]));
+        return await this.inviteModel.aggregate([
+          {
+            $search: {
+              "compound": {
+                "must": [{
+                  "text": {
+                    "query": name,
+                    "path": "visitorName"
+                  }
+                }],
+                "mustNot": [{
+                  "text": {
+                    "query": "signedOut",
+                    "path": "inviteState"
+                  }
+                }]
+              }
+            },
+          },
+        ]);
     }
 }
