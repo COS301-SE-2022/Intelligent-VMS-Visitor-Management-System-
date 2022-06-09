@@ -32,16 +32,12 @@ const SignInPopUp = ({ visitorID, inviteID, refetch, setShowInfoAlert, setTrayNr
                               `
                             }
                             ).then((res) => {
+                              console.log(res);
                               setTrayNr(res.data.signIn);
                               setShowInfoAlert(true);
-                              //alert('tray number is: ' + res.data.signIn);
-                              //refetch();
+                              console.log("Called: " + refetch);
+                              refetch();
                             });
-
-                            
-                              
-                              
-                                       
                         }
                         
                         }>Sign in</label>

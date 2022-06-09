@@ -7,8 +7,12 @@ import useVideo from "../hooks/useVideo.hook";
 const QrScanner = ({ setShowScanner, setVisitorData, setSearch }) => {
     //ApolloClient
     const client = useApolloClient();
+
+    // QR Data State
+    const [data, setData] = useState("");
+
     //Search function that actually queries the database
-    const search = () => {
+    const search = (data) => {
         //setting the searching variable to true in order to update the table heading
         setSearch(true);
         client.query({
@@ -23,22 +27,20 @@ const QrScanner = ({ setShowScanner, setVisitorData, setSearch }) => {
                     }
                 }
             `,
-        })
-            .then((res) => {
+        }).then((res) => {
                 //creating an array of 1 element to send to VisitorData
                 const visitor = [];
                 visitor[0] = res.data.getInvitesByIDForSearch; 
                 setVisitorData(visitor);
-            })
+        }).catch((err) => {
+            console.log(err);
+        });
     };
 
     const [invalid,setInvalid] = useState(false);
 
     // DOM Reference to Video element
     const videoRef = useRef(null);
-
-    // QR Data State
-    const [data, setData] = useState('No result');
 
     // Video Player Hook
     //const [playingVideo, setPlayingVideo] = useVideo(videoRef);
@@ -61,8 +63,7 @@ const QrScanner = ({ setShowScanner, setVisitorData, setSearch }) => {
                                     if (qrData.inviteID) {
                                         setData(qrData.inviteID); 
                                         setShowScanner(false);
-                                        search();
-                                        //alert(qrData.inviteID);
+                                        search(qrData.inviteID);
                                     } else {
                                         setInvalid(true);
                                     }

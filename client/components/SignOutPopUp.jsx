@@ -2,7 +2,7 @@ import { gql, useApolloClient } from "@apollo/client";
 import React, { useEffect, useRef, useState, setState } from "react";
 import { ImExit } from "react-icons/im";
 
-const SignOutPopUp = ({ visitorID, inviteID, refetch }) => {
+const SignOutPopUp = ({ visitorID, inviteID, setTrayNr, setShowInfoAlert, refetch }) => {
     const client = useApolloClient();
 
     return (
@@ -23,10 +23,9 @@ const SignOutPopUp = ({ visitorID, inviteID, refetch }) => {
                     }
                 `
                 }).then(res => {
-                    
-                    alert('tray number is: ' + res.data.signOut);
-                    //refetch();
-                })
+                    setTrayNr(res.data.signOut);
+                    setShowInfoAlert(true);
+                });
             }
             } >Sign out</label>
         </div>
