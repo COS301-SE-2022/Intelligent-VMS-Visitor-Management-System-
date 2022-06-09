@@ -18,6 +18,8 @@ const customJestConfig = {
   coveragePathIgnorePatterns: [
     "node_modules",
     "authStore.js",
+    "useVideo.hook.js",
+    "QRScanner.js"
   ],
   modulePathIgnorePatterns: [
       "__mocks__",
