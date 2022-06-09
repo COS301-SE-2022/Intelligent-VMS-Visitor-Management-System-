@@ -54,8 +54,7 @@ export class SignInService {
                     throw new InvalidSignIn(`The date on invitation with ID ${invitationID} does not match the sign in date`)
                 }
             }
-
-                        
+  
         }
 
         async generateTrayID(){

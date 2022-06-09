@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import { randomUUID } from "crypto";
 
@@ -27,13 +27,16 @@ import { GetAvailableParkingQuery } from '@vms/parking/queries/impl/getAvailable
 import { ParkingNotFound } from "@vms/parking/errors/parkingNotFound.error";
 import { MailService } from "@vms/mail";
 import { RestrictionsService } from "@vms/restrictions";
+import { ParkingService } from "@vms/parking";
 
 @Injectable()
 export class VisitorInviteService {
     constructor(private readonly commandBus: CommandBus, 
                 private readonly queryBus: QueryBus, 
                 private readonly mailService: MailService,
-                private readonly restrictionsService: RestrictionsService
+                private readonly restrictionsService: RestrictionsService,
+                @Inject(forwardRef(() => {return ParkingService}))
+                private readonly parkingService: ParkingService,
                ) {}
 
     /*
@@ -78,15 +81,7 @@ export class VisitorInviteService {
 
         // Parking
         if(requiresParking) {
-            const parking =  await this.queryBus.execute(
-                new GetAvailableParkingQuery()
-            );
-
-            if(parking>0) {
-                await this.commandBus.execute(new ReserveParkingCommand(inviteID,2));
-            } else {
-                throw new ParkingNotFound("Parking Unavailable");
-            }
+            await this.parkingService.reserveParking(inviteID);
         }
 
         const info = await this.mailService.sendInvite(visitorEmail, userEmail, inviteID, idDocType, requiresParking);

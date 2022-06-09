@@ -1,6 +1,5 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
-
 import { AssignParkingCommand } from './commands/impl/assignParking.command';
 import { FreeParkingCommand } from './commands/impl/freeParking.command';
 import { ReserveParkingCommand } from './commands/impl/reserveParking.command';
@@ -9,19 +8,16 @@ import { DisableParkingSpaceCommand } from './commands/impl/disableParkingSpace.
 import { UnreserveParkingCommand } from './commands/impl/unreserveParking.command';
 import { CreateNParkingSpotsCommand } from './commands/impl/createNParkingSpots.command';
 import { AddParkingCommand } from './commands/impl/addParking.command';
-
 import { GetAvailableParkingQuery } from './queries/impl/getAvailableParking.query';
 import { GetFreeParkingQuery } from './queries/impl/getFreeParking.query';
 import { GetInviteReservationQuery } from './queries/impl/getInviteReservation.query';
 import { GetReservationsQuery } from './queries/impl/getReservations.query';
 import { GetParkingReservationsQuery } from './queries/impl/getParkingReservations.query';
 import { GetReservationInRangeQuery } from "./queries/impl/getReservationsInRange.query";
-
 import { InvalidQuery } from './errors/invalidQuery.error';
 import { ReservationNotFound } from './errors/reservationNotFound.error';
 import { ParkingNotFound } from "./errors/parkingNotFound.error";
 import { ExternalError } from './errors/externalError.error';
-
 import { InviteNotFound } from '@vms/visitor-invite/errors/inviteNotFound.error';
 import { VisitorInviteService } from '@vms/visitor-invite/visitor-invite.service';
 
