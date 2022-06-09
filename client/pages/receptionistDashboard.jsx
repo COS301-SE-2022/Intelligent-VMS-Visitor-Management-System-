@@ -9,7 +9,7 @@ import QRScanner from "../components/QRScanner";
 import SignInPopUp from "../components/SignInPopUp";
 import SignOutPopUp from "../components/SignOutPopUp";
 import VisitInfoModal from "../components/VisitInfoModal";
-import ReceptionistSignButton from "../components/ReceptionistSignButton";
+import ReceptionistSignButton from "../components/receptionistSignButton";
 import InfoAlert from "../components/InfoAlert";
 
 const ReceptionistDashboard = () => {
