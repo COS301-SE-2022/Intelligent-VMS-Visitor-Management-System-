@@ -124,6 +124,7 @@ export class VisitorInviteResolver {
     }
 
 
+    // Get number of invites given a user by email
     @UseGuards(GqlAuthGuard, RolesGuard)
     @Roles("admin")
     @Query((returns) => {return Number}, { name: "getNumberOfInvitesOfVisitor"})
