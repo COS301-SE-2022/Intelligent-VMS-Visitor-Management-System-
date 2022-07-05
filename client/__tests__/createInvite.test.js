@@ -20,7 +20,7 @@ import {
 
 // Setup router mock hook
 nextRouter.useRouter = jest.fn();
-nextRouter.useRouter.mockImplementation(() => ({route: "/"}));
+nextRouter.useRouter.mockImplementation(() => ({ route: "/" }));
 
 describe("CreateInvite", () => {
     const authHook = renderHook(() => useAuth());
@@ -302,7 +302,6 @@ describe("CreateInvite", () => {
         );
 
         await user.click(screen.getByRole("button"));
-
     });
 
     it("redirects to visitor dashboard when data is valid", async () => {
@@ -379,7 +378,7 @@ describe("CreateInvite", () => {
             <MockedProvider mocks={inviteLimitReached} addTypename={false}>
                 <CreateInvite />
             </MockedProvider>
-        ); 
+        );
 
         await waitFor(async () => {
             await new Promise((resolve) => setTimeout(resolve, 30));
@@ -401,7 +400,7 @@ describe("CreateInvite", () => {
             <MockedProvider mocks={inviteLimitNotReached} addTypename={false}>
                 <CreateInvite />
             </MockedProvider>
-        ); 
+        );
 
         await waitFor(async () => {
             await new Promise((resolve) => setTimeout(resolve, 30));
@@ -424,11 +423,10 @@ describe("CreateInvite", () => {
             <MockedProvider mocks={inviteDataErrorMock} addTypename={false}>
                 <CreateInvite />
             </MockedProvider>
-        ); 
+        );
 
         await waitFor(async () => {
             await new Promise((resolve) => setTimeout(resolve, 30));
         });
     });
-
 });

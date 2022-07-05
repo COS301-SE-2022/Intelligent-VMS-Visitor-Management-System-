@@ -5,12 +5,18 @@ import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
 import * as nextRouter from "next/router";
 
-import { validDataMock, noDataMock, cancelInviteMock, unauthReq, errorReq } from "./__mocks__/visitorDashboard.mock";
+import {
+    validDataMock,
+    noDataMock,
+    cancelInviteMock,
+    unauthReq,
+    errorReq,
+} from "./__mocks__/visitorDashboard.mock";
 import VisitorDashboard from "../pages/visitorDashboard";
 
 // Setup router mock hook
 nextRouter.useRouter = jest.fn();
-nextRouter.useRouter.mockImplementation(() => ({route: "/"}));
+nextRouter.useRouter.mockImplementation(() => ({ route: "/" }));
 
 describe("VisitorDashboard", () => {
     it("renders a heading", () => {
@@ -19,7 +25,7 @@ describe("VisitorDashboard", () => {
                 <VisitorDashboard />
             </MockedProvider>
         );
-        expect(screen.getByText("Visitor History")).toBeInTheDocument();
+        expect(screen.getByText("Visitor" && "History")).toBeInTheDocument();
     });
 
     it("renders progressbar when getting data", async () => {
@@ -83,14 +89,14 @@ describe("VisitorDashboard", () => {
             ).toBeInTheDocument();
             expect(screen.getByText("0109195273080")).toBeInTheDocument();
             expect(screen.getByText("RSA-ID")).toBeInTheDocument();
-
         });
 
         const user = userEvent.setup();
-        await user.click(screen.getByRole("button", {
-            name: /cancel/i
-        }));
-
+        await user.click(
+            screen.getByRole("button", {
+                name: /cancel/i,
+            })
+        );
     });
 
     it("redirects to the expire page when unauthorized", async () => {
@@ -124,7 +130,5 @@ describe("VisitorDashboard", () => {
             await new Promise((resolve) => setTimeout(resolve, 30));
             expect(screen.getAllByText("ERROR")).toHaveLength(2);
         });
-        
     });
-
 });
