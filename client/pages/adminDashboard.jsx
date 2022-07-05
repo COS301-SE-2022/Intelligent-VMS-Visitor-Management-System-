@@ -18,7 +18,7 @@ import { MdBlock, MdDataSaverOn, MdDataSaverOff } from "react-icons/md";
 
 // Returns string in format yyyy-mm-dd given Date Object
 const getFormattedDateString = (date) => {
-    if(date instanceof Date) {
+    if (date instanceof Date) {
         const month = date.getMonth() + 1;
         const day = date.getDate();
         return [
@@ -30,7 +30,6 @@ const getFormattedDateString = (date) => {
 };
 
 const AdminDashboard = () => {
-
     // NextJS Page Router
     const router = useRouter();
 
@@ -44,13 +43,15 @@ const AdminDashboard = () => {
     const [parkingVals, setParkingVals] = useState({ data: [], labels: [] });
 
     // Date Range Hook
-    const [startDate, endDate, dateMap, setDateMap, setStartDate] = useDateRange(getFormattedDateString(new Date(Date.now())), 7);
+    const [startDate, endDate, dateMap, setDateMap, setStartDate] =
+        useDateRange(getFormattedDateString(new Date(Date.now())), 7);
 
     // Start Date State
     const [start, setStart] = useState(startDate);
 
     // Initial number of invites per resident for fallback
-    const [initialNumInvitesPerResident, setInitialNumInvitesPerResident] = useState(1);
+    const [initialNumInvitesPerResident, setInitialNumInvitesPerResident] =
+        useState(1);
 
     // State to track whether the restrictions have changed
     const [restrictionsChanged, setRestrictionsChanged] = useState(false);
@@ -62,19 +63,23 @@ const AdminDashboard = () => {
     const [name, setName] = useState("");
 
     const [numParkingSpotsAvailable, setNumParkingSpotsAvailable] = useState(0);
-    const updateParkingSpots = useAuth((state) => {return state.updateParkingSpots});
+    const updateParkingSpots = useAuth((state) => {
+        return state.updateParkingSpots;
+    });
 
     // JWT Token data from Model
-    const decodedToken = useAuth((state) => {return state.decodedToken})();
-    
+    const decodedToken = useAuth((state) => {
+        return state.decodedToken;
+    })();
+
     const numInvitesPerResidentQuery = useQuery(gql`
         query {
             getNumInvitesPerResident {
                 value
-          }
+            }
         }
     `);
-    
+
     // Number of invites per resident state
     const [numInvitesPerResident, setNumInvitesPerResident] = useState(1);
 
@@ -84,7 +89,8 @@ const AdminDashboard = () => {
         }
     `);
 
-    const numInviteInDateRangeQuery = useQuery(gql`
+    const numInviteInDateRangeQuery = useQuery(
+        gql`
         query {
             getNumInvitesPerDate(
                 dateStart: "${start}",
@@ -93,7 +99,9 @@ const AdminDashboard = () => {
                 inviteDate
             }
         }
-    `, { fetchPolicy: "no-cache", });
+    `,
+        { fetchPolicy: "no-cache" }
+    );
 
     const numParkingInDateRangeQuery = useQuery(gql`
         query {
@@ -107,7 +115,8 @@ const AdminDashboard = () => {
         }
     `);
 
-    const [setNumInvitesPerResidentMutation, { data, loading, error }] = useMutation(gql`
+    const [setNumInvitesPerResidentMutation, { data, loading, error }] =
+        useMutation(gql`
         mutation {
           setNumInvitesPerResident(numInvites: ${numInvitesPerResident}) {
             value
@@ -121,9 +130,9 @@ const AdminDashboard = () => {
     };
 
     const saveRestrictions = () => {
-       setInitialNumInvitesPerResident(numInvitesPerResident);
-       setNumInvitesPerResidentMutation();
-       setRestrictionsChanged(false); 
+        setInitialNumInvitesPerResident(numInvitesPerResident);
+        setNumInvitesPerResidentMutation();
+        setRestrictionsChanged(false);
     };
 
     useEffect(() => {
@@ -145,7 +154,7 @@ const AdminDashboard = () => {
         ) {
             const invites = numInviteInDateRangeQuery.data.getNumInvitesPerDate;
             invites.forEach((invite) => {
-                if(!isNaN(dateMap.get(invite.inviteDate))) {
+                if (!isNaN(dateMap.get(invite.inviteDate))) {
                     dateMap.set(
                         invite.inviteDate,
                         dateMap.get(invite.inviteDate) + 1
@@ -160,22 +169,23 @@ const AdminDashboard = () => {
             });
 
             setTodayInvites(dateMap.get(startDate));
-
         } else if (numInviteInDateRangeQuery.error) {
             console.error(numInviteInDateRangeQuery.error);
         }
-        
+
         // Num parking in range
-        if(!numParkingInDateRangeQuery.loading &&
-           !numParkingInDateRangeQuery.error) {
-            const parkingNumbers = numParkingInDateRangeQuery.data.getUsedParkingsInRange;
+        if (
+            !numParkingInDateRangeQuery.loading &&
+            !numParkingInDateRangeQuery.error
+        ) {
+            const parkingNumbers =
+                numParkingInDateRangeQuery.data.getUsedParkingsInRange;
 
             setParkingVals({
                 labels: Array.from(dateMap.keys()),
-                data: Array.from(parkingNumbers) 
+                data: Array.from(parkingNumbers),
             });
-
-        } else if(numInviteInDateRangeQuery.error) {
+        } else if (numInviteInDateRangeQuery.error) {
             console.error(numInviteInDateRangeQuery.error);
         }
 
@@ -189,26 +199,26 @@ const AdminDashboard = () => {
             setNumParkingSpotsAvailable(numParkingspots);
         } else if (numParkingSpotsAvailableQuery.error) {
         }
-        
-        if(
+
+        if (
             !numInvitesPerResidentQuery.loading &&
             !numInvitesPerResidentQuery.error
         ) {
-
-            setNumInvitesPerResident(numInvitesPerResidentQuery.data.getNumInvitesPerResident.value);
+            setNumInvitesPerResident(
+                numInvitesPerResidentQuery.data.getNumInvitesPerResident.value
+            );
             setInitialNumInvitesPerResident(numInvitesPerResident);
-        } else if(numInvitesPerResident.error) {
+        } else if (numInvitesPerResident.error) {
         }
-
     }, [
         numInvitesQuery,
         numInviteInDateRangeQuery,
         numParkingSpotsAvailableQuery,
-        numParkingInDateRangeQuery,    
+        numParkingInDateRangeQuery,
         startDate,
         setParkingVals,
         setNumParkingSpotsAvailable,
-        numInvitesPerResidentQuery
+        numInvitesPerResidentQuery,
     ]);
 
     return (
@@ -271,7 +281,7 @@ const AdminDashboard = () => {
 
                     <div className="grid grid-cols-1 gap-3 text-secondary-content md:grid-cols-2">
                         <DownloadChart
-                            title={"Visitors Forecast"}
+                            title={"Visitor Forecase For The Week"}
                             filename="visitor-forecast.png"
                             Chart={LineChart}
                             labelvals={visitorVals.labels}
@@ -279,7 +289,7 @@ const AdminDashboard = () => {
                             setStart={setStartDate}
                         />
                         <DownloadChart
-                            title={"Parking Forecast"}
+                            title={"Parking Forecast For The Week"}
                             filename="visitor-forecast.png"
                             Chart={LineChart}
                             labelvals={parkingVals.labels}
@@ -288,40 +298,79 @@ const AdminDashboard = () => {
                         />
                     </div>
 
-                    <h1 className="flex flex-col lg:flex-row items-center font-bold text-2xl space-x-3">
-                        <span className="text-primary mr-3 text-xl md:text-3xl"><MdBlock /></span> System Restrictions 
+                    <h1 className="flex flex-col items-center space-x-3 text-2xl font-bold lg:flex-row">
+                        <span className="mr-3 text-xl text-primary md:text-3xl">
+                            <MdBlock />
+                        </span>{" "}
+                        System Restrictions
                         <span>
-                            { restrictionsChanged && 
+                            {restrictionsChanged && (
                                 <div className="space-x-5">
-                                    <button onClick={saveRestrictions} className="btn btn-sm lg:btn-md btn-primary space-x-3">
-                                        <span><MdDataSaverOn className="text-xl mr-3"/></span> Save Changes
+                                    <button
+                                        onClick={saveRestrictions}
+                                        className="btn btn-primary btn-sm space-x-3 lg:btn-md"
+                                    >
+                                        <span>
+                                            <MdDataSaverOn className="mr-3 text-xl" />
+                                        </span>{" "}
+                                        Save Changes
                                     </button>
-                                    <button onClick={cancelRestrictions} className="btn btn-sm lg:btn-md btn-secondary space-x-3">
-                                        <span><MdDataSaverOff className="text-xl mr-3"/></span> Cancel Changes
+                                    <button
+                                        onClick={cancelRestrictions}
+                                        className="btn btn-secondary btn-sm space-x-3 lg:btn-md"
+                                    >
+                                        <span>
+                                            <MdDataSaverOff className="mr-3 text-xl" />
+                                        </span>{" "}
+                                        Cancel Changes
                                     </button>
                                 </div>
-                            }
+                            )}
                         </span>
                     </h1>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                         <div className="card bg-base-300">
                             <div className="card-body">
-                                <h2 className="card-title">Invites Per Resident <div className="badge badge-secondary">Resident</div></h2>
-                                <p>Number of invites a resident is allowed to have open/sent at a time.</p>
-                                <div className="card-actions justify-start flex items-center">
+                                <h2 className="card-title">
+                                    Invites Per Resident{" "}
+                                    <div className="badge badge-secondary">
+                                        Resident
+                                    </div>
+                                </h2>
+                                <p>
+                                    Number of invites a resident is allowed to
+                                    have open/sent at a time.
+                                </p>
+                                <div className="card-actions flex items-center justify-start">
                                     <div className="flex items-center space-x-3">
-                                        <button data-testid="increaseInvites" className="btn btn-circle" onClick={() => {
-                                            setNumInvitesPerResident(numInvitesPerResident+1);
-                                            setRestrictionsChanged(true);
-                                        }}>
-                                            <AiOutlinePlus className="text-xl md:text-2xl lg:text-3xl"/>
+                                        <button
+                                            data-testid="increaseInvites"
+                                            className="btn btn-circle"
+                                            onClick={() => {
+                                                setNumInvitesPerResident(
+                                                    numInvitesPerResident + 1
+                                                );
+                                                setRestrictionsChanged(true);
+                                            }}
+                                        >
+                                            <AiOutlinePlus className="text-xl md:text-2xl lg:text-3xl" />
                                         </button>
-                                        <p className="text-secondary font-bold text-4xl">{numInvitesPerResident}</p>
-                                        <button data-testid="decreaseInvites" className="btn btn-circle" onClick={() => {
-                                            numInvitesPerResident > 1 && setNumInvitesPerResident(numInvitesPerResident-1);
-                                            setRestrictionsChanged(true);
-                                        }}>
-                                            <AiOutlineMinus className="text-xl md:text-2xl lg:text-3xl"/>
+                                        <p className="text-4xl font-bold text-secondary">
+                                            {numInvitesPerResident}
+                                        </p>
+                                        <button
+                                            data-testid="decreaseInvites"
+                                            className="btn btn-circle"
+                                            onClick={() => {
+                                                numInvitesPerResident > 1 &&
+                                                    setNumInvitesPerResident(
+                                                        numInvitesPerResident -
+                                                            1
+                                                    );
+                                                setRestrictionsChanged(true);
+                                            }}
+                                        >
+                                            <AiOutlineMinus className="text-xl md:text-2xl lg:text-3xl" />
                                         </button>
                                     </div>
                                 </div>
@@ -330,23 +379,32 @@ const AdminDashboard = () => {
 
                         <div className="card bg-base-300">
                             <div className="card-body">
-                                <h2 className="card-title">Parking Spots Available <div className="badge badge-secondary">User</div></h2>
-                                <p>Number of parking spots left in the building.</p>
-                                <div className="card-actions justify-start flex items-center">
+                                <h2 className="card-title">
+                                    Parking Spots Available{" "}
+                                    <div className="badge badge-secondary">
+                                        User
+                                    </div>
+                                </h2>
+                                <p>
+                                    Number of parking spots left in the
+                                    building.
+                                </p>
+                                <div className="card-actions flex items-center justify-start">
                                     <div className="flex items-center space-x-3">
                                         <button className="btn btn-circle">
-                                            <AiOutlinePlus className="text-xl md:text-2xl lg:text-3xl"/>
+                                            <AiOutlinePlus className="text-xl md:text-2xl lg:text-3xl" />
                                         </button>
-                                        <p className="text-secondary font-bold text-4xl">{numParkingSpotsAvailable}</p>
+                                        <p className="text-4xl font-bold text-secondary">
+                                            {numParkingSpotsAvailable}
+                                        </p>
                                         <button className="btn btn-circle">
-                                            <AiOutlineMinus className="text-xl md:text-2xl lg:text-3xl"/>
+                                            <AiOutlineMinus className="text-xl md:text-2xl lg:text-3xl" />
                                         </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
 
@@ -356,9 +414,9 @@ const AdminDashboard = () => {
                         Update Number of Parking Spots Available
                     </h3>
                     <input
-                        onChange={(e) =>
-                            {return updateParkingSpots(Number(e.target.value))}
-                        }
+                        onChange={(e) => {
+                            return updateParkingSpots(Number(e.target.value));
+                        }}
                         className="input input-bordered w-full max-w-xs"
                         type="number"
                         placeholder={numParkingSpotsAvailable}

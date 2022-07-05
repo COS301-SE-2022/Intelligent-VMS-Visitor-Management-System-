@@ -45,6 +45,7 @@ const useAuth = create(
                             return [
                                 { content: "Create Invite", path: "/createInvite" },
                                 { content: "Admin Dashboard", path: "/adminDashboard"},
+                                { content: "Authorize Users", path: "/authorizeUser"},
                                 { content: "Dashboard", path: "/visitorDashboard"},
                                 { content: "Logout", path: "/", onClick: () => get().logout() }
                             ]; 
@@ -53,6 +54,7 @@ const useAuth = create(
                             return [
                                 { content: "Create Invite", path: "/createInvite" },
                                 { content: "Visitor Dashboard", path: "/visitorDashboard" },
+                                { content: "Authorize Users", path: "/authorizeUser"},
                                 { content: "Receptionist Dashboard", path: "/receptionistDashboard" },
                                 { content: "Logout", path: "/", onClick: () => get().logout() },
                             ];

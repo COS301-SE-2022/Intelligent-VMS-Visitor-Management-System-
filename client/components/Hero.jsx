@@ -6,7 +6,18 @@ import { BiRightArrowAlt } from "react-icons/bi";
 import useAuth from "../store/authStore";
 
 const Hero = () => {
-    const decodedToken = useAuth((state) => {return state.decodedToken})();
+    const decodedToken = useAuth((state) => {
+        return state.decodedToken;
+    })();
+
+    const heroContainer = {
+        animate: {
+            transition: {
+                staggerChildren: 0.8,
+                ease: "linear",
+            },
+        },
+    };
 
     const spinArrow = {
         initial: {
@@ -14,11 +25,19 @@ const Hero = () => {
                 ease: "easeInOut",
             },
         },
-        hover: {
-            rotate: [0, 360],
+        animate: {
+            x: [0, 8, 0],
             transition: {
-                ease: "easeInOut",
+                ease: "linear",
+                repeat: Infinity,
                 duration: 1,
+            },
+        },
+        hover: {
+            x: 10,
+            transition: {
+                ease: "linear",
+                duration: 0.4,
             },
         },
     };
@@ -52,6 +71,7 @@ const Hero = () => {
                         <motion.button
                             initial="initial"
                             whileHover="hover"
+                            animate="animate"
                             className="btn btn-primary"
                         >
                             Get Started{" "}

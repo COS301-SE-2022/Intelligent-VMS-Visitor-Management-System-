@@ -72,9 +72,9 @@ const VisitorDashboard = () => {
 
     return (
         <Layout>
-            <h1 className="mt-5 mb-5 flex items-center p-3 text-left text-4xl font-bold text-secondary">
+            <h1 className="mt-5 mb-5 flex items-center p-3 text-left text-4xl font-bold">
                 {" "}
-                Visitor History
+                <span className="text-secondary mr-3">Visitor</span> History
             </h1>
             <div className="flex h-full items-center justify-center overflow-x-auto p-3">
                 {loading ? (
@@ -94,7 +94,6 @@ const VisitorDashboard = () => {
                         </thead>
                         {visitorData.length > 0 ? (
                             <tbody>
-                                
                                 {visitorData.map((visit, idx) => {
                                     return (
                                         <tr className="hover" key={idx}>
@@ -109,8 +108,8 @@ const VisitorDashboard = () => {
                                                     onClick={() => {
                                                         cancelInvite(
                                                             visit.inviteID
-                                                        )}
-                                                    }
+                                                        );
+                                                    }}
                                                 >
                                                     <svg
                                                         xmlns="http://www.w3.org/2000/svg"

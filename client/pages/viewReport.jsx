@@ -22,16 +22,22 @@ const ViewReport = () => {
     `);
 
     useEffect(() => {
-        if(!loading && !error) {
+        if (!loading && !error) {
             console.log(data);
-        } else if(error) {
+        } else if (error) {
             console.error("Something went wrong");
         }
     }, [data]);
 
-    return(
+    return (
         <Layout>
-            <AnalyticsReport name={name} data={data && data.getNumInvitesPerDateOfUser} total={total} startDate={startDate} endDate={endDate}/>
+            <AnalyticsReport
+                name={name}
+                data={data && data.getNumInvitesPerDateOfUser}
+                total={total}
+                startDate={startDate}
+                endDate={endDate}
+            />
         </Layout>
     );
 };

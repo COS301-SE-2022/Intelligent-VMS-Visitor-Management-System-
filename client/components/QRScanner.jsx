@@ -15,8 +15,9 @@ const QrScanner = ({ setShowScanner, setVisitorData, setSearch }) => {
     const search = (data) => {
         //setting the searching variable to true in order to update the table heading
         setSearch(true);
-        client.query({
-            query: gql`
+        client
+            .query({
+                query: gql`
                 query{
                     getInvitesByIDForSearch( inviteID: "${data}" ) {
                         inviteID
@@ -27,17 +28,19 @@ const QrScanner = ({ setShowScanner, setVisitorData, setSearch }) => {
                     }
                 }
             `,
-        }).then((res) => {
+            })
+            .then((res) => {
                 //creating an array of 1 element to send to VisitorData
                 const visitor = [];
-                visitor[0] = res.data.getInvitesByIDForSearch; 
+                visitor[0] = res.data.getInvitesByIDForSearch;
                 setVisitorData(visitor);
-        }).catch((err) => {
-            console.log(err);
-        });
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     };
 
-    const [invalid,setInvalid] = useState(false);
+    const [invalid, setInvalid] = useState(false);
 
     // DOM Reference to Video element
     const videoRef = useRef(null);
@@ -47,37 +50,41 @@ const QrScanner = ({ setShowScanner, setVisitorData, setSearch }) => {
 
     useEffect(() => {
         // Stop video on component unmount
-    
     }, []);
 
     return (
- <div className="relative flex-col justify-center items-center text-center">
-    <p></p>
-     <div>
-        <video className = "relative rounded-lg" ref={videoRef} id="videoElement" />
-                <QrReader className="hidden" videoId="videoElement"
-                        onResult={(result, error) => {
-                            if (result) {
-                                try {
-                                    const qrData = JSON.parse(result?.text);
-                                    if (qrData.inviteID) {
-                                        setData(qrData.inviteID); 
-                                        setShowScanner(false);
-                                        search(qrData.inviteID);
-                                    } else {
-                                        setInvalid(true);
-                                    }
-                                } catch(error) {
+        <div className="relative flex-col items-center justify-center text-center">
+            <p></p>
+            <div>
+                <video
+                    className="relative rounded-lg"
+                    ref={videoRef}
+                    id="videoElement"
+                />
+                <QrReader
+                    className="hidden"
+                    videoId="videoElement"
+                    onResult={(result, error) => {
+                        if (result) {
+                            try {
+                                const qrData = JSON.parse(result?.text);
+                                if (qrData.inviteID) {
+                                    setData(qrData.inviteID);
+                                    setShowScanner(false);
+                                    search(qrData.inviteID);
+                                } else {
                                     setInvalid(true);
                                 }
-                            } else if(error){
-
+                            } catch (error) {
+                                setInvalid(true);
                             }
-                          }}
-                        />
+                        } else if (error) {
+                        }
+                    }}
+                />
             </div>
-        </div>    
-        );
+        </div>
+    );
 };
 
 export default QrScanner;
