@@ -1,5 +1,9 @@
 import { UseGuards, Inject, forwardRef } from "@nestjs/common";
 import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
+
+import { RolesGuard } from "@vms/user/guards/roles.guard";
+import { Roles } from "@vms/user/decorators/roles.decorator";
+
 import { AuthService } from "@vms/auth";
 import { GqlAuthGuard } from "@vms/auth/guards/GqlAuthGuard.guard";
 import { LocalAuthGuard } from "@vms/auth/guards/LocalAuthGuard.guard";
@@ -55,4 +59,13 @@ export class UserResolver {
     async verify(@Args("verifyID") verifyID: string, @Args("email") email: string) {
         return this.authService.verifyNewAccount(verifyID, email); 
     }
+
+    // Get all the unauthorized user accounts
+    @UseGuards(GqlAuthGuard, RolesGuard)
+    @Roles("receptionist", "admin")
+    @Query((returns) => { return [User] }, { name: "getUnauthorizedUsers"})
+    async getUnauthorizedUsers(@CurrentUser() user: User) {
+        return await this.userService.getUnAuthorizedUsers(user.permission);
+    }
+
 }
