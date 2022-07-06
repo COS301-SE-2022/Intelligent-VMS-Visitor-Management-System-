@@ -11,6 +11,9 @@ const QrScanner = ({ setShowScanner, setVisitorData, setSearch }) => {
     // QR Data State
     const [data, setData] = useState("");
 
+    // Video state
+    const [showVideo, setShowVideo] = useState(true);
+
     //Search function that actually queries the database
     const search = (data) => {
         //setting the searching variable to true in order to update the table heading
@@ -54,35 +57,48 @@ const QrScanner = ({ setShowScanner, setVisitorData, setSearch }) => {
 
     return (
         <div className="relative flex-col items-center justify-center text-center">
-            <p></p>
-            <div>
-                <video
-                    className="relative rounded-lg"
-                    ref={videoRef}
-                    id="videoElement"
-                />
-                <QrReader
-                    className="hidden"
-                    videoId="videoElement"
-                    onResult={(result, error) => {
-                        if (result) {
-                            try {
-                                const qrData = JSON.parse(result?.text);
-                                if (qrData.inviteID) {
-                                    setData(qrData.inviteID);
-                                    setShowScanner(false);
-                                    search(qrData.inviteID);
-                                } else {
+            <p>Ensure that QR Code is visible</p>
+            {showVideo ? (
+                <div>
+                    <video
+                        className="relative rounded-lg"
+                        ref={videoRef}
+                        id="videoElement"
+                    />
+                    <QrReader
+                        className="hidden"
+                        videoId="videoElement"
+                        onResult={(result, error) => {
+                            if (result) {
+                                try {
+                                    const qrData = JSON.parse(result?.text);
+                                    if (qrData.inviteID) {
+                                        setData(qrData.inviteID);
+                                        setShowScanner(false);
+                                        search(qrData.inviteID);
+                                    } else {
+                                        setInvalid(true);
+                                    }
+                                } catch (error) {
                                     setInvalid(true);
                                 }
-                            } catch (error) {
-                                setInvalid(true);
+                            } else if (error) {
+                                console.log(error);
+                                if (error.name === "NotFoundError") {
+                                    console.log("YES!");
+                                    setShowVideo(false);
+                                }
                             }
-                        } else if (error) {
-                        }
-                    }}
-                />
-            </div>
+                        }}
+                    />
+                </div>
+            ) : (
+                <div className="w-full text-left">
+                    <p className="text-error">
+                        Camera not available, use search bar using visitor name.
+                    </p>
+                </div>
+            )}
         </div>
     );
 };
