@@ -10,6 +10,7 @@ import { UserResolver } from "./user.resolver";
 import { GetUserQueryHandler } from "./queries/handlers/getUser.handler";
 import { GetUnAuthUsersQueryHandler } from "./queries/handlers/getUnAuthUsers.handler";
 import { CreateUserCommandHandler } from "./commands/handlers/createUser.handler";
+import { DeleteUserCommandHandler } from "./commands/handlers/deleteUser.handler";
 
 @Module({
     imports: [
@@ -17,7 +18,14 @@ import { CreateUserCommandHandler } from "./commands/handlers/createUser.handler
         CqrsModule,
         MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     ],
-    providers: [UserService, UserResolver, GetUserQueryHandler, CreateUserCommandHandler, GetUnAuthUsersQueryHandler],
+    providers: [
+        UserService, 
+        UserResolver, 
+        GetUserQueryHandler, 
+        CreateUserCommandHandler, 
+        DeleteUserCommandHandler,
+        GetUnAuthUsersQueryHandler
+    ],
     exports: [UserService],
 })
 export class UserModule {}

@@ -13,9 +13,9 @@ export class GetUnAuthUsersQueryHandler implements IQueryHandler {
     async execute(query: GetUnAuthUsersQuery) {
         const { permission } = query; 
         if(permission === -1) { // Admin query
-            return await this.userModel.find({ $or : [{permission: -1}, {permission: -2}]});
+            return await this.userModel.find({ $or: [{permission: -1}, { permission: -2 }]});
         } else { // Receptionist Query
-            return await this.userModel.find({ permission: permission });
+            return await this.userModel.find({ permission: -2 });
         }
     }
 }

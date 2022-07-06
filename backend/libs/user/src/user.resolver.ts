@@ -40,6 +40,7 @@ export class UserResolver {
         });
     }
 
+    // Signup new user
     @Mutation((returns) => {return String}, { name: "signup"})
     async signup(
         @Args("email") email: string,
@@ -55,6 +56,7 @@ export class UserResolver {
         })).accepted[0];
     }
 
+    // Verify user account with email
     @Mutation((returns) => {return Boolean}, { name: "verify"})
     async verify(@Args("verifyID") verifyID: string, @Args("email") email: string) {
         return this.authService.verifyNewAccount(verifyID, email); 
@@ -66,6 +68,22 @@ export class UserResolver {
     @Query((returns) => { return [User] }, { name: "getUnauthorizedUsers"})
     async getUnauthorizedUsers(@CurrentUser() user: User) {
         return await this.userService.getUnAuthorizedUsers(user.permission);
+    }
+
+    // Delete User Account
+    @UseGuards(GqlAuthGuard, RolesGuard)
+    @Roles("admin")
+    @Mutation((returns) => { return Boolean }, { name: "deleteUserAccount" })
+    async deleteUserAccount(@Args("email") email: string) {
+        return await this.userService.deleteUserAccount(email);
+    }
+    
+    // Authorize User Account
+    @UseGuards(GqlAuthGuard, RolesGuard)
+    @Roles("receptionist", "admin")
+    @Mutation((returns) => { return Boolean }, { name: "authorizeUserAccount" })
+    async authorizeUserAccount(@Args("email") email: string) {
+        return await this.userService.authorizeUserAccount(email); 
     }
 
 }

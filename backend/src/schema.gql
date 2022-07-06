@@ -100,6 +100,8 @@ type Mutation {
   login(email: String!, password: String!): LoginUser!
   signup(email: String!, password: String!, type: String!, idNumber: String!): String!
   verify(verifyID: String!, email: String!): Boolean!
+  deleteUserAccount(email: String!): Boolean!
+  authorizeUserAccount(email: String!): Boolean!
   createInvite(userEmail: String!, visitorName: String!, visitorEmail: String!, IDDocType: String!, IDNumber: String!, inviteDate: String!, requiresParking: Boolean!): String!
   cancelInvite(inviteID: String!): Boolean!
   assignParking(invitationID: String!): Parking!
