@@ -10,6 +10,9 @@ export class ParkingReservation {
 
     @Prop()
     parkingNumber: number;
+
+    @Prop()
+    reservationDate: string;
 }
 
 

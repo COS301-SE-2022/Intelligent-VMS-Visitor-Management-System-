@@ -18,7 +18,11 @@ import { ParkingReservation } from './models/reservation.model';
 import { GetParkingReservationsQuery } from './queries/impl/getParkingReservations.query';
 import { AddParkingCommand } from './commands/impl/addParking.command';
 import { CreateNParkingSpotsCommand } from './commands/impl/createNParkingSpots.command';
+import { UnreserveParkingCommand } from './commands/impl/unreserveParking.command';
 import { GetReservationsQuery } from './queries/impl/getReservations.query';
+import { GetParkingQuery } from './queries/impl/getParking.query';
+import { EnableParkingSpaceCommand } from './commands/impl/enableParkingSpace.command';
+import { DisableParkingSpaceCommand } from './commands/impl/disableParkingSpace.command';
 
 describe('ParkingService', () => {
   let parkingService: ParkingService;
@@ -62,8 +66,33 @@ describe('ParkingService', () => {
                 {
                     const reservation = new ParkingReservation();
                     reservation.parkingNumber= 0;
-                    reservation.invitationID= "f11ae766-ce23-4f27-b428-83cff1afbf04"
+                    reservation.invitationID= "f11ae766-ce23-4f27-b428-83cff1afbf04";
+                    reservation.reservationDate = "2022-05-15";
                     return reservation;
+                } else 
+                return undefined;
+            } else if( query instanceof GetParkingQuery){
+                if(query.parkingNumber === 2 )
+                {
+                    const parking = new Parking();
+                    parking.parkingNumber=2;
+                    parking.visitorEmail="";
+                    parking.enabled=false;
+                    return parking;
+                } else if(query.parkingNumber === 1 )
+                {
+                    const parking = new Parking();
+                    parking.parkingNumber=1;
+                    parking.visitorEmail="";
+                    parking.enabled=true;
+                    return parking;
+                } else if(query.parkingNumber === 0 )
+                {
+                    const parking = new Parking();
+                    parking.parkingNumber=0;
+                    parking.visitorEmail="";
+                    parking.enabled=true;
+                    return parking;
                 } else
                 return undefined;
                 
@@ -74,6 +103,17 @@ describe('ParkingService', () => {
                     const reservation = new ParkingReservation();
                     reservation.parkingNumber= 0;
                     reservation.invitationID= "f11ae766-ce23-4f27-b428-83cff1afbf04"
+                    reservation.reservationDate = "2022-05-15";
+                    reservations[0]=reservation;
+                    return reservations;
+                } else
+                if(query.parkingNumber === 1 )
+                {
+                    const reservations = [];
+                    const reservation = new ParkingReservation();
+                    reservation.parkingNumber= 1;
+                    reservation.invitationID= "abcc7938-2241-007d-333e-abc177e0e26b";
+                    reservation.reservationDate = "2022-05-14";
                     reservations[0]=reservation;
                     return reservations;
                 } else
@@ -104,6 +144,29 @@ describe('ParkingService', () => {
                 parking.parkingNumber=9;
                 parking.visitorEmail="";
                 return parking;
+          } else if (command instanceof UnreserveParkingCommand){
+                const parking = new Parking();
+                parking.parkingNumber=0;
+                parking.visitorEmail="";
+                return parking;
+          } else if ( command instanceof EnableParkingSpaceCommand){
+            if(command.parkingNumber === 0) {
+                const parking = new Parking();
+                parking.parkingNumber=0;
+                parking.visitorEmail="";
+                parking.enabled=true;
+                return parking;
+            } else 
+            return undefined;
+        } else if ( command instanceof DisableParkingSpaceCommand){
+            if(command.parkingNumber === 0) {
+                const parking = new Parking();
+                parking.parkingNumber=0;
+                parking.visitorEmail="";
+                parking.enabled=false;
+                return parking;
+            } else 
+            return undefined;
           } else if(command instanceof AssignParkingCommand) {
               if(command.parkingNumber === 0 && command.visitorEmail=="larisabotha@icloud.com") {
                     const parking = new Parking();
@@ -247,7 +310,7 @@ describe('ParkingService', () => {
           expect(parking.visitorEmail).toEqual(invite.visitorEmail);
       });
 
-      it("should throw an exception if invitation ID is valid and no reservation is made", async () => {
+      it("should throw an exception if invitation ID is valid but no reservation is made", async () => {
         try{
             await parkingService.assignParking("cb7c7938-1c41-427d-833e-2c6b77e0e26b");
         }catch (error) {
@@ -256,7 +319,7 @@ describe('ParkingService', () => {
         }
     });
 
-      it("should throw an exception if an invalid invitation is given", async () => {
+      it("should throw an exception if an invalid invitation ID is given", async () => {
           try {
             await parkingService.assignParking("jippy");
           } catch (error) {
@@ -266,6 +329,28 @@ describe('ParkingService', () => {
       });
 
   });
+
+  describe("unreserveParking", () => {
+    it("should not throw an error if valid invitation ID given", async () => {
+        try{
+            await parkingService.unreserveParking("f11ae766-ce23-4f27-b428-83cff1afbf04");  
+            expect("").toEqual("");
+        }
+        catch(error){
+            expect("").toEqual(0);
+        } 
+
+    });
+    
+    it("should throw an exception if an invalid invitation ID is given", async () => {
+        try {
+          await parkingService.unreserveParking("jippy");
+        } catch (error) {
+            expect(error).toBeDefined();
+            expect(error.message).toEqual(`Invitation with ID jippy not found.`)
+        }
+    });
+});
 
   describe("reserveParking", () => {
       it("should return the parking reservation made if valid invitation ID is given", async () => {
@@ -281,6 +366,20 @@ describe('ParkingService', () => {
               expect(error.message).toEqual("Invitation with ID jippy not found")
           }
       });
+
+      it("should throw an exception if an invite already has a reservation", async () => {
+        try {
+            await parkingService.reserveParking("f11ae766-ce23-4f27-b428-83cff1afbf04");
+        } catch (error) {
+            expect(error).toBeDefined();
+            expect(error.message).toEqual("Invitation with ID f11ae766-ce23-4f27-b428-83cff1afbf04 already have reserved parking.")
+        }
+      });
+
+      it("should throw an exception if no free parking available", async () => {
+        //TODO (Larisa) but not sure how
+      });
+
   });
 
   describe("reserveParkingSpace", () => {
@@ -298,15 +397,76 @@ describe('ParkingService', () => {
         }
     });
 
+    it("should throw an exception if parking space is disabled", async () => {
+        try {
+            await parkingService.reserveParkingSpace(2,"cb7c7938-1c41-427d-833e-2c6b77e0e26b");
+        } catch (error) {
+            expect(error).toBeDefined();
+            expect(error.message).toEqual("Parking number 2 is temporarily disabled.")
+        }
+      });
+
     it("should throw an exception if an invalid parking number is given", async () => {
         try {
-            await parkingService.reserveParkingSpace(999,"f11ae766-ce23-4f27-b428-83cff1afbf04");
+            await parkingService.reserveParkingSpace(999,"cb7c7938-1c41-427d-833e-2c6b77e0e26b");
         } catch (error) {
             expect(error).toBeDefined();
             expect(error.message).toEqual("Parking number 999 is out of parking range. Parking range from 0 to 8")
         }
     });
+
+    it("should throw an exception if an invite already has a reservation", async () => {
+        try {
+            await parkingService.reserveParkingSpace(0,"f11ae766-ce23-4f27-b428-83cff1afbf04");
+        } catch (error) {
+            expect(error).toBeDefined();
+            expect(error.message).toEqual("Invitation with ID f11ae766-ce23-4f27-b428-83cff1afbf04 already have reserved parking.")
+        }
     });
+
+    it("should throw an exception if the parking spot is not available", async () => {
+        try {
+            await parkingService.reserveParkingSpace(1,"cb7c7938-1c41-427d-833e-2c6b77e0e26b");
+        } catch (error) {
+            expect(error).toBeDefined();
+            expect(error.message).toEqual("Parking number 1 is not available.")
+        }
+    });
+
+    });
+
+    describe("enableParkingSpace", () => {
+        it("should return the enabled parking if a valid parking number is given", async () => {
+            const parking = await parkingService.enableParkingSpace(0);
+            expect(parking.enabled).toEqual(true);
+        });
+    
+        it("should throw an exception if an invalid parking number is given", async () => {
+            try {
+                await parkingService.enableParkingSpace(999);
+            } catch (error) {
+                expect(error).toBeDefined();
+                expect(error.message).toEqual("Parking number 999 is out of parking range. Parking range from 0 to 8")
+            }
+        });
+    });
+
+    describe("disableParkingSpace", () => {
+        it("should return the disabled parking if a valid parking number is given", async () => {
+            const parking = await parkingService.disableParkingSpace(0);
+            expect(parking.enabled).toEqual(false);
+        });
+    
+        it("should throw an exception if an invalid parking number is given", async () => {
+            try {
+                await parkingService.disableParkingSpace(999);
+            } catch (error) {
+                expect(error).toBeDefined();
+                expect(error.message).toEqual("Parking number 999 is out of parking range. Parking range from 0 to 8")
+            }
+        });
+    });
+
 
     describe("getParkingReservations", () => {
         it("should return the parking reservation made if a valid parking number is given", async () => {
@@ -322,7 +482,8 @@ describe('ParkingService', () => {
                 expect(error.message).toEqual("Parking number 999 is out of parking range. Parking range from 0 to 8")
             }
         });
-        });
+    });
+
 
         describe("getParkingReservations", () => {
         it("should return the parking reservation made if a valid parking number is given", async () => {
