@@ -1,10 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { gql, useQuery, useApolloClient } from "@apollo/client";
 import { Field, Formik } from "formik";
 import { motion } from "framer-motion";
 
 import Layout from "../components/Layout";
+import ErrorAlert from "../components/ErrorAlert";
 
 import useAuth from "../store/authStore";
 
@@ -17,6 +18,11 @@ const SignUp = () => {
     });
     const verified = useAuth((state) => {
         return state.verified;
+    });
+
+    const [error, setError] = useState({
+        message: "Error",
+        showCondition: false,
     });
 
     const flyEmojiAway = {
@@ -47,7 +53,7 @@ const SignUp = () => {
 
     return (
         <Layout>
-            <div className="relative flex h-full min-h-[80vh] w-full flex-col flex-col items-center justify-center overflow-hidden">
+            <div className="relative flex h-full min-h-[80vh] w-full flex-col items-center justify-center overflow-hidden">
                 <ul className="steps mb-3 mt-2 text-xs md:text-base">
                     <li className="step step-primary">
                         Tell Us About Yourself
@@ -94,8 +100,6 @@ const SignUp = () => {
                         return errors;
                     }}
                     onSubmit={(values, { setSubmitting }) => {
-                        verify();
-
                         client
                             .mutate({
                                 mutation: gql`
@@ -105,12 +109,17 @@ const SignUp = () => {
                             `,
                             })
                             .then((res) => {
-                                if (res.data.signup) {
+                                if (res.data.signup === true) {
+                                    verify();
                                     router.push("/verify");
                                     setSubmitting(false);
                                 }
                             })
                             .catch((err) => {
+                                setError({
+                                    message: err.message,
+                                    showCondition: true,
+                                });
                                 console.error(err.message);
                                 setSubmitting(false);
                             });
@@ -234,6 +243,10 @@ const SignUp = () => {
                         );
                     }}
                 </Formik>
+                <ErrorAlert
+                    message={error.message}
+                    showConditon={error.showCondition}
+                />
             </div>
         </Layout>
     );

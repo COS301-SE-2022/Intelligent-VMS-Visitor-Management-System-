@@ -1,16 +1,17 @@
+import { useRouter } from "next/router";
 import { useState, useEffect, setState } from "react";
 import { gql, useQuery, useApolloClient, useLazyQuery } from "@apollo/client";
 
-import Layout from "../components/Layout";
-import ErrorAlert from "../components/ErrorAlert";
+import { BiQrScan } from "react-icons/bi";
 
-import { useRouter } from "next/router";
+import Layout from "../components/Layout";
 import QRScanner from "../components/QRScanner";
 import SignInPopUp from "../components/SignInPopUp";
 import SignOutPopUp from "../components/SignOutPopUp";
 import VisitInfoModal from "../components/VisitInfoModal";
 import ReceptionistSignButton from "../components/receptionistSignButton";
 import InfoAlert from "../components/InfoAlert";
+import ErrorAlert from "../components/ErrorAlert";
 
 const ReceptionistDashboard = () => {
     const [currentVisitorID, setCurrentVisitorID] = useState("");
@@ -178,36 +179,57 @@ const ReceptionistDashboard = () => {
     //////////////////////////////////////////////////////////////////////////////////////////////////
     return (
         <Layout>
-            <input
-                type="text"
-                placeholder="Search.."
-                className="input input-bordered input-primary ml-5 w-4/6"
-                onChange={(evt) => {
-                    setName(evt.target.value);
-                    if (searching === true && evt.target.value === "")
-                        resetDefaultResults();
-                }}
-            />
-            <button onClick={search} className="btn btn-primary ml-5 mt-5 mb-5">
-                Search
-            </button>
-            <label
-                htmlFor="QRScan-modal"
-                className="modal-button btn btn-primary float-right mr-5 mt-5 mb-5"
-                onClick={() => setShowScanner(true)}
-            >
-                Scan to Search
-            </label>
+            <h1 className="base-100 p-3 text-xl font-bold md:text-3xl lg:text-4xl">
+                {searching ? "Search Results" : "Today's Invites"}
+            </h1>
+            <div className="inline-flex items-center">
+                <div className="inline-flex w-full flex-row-reverse items-center justify-end space-x-3">
+                    <label
+                        htmlFor="QRScan-modal"
+                        className="modal-button btn btn-primary btn-sm ml-3 gap-2 md:btn-md"
+                        onClick={() => setShowScanner(true)}
+                    >
+                        <BiQrScan />
+                        Scan to Search
+                    </label>
 
-            {searching ? (
-                <h1 className="base-100 mt-5 mb-5 p-3 text-left text-4xl font-bold">
-                    Search Results:
-                </h1>
-            ) : (
-                <h1 className="base-100 mt-5 mb-5 p-3 text-left text-4xl font-bold">
-                    Today&apos;s Invites
-                </h1>
-            )}
+                    <div className="input-group justify-end">
+                        <input
+                            type="text"
+                            placeholder="Search.."
+                            className="input input-bordered input-sm md:input-md"
+                            onChange={(evt) => {
+                                setName(evt.target.value);
+                                if (
+                                    searching === true &&
+                                    evt.target.value === ""
+                                ) {
+                                    resetDefaultResults();
+                                }
+                            }}
+                        />
+                        <button
+                            onClick={search}
+                            className="btn btn-sm md:btn-md"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-6 w-6"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
 
             <div className="flex h-full items-center justify-center overflow-x-auto p-3">
                 {loading ? (
@@ -222,7 +244,7 @@ const ReceptionistDashboard = () => {
                                 <th></th>
                                 <th>Visitor Name</th>
                                 <th>Visitor ID</th>
-                                <th></th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         {visitorData.length > 0 ? (
