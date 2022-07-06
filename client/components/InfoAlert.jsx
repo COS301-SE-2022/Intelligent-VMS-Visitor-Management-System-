@@ -16,7 +16,7 @@ const InfoAlert = ({ trayNr, visitorName, showConditon }) => {
             exit="exit"
             whileTap="click"
             transition={{ type: "linear" }}
-            className="absolute top-3"
+            className="fixed top-3"
         >
             <div className="alert shadow-lg">
                 <div>
