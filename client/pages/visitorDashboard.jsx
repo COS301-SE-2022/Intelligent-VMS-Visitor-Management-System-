@@ -74,7 +74,7 @@ const VisitorDashboard = () => {
         <Layout>
             <h1 className="mt-5 mb-5 flex items-center p-3 text-left text-4xl font-bold">
                 {" "}
-                <span className="text-secondary mr-3">Visitor</span> History
+                <span className="mr-3 text-secondary">Visitor</span> History
             </h1>
             <div className="flex h-full items-center justify-center overflow-x-auto p-3">
                 {loading ? (
@@ -104,7 +104,7 @@ const VisitorDashboard = () => {
                                             <td>
                                                 <button
                                                     aria-label="cancel"
-                                                    className="btn btn-square btn-primary"
+                                                    className="btn btn-primary btn-square"
                                                     onClick={() => {
                                                         cancelInvite(
                                                             visit.inviteID

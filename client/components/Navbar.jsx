@@ -48,7 +48,7 @@ const Navbar = () => {
             </div>
             <div className="navbar-end">
                 {token && (
-                    <div className="text-sm">
+                    <div className="text-xs md:text-sm">
                         Hello{" "}
                         <span className="font-bold text-secondary">
                             {token && token.email}
