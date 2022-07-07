@@ -44,7 +44,7 @@ export class ParkingResolver {
         @Args("startDate") startDate: string,
         @Args("endDate") endDate: string,
     ) {
-        return this.parkingService.getTotalUsedParkingInRange(startDate,endDate);
+        return this.parkingService.getUsedParkingInRangeByDate(startDate,endDate);
     }
 
     //MUTATION

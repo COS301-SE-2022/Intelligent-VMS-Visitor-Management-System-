@@ -23,6 +23,10 @@ import { GetReservationsQuery } from './queries/impl/getReservations.query';
 import { GetParkingQuery } from './queries/impl/getParking.query';
 import { EnableParkingSpaceCommand } from './commands/impl/enableParkingSpace.command';
 import { DisableParkingSpaceCommand } from './commands/impl/disableParkingSpace.command';
+import { GetReservationsByDateQuery } from './queries/impl/getReservationsByDate.query';
+import { GetReservationsByDateQueryHandler } from './queries/handlers/getReservationsByDateQuery.handler';
+import { GetFreeParkingQuery } from './queries/impl/getFreeParking.query';
+import { GetReservationsInRangeQuery } from './queries/impl/getReservationsInRange.query';
 
 describe('ParkingService', () => {
   let parkingService: ParkingService;
@@ -117,12 +121,69 @@ describe('ParkingService', () => {
                     reservations[0]=reservation;
                     return reservations;
                 } else
+                if(query.parkingNumber === 4 )
+                {
+                    const reservations = [];
+                    let reservation = new ParkingReservation();
+                    reservation.parkingNumber= 4;
+                    reservation.invitationID= "abcc7938-2241-007d-333e-abc177e0e26b";
+                    reservation.reservationDate = "2022-06-14";
+                    reservations[0]=reservation;
+                    reservation = new ParkingReservation();
+                    reservation.parkingNumber= 4;
+                    reservation.invitationID= "abcc7938-2241-007d-333e-abc177e0e26b";
+                    reservation.reservationDate = "2022-03-12";
+                    reservations[1]=reservation;
+                    return reservations;
+                } else
                 return [];
                                 
             } else if(query instanceof GetReservationsQuery){
                 return [];
+
+            } else if(query instanceof GetFreeParkingQuery){
+                    const parkings = [];
+                    let parking = new Parking();
+                    parking.parkingNumber=0;
+                    parking.visitorEmail="";
+                    parking.enabled=true;
+                    parkings[0] = parking;
+                    parking = new Parking();
+                    parking.parkingNumber=1;
+                    parking.visitorEmail="";
+                    parking.enabled=true;
+                    parkings[1] = parking;
+                    return parkings;
+
+            } else if(query instanceof GetReservationsByDateQuery){
+                    const reservations = [];
+                    let reservation = new ParkingReservation();
+                    reservation.parkingNumber= 1;
+                    reservation.invitationID= "abcc7938-2241-007d-333e-abc177e0e26b";
+                    reservation.reservationDate = "2022-05-14";
+                    reservations[0]=reservation;
+                    reservation = new ParkingReservation();
+                    reservation.parkingNumber= 2;
+                    reservation.invitationID= "f11ae766-ce23-4f27-b428-83cff1afbf04";
+                    reservation.reservationDate = "2022-05-14";
+                    reservations[1]=reservation;
+                    return reservations;
                 
-            }
+            } else if(query instanceof GetReservationsInRangeQuery){
+                const reservations = [];
+                let reservation = new ParkingReservation();
+                reservation.parkingNumber= 1;
+                reservation.invitationID= "abcc7938-2241-007d-333e-abc177e0e26b";
+                reservation.reservationDate = "2022-03-10";
+                reservations[0]=reservation;
+                reservation = new ParkingReservation();
+                reservation.parkingNumber= 2;
+                reservation.invitationID= "f11ae766-ce23-4f27-b428-83cff1afbf04";
+                reservation.reservationDate = "2022-03-06";
+                reservations[1]=reservation;
+                return reservations;
+            
+        }
 
             
       }), 
@@ -166,8 +227,8 @@ describe('ParkingService', () => {
                 parking.enabled=false;
                 return parking;
             } else 
-            return undefined;
-          } else if(command instanceof AssignParkingCommand) {
+            return undefined; 
+        } else if(command instanceof AssignParkingCommand) {
               if(command.parkingNumber === 0 && command.visitorEmail=="larisabotha@icloud.com") {
                     const parking = new Parking();
                     parking.parkingNumber=0;
@@ -251,6 +312,19 @@ describe('ParkingService', () => {
             expect(amount).toEqual(8);
         });    
   });
+
+  describe("getFreeParking", () => {
+    it("should return an array of parking spots that is not disabled nor being used ", async () => {
+        let length = 0;
+        const array = await parkingService.getFreeParking();
+        length = array.length;
+        expect(length).toEqual(2);
+    });  
+    
+    it("should throw an exception if there are no parkings that are enabled and not being used", async () => {
+       //TODO (Larisa) but not sure how
+    });
+});
 
   describe("freeParking", () => {
       it("should return valid parking if parking number is valid", async () => {
@@ -482,6 +556,73 @@ describe('ParkingService', () => {
                 expect(error.message).toEqual("Parking number 999 is out of parking range. Parking range from 0 to 8")
             }
         });
+
+        it("should throw an exception if the parking has no reservations", async () => {
+            try {
+                await parkingService.getParkingReservations(3);
+            } catch (error) {
+                expect(error).toBeDefined();
+                expect(error.message).toEqual("No reservations for parking number 3")
+            }
+        });
+    });
+
+    describe("getParkingReservationsInRange", () => {
+
+        it("should return array of reservations if valid dates given", async () => {
+            const array = await parkingService.getParkingReservationInRange("2022-03-01","2022-04-05");
+            expect(array.length).toEqual(2);
+        });
+
+        it("should throw an exception if a date is of the wrong format", async () => {
+            try {
+                await parkingService.getUsedParkingInRangeByDate("01-03-2022","2022-04-05");
+            } catch (error) {
+                expect(error).toBeDefined();
+                expect(error.message).toEqual("Given dates must be of the form yyyy-mm-dd")
+            }
+        });
+
+        it("should throw an exception if the start date is greater than the end date", async () => {
+            try {
+                await parkingService.getUsedParkingInRangeByDate("2022-04-06","2022-04-05");
+            } catch (error) {
+                expect(error).toBeDefined();
+                expect(error.message).toEqual("Start date can not be later than the end date")
+            }
+        });
+    
+    });
+
+    describe("getTotalUsedParkingInRange", () => {
+        it("should return array of length equal to the date range if valid dates given", async () => {
+            const array = await parkingService.getUsedParkingInRangeByDate("2022-03-01","2022-04-05");
+            expect(array.length).toEqual(36);
+        });
+
+        it("should return array of length 1 if equal dates is given", async () => {
+            const array = await parkingService.getUsedParkingInRangeByDate("2022-03-01","2022-03-01");
+            expect(array.length).toEqual(1);
+        });
+
+        it("should throw an exception if a date is of the wrong format", async () => {
+            try {
+                await parkingService.getUsedParkingInRangeByDate("01-03-2022","2022-04-05");
+            } catch (error) {
+                expect(error).toBeDefined();
+                expect(error.message).toEqual("Given dates must be of the form yyyy-mm-dd")
+            }
+        });
+
+        it("should throw an exception if the start date is greater than the end date", async () => {
+            try {
+                await parkingService.getUsedParkingInRangeByDate("2022-04-06","2022-04-05");
+            } catch (error) {
+                expect(error).toBeDefined();
+                expect(error.message).toEqual("Start date can not be later than the end date")
+            }
+        });
+    
     });
 
 
@@ -515,6 +656,15 @@ describe('ParkingService', () => {
                     expect(error.message).toEqual(`Invitation with ID jippy not found.`)
                 }
             });
+
+            it("should throw an exception if an invitation ID have no reservations", async () => {
+                try {
+                    await parkingService.getInviteReservation("cb7c7938-1c41-427d-833e-2c6b77e0e26b");
+                } catch (error) {
+                    expect(error).toBeDefined();
+                    expect(error.message).toEqual(`No reservations for invitation with ID cb7c7938-1c41-427d-833e-2c6b77e0e26b`)
+                }
+            });
         });
 
         describe("getReservations", () => {
@@ -529,5 +679,6 @@ describe('ParkingService', () => {
             });
         });
 
-  //TODO (Larisa) test the rest of the functions
+        
+
 });
