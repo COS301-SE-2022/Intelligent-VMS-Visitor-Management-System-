@@ -159,7 +159,7 @@ describe('ParkingService', () => {
             RestrictionsService,
             ConfigService,
             {
-                    provide: QueryBus, useValue: queryBusMock
+                provide: QueryBus, useValue: queryBusMock
             },
             {
                 provide: CommandBus, useValue: commandBusMock

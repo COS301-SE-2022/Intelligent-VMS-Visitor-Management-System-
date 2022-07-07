@@ -18,7 +18,8 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "test:int": "jest -i --no-cache --config jest-int.json"
   },
   "dependencies": {
     "@nestjs/apollo": "^10.0.9",
@@ -43,6 +44,7 @@
     "graphql": "^16.4.0",
     "guid": "^0.0.12",
     "jsonwebtoken": "^8.5.1",
+    "mongodb-memory-server": "^8.6.0",
     "mongoose": "^6.3.1",
     "nest": "^0.1.6",
     "nodemailer": "^6.7.5",
@@ -59,7 +61,7 @@
     "@nestjs/schematics": "^8.0.0",
     "@nestjs/testing": "^8.0.0",
     "@types/express": "^4.17.13",
-    "@types/jest": "27.4.1",
+    "@types/jest": "^28.1.1",
     "@types/node": "^16.0.0",
     "@types/supertest": "^2.0.11",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
@@ -121,7 +123,8 @@
       ".dto.ts",
       ".error.ts",
       ".decorator.ts",
-      "index.ts"
+      "index.ts",
+      ".int-spec.ts"
     ],
     "coverageDirectory": "./coverage",
     "testEnvironment": "node",
