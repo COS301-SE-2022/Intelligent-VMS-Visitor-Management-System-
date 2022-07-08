@@ -10,6 +10,7 @@ export class SignOutService {
 
     constructor(private commandBus: CommandBus,
         private queryBus: QueryBus,
+        private receptionistService: ReceptionistService,
         @Inject(forwardRef(() => {return VisitorInviteService}))
         private inviteService: VisitorInviteService) { }
 
