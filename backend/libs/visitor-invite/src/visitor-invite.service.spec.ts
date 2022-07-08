@@ -1,11 +1,9 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { ConfigService } from "@nestjs/config";
 import { CommandBus, IQuery, QueryBus } from "@nestjs/cqrs";
 import { VisitorInviteService } from "./visitor-invite.service";
 import { GetInvitesQuery } from "./queries/impl/getInvites.query";
 import { GetNumberVisitorQuery } from "./queries/impl/getNumberOfVisitors.query";
 import { GetInvitesInRangeQuery } from "./queries/impl/getInvitesInRange.query";
-import { RestrictionsService } from "@vms/restrictions";
 import {MailService} from "@vms/mail";
 import { ParkingService } from "@vms/parking/parking.service";
 import {GetNumberOfInvitesOfResidentQuery} from "./queries/impl/getNumberOfInvitesOfResident.query";
@@ -79,8 +77,6 @@ describe("VisitorInviteService", () => {
                 VisitorInviteService, 
                 ParkingService,
                 MailService,
-                ConfigService,
-                RestrictionsService,
                 CommandBus, 
                 {
                     provide: QueryBus, useValue: queryBusMock
