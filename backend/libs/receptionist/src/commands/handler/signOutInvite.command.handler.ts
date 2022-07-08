@@ -17,6 +17,9 @@ export class SignOutInviteCommandHandler implements ICommandHandler<SignOutInvit
         await this.trayModel.findOneAndUpdate({ inviteID: inviteId }, { containsVisitorID: false, containsResidentID: false });
 
         return await this.inviteModel.findOneAndUpdate({ inviteID: inviteId }, { inviteState: "signedOut", signOutTime: signOutTime });
+
+       return await this.inviteModel.findOneAndUpdate({ inviteID: inviteId }, { inviteState: "inActive", signOutTime });
+
         
     }
 }
