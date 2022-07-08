@@ -328,11 +328,11 @@ const ReceptionistDashboard = () => {
                     <label
                         htmlFor="QRScan-modal"
                         className="btn btn-circle btn-sm absolute right-2 top-2 z-10"
-                        onClick={() => setShowScanner(false)}
+                        onClick={() => {setShowScanner(false); setShowErrorAlert(false);}}
                     >
                         ✕
                     </label>
-                    <QRScanner setShowScanner={setShowScanner} setVisitorData={setVisitorData} setSearch={setSearch} />
+                    <QRScanner setShowScanner={setShowScanner} setVisitorData={setVisitorData} setSearch={setSearch} setShowErrorAlert={setShowErrorAlert} setErrorMessage={setErrorMessage} />
                 </div>
             </div>
 
