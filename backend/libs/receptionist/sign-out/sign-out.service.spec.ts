@@ -8,6 +8,7 @@ import { Tray } from '@vms/receptionist/schema/tray.schema';
 import { VisitorInviteService } from '@vms/visitor-invite';
 import { RestrictionsService } from "@vms/restrictions";
 import { SignOutService } from './sign-out.service';
+import { ReceptionistService } from '@vms/receptionist';
 
 describe('SignOutService', () => {
   let service: SignOutService;
@@ -52,6 +53,7 @@ describe('SignOutService', () => {
       providers: [SignOutService,
         VisitorInviteService,
         ParkingService,
+        ReceptionistService,
         MailService,
         ConfigService,
         RestrictionsService,
