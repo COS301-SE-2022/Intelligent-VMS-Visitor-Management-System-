@@ -41,7 +41,7 @@ export class UserResolver {
     }
 
     // Signup new user
-    @Mutation((returns) => {return String}, { name: "signup"})
+    @Mutation((returns) => {return Boolean}, { name: "signup"})
     async signup(
         @Args("email") email: string,
         @Args("password") password: string,
@@ -53,7 +53,7 @@ export class UserResolver {
             password: password,
             type: type,
             idNumber: idNumber
-        })).accepted[0];
+        }));
     }
 
     // Verify user account with email
