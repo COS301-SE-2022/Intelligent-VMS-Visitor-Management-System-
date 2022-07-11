@@ -15,7 +15,6 @@ export class EnableParkingCommandHandler implements ICommandHandler<EnableParkin
     const { parkingNumber } = command;
 
     //TODO (Larisa) change find one
-
     return await this.parkingModel.findOneAndUpdate({parkingNumber: parkingNumber}, {enabled: true});
   }
 }

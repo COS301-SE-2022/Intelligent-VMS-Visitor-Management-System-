@@ -20,6 +20,7 @@ export class AddParkingCommandHandler implements ICommandHandler<AddParkingComma
   
     parkingSpace.parkingNumber=spaces.length+1;
     parkingSpace.visitorEmail="";
+    parkingSpace.enabled= true;
 
     return await this.parkingModel.create(parkingSpace);
   }

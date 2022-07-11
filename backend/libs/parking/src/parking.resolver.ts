@@ -7,7 +7,7 @@ import { GqlAuthGuard } from "@vms/auth/guards/GqlAuthGuard.guard";
 import { Parking } from "./models/parking.model";
 import { ParkingReservation } from "./models/reservation.model";
 
-//@UseGuards(GqlAuthGuard)
+@UseGuards(GqlAuthGuard)
 @Resolver((of) => {return Parking})
 export class ParkingResolver {
     constructor(
@@ -15,7 +15,6 @@ export class ParkingResolver {
     ) {}
 
     //QUERIES
-
     @Query((returns) => {return String}, { name: "helloParking" })
     async hello() {
         return "👋 from Parking";  
@@ -44,10 +43,10 @@ export class ParkingResolver {
         @Args("startDate") startDate: string,
         @Args("endDate") endDate: string,
     ) {
-        return this.parkingService.getTotalUsedParkingInRange(startDate,endDate);
+        return this.parkingService.getUsedParkingInRangeByDate(startDate,endDate);
     }
 
-    //MUTATION
+    //MUTATIONS
     @Mutation((returns) => {return Parking}, { name: "assignParking" })
     async assignParking(
         @Args("invitationID") invitationID: string,
