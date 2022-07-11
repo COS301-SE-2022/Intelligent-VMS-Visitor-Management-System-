@@ -17,6 +17,8 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
     "paths": {
       "@vms/my-library": [
         "libs/my-library/src"
@@ -83,6 +85,12 @@
       ],
       "@vms/restrictions/*": [
         "libs/restrictions/src/*"
+      ],
+      "@vms/visitor-prediction": [
+        "libs/visitor-prediction/src"
+      ],
+      "@vms/visitor-prediction/*": [
+        "libs/visitor-prediction/src/*"
       ]
     }
   }

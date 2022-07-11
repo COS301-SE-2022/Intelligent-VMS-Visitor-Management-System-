@@ -32,6 +32,8 @@
     "@nestjs/mongoose": "^9.0.3",
     "@nestjs/passport": "^8.2.1",
     "@nestjs/platform-express": "^8.0.0",
+    "@tensorflow/tfjs": "^3.18.0",
+    "@tensorflow/tfjs-node": "^3.18.0",
     "@types/bcrypt": "^5.0.0",
     "@types/cache-manager": "^3.4.3",
     "@types/nodemailer": "^6.4.4",
@@ -143,7 +145,8 @@
       "^@vms/parking(|/.*)$": "<rootDir>/libs/parking/src/$1",
       "^@vms/mail(|/.*)$": "<rootDir>/libs/mail/src/$1",
       "^@vms/receptionist(|/.*)$": "<rootDir>/libs/receptionist/src/$1",
-      "^@vms/restrictions(|/.*)$": "<rootDir>/libs/restrictions/src/$1"
+      "^@vms/restrictions(|/.*)$": "<rootDir>/libs/restrictions/src/$1",
+      "^@vms/visitor-prediction(|/.*)$": "<rootDir>/libs/visitor-prediction/src/$1"
     }
   }
 }
