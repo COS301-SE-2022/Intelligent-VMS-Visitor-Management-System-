@@ -4,7 +4,7 @@ import { gql, useApolloClient } from "@apollo/client";
 
 import useVideo from "../hooks/useVideo.hook";
 
-const QrScanner = ({ setShowScanner, setVisitorData, setSearch }) => {
+const QrScanner = ({ setShowScanner, setVisitorData, setSearch, setShowErrorAlert, setErrorMessage }) => {
     //ApolloClient
     const client = useApolloClient();
 
@@ -37,8 +37,6 @@ const QrScanner = ({ setShowScanner, setVisitorData, setSearch }) => {
         });
     };
 
-    const [invalid,setInvalid] = useState(false);
-
     // DOM Reference to Video element
     const videoRef = useRef(null);
 
@@ -61,14 +59,21 @@ const QrScanner = ({ setShowScanner, setVisitorData, setSearch }) => {
                                 try {
                                     const qrData = JSON.parse(result?.text);
                                     if (qrData.inviteID) {
+
                                         setData(qrData.inviteID); 
                                         setShowScanner(false);
                                         search(qrData.inviteID);
+                                        setShowErrorAlert(false);
+
                                     } else {
-                                        setInvalid(true);
+                                        setShowErrorAlert(true);
+                                        setErrorMessage("Invalid QR Code");
+                                        
                                     }
                                 } catch(error) {
-                                    setInvalid(true);
+                                    setShowErrorAlert(true);
+                                    setErrorMessage("Invalid QR Code");
+                                    
                                 }
                             } else if(error){
 
