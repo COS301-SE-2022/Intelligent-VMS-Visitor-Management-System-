@@ -113,6 +113,8 @@ const SignUp = () => {
                                     verify();
                                     router.push("/verify");
                                     setSubmitting(false);
+                                } else {
+                                    console.log(res);
                                 }
                             })
                             .catch((err) => {
@@ -120,7 +122,6 @@ const SignUp = () => {
                                     message: err.message,
                                     showCondition: true,
                                 });
-                                console.error(err.message);
                                 setSubmitting(false);
                             });
                     }}
