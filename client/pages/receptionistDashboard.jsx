@@ -3,6 +3,7 @@ import { useState, useEffect, setState } from "react";
 import { gql, useQuery, useApolloClient, useLazyQuery } from "@apollo/client";
 
 import { BiQrScan } from "react-icons/bi";
+import { FaPeopleCarry } from "react-icons/fa";
 
 import Layout from "../components/Layout";
 import QRScanner from "../components/QRScanner";
@@ -184,6 +185,10 @@ const ReceptionistDashboard = () => {
             </h1>
             <div className="inline-flex items-center">
                 <div className="inline-flex w-full flex-row-reverse items-center justify-end space-x-3">
+                    <button className="btn btn-secondary text-secondary-content ml-3 gap-2 btn-sm md:btn-md">
+                        <FaPeopleCarry />
+                        Bulk Sign-In
+                    </button>
                     <label
                         htmlFor="QRScan-modal"
                         className="modal-button btn btn-primary btn-sm ml-3 gap-2 md:btn-md"

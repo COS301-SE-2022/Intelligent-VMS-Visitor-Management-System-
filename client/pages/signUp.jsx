@@ -53,7 +53,7 @@ const SignUp = () => {
 
     return (
         <Layout>
-            <div className="relative flex h-full min-h-[80vh] w-full flex-col items-center justify-center overflow-hidden">
+            <div className="relative flex h-full min-h-[80vh] w-full flex-col items-center justify-center overflow-hidden mb-4">
                 <ul className="steps mb-3 mt-2 text-xs md:text-base">
                     <li className="step step-primary">
                         Tell Us About Yourself
@@ -67,8 +67,9 @@ const SignUp = () => {
                         email: "",
                         password: "",
                         confirmPassword: "",
-                        apartmentNumber: "",
+                        idDoc: "RSA-ID",
                         idNumber: "",
+                        name: ""
                     }}
                     validate={(values) => {
                         const errors = {};
@@ -80,6 +81,18 @@ const SignUp = () => {
                             )
                         ) {
                             errors.email = "Invalid email address";
+                        } else if(!values.name) {
+                            errors.name = "Name required";
+                        } else if(!/[A-Za-z]+/i.test(values.name)) {
+                            errors.name = "Invalid name";
+                        } else if(
+                            (values.idDoc === "RSA-ID" ||
+                                values.idDoc === "Drivers-License") &&
+                            !/^(((\d{2}((0[13578]|1[02])(0[1-9]|[12]\d|3[01])|(0[13456789]|1[012])(0[1-9]|[12]\d|30)|02(0[1-9]|1\d|2[0-8])))|([02468][048]|[13579][26])0229))(( |-)(\d{4})( |-)(\d{3})|(\d{7}))$/i.test(
+                                values.idNumber
+                            )
+                        ) {
+                            errors.idValue = "Invalid RSA ID Number";
                         } else if (!values.password) {
                             errors.password = "Required";
                         } else if (!values.confirmPassword) {
@@ -104,7 +117,14 @@ const SignUp = () => {
                             .mutate({
                                 mutation: gql`
                                 mutation {
-                                    signup(email: "${values.email}", password: "${values.password}", type: "${values.userType}", idNumber: "1")
+                                    signup(
+                                        email: "${values.email}", 
+                                        password: "${values.password}", 
+                                        type: "${values.userType}", 
+                                        idNumber: "${values.idNumber}",
+                                        IDDocType: "${values.idDoc}",
+                                        name: "${values.name}"
+                                    )
                                 }
                             `,
                             })
@@ -151,11 +171,54 @@ const SignUp = () => {
                                     onBlur={handleBlur}
                                     value={values.email}
                                 ></input>
+
                                 <span className="text-sm text-error md:text-base">
                                     {errors.email &&
                                         touched.email &&
                                         errors.email}
                                 </span>
+
+                                <input
+                                    type="text"
+                                    name="name"
+                                    placeholder="Enter Name"
+                                    className="input input-bordered w-full"
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    value={values.name}
+                                />
+                                <span className="text-error">
+                                    {errors.name && touched.name && errors.name}
+                                </span>
+                                
+                                <Field
+                                    as="select"
+                                    className="select select-primary w-full"
+                                    name="idDoc"
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                >
+                                    <option value="RSA-ID">RSA ID</option>
+                                    <option value="Drivers-License">
+                                        Driver&apos;s License
+                                    </option>
+                                </Field>
+
+                                <input
+                                    type="text"
+                                    name="idNumber"
+                                    placeholder="Enter ID number"
+                                    className="input input-bordered w-full"
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    value={values.idNumber}
+                                />
+                                <span className="text-error">
+                                    {errors.idNumber &&
+                                        touched.idNumber &&
+                                        errors.idNumber}
+                                </span>
+
                                 <input
                                     type="password"
                                     name="password"
@@ -166,11 +229,13 @@ const SignUp = () => {
                                     onBlur={handleBlur}
                                     value={values.password}
                                 ></input>
+
                                 <span className="max-w-xs text-sm text-error md:text-base">
                                     {errors.password &&
                                         touched.password &&
                                         errors.password}
                                 </span>
+
                                 <input
                                     type="password"
                                     name="confirmPassword"
@@ -180,14 +245,17 @@ const SignUp = () => {
                                     onBlur={handleBlur}
                                     value={values.confirmPassword}
                                 ></input>
+                                
                                 <span className="text-sm text-error md:text-base">
                                     {errors.confirmPassword &&
                                         touched.confirmPassword &&
                                         errors.confirmPassword}
                                 </span>
+
                                 <p className="text-sm md:text-lg lg:text-xl">
                                     I&apos;m a... <span>{values.userType}</span>
                                 </p>
+
                                 <div className="flex items-center space-x-3">
                                     <label className="flex items-center space-x-3">
                                         <span className="text-sm font-bold md:text-base">

@@ -1,5 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMutation, gql } from "@apollo/client";
+
+import { BiCheckShield } from "react-icons/bi";
+import { BsShieldX } from "react-icons/bs";
 
 const AuthCard = ({
     email,
@@ -7,9 +10,10 @@ const AuthCard = ({
     type,
     permission,
     deleteUserAccount,
+    authorizeUserAccount
 }) => {
     const [auth, setAuth] = useState(authorized === true ? true : false);
-    const [clicked, setClicked] = useState(false);
+    const [showConfirm, setShowConfirm] = useState(false);
 
     return (
         <div className="card bg-base-300 shadow-xl hover:shadow-none">
@@ -46,6 +50,7 @@ const AuthCard = ({
                             className="label cursor-pointer space-x-3"
                             onChange={() => {
                                 setAuth(!auth);
+                                setShowConfirm(!showConfirm);
                             }}
                             onClick={() => setAuth(!auth)}
                         >
@@ -57,6 +62,20 @@ const AuthCard = ({
                             />
                         </label>
                     </div>
+                    {showConfirm && 
+                        <div className="justif-end space-x-3">
+                            <button onClick={() => {
+                                authorizeUserAccount(email, type);
+                            }} className="btn btn-sm btn-primary gap-2">
+                                <BiCheckShield className="text-lg"/> 
+                                Confirm Auth
+                            </button>
+                            <button onClick={() => { setAuth(!auth); setShowConfirm(false); }}className="btn btn-sm btn-secondary gap-2">
+                                <BsShieldX className="text-lg"/> 
+                                Decline
+                            </button>
+                        </div>
+                    }
                 </div>
             </div>
             <input
