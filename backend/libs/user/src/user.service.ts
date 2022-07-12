@@ -14,8 +14,8 @@ export class UserService {
         return this.queryBus.execute(new GetUserQuery(email));
     }
 
-    async createUser(email: string, password: string, permission: number) {
-        return this.commandBus.execute(new CreateUserCommand(email, password, permission));
+    async createUser(email: string, password: string, permission: number, idNumber: string, idDocType: string, name: string) {
+        return this.commandBus.execute(new CreateUserCommand(email, password, permission, idNumber, idDocType, name));
     }
 
     async getUnAuthorizedUsers(permission: number) {
@@ -29,6 +29,7 @@ export class UserService {
 
     async authorizeUserAccount(email: string) {
         const res = await this.commandBus.execute(new AuthorizeUserCommand(email));        
+        console.log(res);
         return res.modifiedCount > 0;
     }
 }
