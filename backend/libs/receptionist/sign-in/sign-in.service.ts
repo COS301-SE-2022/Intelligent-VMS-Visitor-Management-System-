@@ -85,7 +85,7 @@ export class SignInService {
         }
         
         //TODO(Daniel)
-        async bulkSignIn(){
+        async bulkSignIn(file:string){
             console.log("do some stuff here");
         }
 

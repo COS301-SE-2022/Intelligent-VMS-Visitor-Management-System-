@@ -11,6 +11,7 @@ import SignOutPopUp from "../components/SignOutPopUp";
 import VisitInfoModal from "../components/VisitInfoModal";
 import ReceptionistSignButton from "../components/receptionistSignButton";
 import InfoAlert from "../components/InfoAlert";
+import UploadPopUp from "../components/UploadPopUp";
 
 const ReceptionistDashboard = () => {
     
@@ -268,6 +269,22 @@ const ReceptionistDashboard = () => {
                                     )
 
                                 })}
+
+                                <tr>
+                                <td> </td>
+                                <td> </td>
+                                <td> </td>
+                                <td>
+                                <label
+                                    htmlFor="Upload-modal"
+                                    className="modal-button btn btn-secondary float-right"
+                                
+                                >
+                                    Bulk-SignIn
+                                </label>
+                                </td>
+                                </tr>
+                                
                             </tbody>
                         ) : (
                             <tbody>
@@ -277,11 +294,13 @@ const ReceptionistDashboard = () => {
                             </tbody>
                         )}
                     </table>
+
+                    
                 )}
+                
                 <ErrorAlert message={errorMessage} showConditon={showErrorAlert} />
                 <InfoAlert visitorName={currentVisitorName} showConditon={showInfoAlert} trayNr={trayNr}/>
             </div>
-
             <input type="checkbox" id="signIn-modal" className="modal-toggle" />
             <div className="fade modal cursor-pointer" id="signIn-modal">
                 <div className="modal-box">
@@ -345,6 +364,19 @@ const ReceptionistDashboard = () => {
                         ✕
                     </label>
                     <VisitInfoModal name={currentName} />
+                </div>
+            </div>
+
+            <input type="checkbox" id="Upload-modal" className="modal-toggle" />
+            <div className="fade modal" id="Upload-modal">
+                <div className="modal-box flex flex-wrap">
+                    <label
+                        htmlFor="Upload-modal"
+                        className="btn btn-circle btn-sm absolute right-2 top-2 z-10"
+                    >
+                        ✕
+                    </label>
+                    <UploadPopUp setErrorMessage={setErrorMessage} setShowErrorAlert={setShowErrorAlert}/>
                 </div>
             </div>
 
