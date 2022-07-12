@@ -14,6 +14,7 @@ describe('SignOutService', () => {
   let service: SignOutService;
   let inviteService: VisitorInviteService;
   let receptionistService = {
+    getTrayByInviteID: jest.fn(()=> ({}))
 
   };
   /*eslint-disable*/
