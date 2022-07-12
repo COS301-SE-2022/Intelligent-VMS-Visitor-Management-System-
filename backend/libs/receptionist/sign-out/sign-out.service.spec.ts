@@ -81,7 +81,7 @@ describe('SignOutService', () => {
 
   it("should sign out", async()=>{
     //Arrange
-    receptionistService.getTrayByInviteID.mockReturnValueOnce({});
+    receptionistService.getTrayByInviteID.mockReturnValueOnce({trayID:123});
     //Act
     const resp = await service.signOut('dwvsdvsd');
     //Assert
