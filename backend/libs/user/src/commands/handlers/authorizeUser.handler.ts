@@ -12,6 +12,6 @@ export class AuthorizeUserCommandHandler implements ICommandHandler {
 
     async execute(command: AuthorizeUserCommand) {
         const { email } = command;
-        this.userModel.updateOne({ email: email }, [ {$set: { permission: { $switch: { branches: [ { case: { $eq: ["$permission", -1]}, then: 1 }, { case: { $eq: ["$permission", -2]}, then: 2 }] } } }} ], { multi: false} );
+        return this.userModel.updateOne({ email: email }, [ {$set: { permission: { $switch: { branches: [ { case: { $eq: ["$permission", -1]}, then: 1 }, { case: { $eq: ["$permission", -2]}, then: 2 }] } } }} ], { multi: false} );
     }
 }
