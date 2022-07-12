@@ -13,7 +13,9 @@ import { ReceptionistService } from '@vms/receptionist';
 describe('SignOutService', () => {
   let service: SignOutService;
   let inviteService: VisitorInviteService;
-  let receptionistService
+  let receptionistService = {
+
+  };
   /*eslint-disable*/
   const commandBusMock = {
     execute: jest.fn((command) => {
