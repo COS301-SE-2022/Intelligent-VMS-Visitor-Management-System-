@@ -61,6 +61,9 @@ describe('SignOutService', () => {
           provide: QueryBus, useValue: queryBusMock
         },
         {
+          provide: ReceptionistService, useValue: receptionistService 
+        },
+        {
           provide: CommandBus, useValue: commandBusMock
         }],
     }).compile();
