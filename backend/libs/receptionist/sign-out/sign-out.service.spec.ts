@@ -75,7 +75,7 @@ describe('SignOutService', () => {
 
   it("should sign out", async()=>{
     //Arrange
-    //jest.spyOn(service, 'removeTrayByInviteID').mockReturnValueOnce(Promise.resolve(123));
+    jest.spyOn(service, 'removeTrayByInviteID').mockReturnValueOnce(Promise.resolve(123));
     //Act
     //const resp = await service.signOut('dwvsdvsd');
     //Assert
