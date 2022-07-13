@@ -88,6 +88,55 @@ export class VisitorInviteService {
         return info.messageId;
     }
 
+    /*
+        Create an invitation for a visitor specifically used with bulk sign-in
+        (The email never gets sent)
+    */
+        async createInviteForBulkSignIn(
+            permission: number,
+            userEmail: string,
+            visitorEmail: string,
+            visitorName: string,
+            idDocType: string,
+            idNumber: string,
+            inviteDate: string,
+            requiresParking: boolean
+        ) {
+    
+            // If permission level is that of resident check invite limit
+            if(permission !== 0 && permission !== 1) {
+                const numInvitesAllowed = await this.restrictionsService.getNumInvitesPerResident();
+                const numInvitesSent = await this.getTotalNumberOfInvitesOfResident(userEmail);
+    
+                if(numInvitesSent >= numInvitesAllowed) {
+                    throw new InviteLimitReachedError("Max Number of Invites Sent");
+                }
+            }
+    
+            // Generate inviteID
+            const inviteID = randomUUID();
+    
+            // Entry in db
+            this.commandBus.execute(
+                new CreateInviteCommand(
+                    userEmail,
+                    visitorEmail,
+                    visitorName,
+                    idDocType,
+                    idNumber,
+                    inviteDate,
+                    inviteID,
+                ),
+            );
+    
+            // Parking
+            if(requiresParking) {
+                await this.parkingService.reserveParking(inviteID);
+            }
+    
+            return inviteID;
+        }
+
     async getInvites(email: string) {
         return this.queryBus.execute(new GetInvitesQuery(email));
     }

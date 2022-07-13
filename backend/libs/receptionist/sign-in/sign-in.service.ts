@@ -12,6 +12,7 @@ import { ParkingService } from '@vms/parking';
 import { InviteNotFound } from '../src/errors/inviteNotFound.error';
 import { InvalidSignIn } from '../src/errors/invalidSignIn.error';
 import { Tray } from '@vms/receptionist/models/tray.model';
+import { BulkSignInCommand } from '@vms/receptionist/commands/impl/bulkSignIn.command';
 
 @Injectable()
 export class SignInService {
@@ -84,11 +85,50 @@ export class SignInService {
             return this.commandBus.execute(new generateTrayCommand(await this.generateTrayID(),inviteID, containsResidentID,containsVisitorID));
         }
         
-        //TODO(Daniel)
-        async bulkSignIn(file:string){
-            console.log("do some stuff here");
+        async bulkSignIn(file:string,userEmail:string){
+
+           const fileArray =  file.split(/\r\n|\r|\n/);
+
+           let InviteIDIndex;
+           let VisitorNameIndex;
+           let VisitorEmailIndex;
+           let InviteDateIndex;
+           let VisitorIDIndex;
+
+           let idArray = [];
+           let lineArray = fileArray[0].split(";");
+           for(var i=0;i<lineArray.length;i++){
+            if(lineArray[i].toLocaleLowerCase().includes("email"))
+                VisitorEmailIndex = i;
+            else if(lineArray[i].toLocaleLowerCase().includes("name"))
+                VisitorNameIndex = i;
+            else if(lineArray[i].toLocaleLowerCase().includes("date"))
+                InviteDateIndex = i;
+            else if(lineArray[i].toLocaleLowerCase().includes("id")){
+                if(lineArray[i].toLocaleLowerCase().includes("invite"))
+                    InviteIDIndex = i;
+                else
+                    VisitorIDIndex = i;
+            }
+           }
+           
+           for(var i=1;i<fileArray.length-1;i++){
+            lineArray = fileArray[i].split(";");
+            if(lineArray[0]!==""){
+                idArray[i-1] = lineArray[0];
+            } 
+            else{
+                    //TODO (Larisa): extend doc types
+                    idArray[i-1] = await this.inviteService.createInviteForBulkSignIn(0,userEmail,lineArray[VisitorEmailIndex],lineArray[VisitorNameIndex],"RSA-ID",lineArray[VisitorIDIndex],lineArray[InviteDateIndex],false);
+                }
+           }
+
+           await this.commandBus.execute(
+            new BulkSignInCommand(idArray)
+            );
         }
-
-
-
 }
+
+    
+
+

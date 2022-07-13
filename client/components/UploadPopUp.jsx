@@ -2,17 +2,21 @@ import { gql, useMutation } from "@apollo/client";
 import React, { useEffect, useRef, useState, setState } from "react";
 import { ImExit } from "react-icons/im";
 import {axios} from 'axios';
+import useAuth from "../store/authStore.js";
 
-const UploadPopUp = ({setShowErrorAlert, setErrorMessage}) => {
+const UploadPopUp = ({setShowErrorAlert, setErrorMessage, setShowUploadPopUp, refetch}) => {
 
   const [file, setFile] = useState()
   const [fileAsString, setFileAsString] = useState("")
   const [text, setText] = useState("Upload a csv file")
   const [signInButton, setSignInButton] = useState(true)
 
+  // Get Data From JWT Token
+  const jwtTokenData = useAuth((state) => {return state.decodedToken})();
+
   const [bulkSignInMutation, { data, loading, error}] = useMutation(gql`
         mutation {
-            bulkSignIn(file: "${encodeURI(fileAsString)}")
+            bulkSignIn(file: "${encodeURI(fileAsString)}", userEmail: "${jwtTokenData.email}")
         }
     `);
 
@@ -42,8 +46,8 @@ const UploadPopUp = ({setShowErrorAlert, setErrorMessage}) => {
                     </div>
                     <input className="opacity-0" type="file" 
                     onChange={()=>{
-                        alert(event.target.files[0].type);
-                        if(event.target.files[0].type === "csv")
+                        
+                        if(event.target.files[0].type === "text/csv" || event.target.files[0].type === "application/vnd.ms-excel")
                         {
                         setFile(event.target.files[0]);
                         setText(event.target.files[0].name);
@@ -65,8 +69,10 @@ const UploadPopUp = ({setShowErrorAlert, setErrorMessage}) => {
                 reader.readAsText(file, "UTF-8");
                 reader.onload = (evt) => {
                     setFileAsString(evt.target.result);
-                    alert(encodeURI(evt.target.result));
-                    bulkSignInMutation();              
+                    bulkSignInMutation();   
+                    setShowUploadPopUp(false);     
+                    refetch();
+                    //TODO (LARISA): Show confirmation popup     
                   };
 
 

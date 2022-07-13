@@ -40,8 +40,9 @@ export class ReceptionistResolver {
     @Mutation((returns) => Number, { name: "bulkSignIn" })
     async bulkSignIn(
         @Args("file") file: string,
+        @Args("userEmail") userEmail:string
     ) {
-        this.signInService.bulkSignIn(decodeURI(file));
+        this.signInService.bulkSignIn(decodeURI(file),userEmail);
         return 0;
     }
 }

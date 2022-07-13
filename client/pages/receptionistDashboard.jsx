@@ -4,6 +4,7 @@ import { gql, useQuery, useApolloClient, useLazyQuery } from "@apollo/client";
 import Layout from "../components/Layout";
 import ErrorAlert from "../components/ErrorAlert";
 
+
 import { useRouter } from "next/router";
 import QRScanner from "../components/QRScanner";
 import SignInPopUp from "../components/SignInPopUp";
@@ -27,6 +28,8 @@ const ReceptionistDashboard = () => {
     const [showInfoAlert, setShowInfoAlert] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [showScanner, setShowScanner] = useState(false);
+    const [showUploadPopUp, setShowUploadPopUp] = useState(false);
+
 
     const getFormattedDateString = (date) => {
         if(date instanceof Date) {
@@ -278,6 +281,7 @@ const ReceptionistDashboard = () => {
                                 <label
                                     htmlFor="Upload-modal"
                                     className="modal-button btn btn-secondary float-right"
+                                    onClick={() => setShowUploadPopUp(true)}
                                 
                                 >
                                     Bulk-SignIn
@@ -340,7 +344,7 @@ const ReceptionistDashboard = () => {
 
             </div>
 
-            <input type="checkbox" id="QRScan-modal" className="modal-toggle" onChange={() => {}}checked={showScanner ? true : false} />
+            <input type="checkbox" id="QRScan-modal" className="modal-toggle" onChange={() => {}} checked={showScanner ? true : false} />
             <div className="fade modal" id="QRScan-modal">
                 <div className="modal-box flex flex-wrap">
                     <label
@@ -350,7 +354,11 @@ const ReceptionistDashboard = () => {
                     >
                         ✕
                     </label>
-                    <QRScanner setShowScanner={setShowScanner} setVisitorData={setVisitorData} setSearch={setSearch} setShowErrorAlert={setShowErrorAlert} setErrorMessage={setErrorMessage} />
+                    <QRScanner setShowScanner={setShowScanner}
+                               setVisitorData={setVisitorData} 
+                               setSearch={setSearch} 
+                               setShowErrorAlert={setShowErrorAlert} 
+                               setErrorMessage={setErrorMessage} />
                 </div>
             </div>
 
@@ -367,16 +375,20 @@ const ReceptionistDashboard = () => {
                 </div>
             </div>
 
-            <input type="checkbox" id="Upload-modal" className="modal-toggle" />
+            <input type="checkbox" id="Upload-modal" className="modal-toggle" checked={showUploadPopUp ? true : false}/>
             <div className="fade modal" id="Upload-modal">
                 <div className="modal-box flex flex-wrap">
                     <label
                         htmlFor="Upload-modal"
                         className="btn btn-circle btn-sm absolute right-2 top-2 z-10"
+                        onClick={() => setShowUploadPopUp(false)}
                     >
                         ✕
                     </label>
-                    <UploadPopUp setErrorMessage={setErrorMessage} setShowErrorAlert={setShowErrorAlert}/>
+                    <UploadPopUp setErrorMessage={setErrorMessage} 
+                                 setShowErrorAlert={setShowErrorAlert} 
+                                 setShowUploadPopUp={setShowUploadPopUp} 
+                                 refetch={invitesQuery}/>
                 </div>
             </div>
 
