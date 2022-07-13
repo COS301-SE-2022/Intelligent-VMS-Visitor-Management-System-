@@ -20,7 +20,7 @@ export class CreateNParkingSpotsCommandHandler implements ICommandHandler<Create
     const spaces = await this.parkingModel.find();
     
     for(let i=0;i<numSpots;i++){
-      parkings.push({ parkingNumber : spaces.length + i, visitorEmail: "" });
+      parkings.push({ parkingNumber : spaces.length + i, visitorEmail: "", enabled: true });
     }
     
     return await this.parkingModel.insertMany(parkings);
