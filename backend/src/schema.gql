@@ -31,6 +31,12 @@ type Parking {
   enabled: Boolean!
 }
 
+type ParkingReservation {
+  invitationID: String!
+  parkingNumber: String!
+  reservationDate: String!
+}
+
 type Invite {
   userEmail: String!
   visitorEmail: String!
@@ -45,12 +51,6 @@ type Invite {
   signOutTime: String!
   signInTime: String!
   trayNumber: Float!
-}
-
-type ParkingReservation {
-  invitationID: String!
-  parkingNumber: String!
-  inviteData: [Invite!]!
 }
 
 type SearchInvite {
