@@ -65,7 +65,7 @@ const ReceptionistDashboard = () => {
                         idNumber
                         visitorName
                         inviteState
-                  
+                        requiresParking
                     }
                 }
             `,},
