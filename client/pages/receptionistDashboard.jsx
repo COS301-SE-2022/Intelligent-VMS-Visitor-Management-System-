@@ -272,6 +272,7 @@ const ReceptionistDashboard = () => {
                                                 </td>
 
                                             )}
+                                            {/* INSERT VISITOR INFO MODAL HERE */}
                                         </tr>
                                     )
 
