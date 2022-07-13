@@ -9,6 +9,7 @@
 
 [![Backend](https://github.com/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-/actions/workflows/backend-deploy.yml/badge.svg)](https://github.com/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-/actions/workflows/backend-deploy.yml)
 [![Frontend](https://github.com/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-/actions/workflows/frontend-deploy.yml/badge.svg)](https://github.com/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-/actions/workflows/frontend-deploy.yml)
+[![Data Prep Deploy](https://github.com/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-/actions/workflows/data-prep-deploy.yml/badge.svg)](https://github.com/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-/actions/workflows/data-prep-deploy.yml)
 [![Codecov](https://codecov.io/gh/KyleSmith19091/Intelligent-VMS-Visitor-Management-System-/branch/develop/graph/badge.svg?token=1OQRUVN42B)](https://codecov.io/gh/KyleSmith19091/Intelligent-VMS-Visitor-Management-System-)
 [![System Status](https://img.shields.io/pingpong/status/sp_981b105d45824c28b3a90e5c9a5b951e)](https://vms-client.pingpong.host/)
 [![Requirements Status](https://requires.io/github/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-/requirements.svg?branch=feature%2Froles-guards)](https://requires.io/github/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-/requirements/?branch=feature%2Froles-guards)
