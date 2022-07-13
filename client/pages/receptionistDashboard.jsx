@@ -26,6 +26,7 @@ const ReceptionistDashboard = () => {
     const [showInfoAlert, setShowInfoAlert] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [showScanner, setShowScanner] = useState(false);
+    const [showVisitorModal, setShowVisitorModal] = useState(false);
 
     const getFormattedDateString = (date) => {
         if(date instanceof Date) {
@@ -274,17 +275,17 @@ const ReceptionistDashboard = () => {
                                             )}
                                             {/* INSERT VISITOR INFO MODAL HERE */}
 
-                                            <input type="checkbox" id="VistorInfo-modal" className="modal-toggle" onChange={() => {}}checked={showScanner ? true : false} />
-                                            <div className="fade modal" id="QRScan-modal">
+                                            <input type="checkbox" id="VistorInfo-modal" className="modal-toggle" onChange={() => {}}checked={showVisitorModal ? true : false} />
+                                            <div className="fade modal" id="VistorInfo-modal">
                                                 <div className="modal-box flex flex-wrap">
                                                     <label
                                                         htmlFor="VistorInfo-modal"
                                                         className="btn btn-circle btn-sm absolute right-2 top-2 z-10"
-                                                        onClick={() => setShowScanner(false)}
+                                                        onClick={() => setShowVisitorModal(false)}
                                                     >
                                                         ✕
                                                     </label>
-                                                    <QRScanner setShowScanner={setShowScanner} setVisitorData={setVisitorData} setSearch={setSearch} />
+                                                    <VisitInfoModal setShowScanner={setShowVisitorModal} />
                                                 </div>
                                             </div>
                                             
