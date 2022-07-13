@@ -50,6 +50,9 @@ const ReceptionistDashboard = () => {
                 idNumber
                 visitorName
                 inviteState
+                requiresParking
+                idDocType
+                userEmail
             }
         }
     `, { fetchPolicy: "no-cache" });
@@ -67,6 +70,7 @@ const ReceptionistDashboard = () => {
                         inviteState
                         requiresParking
                         idDocType
+                        userEmail
                     }
                 }
             `,},
@@ -99,6 +103,7 @@ const ReceptionistDashboard = () => {
                         inviteState
                         requiresParking
                         idDocType
+                        userEmail
                     }
                 }
             `,
