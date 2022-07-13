@@ -273,6 +273,21 @@ const ReceptionistDashboard = () => {
 
                                             )}
                                             {/* INSERT VISITOR INFO MODAL HERE */}
+
+                                            <input type="checkbox" id="VisitorInfo-modal" className="modal-toggle" />
+                                            <div className="fade modal cursor-pointer" id="VisitorInfo-modal">
+                                                <div className="modal-box">
+                                                    <label
+                                                        htmlFor="VisitorInfo-modal"
+                                                        className="btn btn-circle btn-sm" >
+                                                        ✕
+                                                    </label>
+                                                    <VisitInfoModal
+                                                        visitInfo={visit}
+                                                    />
+                                                </div>
+                                            </div>
+                                            
                                         </tr>
                                     )
 
