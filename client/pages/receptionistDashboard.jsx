@@ -66,6 +66,7 @@ const ReceptionistDashboard = () => {
                         visitorName
                         inviteState
                         requiresParking
+                        idDocType
                     }
                 }
             `,},
@@ -96,6 +97,8 @@ const ReceptionistDashboard = () => {
                         idNumber
                         visitorName
                         inviteState
+                        requiresParking
+                        idDocType
                     }
                 }
             `,
