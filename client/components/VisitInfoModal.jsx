@@ -1,12 +1,20 @@
 import React, { useEffect, useRef, useState } from "react";
 
-const VisitInfoModal = ({setShowScanner}) => {
+const VisitInfoModal = ({setShowInfo,myInputdata}) => {
 
+
+
+    useEffect(() => {
+        // Stop video on component unmount
+    
+    }, []);
     return (
-    <div className="relative flex-col justify-center items-center text-center">
-        <label>HOS</label>
-        <lable>TOKKELOSH</lable>   
-    </div>    
+     
+
+    <div className="relative flex-col justify-center items-center text-center" >
+        <label>{myInputdata.inviteID}</label>
+        <lable></lable>   
+    </div>   
     );
 };
 
