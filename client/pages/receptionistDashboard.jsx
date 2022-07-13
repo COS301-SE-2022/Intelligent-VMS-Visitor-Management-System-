@@ -51,7 +51,7 @@ const ReceptionistDashboard = () => {
                 idNumber
                 visitorName
                 inviteState
-                requiresParking
+                # requiresParking
                 idDocType
                 userEmail
             }
@@ -69,7 +69,7 @@ const ReceptionistDashboard = () => {
                         idNumber
                         visitorName
                         inviteState
-                        requiresParking
+                        # requiresParking
                         idDocType
                         userEmail
                     }
@@ -102,7 +102,7 @@ const ReceptionistDashboard = () => {
                         idNumber
                         visitorName
                         inviteState
-                        requiresParking
+                        # requiresParking
                         idDocType
                         userEmail
                     }
@@ -230,9 +230,9 @@ const ReceptionistDashboard = () => {
                             <tbody>
                                 {visitorData.map((visit, idx) => {
                                     return (
-                                        <tr className="hover" key={idx}>
+                                        <tr   className="hover" key={idx}>
                                             <th>{idx + 1}</th>
-                                            <td className="capitalize">{visit.visitorName}</td>
+                                            <td className="capitalize" onClick={() => setShowVisitorModal(true) }>{visit.visitorName}</td>
                                             <td>{visit.idNumber}</td>
 
                                             {visit.inviteState === "inActive" ? (
@@ -248,6 +248,7 @@ const ReceptionistDashboard = () => {
                                                             setCurrentVisitorName(
                                                                 visit.visitorName
                                                             );
+                                                            setShowVisitorModal(false);
                                                         }}
                                                         text="Sign In" 
                                                         colour="bg-green-800" 
@@ -265,6 +266,7 @@ const ReceptionistDashboard = () => {
                                                         setCurrentInviteID(
                                                             visit.inviteID
                                                         );
+                                                        setShowVisitorModal(false);
                                                         
                                                     }}
                                                      text="Sign Out" 
@@ -275,7 +277,7 @@ const ReceptionistDashboard = () => {
                                             )}
                                             {/* INSERT VISITOR INFO MODAL HERE */}
 
-                                            <input type="checkbox" id="VistorInfo-modal" className="modal-toggle" onChange={() => {}}checked={showVisitorModal ? true : false} />
+                                            <input type="checkbox" id="VistorInfo-modal" className="modal-toggle" onChange={() => {}} checked={showVisitorModal ? true : false} />
                                             <div className="fade modal" id="VistorInfo-modal">
                                                 <div className="modal-box flex flex-wrap">
                                                     <label
@@ -285,7 +287,7 @@ const ReceptionistDashboard = () => {
                                                     >
                                                         ✕
                                                     </label>
-                                                    <VisitInfoModal setShowScanner={setShowVisitorModal} />
+                                                    <VisitInfoModal setShowInfo={setShowVisitorModal} myInputdata={visit}/>
                                                 </div>
                                             </div>
                                             
@@ -360,7 +362,7 @@ const ReceptionistDashboard = () => {
                 </div>
             </div>
 
-            <input type="checkbox" id="Info-modal" className="modal-toggle" />
+            {/* <input type="checkbox" id="Info-modal" className="modal-toggle" />
             <div className="fade modal" id="Info-modal">
                 <div className="modal-box flex flex-wrap">
                     <label
@@ -371,7 +373,7 @@ const ReceptionistDashboard = () => {
                     </label>
                     <VisitInfoModal name={currentName} />
                 </div>
-            </div>
+            </div> */}
 
             
         </Layout>
