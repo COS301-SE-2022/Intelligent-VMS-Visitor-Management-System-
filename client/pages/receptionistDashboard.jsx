@@ -274,17 +274,17 @@ const ReceptionistDashboard = () => {
                                             )}
                                             {/* INSERT VISITOR INFO MODAL HERE */}
 
-                                            <input type="checkbox" id="VisitorInfo-modal" className="modal-toggle" />
-                                            <div className="fade modal cursor-pointer" id="VisitorInfo-modal">
-                                                <div className="modal-box">
+                                            <input type="checkbox" id="VistorInfo-modal" className="modal-toggle" onChange={() => {}}checked={showScanner ? true : false} />
+                                            <div className="fade modal" id="QRScan-modal">
+                                                <div className="modal-box flex flex-wrap">
                                                     <label
-                                                        htmlFor="VisitorInfo-modal"
-                                                        className="btn btn-circle btn-sm" >
+                                                        htmlFor="VistorInfo-modal"
+                                                        className="btn btn-circle btn-sm absolute right-2 top-2 z-10"
+                                                        onClick={() => setShowScanner(false)}
+                                                    >
                                                         ✕
                                                     </label>
-                                                    <VisitInfoModal
-                                                        visitInfo={visit}
-                                                    />
+                                                    <QRScanner setShowScanner={setShowScanner} setVisitorData={setVisitorData} setSearch={setSearch} />
                                                 </div>
                                             </div>
                                             
