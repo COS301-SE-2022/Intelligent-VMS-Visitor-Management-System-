@@ -26,6 +26,7 @@ const ReceptionistDashboard = () => {
     const [showInfoAlert, setShowInfoAlert] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [showScanner, setShowScanner] = useState(false);
+    const [visitModalData, setVisitModalData] = useState(false);
     const [showVisitorModal, setShowVisitorModal] = useState(false);
 
     const getFormattedDateString = (date) => {
@@ -232,8 +233,23 @@ const ReceptionistDashboard = () => {
                                     return (
                                         <tr   className="hover" key={idx}>
                                             <th>{idx + 1}</th>
-                                            <td className="capitalize" onClick={() => setShowVisitorModal(true) }>{visit.visitorName}</td>
+                                            <td className="capitalize" onClick={() => {setShowVisitorModal(true),setVisitModalData(visit)} }>{visit.visitorName}</td>
                                             <td>{visit.idNumber}</td>
+                                            
+                                            <input type="checkbox" id="VistorInfo-modal" className="modal-toggle" onChange={() => {}} checked={showVisitorModal ? true : false} />
+                                            <div className="fade modal" id="VistorInfo-modal">
+                                                <div className="modal-box flex flex-wrap">
+                                                    <label
+                                                        htmlFor="VistorInfo-modal"
+                                                        className="btn btn-circle btn-sm absolute right-2 top-2 z-10"
+                                                        onClick={() => setShowVisitorModal(false)}
+                                                    >
+                                                        ✕
+                                                    </label>
+                                                    <VisitInfoModal setShowInfo={setShowVisitorModal} visitModalData={visitModalData}/>
+                                                </div>
+                                            </div>
+                                            
 
                                             {visit.inviteState === "inActive" ? (
                                                 <td>
@@ -277,19 +293,7 @@ const ReceptionistDashboard = () => {
                                             )}
                                             {/* INSERT VISITOR INFO MODAL HERE */}
 
-                                            <input type="checkbox" id="VistorInfo-modal" className="modal-toggle" onChange={() => {}} checked={showVisitorModal ? true : false} />
-                                            <div className="fade modal" id="VistorInfo-modal">
-                                                <div className="modal-box flex flex-wrap">
-                                                    <label
-                                                        htmlFor="VistorInfo-modal"
-                                                        className="btn btn-circle btn-sm absolute right-2 top-2 z-10"
-                                                        onClick={() => setShowVisitorModal(false)}
-                                                    >
-                                                        ✕
-                                                    </label>
-                                                    <VisitInfoModal setShowInfo={setShowVisitorModal} myInputdata={visit}/>
-                                                </div>
-                                            </div>
+                                         
                                             
                                         </tr>
                                     )

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 
-const VisitInfoModal = ({setShowInfo,myInputdata}) => {
+const VisitInfoModal = ({setShowInfo,visitModalData}) => {
 
 
 
@@ -9,11 +9,14 @@ const VisitInfoModal = ({setShowInfo,myInputdata}) => {
     
     }, []);
     return (
-     
-
     <div className="relative flex-col justify-center items-center text-center" >
-        <label>{myInputdata.inviteID}</label>
-        <lable></lable>   
+        <label>{visitModalData.inviteID}</label>
+        <label>{visitModalData.inviteDate}</label>
+        <label>{visitModalData.idNumber}</label>
+        <label>{visitModalData.visitorName}</label>
+        <label>{visitModalData.inviteState}</label>
+        <label>{visitModalData.userEmail}</label>
+        <label>{visitModalData.idDocType}</label>  
     </div>   
     );
 };
