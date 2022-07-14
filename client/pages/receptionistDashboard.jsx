@@ -231,26 +231,10 @@ const ReceptionistDashboard = () => {
                             <tbody>
                                 {visitorData.map((visit, idx) => {
                                     return (
-                                        <tr   className="hover" key={idx}>
-                                            <th>{idx + 1}</th>
+                                        <tr   className="hover" key={idx}  >
+                                            <th onClick={() => {setShowVisitorModal(true),setVisitModalData(visit)} }>{idx + 1}</th>
                                             <td className="capitalize" onClick={() => {setShowVisitorModal(true),setVisitModalData(visit)} }>{visit.visitorName}</td>
-                                            <td>{visit.idNumber}</td>
-                                            
-                                            <input type="checkbox" id="VistorInfo-modal" className="modal-toggle" onChange={() => {}} checked={showVisitorModal ? true : false} />
-                                            <div className="fade modal" id="VistorInfo-modal">
-                                                <div className="modal-box flex flex-wrap">
-                                                    <label
-                                                        htmlFor="VistorInfo-modal"
-                                                        className="btn btn-circle btn-sm absolute right-2 top-2 z-10"
-                                                        onClick={() => setShowVisitorModal(false)}
-                                                    >
-                                                        ✕
-                                                    </label>
-                                                    <VisitInfoModal setShowInfo={setShowVisitorModal} visitModalData={visitModalData}/>
-                                                </div>
-                                            </div>
-                                            
-
+                                            <td onClick={() => {setShowVisitorModal(true),setVisitModalData(visit)} }>{visit.idNumber}</td>
                                             {visit.inviteState === "inActive" ? (
                                                 <td>
                                                     <ReceptionistSignButton 
@@ -293,7 +277,19 @@ const ReceptionistDashboard = () => {
                                             )}
                                             {/* INSERT VISITOR INFO MODAL HERE */}
 
-                                         
+                                            <input type="checkbox" id="VistorInfo-modal" className="modal-toggle" onChange={() => {}} checked={showVisitorModal ? true : false} />
+                                            <div className="fade modal" id="VistorInfo-modal">
+                                                <div className="modal-box flex flex-wrap">
+                                                    <label
+                                                        htmlFor="VistorInfo-modal"
+                                                        className="btn btn-circle btn-sm absolute right-2 top-2 z-10"
+                                                        onClick={() => setShowVisitorModal(false)}
+                                                    >
+                                                        ✕
+                                                    </label>
+                                                    <VisitInfoModal setShowInfo={setShowVisitorModal} visitModalData={visitModalData}/>
+                                                </div>
+                                            </div>
                                             
                                         </tr>
                                     )
