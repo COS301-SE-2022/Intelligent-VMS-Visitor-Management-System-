@@ -232,6 +232,7 @@ const ReceptionistDashboard = () => {
                                 {visitorData.map((visit, idx) => {
                                     return (
                                         <tr   className="hover" key={idx}  >
+                                            {/* Onclicks below display Visitor-Modal and pass it the relavant information for each visitor*/}
                                             <th onClick={() => {setShowVisitorModal(true),setVisitModalData(visit)} }>{idx + 1}</th>
                                             <td className="capitalize" onClick={() => {setShowVisitorModal(true),setVisitModalData(visit)} }>{visit.visitorName}</td>
                                             <td onClick={() => {setShowVisitorModal(true),setVisitModalData(visit)} }>{visit.idNumber}</td>
@@ -275,8 +276,7 @@ const ReceptionistDashboard = () => {
                                                 </td>
 
                                             )}
-                                            {/* INSERT VISITOR INFO MODAL HERE */}
-
+                                            {/* Visitor-Modal for displaying information on row click */}
                                             <input type="checkbox" id="VistorInfo-modal" className="modal-toggle" onChange={() => {}} checked={showVisitorModal ? true : false} />
                                             <div className="fade modal" id="VistorInfo-modal">
                                                 <div className="modal-box flex flex-wrap">
