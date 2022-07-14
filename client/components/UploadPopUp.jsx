@@ -1,7 +1,5 @@
 import { gql, useMutation } from "@apollo/client";
 import React, { useEffect, useRef, useState, setState } from "react";
-import { ImExit } from "react-icons/im";
-import {axios} from 'axios';
 import useAuth from "../store/authStore.js";
 
 const UploadPopUp = ({setShowErrorAlert, setErrorMessage, setShowUploadPopUp, refetch}) => {
