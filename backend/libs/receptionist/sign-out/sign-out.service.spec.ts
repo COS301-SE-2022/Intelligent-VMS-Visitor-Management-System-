@@ -13,7 +13,10 @@ import { ReceptionistService } from '@vms/receptionist';
 describe('SignOutService', () => {
   let service: SignOutService;
   let inviteService: VisitorInviteService;
+  let receptionistService = {
+    getTrayByInviteID: jest.fn(()=> ({}))
 
+  };
   /*eslint-disable*/
   const commandBusMock = {
     execute: jest.fn((command) => {
@@ -61,6 +64,9 @@ describe('SignOutService', () => {
           provide: QueryBus, useValue: queryBusMock
         },
         {
+          provide: ReceptionistService, useValue: receptionistService 
+        },
+        {
           provide: CommandBus, useValue: commandBusMock
         }],
     }).compile();
@@ -75,11 +81,11 @@ describe('SignOutService', () => {
 
   it("should sign out", async()=>{
     //Arrange
-    //jest.spyOn(service, 'removeTrayByInviteID').mockReturnValueOnce(Promise.resolve(123));
+    receptionistService.getTrayByInviteID.mockReturnValueOnce({trayID:123});
     //Act
-    //const resp = await service.signOut('dwvsdvsd');
+    const resp = await service.signOut('dwvsdvsd');
     //Assert
-    //expect(resp).toEqual(123);
+    expect(resp).toEqual(123);
   });
 
   describe("removeTrayByInviteID", () => {
