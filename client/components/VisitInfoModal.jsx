@@ -9,7 +9,7 @@ const VisitInfoModal = ({ setShowInfo, visitModalData }) => {
 
     }, []);
     return (
-        <div className="relative flex-col justify-center items-center text-center" >
+        <div className="relative flex-col justify-center items-center text-center w-auto" >
             {/* <label>{visitModalData.visitorName}</label>
             <label>{visitModalData.idDocType}</label>
             <label>{visitModalData.idNumber}</label>
@@ -18,7 +18,7 @@ const VisitInfoModal = ({ setShowInfo, visitModalData }) => {
             <label>{visitModalData.inviteID}</label> */}
 
             <table className="mb-5 table w-full">
-                <thead>
+                {/* <thead>
                     <tr>
                         <th>Visitor Name</th>
                         <th>Document type</th>
@@ -38,7 +38,35 @@ const VisitInfoModal = ({ setShowInfo, visitModalData }) => {
                         <td>{visitModalData.userEmail}</td>
                         <td>{visitModalData.inviteID}</td>
                     </tr>
+                </tbody> */}
+                <tbody>
+                    <tr className="hover">
+                        <th>Visitor Name</th>
+                        <td>{visitModalData.visitorName}</td>
+                    </tr>
+                    <tr className="hover">
+                        <th>Document type</th>
+                        <td>{visitModalData.idDocType}</td>
+                    </tr>
+                    <tr className="hover">
+                        <th>Visitor ID</th>
+                        <td>{visitModalData.idNumber}</td>
+                    </tr>
+                    <tr className="hover">
+                        <th>Invite date</th>
+                        <td>{visitModalData.inviteDate}</td>
+                    </tr>
+                    <tr className="hover">
+                        <th>Host email</th>
+                        <td>{visitModalData.userEmail}</td>
+                    </tr>
+                    <tr className="hover">
+                        <th>Invite ID</th>
+                        <td>{visitModalData.inviteID}</td>
+                    </tr>
+                   
                 </tbody>
+
             </table>
 
 
