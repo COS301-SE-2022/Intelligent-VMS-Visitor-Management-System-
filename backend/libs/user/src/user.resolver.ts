@@ -29,9 +29,9 @@ export class UserResolver {
 
     @UseGuards(GqlAuthGuard,RolesGuard)
     @Roles("admin")
-    @Query((returns) => {return SearchUser}, { name: "searchUser"})
-    async searchUser(searchQuery: string) {
-        return undefined; 
+    @Query((returns) => {return [SearchUser]}, { name: "searchUser"})
+    async searchUser(@Args("searchQuery") searchQuery: string) {
+        return this.userService.searchUser(searchQuery); 
     }
 
     @UseGuards(LocalAuthGuard)
