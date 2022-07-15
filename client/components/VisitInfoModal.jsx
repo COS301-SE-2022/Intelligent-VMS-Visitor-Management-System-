@@ -4,7 +4,7 @@ const VisitInfoModal = ({ setShowInfo, visitModalData }) => {
     useEffect(() => {
     }, []);
     return (
-        <div className="relative flex-auto justify-center items-center text-center w-auto pt-5" >
+        <div className="relative flex-auto justify-center items-center text-center w-auto" >
             {/* display a visitor's name */}
             <label style={{ fontWeight: "bold" }}>Visitor Name: </label>
             <label style={{ fontStyle: "italic", textTransform: 'capitalize' }}>{visitModalData.visitorName}</label>
