@@ -26,8 +26,8 @@ const ReceptionistDashboard = () => {
     const [showInfoAlert, setShowInfoAlert] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [showScanner, setShowScanner] = useState(false);
-    const [visitModalData, setVisitModalData] = useState(false);
-    const [showVisitorModal, setShowVisitorModal] = useState();
+    const [visitModalData, setVisitModalData] = useState("");
+    const [showVisitorModal, setShowVisitorModal] = useState(false);
 
     const getFormattedDateString = (date) => {
         if(date instanceof Date) {
