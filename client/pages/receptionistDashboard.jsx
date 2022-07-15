@@ -29,7 +29,8 @@ const ReceptionistDashboard = () => {
     const [errorMessage, setErrorMessage] = useState("");
     const [showScanner, setShowScanner] = useState(false);
     const [showUploadPopUp, setShowUploadPopUp] = useState(false);
-
+    const [visitModalData, setVisitModalData] = useState("");
+    const [showVisitorModal, setShowVisitorModal] = useState(false);
 
     const getFormattedDateString = (date) => {
         if(date instanceof Date) {
@@ -54,6 +55,9 @@ const ReceptionistDashboard = () => {
                 idNumber
                 visitorName
                 inviteState
+                # requiresParking
+                idDocType
+                userEmail
             }
         }
     `, { fetchPolicy: "no-cache" });
@@ -69,7 +73,9 @@ const ReceptionistDashboard = () => {
                         idNumber
                         visitorName
                         inviteState
-                  
+                        # requiresParking
+                        idDocType
+                        userEmail
                     }
                 }
             `,},
@@ -100,6 +106,9 @@ const ReceptionistDashboard = () => {
                         idNumber
                         visitorName
                         inviteState
+                        # requiresParking
+                        idDocType
+                        userEmail
                     }
                 }
             `,
@@ -225,11 +234,11 @@ const ReceptionistDashboard = () => {
                             <tbody>
                                 {visitorData.map((visit, idx) => {
                                     return (
-                                        <tr className="hover" key={idx}>
-                                            <th>{idx + 1}</th>
-                                            <td className="capitalize">{visit.visitorName}</td>
-                                            <td>{visit.idNumber}</td>
-
+                                        <tr   className="hover" key={idx}  >
+                                            {/* Onclicks below display Visitor-Modal and pass it the relavant information for each visitor*/}
+                                            <th onClick={() => {setShowVisitorModal(true),setVisitModalData(visit)} }>{idx + 1}</th>
+                                            <td className="capitalize" onClick={() => {setShowVisitorModal(true),setVisitModalData(visit)} }>{visit.visitorName}</td>
+                                            <td onClick={() => {setShowVisitorModal(true),setVisitModalData(visit)} }>{visit.idNumber}</td>
                                             {visit.inviteState === "inActive" ? (
                                                 <td>
                                                     <ReceptionistSignButton 
@@ -243,6 +252,7 @@ const ReceptionistDashboard = () => {
                                                             setCurrentVisitorName(
                                                                 visit.visitorName
                                                             );
+                                                            setShowVisitorModal(false);
                                                         }}
                                                         text="Sign In" 
                                                         colour="bg-green-800" 
@@ -260,6 +270,7 @@ const ReceptionistDashboard = () => {
                                                         setCurrentInviteID(
                                                             visit.inviteID
                                                         );
+                                                        setShowVisitorModal(false);
                                                         
                                                     }}
                                                      text="Sign Out" 
@@ -268,6 +279,21 @@ const ReceptionistDashboard = () => {
                                                 </td>
 
                                             )}
+                                            {/* Visitor-Modal for displaying information on row click */}
+                                            <input type="checkbox" id="VistorInfo-modal" className="modal-toggle" onChange={() => {}} checked={showVisitorModal ? true : false} />
+                                            <div className="fade modal" id="VistorInfo-modal">
+                                                <div className="modal-box flex flex-wrap">
+                                                    <label
+                                                        htmlFor="VistorInfo-modal"
+                                                        className="btn btn-circle btn-sm absolute right-2 top-2 z-10"
+                                                        onClick={() => setShowVisitorModal(false)}
+                                                    >
+                                                        ✕
+                                                    </label>
+                                                    <VisitInfoModal setShowInfo={setShowVisitorModal} visitModalData={visitModalData}/>
+                                                </div>
+                                            </div>
+                                            
                                         </tr>
                                     )
 
@@ -362,7 +388,7 @@ const ReceptionistDashboard = () => {
                 </div>
             </div>
 
-            <input type="checkbox" id="Info-modal" className="modal-toggle" />
+            {/* <input type="checkbox" id="Info-modal" className="modal-toggle" />
             <div className="fade modal" id="Info-modal">
                 <div className="modal-box flex flex-wrap">
                     <label
@@ -373,7 +399,7 @@ const ReceptionistDashboard = () => {
                     </label>
                     <VisitInfoModal name={currentName} />
                 </div>
-            </div>
+            </div> */}
 
             <input type="checkbox" id="Upload-modal" className="modal-toggle" checked={showUploadPopUp ? true : false}/>
             <div className="fade modal" id="Upload-modal">

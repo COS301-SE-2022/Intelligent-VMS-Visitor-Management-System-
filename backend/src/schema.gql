@@ -10,6 +10,12 @@ type Visitor {
   password: String!
 }
 
+type SearchUser {
+  email: String!
+  permission: Int!
+  name: String!
+}
+
 type User {
   email: String
   access_token: String
@@ -68,6 +74,7 @@ type Query {
   hello: String!
   visitors: [Visitor!]!
   helloUser: String!
+  searchUser: SearchUser!
   helloInvite: String!
   getInvites: [Invite!]!
   getTotalNumberOfVisitors: Float!
