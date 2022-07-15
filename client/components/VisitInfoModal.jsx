@@ -10,13 +10,14 @@ const VisitInfoModal = ({setShowInfo,visitModalData}) => {
     }, []);
     return (
     <div className="relative flex-col justify-center items-center text-center" >
-        <label>{visitModalData.inviteID}</label>
-        <label>{visitModalData.inviteDate}</label>
-        <label>{visitModalData.idNumber}</label>
         <label>{visitModalData.visitorName}</label>
-        <label>{visitModalData.inviteState}</label>
+        <label>{visitModalData.idDocType}</label>
+        <label>{visitModalData.idNumber}</label>
         <label>{visitModalData.userEmail}</label>
-        <label>{visitModalData.idDocType}</label>  
+        <label>{visitModalData.inviteDate}</label>
+        <label>{visitModalData.inviteID}</label>  
+
+        
     </div>   
     );
 };
