@@ -35,6 +35,15 @@ export class VisitorInviteResolver {
         return this.visitorInviteService.getInvites(user.email);
     }
 
+    // Returns the visitor invites in the date range
+    @Query((returns) => {return [Invite]}, { name: "getActiveInvitesInDateRange"})
+    async getActiveInvitesInDateRange(
+        @Args("startDate") startDate: string,
+        @Args("endDate") endDate: string,
+    ) {
+        return this.visitorInviteService.getActiveInvitesInDateRange(startDate,endDate);
+    }
+
     // Create Invite
     @Mutation((returns) => {return String}, { name: "createInvite" })
     async createInvite(

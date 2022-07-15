@@ -28,6 +28,7 @@ import { ParkingNotFound } from "@vms/parking/errors/parkingNotFound.error";
 import { MailService } from "@vms/mail";
 import { RestrictionsService } from "@vms/restrictions";
 import { ParkingService } from "@vms/parking";
+import { GetActiveInvitesInDateRangeQuery } from "./queries/impl/getActiveInvitesInDateRange.query";
 
 @Injectable()
 export class VisitorInviteService {
@@ -174,7 +175,10 @@ export class VisitorInviteService {
         return await this.queryBus.execute(new GetInviteQuery(inviteID));
     }
 
-
+    //Return Visitor Invites in date range
+    async getActiveInvitesInDateRange(startDate: string, endDate: string){
+        return await this.queryBus.execute(new GetActiveInvitesInDateRangeQuery(startDate,endDate));
+    }
     
     // Get total number of invites of the given visitor
     async getTotalNumberOfInvitesVisitor(email: string) {
