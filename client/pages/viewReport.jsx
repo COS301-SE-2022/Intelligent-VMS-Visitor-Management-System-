@@ -31,7 +31,7 @@ const ViewReport = () => {
 
     return(
         <Layout>
-            <AnalyticsReport name={name} data={data && data.getNumInvitesPerDateOfUser} total={total} startDate={startDate} endDate={endDate}/>
+            <AnalyticsReport name={name} data={data && data.getNumInvitesPerDateOfUser} total={total} />
         </Layout>
     );
 };

@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { FiDownload } from "react-icons/fi";
 
-const DownloadChart = ({ title, filename, Chart, labelvals, datavals, setStart }) => {
+const DownloadChart = ({ title, filename, Chart, labelvals, datavals, setStart, setRange }) => {
     const chartRef = useRef(null);
     const downloadLinkRef = useRef(null);
     const [loading, setLoading] = useState(false);
@@ -22,7 +22,7 @@ const DownloadChart = ({ title, filename, Chart, labelvals, datavals, setStart }
                 labelvals={labelvals}
                 datavals={datavals}
             />
-            <div className="card-actions mt-3">
+            <div className="card-actions mt-3 items-center overflow-visible">
                 <a
                     ref={downloadLinkRef}
                     onClick={downloadGraph}
@@ -47,7 +47,18 @@ const DownloadChart = ({ title, filename, Chart, labelvals, datavals, setStart }
                     }}
                 />
                 </div>
-            </div>
+                {
+                    setRange && 
+                <select onChange={(e) => {
+                    const range = e.target.value;
+                    setRange(range === "Monthly" ? 30 : 7);
+                }}className="select w-full max-w-xs">
+                      <option disabled selected>Select Timerange</option>
+                      <option>Monthly</option>
+                      <option>Weekly</option>
+                </select>
+                }
+                </div>
         </div>
     );
 };

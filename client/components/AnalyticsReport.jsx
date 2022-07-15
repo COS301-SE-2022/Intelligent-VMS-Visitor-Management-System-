@@ -3,14 +3,12 @@ import jsPDF from 'jspdf';
 import html2canvas from "html2canvas";
 import { FaSearch } from "react-icons/fa";
 
-import { Line } from "react-chartjs-2";
-
 const AnalyticsReport = ({ data, name, total, startDate, endDate }) => {
 
     const inputRef = useRef(null);
     
     const printDocument = () => {
-        html2canvas(inputRef.current).then((canvas) => {
+        html2canvas(inputRef.current, {useCORS: true}).then((canvas) => {
           const imgData = canvas.toDataURL("image/png");
           const pdf = new jsPDF();
           pdf.addImage(imgData, "JPEG", 0, 0);
@@ -18,8 +16,6 @@ const AnalyticsReport = ({ data, name, total, startDate, endDate }) => {
         });
     };
     
-    // width: '210mm', minHeight: '297mm', marginLeft: 'auto', marginRight: 'auto'
-
     return(
         <div className="flex-col">
             <div className="bg-base-300" ref={inputRef} style={{width: '210mm', minHeight: '297mm', marginLeft: 'auto', marginRight: 'auto'}}> 
