@@ -77,6 +77,7 @@ type Query {
   searchUser: SearchUser!
   helloInvite: String!
   getInvites: [Invite!]!
+  getActiveInvitesInDateRange(startDate: String!, endDate: String!): [Invite!]!
   getTotalNumberOfVisitors: Float!
   getNumInvitesPerDate(dateStart: String!, dateEnd: String!): [Invite!]!
   getNumInvitesPerDateOfUser(dateStart: String!, dateEnd: String!, email: String!): [Invite!]!

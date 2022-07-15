@@ -23,6 +23,7 @@ import { GetInvitesByNameQueryHandler } from "./queries/handlers/getInvitesByNam
 import { GetInvitesInRangeByEmailQueryHandler } from "./queries/handlers/getInvitesInRangeByEmail.handler";
 import { GetTotalNumberOfInvitesOfResidentQueryHandler } from "./queries/handlers/getTotalNumberOfInvitesOfResident.handler";
 import { GetTotalNumberOfInvitesVisitorQueryHandler } from "./queries/handlers/getTotalNumberOfInvitesVisitor.handler";
+import { GetActiveInvitesInDateRangeQueryHandler } from "./queries/handlers/getActiveInvitesInDateRange.handler";
 
 @Module({
     imports: [
@@ -48,6 +49,7 @@ import { GetTotalNumberOfInvitesVisitorQueryHandler } from "./queries/handlers/g
         GetInvitesByNameQueryHandler,
         GetInvitesByNameForSearchQueryHandler,
         GetInvitesInRangeByEmailQueryHandler,
+        GetActiveInvitesInDateRangeQueryHandler,
         GetTotalNumberOfInvitesOfResidentQueryHandler,
         GetTotalNumberOfInvitesVisitorQueryHandler,
         getNumberOfVisitors
