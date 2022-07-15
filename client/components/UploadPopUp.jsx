@@ -4,7 +4,7 @@ import useAuth from "../store/authStore.js";
 
 const UploadPopUp = ({setShowErrorAlert, setErrorMessage, setShowUploadPopUp, refetch}) => {
 
-  const [file, setFile] = useState()
+  const [file, setFile] = useState(null)
   const [fileAsString, setFileAsString] = useState("")
   const [text, setText] = useState("Upload a csv file")
   const [signInButton, setSignInButton] = useState(true)

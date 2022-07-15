@@ -29,7 +29,7 @@ const ReceptionistDashboard = () => {
     const [errorMessage, setErrorMessage] = useState("");
     const [showScanner, setShowScanner] = useState(false);
     const [showUploadPopUp, setShowUploadPopUp] = useState(false);
-    const [visitModalData, setVisitModalData] = useState("");
+    const [visitModalData, setVisitModalData] = useState(null);
     const [showVisitorModal, setShowVisitorModal] = useState(false);
 
     const getFormattedDateString = (date) => {
