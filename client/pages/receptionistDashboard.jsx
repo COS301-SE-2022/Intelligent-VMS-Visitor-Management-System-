@@ -281,7 +281,7 @@ const ReceptionistDashboard = () => {
                                             )}
                                             {/* Visitor-Modal for displaying information on row click */}
                                             <input type="checkbox" id="VistorInfo-modal" className="modal-toggle" onChange={() => {}} checked={showVisitorModal ? true : false} />
-                                            <div className="fade modal" id="VistorInfo-modal">
+                                            <div className="fade modal modal-lg " id="VistorInfo-modal">
                                                 <div className="modal-box flex flex-wrap">
                                                     <label
                                                         htmlFor="VistorInfo-modal"
