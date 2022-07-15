@@ -17,59 +17,28 @@ const VisitInfoModal = ({ setShowInfo, visitModalData }) => {
             <label>{visitModalData.inviteDate}</label>
             <label>{visitModalData.inviteID}</label> */}
 
-            <table className="mb-5 table w-auto mx-4">
-                {/* <thead>
-                    <tr>
-                        <th>Visitor Name</th>
-                        <th>Document type</th>
-                        <th>Visitor ID</th>
-                        <th>Invite date</th>
-                        <th>Host email</th>
-                        <th>Invite ID</th>
-                    </tr>
-                </thead>
+            <label style={{fontWeight: "bold"}}>Visitor Name: </label>
+            <label style={{fontStyle: "italic"}}>{visitModalData.visitorName}</label>
+            <br></br>
 
-                <tbody>
-                    <tr className="hover">
-                        <td>{visitModalData.visitorName}</td>
-                        <td>{visitModalData.idDocType}</td>
-                        <td>{visitModalData.idNumber}</td>
-                        <td>{visitModalData.inviteDate}</td>
-                        <td>{visitModalData.userEmail}</td>
-                        <td>{visitModalData.inviteID}</td>
-                    </tr>
-                </tbody> */}
-                <tbody>
-                    <tr className="hover">
-                        <th>Visitor Name</th>
-                        <td>{visitModalData.visitorName}</td>
-                    </tr>
-                    <tr className="hover">
-                        <th>Document type</th>
-                        <td>{visitModalData.idDocType}</td>
-                    </tr>
-                    <tr className="hover">
-                        <th>Visitor ID</th>
-                        <td>{visitModalData.idNumber}</td>
-                    </tr>
-                    <tr className="hover">
-                        <th>Invite date</th>
-                        <td>{visitModalData.inviteDate}</td>
-                    </tr>
-                    <tr className="hover">
-                        <th>Host email</th>
-                        <td>{visitModalData.userEmail}</td>
-                    </tr>
-                    <tr className="hover">
-                        <th>Invite ID</th>
-                        <td>{visitModalData.inviteID}</td>
-                    </tr>
-                   
-                </tbody>
+            <label style={{fontWeight: "bold"}}>Document type: </label>
+            <label style={{fontStyle: "italic"}}>{visitModalData.idDocType}</label>
+            <br></br>
 
-            </table>
+            <label style={{fontWeight: "bold"}}>Visitor ID: </label>
+            <label style={{fontStyle: "italic"}}>{visitModalData.idNumber}</label>
+            <br></br>
 
+            <label style={{fontWeight: "bold"}}>Invite date: </label>
+            <label style={{fontStyle: "italic"}}>{visitModalData.inviteDate}</label>
+            <br></br>
 
+            <label style={{fontWeight: "bold"}}>Host email: </label>
+            <label style={{fontStyle: "italic"}}>{visitModalData.userEmail}</label>
+            <br></br>
+
+            <label style={{fontWeight: "bold"}}>Invite ID: </label>
+            <label style={{fontStyle: "italic"}}>{visitModalData.inviteID}</label>
         </div>
     );
 };
