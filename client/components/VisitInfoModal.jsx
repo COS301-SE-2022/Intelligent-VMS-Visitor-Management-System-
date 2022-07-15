@@ -10,12 +10,12 @@ const VisitInfoModal = ({ setShowInfo, visitModalData }) => {
     }, []);
     return (
         <div className="relative flex-col justify-center items-center text-center" >
-            <label>{visitModalData.visitorName}</label>
+            {/* <label>{visitModalData.visitorName}</label>
             <label>{visitModalData.idDocType}</label>
             <label>{visitModalData.idNumber}</label>
             <label>{visitModalData.userEmail}</label>
             <label>{visitModalData.inviteDate}</label>
-            <label>{visitModalData.inviteID}</label>
+            <label>{visitModalData.inviteID}</label> */}
 
             <table className="mb-5 table w-full">
                 <thead>
@@ -30,11 +30,13 @@ const VisitInfoModal = ({ setShowInfo, visitModalData }) => {
                 </thead>
 
                 <tbody>
-                    <tr className="hover" key={idx}  >
-                        <th ></th>
-                        <td></td>
-                        <td ></td>
-                        <td></td>
+                    <tr className="hover">
+                        <td>{visitModalData.visitorName}</td>
+                        <td>{visitModalData.idDocType}</td>
+                        <td>{visitModalData.idNumber}</td>
+                        <td>{visitModalData.inviteDate}</td>
+                        <td>{visitModalData.userEmail}</td>
+                        <td>{visitModalData.inviteID}</td>
                     </tr>
                 </tbody>
             </table>
