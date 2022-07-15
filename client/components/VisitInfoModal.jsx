@@ -9,7 +9,7 @@ const VisitInfoModal = ({ setShowInfo, visitModalData }) => {
 
     }, []);
     return (
-        <div className="relative flex-col justify-center items-center text-center w-auto" >
+        <div className="relative flex-auto justify-center items-center text-center w-auto pt-7" >
             {/* <label>{visitModalData.visitorName}</label>
             <label>{visitModalData.idDocType}</label>
             <label>{visitModalData.idNumber}</label>
@@ -17,7 +17,7 @@ const VisitInfoModal = ({ setShowInfo, visitModalData }) => {
             <label>{visitModalData.inviteDate}</label>
             <label>{visitModalData.inviteID}</label> */}
 
-            <table className="mb-5 table w-full">
+            <table className="mb-5 table w-auto mx-4">
                 {/* <thead>
                     <tr>
                         <th>Visitor Name</th>
