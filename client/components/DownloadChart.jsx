@@ -51,11 +51,10 @@ const DownloadChart = ({ title, filename, Chart, labelvals, datavals, setStart, 
                     setRange && 
                 <select onChange={(e) => {
                     const range = e.target.value;
-                    setRange(range === "Monthly" ? 30 : 7);
-                }}className="select w-full max-w-xs">
-                      <option disabled selected>Select Timerange</option>
-                      <option>Monthly</option>
-                      <option>Weekly</option>
+                    setRange(range === "30-day" ? 30 : 7);
+                }}className="select select-primary w-full max-w-xs">
+                      <option selected>30-day</option>
+                      <option>7-day</option>
                 </select>
                 }
                 </div>
