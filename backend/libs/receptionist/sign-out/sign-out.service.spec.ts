@@ -8,11 +8,15 @@ import { Tray } from '@vms/receptionist/schema/tray.schema';
 import { VisitorInviteService } from '@vms/visitor-invite';
 import { RestrictionsService } from "@vms/restrictions";
 import { SignOutService } from './sign-out.service';
+import { ReceptionistService } from '@vms/receptionist';
 
 describe('SignOutService', () => {
   let service: SignOutService;
   let inviteService: VisitorInviteService;
+  let receptionistService = {
+    getTrayByInviteID: jest.fn(()=> ({}))
 
+  };
   /*eslint-disable*/
   const commandBusMock = {
     execute: jest.fn((command) => {
@@ -52,11 +56,15 @@ describe('SignOutService', () => {
       providers: [SignOutService,
         VisitorInviteService,
         ParkingService,
+        ReceptionistService,
         MailService,
         ConfigService,
         RestrictionsService,
         {
           provide: QueryBus, useValue: queryBusMock
+        },
+        {
+          provide: ReceptionistService, useValue: receptionistService 
         },
         {
           provide: CommandBus, useValue: commandBusMock
@@ -73,12 +81,12 @@ describe('SignOutService', () => {
 
   it("should sign out", async()=>{
     //Arrange
-    jest.spyOn(service, 'removeTrayByInviteID').mockReturnValueOnce(Promise.resolve(123));
+    receptionistService.getTrayByInviteID.mockReturnValueOnce({trayID:123});
     //Act
     const resp = await service.signOut('dwvsdvsd');
     //Assert
     expect(resp).toEqual(123);
-  })
+  });
 
   describe("removeTrayByInviteID", () => {
     it("should delete the first tray", async () => {

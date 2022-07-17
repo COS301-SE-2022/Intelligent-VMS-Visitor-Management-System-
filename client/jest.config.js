@@ -23,6 +23,7 @@ const customJestConfig = {
   ],
   modulePathIgnorePatterns: [
       "__mocks__",
+      "cypress"
   ],
 }
 

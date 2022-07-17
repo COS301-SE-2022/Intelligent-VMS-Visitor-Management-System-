@@ -10,6 +10,12 @@ type Visitor {
   password: String!
 }
 
+type SearchUser {
+  email: String!
+  permission: Int!
+  name: String!
+}
+
 type User {
   email: String!
   permission: Int!
@@ -31,6 +37,12 @@ type Parking {
   enabled: Boolean!
 }
 
+type ParkingReservation {
+  invitationID: String!
+  parkingNumber: String!
+  reservationDate: String!
+}
+
 type Invite {
   userEmail: String!
   visitorEmail: String!
@@ -45,12 +57,6 @@ type Invite {
   signOutTime: String!
   signInTime: String!
   trayNumber: Float!
-}
-
-type ParkingReservation {
-  invitationID: String!
-  parkingNumber: String!
-  inviteData: [Invite!]!
 }
 
 type SearchInvite {
@@ -74,6 +80,7 @@ type Query {
   visitors: [Visitor!]!
   helloUser: String!
   getUnauthorizedUsers: [User!]!
+  searchUser: SearchUser!
   helloInvite: String!
   getInvites: [Invite!]!
   getTotalNumberOfVisitors: Float!
