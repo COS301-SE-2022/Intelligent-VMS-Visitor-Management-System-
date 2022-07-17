@@ -35,12 +35,6 @@ const VisitorSearchResults = ({ query }) => {
                                         <h3 className="capitalize">{user.name}</h3>
                                         <p>{user.email}</p>
                                     </div>
-                                <div className="flex-col">
-                                    <h3 className="capitalize">
-                                        {visitor.visitorName}
-                                    </h3>
-                                    <p>{visitor.visitorEmail}</p>
-                                </div>
                             </a>
                         </Link>
                     );
