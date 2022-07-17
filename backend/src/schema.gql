@@ -79,7 +79,7 @@ type Query {
   hello: String!
   visitors: [Visitor!]!
   helloUser: String!
-  searchUser: SearchUser!
+  searchUser(searchQuery: String!): [SearchUser!]!
   getUnauthorizedUsers: [User!]!
   helloInvite: String!
   getInvites: [Invite!]!
@@ -96,7 +96,7 @@ type Query {
   getAvailableParking: Float!
   getFreeParking: Parking!
   getReservations: ParkingReservation!
-  getUsedParkingsInRange(startDate: String!, endDate: String!): [Float!]!
+  getUsedParkingsInRange(startDate: String!, endDate: String!): [ParkingReservation!]!
   getNumInvitesPerResident: Restriction!
   helloResident: String!
   helloReceptionist: String!

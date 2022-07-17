@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { QueryBus, CommandBus } from "@nestjs/cqrs";
+import { SearchUserQuery } from "./queries/impl/searchUser.query";
 import { GetUserQuery } from "./queries/impl/getUser.query";
 import { GetUnAuthUsersQuery } from "./queries/impl/getUnAuthUsers.query";
 import { CreateUserCommand } from "./commands/impl/createUser.command";
@@ -18,6 +19,10 @@ export class UserService {
         return this.commandBus.execute(new CreateUserCommand(email, password, permission, idNumber, idDocType, name));
     }
 
+    async searchUser(searchQuery: string) {
+        return this.queryBus.execute(new SearchUserQuery(searchQuery));
+    }
+    
     async getUnAuthorizedUsers(permission: number) {
         return this.queryBus.execute(new GetUnAuthUsersQuery(permission === 0 ? -1 : -2));
     }

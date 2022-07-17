@@ -105,7 +105,9 @@ const AdminDashboard = () => {
 
     const numParkingInDateRangeQuery = useQuery(gql`
         query {
-            getUsedParkingsInRange(startDate: "${startDate}", endDate: "${endDate}")
+            getUsedParkingsInRange(startDate: "${startDate}", endDate: "${endDate}") {
+                reservationDate
+            }
         }
     `);
 
@@ -174,19 +176,17 @@ const AdminDashboard = () => {
         }
 
         // Num parking in range
-        if (
-            !numParkingInDateRangeQuery.loading &&
-            !numParkingInDateRangeQuery.error
-        ) {
-            const parkingNumbers =
-                numParkingInDateRangeQuery.data.getUsedParkingsInRange;
+        if(!numParkingInDateRangeQuery.loading && !numParkingInDateRangeQuery.error) {
+            const parkingNumbers = numParkingInDateRangeQuery.data.getUsedParkingsInRange;
+            console.log(parkingNumbers);
 
             setParkingVals({
                 labels: Array.from(dateMap.keys()),
                 data: Array.from(parkingNumbers),
             });
-        } else if (numInviteInDateRangeQuery.error) {
-            console.error(numInviteInDateRangeQuery.error);
+
+        } else if(numParkingInDateRangeQuery.error) {
+            console.error(numParkingInDateRangeQuery.error);
         }
 
         // Parking spots available
@@ -194,10 +194,10 @@ const AdminDashboard = () => {
             !numParkingSpotsAvailableQuery.loading &&
             !numParkingSpotsAvailableQuery.error
         ) {
-            const numParkingspots =
-                numParkingSpotsAvailableQuery.data.getAvailableParking;
+            const numParkingspots = numParkingSpotsAvailableQuery.data.getAvailableParking;
             setNumParkingSpotsAvailable(numParkingspots);
         } else if (numParkingSpotsAvailableQuery.error) {
+            setNumParkingSpotsAvailable("Error");
         }
 
         if (
@@ -440,7 +440,7 @@ const AdminDashboard = () => {
             />
             <label htmlFor="visitor-modal" className="modal cursor-pointer">
                 <label className="modal-box relative" htmlFor="">
-                    <VisitorSearchResults name={name} />
+                    <VisitorSearchResults query={name} />
                 </label>
             </label>
         </Layout>

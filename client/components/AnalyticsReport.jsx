@@ -1,25 +1,25 @@
-import { useRef } from "react";
-import jsPDF from "jspdf";
+import { useRef, useState } from "react";
+import jsPDF from 'jspdf';
 import html2canvas from "html2canvas";
-import { FaSearch } from "react-icons/fa";
-
-import { Line } from "react-chartjs-2";
+import { FaSignInAlt } from "react-icons/fa";
 
 const AnalyticsReport = ({ data, name, total, startDate, endDate }) => {
+    const [loading,setLoading] = useState(false);
     const inputRef = useRef(null);
-
+    const now = new Date();
+    
     const printDocument = () => {
-        html2canvas(inputRef.current).then((canvas) => {
-            const imgData = canvas.toDataURL("image/png");
-            const pdf = new jsPDF();
-            pdf.addImage(imgData, "JPEG", 0, 0);
-            pdf.save("download.pdf");
+        setLoading(true);
+        html2canvas(inputRef.current, {useCORS: true}).then((canvas) => {
+          setLoading(false);
+          const imgData = canvas.toDataURL("image/png");
+          const pdf = new jsPDF();
+          pdf.addImage(imgData, "PNG", 0, 0);
+          pdf.save("download.pdf");
         });
     };
-
-    // width: '210mm', minHeight: '297mm', marginLeft: 'auto', marginRight: 'auto'
-
-    return (
+    
+    return(
         <div className="flex-col">
             <div
                 className="bg-base-300"
@@ -47,31 +47,29 @@ const AnalyticsReport = ({ data, name, total, startDate, endDate }) => {
                     </h2>
                     <p className="text-xl font-bold text-primary">{total}</p>
                     <div className="divider"></div>
-                    <h2 className="text-base font-bold text-base-content">Visitation Dates</h2>
-                    <div className="flex-col text-primary">
-                        {!data || data.length === 0 ? (
-                            <div>Nothing to show...</div>
-                        ) : (
-                            data.map((val, idx) => {
-                                return (
-                                    <div className="block" key={idx}>
-                                        <p className="text-sm">
-                                            {idx + 1}. {val.inviteDate}:{" "}
-                                            {val.userEmail} invited <br />{" "}
-                                            {val.visitorName} and used{" "}
-                                            {val.idDocType} for ID.
-                                        </p>
-                                    </div>
-                                );
-                            })
-                        )}
+                    <h2 className="text-base font-bold">Invite Data</h2>
+                    <div className="flex-col">
+                        {!data || data.length === 0 ? <div>Nothing to show...</div> : data.map((val, idx) => {
+                            return (
+                                <div className="block text-sm" key={idx}>
+                                    <p>
+                                        {idx+1}. User ({val.userEmail}) invited ({val.visitorEmail}) on {val.inviteDate}
+                                    </p> 
+                                    <p>
+                                        Invitation State: {val.inviteState}
+                                    </p>
+                                    <p>
+                                        {val.inviteState === "signedIn" && val.signInTime}
+                                    </p>
+                                    <br />
+                                </div>
+                            );
+                        })}
                     </div>
                 </div>
             </div>
-            <div className="my-3 flex w-full justify-center">
-                <button className="btn btn-primary" onClick={printDocument}>
-                    Download
-                </button>
+            <div className="w-full flex justify-center my-3">
+                <button className={"btn btn-primary " + (loading && "loading")} onClick={printDocument}>Download</button>
             </div>
         </div>
     );

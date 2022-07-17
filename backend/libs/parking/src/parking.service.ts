@@ -21,7 +21,6 @@ import { ExternalError } from './errors/externalError.error';
 import { InviteNotFound } from '@vms/visitor-invite/errors/inviteNotFound.error';
 import { VisitorInviteService } from '@vms/visitor-invite/visitor-invite.service';
 import { GetParkingQuery } from './queries/impl/getParking.query';
-import { Console } from 'console';
 import { GetReservationsByDateQuery } from './queries/impl/getReservationsByDate.query';
 import { InvalidCommand } from './errors/invalidCommand.error';
 
@@ -147,30 +146,28 @@ export class ParkingService {
         //Validate input
         const invite = await this.inviteService.getInvite(invitationID);
 
-        if(!invite)
-        throw new InviteNotFound(`Invitation with ID ${invitationID} not found`);
+        if(!invite) {
+            throw new InviteNotFound(`Invitation with ID ${invitationID} not found`);
+        }
 
         //Additional Checks
-        const InviteReservation = await this.queryBus.execute(
-            new GetInviteReservationQuery(invitationID));
+        const InviteReservation = await this.queryBus.execute(new GetInviteReservationQuery(invitationID));
 
-        if(InviteReservation)
+        if(InviteReservation) {
             throw new InvalidCommand(`Invitation with ID ${invitationID} already have reserved parking.`)
+        }
         
         //Find Free Parking
         let parkingNumber = -1;
         let temp = true;
         const spaces = await this.getAvailableParking();
-        console.log(spaces);
 
         for(let i=0;i<spaces;i++){
             const reservations = await this.queryBus.execute(
                 new GetParkingReservationsQuery(parkingNumber));
 
             temp = true;
-            console.log(reservations.length);
             for(let j=0;j<reservations.length;j++) {
-                console.log("hre");
                 const resInvite = await this.inviteService.getInvite(reservations[j].invitationID);
                 if(resInvite && resInvite.inviteDate === invite.inviteDate) {
                     temp =false;
@@ -185,7 +182,7 @@ export class ParkingService {
         }
 
         if(parkingNumber == -1) {
-            throw new ParkingNotFound("There are no parking available");
+            throw new ParkingNotFound("There is no parking available");
         }
 
         //Send to db
@@ -598,7 +595,4 @@ export class ParkingService {
 
     }
 
-    //TODO (Larisa): Test all errors
-    //TODO (Larisa): Code functions for reused code
-    
 }
