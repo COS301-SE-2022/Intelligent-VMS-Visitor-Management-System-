@@ -15,6 +15,12 @@ type User {
   permission: Int!
 }
 
+type SearchUser {
+  email: String!
+  permission: Int!
+  name: String!
+}
+
 type LoginUser {
   email: String
   access_token: String
@@ -73,6 +79,7 @@ type Query {
   hello: String!
   visitors: [Visitor!]!
   helloUser: String!
+  searchUser: SearchUser!
   getUnauthorizedUsers: [User!]!
   helloInvite: String!
   getInvites: [Invite!]!

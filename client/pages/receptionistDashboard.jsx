@@ -3,7 +3,6 @@ import { useState, useEffect, setState } from "react";
 import { gql, useQuery, useApolloClient, useLazyQuery } from "@apollo/client";
 
 import { BiQrScan } from "react-icons/bi";
-import { FaPeopleCarry } from "react-icons/fa";
 
 import Layout from "../components/Layout";
 import QRScanner from "../components/QRScanner";
@@ -27,6 +26,8 @@ const ReceptionistDashboard = () => {
     const [showInfoAlert, setShowInfoAlert] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [showScanner, setShowScanner] = useState(false);
+    const [visitModalData, setVisitModalData] = useState("");
+    const [showVisitorModal, setShowVisitorModal] = useState(false);
 
     const getFormattedDateString = (date) => {
         if (date instanceof Date) {
@@ -54,6 +55,9 @@ const ReceptionistDashboard = () => {
                 idNumber
                 visitorName
                 inviteState
+                # requiresParking
+                idDocType
+                userEmail
             }
         }
     `,
@@ -72,7 +76,9 @@ const ReceptionistDashboard = () => {
                         idNumber
                         visitorName
                         inviteState
-                  
+                        # requiresParking
+                        idDocType
+                        userEmail
                     }
                 }
             `,
@@ -107,6 +113,9 @@ const ReceptionistDashboard = () => {
                         idNumber
                         visitorName
                         inviteState
+                        # requiresParking
+                        idDocType
+                        userEmail
                     }
                 }
             `,
@@ -185,10 +194,6 @@ const ReceptionistDashboard = () => {
             </h1>
             <div className="inline-flex items-center">
                 <div className="inline-flex w-full flex-row-reverse items-center justify-end space-x-3">
-                    <button className="btn btn-secondary text-secondary-content ml-3 gap-2 btn-sm md:btn-md">
-                        <FaPeopleCarry />
-                        Bulk Sign-In
-                    </button>
                     <label
                         htmlFor="QRScan-modal"
                         className="modal-button btn btn-primary btn-sm ml-3 gap-2 md:btn-md"
@@ -256,15 +261,12 @@ const ReceptionistDashboard = () => {
                             <tbody>
                                 {visitorData.map((visit, idx) => {
                                     return (
-                                        <tr className="hover" key={idx}>
-                                            <th>{idx + 1}</th>
-                                            <td className="capitalize">
-                                                {visit.visitorName}
-                                            </td>
-                                            <td>{visit.idNumber}</td>
-
-                                            {visit.inviteState ===
-                                            "inActive" ? (
+                                        <tr   className="hover" key={idx}  >
+                                            {/* Onclicks below display Visitor-Modal and pass it the relavant information for each visitor*/}
+                                            <th onClick={() => {setShowVisitorModal(true),setVisitModalData(visit)} }>{idx + 1}</th>
+                                            <td className="capitalize" onClick={() => {setShowVisitorModal(true),setVisitModalData(visit)} }>{visit.visitorName}</td>
+                                            <td onClick={() => {setShowVisitorModal(true),setVisitModalData(visit)} }>{visit.idNumber}</td>
+                                            {visit.inviteState === "inActive" ? (
                                                 <td>
                                                     <ReceptionistSignButton
                                                         onClick={() => {
@@ -277,6 +279,7 @@ const ReceptionistDashboard = () => {
                                                             setCurrentVisitorName(
                                                                 visit.visitorName
                                                             );
+                                                            setShowVisitorModal(false);
                                                         }}
                                                         text="Sign In"
                                                         colour="bg-green-800"
@@ -285,21 +288,37 @@ const ReceptionistDashboard = () => {
                                                 </td>
                                             ) : (
                                                 <td>
-                                                    <ReceptionistSignButton
-                                                        onClick={() => {
-                                                            setCurrentVisitorID(
-                                                                visit.idNumber
-                                                            );
-                                                            setCurrentInviteID(
-                                                                visit.inviteID
-                                                            );
-                                                        }}
-                                                        text="Sign Out"
-                                                        htmlFor="signOut-modal"
-                                                        colour="bg-red-800"
-                                                    />
+                                                     <ReceptionistSignButton 
+                                                     onClick={() => {
+                                                        setCurrentVisitorID(
+                                                            visit.idNumber
+                                                        );
+                                                        setCurrentInviteID(
+                                                            visit.inviteID
+                                                        );
+                                                        setShowVisitorModal(false);
+                                                        
+                                                    }}
+                                                     text="Sign Out" 
+                                                     htmlFor="signOut-modal" 
+                                                     colour="bg-red-800" />
                                                 </td>
                                             )}
+                                            {/* Visitor-Modal for displaying information on row click */}
+                                            <input type="checkbox" id="VistorInfo-modal" className="modal-toggle" onChange={() => {}} checked={showVisitorModal ? true : false} />
+                                            <div className="fade modal modal-lg " id="VistorInfo-modal">
+                                                <div className="modal-box flex flex-wrap">
+                                                    <label
+                                                        htmlFor="VistorInfo-modal"
+                                                        className="btn btn-circle btn-sm absolute right-2 top-2 z-10"
+                                                        onClick={() => setShowVisitorModal(false)}
+                                                    >
+                                                        ✕
+                                                    </label>
+                                                    <VisitInfoModal setShowInfo={setShowVisitorModal} visitModalData={visitModalData}/>
+                                                </div>
+                                            </div>
+                                            
                                         </tr>
                                     );
                                 })}
@@ -391,7 +410,7 @@ const ReceptionistDashboard = () => {
                 </div>
             </div>
 
-            <input type="checkbox" id="Info-modal" className="modal-toggle" />
+            {/* <input type="checkbox" id="Info-modal" className="modal-toggle" />
             <div className="fade modal" id="Info-modal">
                 <div className="modal-box flex flex-wrap">
                     <label
@@ -402,7 +421,7 @@ const ReceptionistDashboard = () => {
                     </label>
                     <VisitInfoModal name={currentName} />
                 </div>
-            </div>
+            </div> */}
         </Layout>
     );
 };

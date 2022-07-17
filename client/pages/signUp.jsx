@@ -171,7 +171,6 @@ const SignUp = () => {
                                     onBlur={handleBlur}
                                     value={values.email}
                                 ></input>
-
                                 <span className="text-sm text-error md:text-base">
                                     {errors.email &&
                                         touched.email &&

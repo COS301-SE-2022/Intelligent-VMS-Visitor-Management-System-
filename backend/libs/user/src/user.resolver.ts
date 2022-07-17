@@ -12,6 +12,7 @@ import { CurrentUser } from "@vms/auth/decorators/CurrentUserDecorator.decorator
 import { UserService } from "./user.service";
 
 import { User } from "./models/user.model";
+import { SearchUser } from "./models/searchUser.model"; 
 import { LoginUser } from "./dto/loginUser.dto";
 
 @Resolver((of) => {return User})
@@ -26,6 +27,13 @@ export class UserResolver {
     @Query((returns) => {return String}, { name: "helloUser" })
     async hello(@CurrentUser() user: User) {
         return "👋 from to " + user.email + " " + user.permission;
+    }
+
+    @UseGuards(GqlAuthGuard,RolesGuard)
+    @Roles("admin")
+    @Query((returns) => {return SearchUser}, { name: "searchUser"})
+    async searchUser(searchQuery: string) {
+        return undefined; 
     }
 
     @UseGuards(LocalAuthGuard)

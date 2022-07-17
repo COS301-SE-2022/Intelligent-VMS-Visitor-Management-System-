@@ -29,7 +29,6 @@ export class UserService {
 
     async authorizeUserAccount(email: string) {
         const res = await this.commandBus.execute(new AuthorizeUserCommand(email));        
-        console.log(res);
         return res.modifiedCount > 0;
     }
 }
