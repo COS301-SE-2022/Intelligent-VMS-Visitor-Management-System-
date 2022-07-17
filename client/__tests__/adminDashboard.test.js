@@ -40,7 +40,7 @@ describe("AdminDashboard", () => {
             </MockedProvider>
         );
 
-        expect(screen.getByText("admin@mail.com")).toBeInTheDocument();
+        expect(screen.getAllByText("admin@mail.com").length).toEqual(2);
     });
 
     it("renders save and cancel buttons", async () => {
@@ -68,8 +68,5 @@ describe("AdminDashboard", () => {
         const user = userEvent.setup();
 
         user.click(screen.getByTestId("increaseInvites"));
-
-
-    });    
-
+    });
 });

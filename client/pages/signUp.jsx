@@ -1,17 +1,29 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { gql, useQuery, useApolloClient } from "@apollo/client";
 import { Field, Formik } from "formik";
 import { motion } from "framer-motion";
 
 import Layout from "../components/Layout";
+import ErrorAlert from "../components/ErrorAlert";
 
 import useAuth from "../store/authStore";
 
 const SignUp = () => {
-    const permission = useAuth((state) => {return state.permission})();
-    const verify = useAuth((state) => {return state.setVerify});
-    const verified = useAuth((state) => {return state.verified});
+    const permission = useAuth((state) => {
+        return state.permission;
+    })();
+    const verify = useAuth((state) => {
+        return state.setVerify;
+    });
+    const verified = useAuth((state) => {
+        return state.verified;
+    });
+
+    const [error, setError] = useState({
+        message: "Error",
+        showCondition: false,
+    });
 
     const flyEmojiAway = {
         initial: {
@@ -41,7 +53,7 @@ const SignUp = () => {
 
     return (
         <Layout>
-            <div className="relative flex h-full min-h-[80vh] w-full flex-col flex-col items-center justify-center overflow-hidden">
+            <div className="relative flex h-full min-h-[80vh] w-full flex-col items-center justify-center overflow-hidden">
                 <ul className="steps mb-3 mt-2 text-xs md:text-base">
                     <li className="step step-primary">
                         Tell Us About Yourself
@@ -88,8 +100,6 @@ const SignUp = () => {
                         return errors;
                     }}
                     onSubmit={(values, { setSubmitting }) => {
-                        verify();
-                        
                         client
                             .mutate({
                                 mutation: gql`
@@ -99,13 +109,19 @@ const SignUp = () => {
                             `,
                             })
                             .then((res) => {
-                                if (res.data.signup) {
+                                if (res.data.signup === true) {
+                                    verify();
                                     router.push("/verify");
                                     setSubmitting(false);
+                                } else {
+                                    console.log(res);
                                 }
                             })
                             .catch((err) => {
-                                console.error(err.message);
+                                setError({
+                                    message: err.message,
+                                    showCondition: true,
+                                });
                                 setSubmitting(false);
                             });
                     }}
@@ -118,112 +134,120 @@ const SignUp = () => {
                         handleBlur,
                         handleSubmit,
                         isSubmitting,
-                    }) => {return (
-                        <form
-                            onSubmit={handleSubmit}
-                            className="prose form-control space-y-4 rounded-xl border p-14"
-                        >
-                            <h1>Let&apos;s Get Started ✨</h1>
-                            <input
-                                type="email"
-                                name="email"
-                                placeholder="Your Email"
-                                autoComplete="username"
-                                className="input input-bordered w-full"
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                value={values.email}
-                            ></input>
-                            <span className="text-sm text-error md:text-base">
-                                {errors.email && touched.email && errors.email}
-                            </span>
-                            <input
-                                type="password"
-                                name="password"
-                                autoComplete="current-password"
-                                placeholder="Password"
-                                className="input input-bordered w-full"
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                value={values.password}
-                            ></input>
-                            <span className="max-w-xs text-sm text-error md:text-base">
-                                {errors.password &&
-                                    touched.password &&
-                                    errors.password}
-                            </span>
-                            <input
-                                type="password"
-                                name="confirmPassword"
-                                placeholder="Confirm Password"
-                                className="input input-bordered w-full"
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                value={values.confirmPassword}
-                            ></input>
-                            <span className="text-sm text-error md:text-base">
-                                {errors.confirmPassword &&
-                                    touched.confirmPassword &&
-                                    errors.confirmPassword}
-                            </span>
-                            <p className="text-sm md:text-lg lg:text-xl">
-                                I&apos;m a... <span>{values.userType}</span>
-                            </p>
-                            <div className="flex items-center space-x-3">
-                                <label className="flex items-center space-x-3">
-                                    <span className="text-sm font-bold md:text-base">
-                                        Resident
-                                    </span>
-                                    <Field
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                        className="radio checked:bg-primary"
-                                        type="radio"
-                                        name="userType"
-                                        value="resident"
-                                        aria-label="resident"
-                                    />
-                                </label>
-                                <label className="flex items-center space-x-3">
-                                    <span className="text-sm font-bold md:text-base">
-                                        Receptionist
-                                    </span>
-                                    <Field
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                        className="radio checked:bg-secondary"
-                                        type="radio"
-                                        name="userType"
-                                        value="receptionist"
-                                        aria-label="receptionist"
-                                    />
-                                </label>
-                            </div>
-                            <span className="text-error">
-                                {errors.userType &&
-                                    touched.userType &&
-                                    errors.userType}
-                            </span>
-                            <motion.button
-                                className="btn btn-primary space-x-4 overflow-y-hidden"
-                                type="submit"
-                                disabled={isSubmitting}
-                                initial="initial"
-                                whileHover="hover"
-                                whileFocus="hover"
+                    }) => {
+                        return (
+                            <form
+                                onSubmit={handleSubmit}
+                                className="prose form-control space-y-4 rounded-xl border p-14"
                             >
-                                Let&apos;s Go{" "}
-                                <motion.span
-                                    className="ml-3"
-                                    variants={flyEmojiAway}
+                                <h1>Let&apos;s Get Started ✨</h1>
+                                <input
+                                    type="email"
+                                    name="email"
+                                    placeholder="Your Email"
+                                    autoComplete="username"
+                                    className="input input-bordered w-full"
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    value={values.email}
+                                ></input>
+                                <span className="text-sm text-error md:text-base">
+                                    {errors.email &&
+                                        touched.email &&
+                                        errors.email}
+                                </span>
+                                <input
+                                    type="password"
+                                    name="password"
+                                    autoComplete="current-password"
+                                    placeholder="Password"
+                                    className="input input-bordered w-full"
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    value={values.password}
+                                ></input>
+                                <span className="max-w-xs text-sm text-error md:text-base">
+                                    {errors.password &&
+                                        touched.password &&
+                                        errors.password}
+                                </span>
+                                <input
+                                    type="password"
+                                    name="confirmPassword"
+                                    placeholder="Confirm Password"
+                                    className="input input-bordered w-full"
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    value={values.confirmPassword}
+                                ></input>
+                                <span className="text-sm text-error md:text-base">
+                                    {errors.confirmPassword &&
+                                        touched.confirmPassword &&
+                                        errors.confirmPassword}
+                                </span>
+                                <p className="text-sm md:text-lg lg:text-xl">
+                                    I&apos;m a... <span>{values.userType}</span>
+                                </p>
+                                <div className="flex items-center space-x-3">
+                                    <label className="flex items-center space-x-3">
+                                        <span className="text-sm font-bold md:text-base">
+                                            Resident
+                                        </span>
+                                        <Field
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+                                            className="radio checked:bg-primary"
+                                            type="radio"
+                                            name="userType"
+                                            value="resident"
+                                            aria-label="resident"
+                                        />
+                                    </label>
+                                    <label className="flex items-center space-x-3">
+                                        <span className="text-sm font-bold md:text-base">
+                                            Receptionist
+                                        </span>
+                                        <Field
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+                                            className="radio checked:bg-secondary"
+                                            type="radio"
+                                            name="userType"
+                                            value="receptionist"
+                                            aria-label="receptionist"
+                                        />
+                                    </label>
+                                </div>
+                                <span className="text-error">
+                                    {errors.userType &&
+                                        touched.userType &&
+                                        errors.userType}
+                                </span>
+                                <motion.button
+                                    className="btn btn-primary space-x-4 overflow-y-hidden"
+                                    type="submit"
+                                    disabled={isSubmitting}
+                                    initial="initial"
+                                    whileHover="hover"
+                                    whileFocus="hover"
                                 >
-                                    {" "}
-                                    🚀
-                                </motion.span>
-                            </motion.button>
-                        </form>
-                    )}}
+                                    Let&apos;s Go{" "}
+                                    <motion.span
+                                        className="ml-3"
+                                        variants={flyEmojiAway}
+                                    >
+                                        {" "}
+                                        🚀
+                                    </motion.span>
+                                </motion.button>
+                            </form>
+                        );
+                    }}
                 </Formik>
+                <ErrorAlert
+                    message={error.message}
+                    showConditon={error.showCondition}
+                />
             </div>
         </Layout>
     );

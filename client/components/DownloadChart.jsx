@@ -16,7 +16,7 @@ const DownloadChart = ({ title, filename, Chart, labelvals, datavals, setStart, 
 
     return (
         <div className="card bg-base-300 p-5">
-            <h2 className="card-title">{title}</h2>
+            <h2 className="card-title text-base-content">{title}</h2>
             <Chart
                 chartRef={chartRef}
                 labelvals={labelvals}
@@ -31,21 +31,21 @@ const DownloadChart = ({ title, filename, Chart, labelvals, datavals, setStart, 
                 >
                     <FiDownload className="text-xl text-primary-content" />
                 </a>
-                
-                <div>
-                <input
-                    type="date"
-                    name="visitDate"
-                    placeholder="Visit Date"
-                    className="input input-bordered w-full"
-                    onChange={(e) => {
-                        const date = new Date(e.target.value);
 
-                        if(!isNaN(date)) {
-                            setStart(date);
-                        }
-                    }}
-                />
+                <div>
+                    <input
+                        type="date"
+                        name="visitDate"
+                        placeholder="Visit Date"
+                        className="input input-bordered w-full text-base-content"
+                        onChange={(e) => {
+                            const date = new Date(e.target.value);
+
+                            if (!isNaN(date)) {
+                                setStart(date);
+                            }
+                        }}
+                    />
                 </div>
                 {
                     setRange && 

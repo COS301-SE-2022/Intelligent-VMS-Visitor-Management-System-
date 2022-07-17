@@ -25,7 +25,7 @@ describe("Sign-up", () => {
 
         expect(screen.getByText("Tell Us About Yourself")).toBeInTheDocument();
     });
-    
+
     it("shows an error message when no email is provided", async () => {
         render(
             <MockedProvider>
@@ -57,7 +57,10 @@ describe("Sign-up", () => {
         const user = userEvent.setup();
 
         // Type in invalid email
-        await user.type(screen.getByPlaceholderText("Your Email"), "notvalidmail");
+        await user.type(
+            screen.getByPlaceholderText("Your Email"),
+            "notvalidmail"
+        );
 
         // Take focus away from email input
         await user.type(screen.getByPlaceholderText("Password"), "password1!");
@@ -77,7 +80,10 @@ describe("Sign-up", () => {
         const user = userEvent.setup();
 
         // Type in invalid email
-        await user.type(screen.getByPlaceholderText("Your Email"), "test@mail.com");
+        await user.type(
+            screen.getByPlaceholderText("Your Email"),
+            "test@mail.com"
+        );
 
         // Submit the form
         await user.click(screen.getByRole("button"));
@@ -97,18 +103,28 @@ describe("Sign-up", () => {
         const user = userEvent.setup();
 
         // Type in valid email
-        await user.type(screen.getByPlaceholderText("Your Email"), "test@mail.com");
+        await user.type(
+            screen.getByPlaceholderText("Your Email"),
+            "test@mail.com"
+        );
 
-        // Type in invalid password 
+        // Type in invalid password
         await user.type(screen.getByPlaceholderText("Password"), "password");
 
-        // Confirm invalid password 
-        await user.type(screen.getByPlaceholderText("Confirm Password"), "password");
+        // Confirm invalid password
+        await user.type(
+            screen.getByPlaceholderText("Confirm Password"),
+            "password"
+        );
 
         // Submit the form
         await user.click(screen.getByRole("button"));
 
-        expect(screen.getByText("Password needs minimum of 8 characters with one number and one special character")).toBeVisible();
+        expect(
+            screen.getByText(
+                "Password needs minimum of 8 characters with one number and one special character"
+            )
+        ).toBeVisible();
     });
 
     it("shows an error message when the passwords provided do not match", async () => {
@@ -123,13 +139,19 @@ describe("Sign-up", () => {
         const user = userEvent.setup();
 
         // Type in valid email
-        await user.type(screen.getByPlaceholderText("Your Email"), "test@mail.com");
+        await user.type(
+            screen.getByPlaceholderText("Your Email"),
+            "test@mail.com"
+        );
 
-        // Type in invalid password 
+        // Type in invalid password
         await user.type(screen.getByPlaceholderText("Password"), "password1!");
 
-        // Confirm invalid password 
-        await user.type(screen.getByPlaceholderText("Confirm Password"), "password");
+        // Confirm invalid password
+        await user.type(
+            screen.getByPlaceholderText("Confirm Password"),
+            "password"
+        );
 
         // Submit the form
         await user.click(screen.getByRole("button"));
@@ -160,13 +182,19 @@ describe("Sign-up", () => {
         const user = userEvent.setup();
 
         // Type in valid email
-        await user.type(screen.getByPlaceholderText("Your Email"), "test@mail.com");
+        await user.type(
+            screen.getByPlaceholderText("Your Email"),
+            "test@mail.com"
+        );
 
-        // Type in invalid password 
+        // Type in invalid password
         await user.type(screen.getByPlaceholderText("Password"), "password1!");
 
-        // Confirm invalid password 
-        await user.type(screen.getByPlaceholderText("Confirm Password"), "password1!");
+        // Confirm invalid password
+        await user.type(
+            screen.getByPlaceholderText("Confirm Password"),
+            "password1!"
+        );
 
         // Select resident radio button
         await user.click(screen.getByDisplayValue("resident"));
@@ -180,5 +208,4 @@ describe("Sign-up", () => {
             expect(router.push).toHaveBeenCalledWith("/verify");
         });
     });
-    
 });

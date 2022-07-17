@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 import { gql, useQuery } from "@apollo/client";
-import jsPDF from 'jspdf';
+import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
 import Layout from "../components/Layout";
@@ -28,7 +28,7 @@ const UserAnalytics = () => {
 
     // Visitor invite data object for chart
     const [visitorVals, setVisitorVals] = useState({ data: [], labels: [] });
-    
+
     const [numInvites, setNumInvites] = useState(0);
 
     const { loading, error, data } = useQuery(gql`
@@ -48,7 +48,7 @@ const UserAnalytics = () => {
     `);
 
     useEffect(() => {
-        if(!loading && !error) {
+        if (!loading && !error) {
             const invites = data.getNumInvitesPerDateOfUser;
             invites.forEach((invite) => {
                 dateMap.set(
@@ -63,8 +63,8 @@ const UserAnalytics = () => {
                 data: Array.from(dateMap.values()),
                 labels: Array.from(dateMap.keys()),
             });
-        } else if(error) {
-            if(error.message === "Unauthorized") {
+        } else if (error) {
+            if (error.message === "Unauthorized") {
                 router.push("/expire");
             }
             console.error(error);
@@ -84,7 +84,9 @@ const UserAnalytics = () => {
                 <div className="flex-col">
                     <h1 className="text-xl font-bold md:text-2xl lg:text-3xl">
                         User Report For{" "}
-                        <span className="text-secondary capitalize">{name}</span>
+                        <span className="capitalize text-secondary">
+                            {name}
+                        </span>
                     </h1>
                     <Link href="/adminDashboard">
                         <a className="link flex items-center font-bold normal-case">
@@ -118,7 +120,9 @@ const UserAnalytics = () => {
                     {loading && <p>Loading</p>}
                     </div>
                 </div>
-                <Link href={`/viewReport?email=${email}&startDate=${startDate}&endDate=${endDate}&name=${name}&total=${numInvites}`} >
+                <Link
+                    href={`/viewReport?email=${email}&startDate=${startDate}&endDate=${endDate}&name=${name}&total=${numInvites}`}
+                >
                     <a className="btn btn-primary">Generate PDF Report</a>
                 </Link>
             </div>

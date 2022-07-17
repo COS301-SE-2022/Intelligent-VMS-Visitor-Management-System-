@@ -2,7 +2,6 @@ import Link from "next/link";
 import { gql, useQuery } from "@apollo/client";
 
 const VisitorSearchResults = ({ query }) => {
-
     const searchQuery = useQuery(gql`
         query {
             searchUser(searchQuery: "${query}") {
@@ -36,11 +35,18 @@ const VisitorSearchResults = ({ query }) => {
                                         <h3 className="capitalize">{user.name}</h3>
                                         <p>{user.email}</p>
                                     </div>
-                                </a>
-                            </Link>
-                        );
-                    })
-            }
+                                </div>
+                                <div className="flex-col">
+                                    <h3 className="capitalize">
+                                        {visitor.visitorName}
+                                    </h3>
+                                    <p>{visitor.visitorEmail}</p>
+                                </div>
+                            </a>
+                        </Link>
+                    );
+                })
+            )}
         </div>
     );
 };
