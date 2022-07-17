@@ -35,7 +35,6 @@ const VisitorSearchResults = ({ query }) => {
                                         <h3 className="capitalize">{user.name}</h3>
                                         <p>{user.email}</p>
                                     </div>
-                                </div>
                                 <div className="flex-col">
                                     <h3 className="capitalize">
                                         {visitor.visitorName}
@@ -46,9 +45,9 @@ const VisitorSearchResults = ({ query }) => {
                         </Link>
                     );
                 })
-            )}
-        </div>
-    );
+            }
+            </div>
+        );
 };
 
 export default VisitorSearchResults;
