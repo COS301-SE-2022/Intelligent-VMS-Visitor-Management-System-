@@ -23,19 +23,12 @@ const ViewReport = () => {
     `);
 
     useEffect(() => {
-<<<<<<< Updated upstream
-        if (!loading && !error) {
-            console.log(data);
-        } else if (error) {
-            console.error("Something went wrong");
-=======
         if(!loading && !error) {
-
+            
         } else if(error) {
             if(error.message === "Unauthorized") {
                 router.push("/expire");
             }
->>>>>>> Stashed changes
         }
     }, [data]);
 
