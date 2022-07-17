@@ -24,7 +24,7 @@ const ViewReport = () => {
 
     useEffect(() => {
         if(!loading && !error) {
-            
+
         } else if(error) {
             if(error.message === "Unauthorized") {
                 router.push("/expire");
