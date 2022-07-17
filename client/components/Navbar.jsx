@@ -6,7 +6,12 @@ import { CgMenuRight } from "react-icons/cg";
 import useAuth from "../store/authStore";
 
 const Navbar = () => {
-    const navlinks = useAuth((state) => {return state.navLinks})();
+    const navlinks = useAuth((state) => {
+        return state.navLinks;
+    })();
+    const token = useAuth((state) => {
+        return state.decodedToken;
+    })();
 
     return (
         <nav className="navbar w-full bg-neutral sm:rounded-xl">
@@ -42,6 +47,14 @@ const Navbar = () => {
                 </Link>
             </div>
             <div className="navbar-end">
+                {token && (
+                    <div className="text-xs md:text-sm">
+                        Hello{" "}
+                        <span className="font-bold text-secondary">
+                            {token && token.email}
+                        </span>
+                    </div>
+                )}
                 <div className="dropdown dropdown-end">
                     <label tabIndex="0" className="menuIcon btn btn-ghost">
                         <svg

@@ -48,6 +48,7 @@
     "request": "^2.88.2",
     "request-promise": "^4.2.6",
     "supertest": "^6.2.3",
+    "theme-change": "^2.0.2",
     "zustand": "^4.0.0-rc.1"
   },
   "devDependencies": {

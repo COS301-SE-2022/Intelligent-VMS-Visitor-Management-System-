@@ -10,13 +10,18 @@ type Visitor {
   password: String!
 }
 
+type User {
+  email: String!
+  permission: Int!
+}
+
 type SearchUser {
   email: String!
   permission: Int!
   name: String!
 }
 
-type User {
+type LoginUser {
   email: String
   access_token: String
 }
@@ -75,6 +80,7 @@ type Query {
   visitors: [Visitor!]!
   helloUser: String!
   searchUser: SearchUser!
+  getUnauthorizedUsers: [User!]!
   helloInvite: String!
   getInvites: [Invite!]!
   getTotalNumberOfVisitors: Float!
@@ -98,9 +104,11 @@ type Query {
 
 type Mutation {
   createVisitor(input: VisitorInputType!): Visitor!
-  login(email: String!, password: String!): User!
+  login(email: String!, password: String!): LoginUser!
   signup(email: String!, password: String!, type: String!, idNumber: String!): String!
   verify(verifyID: String!, email: String!): Boolean!
+  deleteUserAccount(email: String!): Boolean!
+  authorizeUserAccount(email: String!): Boolean!
   createInvite(userEmail: String!, visitorName: String!, visitorEmail: String!, IDDocType: String!, IDNumber: String!, inviteDate: String!, requiresParking: Boolean!): String!
   cancelInvite(inviteID: String!): Boolean!
   assignParking(invitationID: String!): Parking!

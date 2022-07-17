@@ -1,25 +1,25 @@
+import { useRouter } from "next/router";
 import { useState, useEffect, setState } from "react";
 import { gql, useQuery, useApolloClient, useLazyQuery } from "@apollo/client";
 
-import Layout from "../components/Layout";
-import ErrorAlert from "../components/ErrorAlert";
+import { BiQrScan } from "react-icons/bi";
 
-import { useRouter } from "next/router";
+import Layout from "../components/Layout";
 import QRScanner from "../components/QRScanner";
 import SignInPopUp from "../components/SignInPopUp";
 import SignOutPopUp from "../components/SignOutPopUp";
 import VisitInfoModal from "../components/VisitInfoModal";
 import ReceptionistSignButton from "../components/receptionistSignButton";
 import InfoAlert from "../components/InfoAlert";
+import ErrorAlert from "../components/ErrorAlert";
 
 const ReceptionistDashboard = () => {
-    
-    const [currentVisitorID,setCurrentVisitorID] = useState("");
-    const [currentInviteID,setCurrentInviteID] = useState("");
-    const [currentVisitorName,setCurrentVisitorName] = useState("");
-    const [currentName,setCurrentName] = useState("");
+    const [currentVisitorID, setCurrentVisitorID] = useState("");
+    const [currentInviteID, setCurrentInviteID] = useState("");
+    const [currentVisitorName, setCurrentVisitorName] = useState("");
+    const [currentName, setCurrentName] = useState("");
     const [trayNr, setTrayNr] = useState("");
-    
+
     const [visitorData, setVisitorData] = useState([]);
     const [reload, setReload] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
@@ -30,7 +30,7 @@ const ReceptionistDashboard = () => {
     const [showVisitorModal, setShowVisitorModal] = useState(false);
 
     const getFormattedDateString = (date) => {
-        if(date instanceof Date) {
+        if (date instanceof Date) {
             const month = date.getMonth() + 1;
             const day = date.getDate();
             return [
@@ -41,10 +41,13 @@ const ReceptionistDashboard = () => {
         }
     };
 
-    const [todayString, setTodayString] = useState(getFormattedDateString(new Date()));
+    const [todayString, setTodayString] = useState(
+        getFormattedDateString(new Date())
+    );
 
     const router = useRouter();
-    const [invitesQuery, { loading, error, data }] = useLazyQuery(gql`
+    const [invitesQuery, { loading, error, data }] = useLazyQuery(
+        gql`
         query {
             getInvitesByDate( date: "${todayString}" ) {
                 inviteID
@@ -57,12 +60,15 @@ const ReceptionistDashboard = () => {
                 userEmail
             }
         }
-    `, { fetchPolicy: "no-cache" });
+    `,
+        { fetchPolicy: "no-cache" }
+    );
 
-    
     const refetch = () => {
-        client.query({
-            query: gql`
+        client
+            .query(
+                {
+                    query: gql`
                 query{
                     getInvitesByDate( date: "${todayString}" ) {
                         inviteID
@@ -75,14 +81,17 @@ const ReceptionistDashboard = () => {
                         userEmail
                     }
                 }
-            `,},
-            { fetchPolicy: "cache-and-network" }).then(res => {
-              const data = res.data.getInvitesByDate.filter((invite) => {
-                return invite.inviteState !== "signedOut"               
-              });
-              setVisitorData([...data]);
-            })
-    }
+            `,
+                },
+                { fetchPolicy: "cache-and-network" }
+            )
+            .then((res) => {
+                const data = res.data.getInvitesByDate.filter((invite) => {
+                    return invite.inviteState !== "signedOut";
+                });
+                setVisitorData([...data]);
+            });
+    };
 
     //STEFAN SE CODE
     const [searching, setSearch] = useState(false);
@@ -94,8 +103,9 @@ const ReceptionistDashboard = () => {
     const search = () => {
         //TODO (Stefan)
         setSearch(true);
-        client.query({
-            query: gql`
+        client
+            .query({
+                query: gql`
                 query{
                     getInvitesByNameForSearch( name: "${visitorName}" ) {
                         inviteID
@@ -109,15 +119,19 @@ const ReceptionistDashboard = () => {
                     }
                 }
             `,
-        })
+            })
             .then((res) => {
-                const visitors = res.data.getInvitesByNameForSearch.filter((invite) => {
-                    return invite.inviteDate === todayString && invite.inviteState !== "signedOut"
-                });
+                const visitors = res.data.getInvitesByNameForSearch.filter(
+                    (invite) => {
+                        return (
+                            invite.inviteDate === todayString &&
+                            invite.inviteState !== "signedOut"
+                        );
+                    }
+                );
                 setVisitorData(visitors);
-            }).catch((err) => {
-                
-            });
+            })
+            .catch((err) => {});
     };
 
     const resetDefaultResults = () => {
@@ -125,7 +139,7 @@ const ReceptionistDashboard = () => {
 
         if ((!loading && !error) || reload) {
             const invites = data.getInvitesByDate.filter((invite) => {
-                return invite.inviteState !== "signedOut"
+                return invite.inviteState !== "signedOut";
             });
             setVisitorData(invites);
         } else if (error) {
@@ -144,13 +158,12 @@ const ReceptionistDashboard = () => {
         }
     };
 
-
     useEffect(() => {
         invitesQuery();
-        if ((!loading && !error)) {
-            if(data) {
+        if (!loading && !error) {
+            if (data) {
                 const invites = data.getInvitesByDate.filter((invite) => {
-                    return invite.inviteState !== "signedOut"
+                    return invite.inviteState !== "signedOut";
                 });
                 setVisitorData(invites);
             }
@@ -168,55 +181,72 @@ const ReceptionistDashboard = () => {
                 },
             ]);
         }
-
     }, [loading, error, router, data]);
-
 
     //const [notes, setNotes] = useState("");
     const [visitorName, setName] = useState("");
 
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
     return (
         <Layout>
-            <input
-                type="text"
-                placeholder="Search.."
-                className="input input-bordered input-primary ml-5 w-4/6"
-                onChange={(evt) => {setName(evt.target.value);
-                    if(searching === true && evt.target.value === "")
-                    resetDefaultResults();
-                }}
-            />
-            <button onClick={search} className="btn btn-primary ml-5 mt-5 mb-5">
-                Search
-            </button>
-            <label
-                htmlFor="QRScan-modal"
-                className="modal-button btn btn-primary float-right mr-5 mt-5 mb-5"
-                onClick={() => setShowScanner(true) }
-            >
-                Scan to Search
-            </label>
+            <h1 className="base-100 p-3 text-xl font-bold md:text-3xl lg:text-4xl">
+                {searching ? "Search Results" : "Today's Invites"}
+            </h1>
+            <div className="inline-flex items-center">
+                <div className="inline-flex w-full flex-row-reverse items-center justify-end space-x-3">
+                    <label
+                        htmlFor="QRScan-modal"
+                        className="modal-button btn btn-primary btn-sm ml-3 gap-2 md:btn-md"
+                        onClick={() => setShowScanner(true)}
+                    >
+                        <BiQrScan />
+                        Scan to Search
+                    </label>
 
-            {searching ? (
-                <h1 className="base-100 mt-5 mb-5 p-3 text-left text-4xl font-bold">
-                    Search Results:
-                </h1>
+                    <div className="input-group justify-end">
+                        <input
+                            type="text"
+                            placeholder="Search.."
+                            className="input input-bordered input-sm md:input-md"
+                            onChange={(evt) => {
+                                setName(evt.target.value);
+                                if (
+                                    searching === true &&
+                                    evt.target.value === ""
+                                ) {
+                                    resetDefaultResults();
+                                }
+                            }}
+                        />
+                        <button
+                            onClick={search}
+                            className="btn btn-sm md:btn-md"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-6 w-6"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
 
-            ) : (
-                <h1 className="base-100 mt-5 mb-5 p-3 text-left text-4xl font-bold">
-                    Today&apos;s Invites
-                </h1>
-            )}
-
-        
             <div className="flex h-full items-center justify-center overflow-x-auto p-3">
                 {loading ? (
                     <progress className="progress progress-primary w-56">
                         progress
                     </progress>
-                ) : ( 
+                ) : (
                     //TODO (Larisa) dont use table
                     <table className="mb-5 table w-full">
                         <thead>
@@ -224,7 +254,7 @@ const ReceptionistDashboard = () => {
                                 <th></th>
                                 <th>Visitor Name</th>
                                 <th>Visitor ID</th>
-                                <th></th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         {visitorData.length > 0 ? (
@@ -238,7 +268,7 @@ const ReceptionistDashboard = () => {
                                             <td onClick={() => {setShowVisitorModal(true),setVisitModalData(visit)} }>{visit.idNumber}</td>
                                             {visit.inviteState === "inActive" ? (
                                                 <td>
-                                                    <ReceptionistSignButton 
+                                                    <ReceptionistSignButton
                                                         onClick={() => {
                                                             setCurrentVisitorID(
                                                                 visit.idNumber
@@ -251,11 +281,10 @@ const ReceptionistDashboard = () => {
                                                             );
                                                             setShowVisitorModal(false);
                                                         }}
-                                                        text="Sign In" 
-                                                        colour="bg-green-800" 
-                                                        htmlFor="signIn-modal" 
+                                                        text="Sign In"
+                                                        colour="bg-green-800"
+                                                        htmlFor="signIn-modal"
                                                     />
-                                                        
                                                 </td>
                                             ) : (
                                                 <td>
@@ -274,7 +303,6 @@ const ReceptionistDashboard = () => {
                                                      htmlFor="signOut-modal" 
                                                      colour="bg-red-800" />
                                                 </td>
-
                                             )}
                                             {/* Visitor-Modal for displaying information on row click */}
                                             <input type="checkbox" id="VistorInfo-modal" className="modal-toggle" onChange={() => {}} checked={showVisitorModal ? true : false} />
@@ -292,8 +320,7 @@ const ReceptionistDashboard = () => {
                                             </div>
                                             
                                         </tr>
-                                    )
-
+                                    );
                                 })}
                             </tbody>
                         ) : (
@@ -305,8 +332,15 @@ const ReceptionistDashboard = () => {
                         )}
                     </table>
                 )}
-                <ErrorAlert message={errorMessage} showConditon={showErrorAlert} />
-                <InfoAlert visitorName={currentVisitorName} showConditon={showInfoAlert} trayNr={trayNr}/>
+                <ErrorAlert
+                    message={errorMessage}
+                    showConditon={showErrorAlert}
+                />
+                <InfoAlert
+                    visitorName={currentVisitorName}
+                    showConditon={showInfoAlert}
+                    trayNr={trayNr}
+                />
             </div>
 
             <input type="checkbox" id="signIn-modal" className="modal-toggle" />
@@ -314,7 +348,8 @@ const ReceptionistDashboard = () => {
                 <div className="modal-box">
                     <label
                         htmlFor="signIn-modal"
-                        className="btn btn-circle btn-sm" >
+                        className="btn btn-circle btn-sm"
+                    >
                         ✕
                     </label>
                     <SignInPopUp
@@ -328,13 +363,17 @@ const ReceptionistDashboard = () => {
                 </div>
             </div>
 
-            <input type="checkbox" id="signOut-modal" className="modal-toggle" />
+            <input
+                type="checkbox"
+                id="signOut-modal"
+                className="modal-toggle"
+            />
             <div className="fade modal cursor-pointer" id="signOut-modal">
                 <div className="modal-box">
                     <label
                         htmlFor="signOut-modal"
-                        className = "btn btn-circle btn-sm" 
-                        >
+                        className="btn btn-circle btn-sm"
+                    >
                         ✕
                     </label>
                     <SignOutPopUp
@@ -345,10 +384,15 @@ const ReceptionistDashboard = () => {
                         refetch={invitesQuery}
                     />
                 </div>
-
             </div>
 
-            <input type="checkbox" id="QRScan-modal" className="modal-toggle" onChange={() => {}}checked={showScanner ? true : false} />
+            <input
+                type="checkbox"
+                id="QRScan-modal"
+                className="modal-toggle"
+                onChange={() => {}}
+                checked={showScanner ? true : false}
+            />
             <div className="fade modal" id="QRScan-modal">
                 <div className="modal-box flex flex-wrap">
                     <label
@@ -358,7 +402,11 @@ const ReceptionistDashboard = () => {
                     >
                         ✕
                     </label>
-                    <QRScanner setShowScanner={setShowScanner} setVisitorData={setVisitorData} setSearch={setSearch} />
+                    <QRScanner
+                        setShowScanner={setShowScanner}
+                        setVisitorData={setVisitorData}
+                        setSearch={setSearch}
+                    />
                 </div>
             </div>
 
@@ -374,17 +422,15 @@ const ReceptionistDashboard = () => {
                     <VisitInfoModal name={currentName} />
                 </div>
             </div> */}
-
-            
         </Layout>
     );
 };
-    export async function getStaticProps(context) {
-        return {
+export async function getStaticProps(context) {
+    return {
         props: {
             protected: true,
         },
     };
-    }
+}
 
 export default ReceptionistDashboard;

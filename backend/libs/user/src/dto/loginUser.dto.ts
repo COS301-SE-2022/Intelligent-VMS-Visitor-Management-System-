@@ -1,6 +1,6 @@
 import { ObjectType, Field, InputType } from "@nestjs/graphql";
 
-@ObjectType("User")
+@ObjectType("LoginUser")
 @InputType("UserInputType")
 export class LoginUser {
     @Field({ nullable: true })
