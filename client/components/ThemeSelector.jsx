@@ -26,7 +26,9 @@ const ThemeSelector = () => {
 
     return (
         <div className="dropdown dropdown-end">
-        <label tabIndex="0" className="btn m-1 text-xl"><AiOutlineFormatPainter /></label>
+          <label tabIndex="0" className="btn m-1 text-xl">
+                <AiOutlineFormatPainter />
+          </label>
           <ul tabIndex="0" className="dropdown-content menu p-2 shadow bg-base-200 rounded-box w-52">
               {themes.map((theme, idx) => {
                 return (

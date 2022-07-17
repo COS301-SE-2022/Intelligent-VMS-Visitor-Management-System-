@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import jsPDF from 'jspdf';
 import html2canvas from "html2canvas";
+import "jspdf-autotable";
 import { FaSignInAlt } from "react-icons/fa";
 
 const AnalyticsReport = ({ data, name, total, startDate, endDate }) => {
@@ -10,13 +11,26 @@ const AnalyticsReport = ({ data, name, total, startDate, endDate }) => {
     
     const printDocument = () => {
         setLoading(true);
-        html2canvas(inputRef.current, {useCORS: true}).then((canvas) => {
-          setLoading(false);
-          const imgData = canvas.toDataURL("image/png");
-          const pdf = new jsPDF();
-          pdf.addImage(imgData, "PNG", 0, 0);
-          pdf.save("download.pdf");
+        const doc = jsPDF();
+        
+        const tableColumn = ["User", "Visitor", "Date", "Status"];
+        const tableRows = [];
+        
+        doc.text("User Report For " + name, 10, 15);
+        data.forEach((invite) => {
+            const inviteData = [
+                invite.userEmail,
+                invite.visitorEmail,
+                invite.inviteDate,
+                invite.inviteState
+            ];
+
+            tableRows.push(inviteData);
         });
+        doc.autoTable(tableColumn, tableRows, { startY: 20 });
+        const date = Date().split(" ");
+        doc.save(`report_${name}.pdf`);
+        setLoading(false);
     };
     
     return(
@@ -47,13 +61,13 @@ const AnalyticsReport = ({ data, name, total, startDate, endDate }) => {
                     </h2>
                     <p className="text-xl font-bold text-primary">{total}</p>
                     <div className="divider"></div>
-                    <h2 className="text-base font-bold">Invite Data</h2>
+                    <h2 className="text-base font-bold text-primary">Invite Data</h2>
                     <div className="flex-col">
                         {!data || data.length === 0 ? <div>Nothing to show...</div> : data.map((val, idx) => {
                             return (
-                                <div className="block text-sm" key={idx}>
+                                <div className="block text-sm text-base-content" key={idx}>
                                     <p>
-                                        {idx+1}. User ({val.userEmail}) invited ({val.visitorEmail}) on {val.inviteDate}
+                                        <span className="font-bold">{idx+1}</span>. User ({val.userEmail}) <br/>invited ({val.visitorEmail}) <br/> on {val.inviteDate}
                                     </p> 
                                     <p>
                                         Invitation State: {val.inviteState}
