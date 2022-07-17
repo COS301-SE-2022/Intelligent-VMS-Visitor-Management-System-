@@ -81,7 +81,7 @@ const AuthorizeUser = () => {
             setResidentData(newResidentData);
         } else if (!loading && error) {
             console.error(error);
-            if(error.message === "Unauthorized") {
+            if (error.message === "Unauthorized") {
                 router.push("/expire");
             }
         }
@@ -115,12 +115,11 @@ const AuthorizeUser = () => {
                     </div>
                 ) : (
                     <div>
-                        {
-                        loading && 
+                        {loading && (
                             <progress className="progress progress-primary fixed left-[50%] top-[50%] w-56 translate-x-[-50%] translate-y-[-50%]">
                                 Loading
                             </progress>
-                        }
+                        )}
                     </div>
                 )}
                 {residentData.length > 0 ? (
@@ -145,12 +144,11 @@ const AuthorizeUser = () => {
                     </div>
                 ) : (
                     <div>
-                        {
-                        loading && 
+                        {loading && (
                             <progress className="progress progress-primary fixed left-[50%] top-[50%] w-56 translate-x-[-50%] translate-y-[-50%]">
                                 Loading
                             </progress>
-                        }
+                        )}
                     </div>
                 )}
             </div>

@@ -1,8 +1,6 @@
 import Link from "next/link";
 
-import { motion } from "framer-motion";
-import { CgMenuRight } from "react-icons/cg";
-
+import ThemeSelector from "./ThemeSelector";
 import useAuth from "../store/authStore";
 
 const Navbar = () => {
@@ -48,13 +46,14 @@ const Navbar = () => {
             </div>
             <div className="navbar-end">
                 {token && (
-                    <div className="text-xs md:text-sm">
+                    <div className="text-xs md:text-sm text-neutral-content">
                         Hello{" "}
                         <span className="font-bold text-secondary">
                             {token && token.email}
                         </span>
                     </div>
                 )}
+                <ThemeSelector />
                 <div className="dropdown dropdown-end">
                     <label tabIndex="0" className="menuIcon btn btn-ghost">
                         <svg
@@ -91,7 +90,7 @@ const Navbar = () => {
                     </label>
                     <ul
                         tabIndex="0"
-                        className="dropdown-content menu rounded-box menu-compact mt-3 w-52 bg-neutral p-2 shadow"
+                        className="dropdown-content menu rounded-box menu-compact mt-3 w-52 bg-neutral p-2 shadow text-neutral-content"
                     >
                         {navlinks.map((link, idx) => {
                             return (

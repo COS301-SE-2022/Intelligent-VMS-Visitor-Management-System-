@@ -1,6 +1,13 @@
 import { useState } from "react";
+import { useMutation, gql } from "@apollo/client";
 
-const AuthCard = ({ email, authorized, type, permission, deleteUserAccount }) => {
+const AuthCard = ({
+    email,
+    authorized,
+    type,
+    permission,
+    deleteUserAccount,
+}) => {
     const [auth, setAuth] = useState(authorized === true ? true : false);
     const [clicked, setClicked] = useState(false);
 
@@ -8,14 +15,14 @@ const AuthCard = ({ email, authorized, type, permission, deleteUserAccount }) =>
         <div className="card bg-base-300 shadow-xl hover:shadow-none">
             <div className="card-body">
                 <div className="card-actions justify-end">
-                    { permission === 0 && 
+                    {permission === 0 && (
                         <label
-                            htmlFor="my-modal"
+                            htmlFor={"confirm-modal-" + email}
                             className="modal-button btn btn-circle btn-sm hover:btn-primary"
                         >
                             ✕
                         </label>
-                    }
+                    )}
                 </div>
                 <div className="text-center">
                     <div className="avatar placeholder">
@@ -27,17 +34,19 @@ const AuthCard = ({ email, authorized, type, permission, deleteUserAccount }) =>
                     </div>
                 </div>
                 <h2 className="card-title items-center">
-                    <span className="text-base">{email}</span>
-                    <div className="badge badge-secondary uppercase">
+                    <span className="text-xs md:text-sm">{email}</span>
+                    <span className="badge badge-secondary uppercase">
                         {auth === true ? "authorized" : "new"}
-                    </div>
+                    </span>
                 </h2>
                 <div className="card-actions">
                     <div className="flex w-full items-center justify-between space-x-3">
                         <div className="badge badge-primary">{type}</div>
                         <label
                             className="label cursor-pointer space-x-3"
-                            onChange={() => {}}
+                            onChange={() => {
+                                setAuth(!auth);
+                            }}
                             onClick={() => setAuth(!auth)}
                         >
                             <span className="label-text">Authorize</span>
@@ -50,23 +59,42 @@ const AuthCard = ({ email, authorized, type, permission, deleteUserAccount }) =>
                     </div>
                 </div>
             </div>
-            <input type="checkbox" id="my-modal" className="modal-toggle" />
-            <div className="modal">
-                <div className="modal-box space-y-4">
-                    <h3 className="text-lg font-bold">
-                        Confirm Delete
-                    </h3>
+            <input
+                type="checkbox"
+                id={"confirm-modal-" + email}
+                className="modal-toggle"
+            />
+            <label
+                htmlFor={"confirm-modal-" + email}
+                className="modal cursor-pointer"
+            >
+                <label className="modal-box space-y-4">
+                    <label
+                        htmlFor={"confirm-modal-" + email}
+                        className="btn btn-circle btn-sm absolute right-2 top-2"
+                    >
+                        ✕
+                    </label>
+                    <h3 className="text-lg font-bold">Confirm Delete</h3>
                     <p>
-                        You are about to delete a <span className="text-warning">{type} </span>
-                        account <span className="text-error">{email}</span> forever...
+                        You are about to delete a{" "}
+                        <span className="text-warning">{type} </span>
+                        account <span className="text-error">{email}</span>{" "}
+                        forever...
                     </p>
                     <div className="modal-action">
-                        <label onClick={() => { deleteUserAccount(email, type); }} htmlFor="my-modal" className="btn btn-error">
+                        <label
+                            onClick={() => {
+                                deleteUserAccount(email, type);
+                            }}
+                            htmlFor={"confirm-modal-" + email}
+                            className="btn btn-error"
+                        >
                             Delete
                         </label>
                     </div>
-                </div>
-            </div>
+                </label>
+            </label>
         </div>
     );
 };

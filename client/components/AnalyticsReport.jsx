@@ -35,20 +35,20 @@ const AnalyticsReport = ({ data, name, total, startDate, endDate }) => {
                     <div className="bg-primary text-primary-content">
                         <h1 className="px-3 py-3 text-base font-bold">
                             User Report For{" "}
-                            <span className="capitalize text-secondary">
+                            <span className="capitalize text-secondary-content">
                                 {name}
                             </span>
                         </h1>
                     </div>
                 </div>
                 <div className="px-3 text-primary-content">
-                    <h2 className="text-base font-bold">
+                    <h2 className="text-base font-bold text-base-content">
                         Total Number Of Invites
                     </h2>
                     <p className="text-xl font-bold text-primary">{total}</p>
                     <div className="divider"></div>
-                    <h2 className="text-base font-bold">Visitation Dates</h2>
-                    <div className="flex-col">
+                    <h2 className="text-base font-bold text-base-content">Visitation Dates</h2>
+                    <div className="flex-col text-primary">
                         {!data || data.length === 0 ? (
                             <div>Nothing to show...</div>
                         ) : (

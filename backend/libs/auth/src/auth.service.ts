@@ -74,7 +74,9 @@ export class AuthService {
                     verifyID: verifyID,
                 }, { ttl: 1000 });
 
-                return this.mailService.sendVerify(user.email, verifyID);
+                this.mailService.sendVerify(user.email, verifyID);
+
+                return true;
             }
 
             throw new SignUpFailed("User is already signed up");

@@ -105,7 +105,7 @@ type Query {
 type Mutation {
   createVisitor(input: VisitorInputType!): Visitor!
   login(email: String!, password: String!): LoginUser!
-  signup(email: String!, password: String!, type: String!, idNumber: String!): String!
+  signup(email: String!, password: String!, type: String!, idNumber: String!): Boolean!
   verify(verifyID: String!, email: String!): Boolean!
   deleteUserAccount(email: String!): Boolean!
   authorizeUserAccount(email: String!): Boolean!
