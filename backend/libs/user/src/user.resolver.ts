@@ -54,13 +54,17 @@ export class UserResolver {
         @Args("email") email: string,
         @Args("password") password: string,
         @Args("type") type: string,
-        @Args("idNumber") idNumber: string
+        @Args("IDDocType") idDocType: string,
+        @Args("idNumber") idNumber: string,
+        @Args("name") name: string,
     ) {
         return (await this.authService.signup({
             email: email,
             password: password,
             type: type,
-            idNumber: idNumber
+            idNumber: idNumber,
+            idDocType: idDocType,
+            name: name,
         }));
     }
 

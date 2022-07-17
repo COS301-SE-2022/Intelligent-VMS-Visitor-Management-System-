@@ -71,7 +71,7 @@ const Login = () => {
 
     return (
         <Layout>
-            <div className="relative flex h-full min-h-[80vh] w-full flex-col items-center justify-center overflow-hidden shadow">
+            <div className="relative flex h-full min-h-[80vh] w-full flex-col items-center justify-center overflow-hidden">
                 <Formik
                     initialValues={{ email: "", password: "" }}
                     validate={(values) => {
@@ -138,7 +138,7 @@ const Login = () => {
                         return (
                             <form
                                 onSubmit={handleSubmit}
-                                className="prose form-control space-y-4 rounded-xl border bg-base-300 p-14 md:p-28"
+                                className="prose form-control space-y-4 rounded-xl border bg-base-300 p-14 md:p-28 mt-5"
                             >
                                 <h1>
                                     Welcome Back

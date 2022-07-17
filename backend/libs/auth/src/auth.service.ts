@@ -71,6 +71,8 @@ export class AuthService {
                     password: hashPass,
                     permission: permission,
                     idNumber: user.idNumber,
+                    name: user.name,
+                    idDocType: user.idDocType,
                     verifyID: verifyID,
                 }, { ttl: 1000 });
 
@@ -91,7 +93,7 @@ export class AuthService {
             if(user !== undefined) {
                 if(user.verifyID === verifyID) {
                     await this.cacheManager.del(email);
-                    await this.userService.createUser(user.email, user.password, user.permission);
+                    await this.userService.createUser(user.email, user.password, user.permission, user.idNumber, user.idDocType, user.name);
                     return true;
                 }
                 throw new VerificationFailed("Invalid Verification ID given");
