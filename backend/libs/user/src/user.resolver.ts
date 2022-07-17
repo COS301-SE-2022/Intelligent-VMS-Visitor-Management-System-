@@ -14,8 +14,6 @@ import { UserService } from "./user.service";
 import { User } from "./models/user.model";
 import { SearchUser } from "./models/searchUser.model"; 
 import { LoginUser } from "./dto/loginUser.dto";
-import { RolesGuard } from "./guards/roles.guard";
-import { Roles } from "./decorators/roles.decorator";
 
 @Resolver((of) => {return User})
 export class UserResolver {
