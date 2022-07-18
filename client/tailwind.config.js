@@ -13,7 +13,7 @@ module.exports = {
 
   daisyui: {
     styled: true,
-    themes: ["dark", "night", "dracula", "light", "pastel", "retro"],
+    themes: ["dark", "night", "dracula", "light", "retro", "bumblebee", "cyberpunk"],
     base: true,
     utils: true,
     logs: true,

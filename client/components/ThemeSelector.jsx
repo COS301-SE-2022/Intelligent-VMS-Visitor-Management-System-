@@ -10,8 +10,9 @@ const ThemeSelector = () => {
         "dark",
         "dracula",
         "light",
-        "pastel",
         "retro",
+        "bumblebee",
+        "cyberpunk",
         "random",
     ];
 

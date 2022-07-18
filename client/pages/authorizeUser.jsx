@@ -130,6 +130,7 @@ const AuthorizeUser = () => {
                             User
                         </h1>
                     </div>
+                    { token.permission === 0 && 
                     <div className="input-group input-group-sm justify-end p-2 md:input-group-md">
                         <input
                             onChange={(e) => {
@@ -146,6 +147,7 @@ const AuthorizeUser = () => {
                             <FaSearch />
                         </label>
                     </div>
+                    }
                 </div>
                 {token.permission === 0 && (
                     <div className="divider text-base md:text-lg lg:text-2xl">
