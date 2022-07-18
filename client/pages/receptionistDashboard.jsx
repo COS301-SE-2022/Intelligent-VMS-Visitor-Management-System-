@@ -3,9 +3,6 @@ import { useState, useEffect, setState } from "react";
 import { gql, useQuery, useApolloClient, useLazyQuery } from "@apollo/client";
 
 import { BiQrScan } from "react-icons/bi";
-
-
-import { useRouter } from "next/router";
 import Layout from "../components/Layout";
 import QRScanner from "../components/QRScanner";
 import SignInPopUp from "../components/SignInPopUp";
