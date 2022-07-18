@@ -8,7 +8,7 @@ import { DisableParkingSpaceCommand } from './commands/impl/disableParkingSpace.
 import { UnreserveParkingCommand } from './commands/impl/unreserveParking.command';
 import { CreateNParkingSpotsCommand } from './commands/impl/createNParkingSpots.command';
 import { AddParkingCommand } from './commands/impl/addParking.command';
-import { GetAvailableParkingQuery } from './queries/impl/getAvailableParking.query';
+import { getTotalAvailableParkingQuery } from './queries/impl/getTotalAvailableParking.query';
 import { GetFreeParkingQuery } from './queries/impl/getFreeParking.query';
 import { GetInviteReservationQuery } from './queries/impl/getInviteReservation.query';
 import { GetReservationsQuery } from './queries/impl/getReservations.query';
@@ -23,6 +23,7 @@ import { VisitorInviteService } from '@vms/visitor-invite/visitor-invite.service
 import { GetParkingQuery } from './queries/impl/getParking.query';
 import { GetReservationsByDateQuery } from './queries/impl/getReservationsByDate.query';
 import { InvalidCommand } from './errors/invalidCommand.error';
+import { getAvailableParkingQuery } from './queries/impl/getAvailableParking.query';
 
 
 @Injectable()
@@ -70,7 +71,7 @@ export class ParkingService {
         parkingNumber: number
     ){
         //Validate input
-        const spaces = await this.getAvailableParking();
+        const spaces = await this.getTotalAvailableParking();
 
         if(parkingNumber<0 || parkingNumber>spaces)
             throw new InvalidCommand(`Parking number ${parkingNumber} is out of parking range. Parking range from 0 to ${spaces}`);
@@ -145,6 +146,7 @@ export class ParkingService {
     ){
         //Validate input
         const invite = await this.inviteService.getInvite(invitationID);
+        const inviteDate = new Date(invite.inviteDate).getDate();
 
         if(!invite) {
             throw new InviteNotFound(`Invitation with ID ${invitationID} not found`);
@@ -162,14 +164,16 @@ export class ParkingService {
         let temp = true;
         const spaces = await this.getAvailableParking();
 
-        for(let i=0;i<spaces;i++){
+        for(let i=0;i<spaces.length;i++){
             const reservations = await this.queryBus.execute(
-                new GetParkingReservationsQuery(parkingNumber));
+                new GetParkingReservationsQuery(spaces[i].parkingNumber));
 
             temp = true;
+
             for(let j=0;j<reservations.length;j++) {
                 const resInvite = await this.inviteService.getInvite(reservations[j].invitationID);
-                if(resInvite && resInvite.inviteDate === invite.inviteDate) {
+
+                if(resInvite && (new Date(resInvite.inviteDate).getDate() == inviteDate)) {
                     temp =false;
                     break;
                 }
@@ -219,7 +223,7 @@ export class ParkingService {
         if(!invite)
         throw new InviteNotFound(`Invitation with ID ${invitationID} not found`);
 
-        const spaces = await this.getAvailableParking();
+        const spaces = await this.getTotalAvailableParking();
 
         if(parkingNumber<0 ||  parkingNumber>spaces)
             throw new InvalidCommand(`Parking number ${parkingNumber} is out of parking range. Parking range from 0 to ${spaces}`);
@@ -243,7 +247,7 @@ export class ParkingService {
 
         //TODO (Kyle) : Is there a more efficient way?
         for(let i=0;i<ParkingReservations.length;i++){
-            if(ParkingReservations[i].reservationDate === invite.inviteDate)
+            if(new Date(ParkingReservations[i].reservationDate).getDate() == new Date(invite.inviteDate).getDate())
                 throw new InvalidCommand(`Parking number ${parkingNumber} is not available.`);
         }
 
@@ -328,7 +332,7 @@ export class ParkingService {
         parkingNumber:number,
     ){
         //Validate input
-        const spaces = await this.getAvailableParking();
+        const spaces = await this.getTotalAvailableParking();
 
         if(parkingNumber<0 ||  parkingNumber>spaces)
             throw new InvalidCommand(`Parking number ${parkingNumber} is out of parking range. Parking range from 0 to ${spaces}`);
@@ -359,7 +363,7 @@ export class ParkingService {
         parkingNumber:number,
     ){
         //Validate input
-        const spaces = await this.getAvailableParking();
+        const spaces = await this.getTotalAvailableParking();
 
         if(parkingNumber<0 ||  parkingNumber>spaces)
             throw new InvalidCommand(`Parking number ${parkingNumber} is out of parking range. Parking range from 0 to ${spaces}`);
@@ -448,7 +452,7 @@ export class ParkingService {
         parkingNumber: number,
         ){
             //Validate input
-            const spaces = await this.getAvailableParking();
+            const spaces = await this.getTotalAvailableParking();
 
             if(parkingNumber<0 ||  parkingNumber>spaces)
             throw new InvalidQuery(`Parking number ${parkingNumber} is out of parking range. Parking range from 0 to ${spaces}`);
@@ -508,14 +512,28 @@ export class ParkingService {
 
     Status: Done
     */
-    async getAvailableParking(
+    async getTotalAvailableParking(
         ){
             const amount = this.queryBus.execute(
-                new GetAvailableParkingQuery()
+                new getTotalAvailableParkingQuery()
             )
     
             if(amount)
                 return amount;
+            else
+                throw new ExternalError("Error outside the parking.service");
+        }
+
+    /*
+    */
+    async getAvailableParking(
+        ){
+            const parking = this.queryBus.execute(
+                new getAvailableParkingQuery()
+            )
+    
+            if(parking)
+                return parking;
             else
                 throw new ExternalError("Error outside the parking.service");
         }

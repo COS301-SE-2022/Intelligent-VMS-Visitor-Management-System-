@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from "@nestjs/config";
 import { CommandBus, IQuery, QueryBus } from "@nestjs/cqrs";
 import { ParkingService } from './parking.service';
-import { GetAvailableParkingQuery } from './queries/impl/getAvailableParking.query';
+import { getTotalAvailableParkingQuery } from './queries/impl/getTotalAvailableParking.query';
 import {FreeParkingCommand} from './commands/impl/freeParking.command';
 import {AssignParkingCommand} from './commands/impl/assignParking.command';
 import {ReserveParkingCommand} from './commands/impl/reserveParking.command';
@@ -34,7 +34,7 @@ describe('ParkingService', () => {
 
   const queryBusMock = {
       execute: jest.fn((query: IQuery) => {
-            if(query instanceof GetAvailableParkingQuery) {
+            if(query instanceof getTotalAvailableParkingQuery) {
                 return 8;
             } else if(query instanceof GetInviteQuery){
                 if(query.inviteID === "cb7c7938-1c41-427d-833e-2c6b77e0e26b")
@@ -302,11 +302,11 @@ describe('ParkingService', () => {
 
   //////////////////////////////////////////Functions
 
-  describe("getAvailableParking", () => {
+  describe("getTotalAvailableParking", () => {
         it("should return the number of unused parking spots", async () => {
             let amount = 0;
             try{
-                amount = await parkingService.getAvailableParking();
+                amount = await parkingService.getTotalAvailableParking();
             } catch (error) {
             }
             expect(amount).toEqual(8);
@@ -337,7 +337,7 @@ describe('ParkingService', () => {
       });
 
       it("should throw an exception if an invalid parking number is given", async () => {
-          const spaces = await parkingService.getAvailableParking();
+          const spaces = await parkingService.getTotalAvailableParking();
           try {
               await parkingService.freeParking(999);
           } catch (error) {
