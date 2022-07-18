@@ -23,10 +23,9 @@ const ViewReport = () => {
     `);
 
     useEffect(() => {
-        if(!loading && !error) {
-
-        } else if(error) {
-            if(error.message === "Unauthorized") {
+        if (!loading && !error) {
+        } else if (error) {
+            if (error.message === "Unauthorized") {
                 router.push("/expire");
             }
         }
@@ -34,7 +33,11 @@ const ViewReport = () => {
 
     return (
         <Layout>
-            <AnalyticsReport name={name} data={data && data.getInvitesWithEmail} total={total} />
+            <AnalyticsReport
+                name={name}
+                data={data && data.getInvitesWithEmail}
+                total={total}
+            />
         </Layout>
     );
 };
