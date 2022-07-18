@@ -10,6 +10,5 @@ export class Parking {
 
     @Field((type) => {return Boolean})
     enabled: boolean;
-
 }
 

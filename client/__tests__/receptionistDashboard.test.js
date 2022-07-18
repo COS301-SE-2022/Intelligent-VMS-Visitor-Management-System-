@@ -9,7 +9,7 @@ import useAuth from "../store/authStore";
 import ReceptionistDashboard from "../pages/receptionistDashboard";
 
 const getFormattedDateString = (date) => {
-    if(date instanceof Date) {
+    if (date instanceof Date) {
         const month = date.getMonth() + 1;
         const day = date.getDate();
         return [
@@ -34,9 +34,7 @@ describe("Receptionist Dashboard", () => {
                 <ReceptionistDashboard />
             </MockedProvider>
         );
-        
+
         expect(screen.getAllByText("Today's Invites")).toBeDefined();
     });
-
 });
-

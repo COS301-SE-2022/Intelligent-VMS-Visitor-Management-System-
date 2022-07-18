@@ -16,22 +16,25 @@ const ViewReport = () => {
                 visitorName,
                 inviteDate,
                 idDocType,
-                userEmail
+                userEmail,
+                inviteState
             }
         }
     `);
 
     useEffect(() => {
         if(!loading && !error) {
-            console.log(data);
+
         } else if(error) {
-            console.error("Something went wrong");
+            if(error.message === "Unauthorized") {
+                router.push("/expire");
+            }
         }
     }, [data]);
 
-    return(
+    return (
         <Layout>
-            <AnalyticsReport name={name} data={data && data.getNumInvitesPerDateOfUser} total={total} startDate={startDate} endDate={endDate}/>
+            <AnalyticsReport name={name} data={data && data.getNumInvitesPerDateOfUser} total={total} />
         </Layout>
     );
 };

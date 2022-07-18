@@ -4,10 +4,10 @@ const ReceptionistSignButton = ({ htmlFor, text, colour, onClick }) => {
             htmlFor={htmlFor}
             className={`modal-button btn max-w-md border-0 ${colour} text-white`}
             onClick={onClick}
-            >
-                { text }
+        >
+            {text}
         </label>
     );
-}
+};
 
 export default ReceptionistSignButton;
