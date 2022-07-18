@@ -1,10 +1,7 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { AssignParkingCommand } from '@vms/parking/commands/impl/assignParking.command';
-import { GetInviteReservationQuery } from '@vms/parking/queries/impl/getInviteReservation.query';
 import { SignInInviteCommand } from '@vms/receptionist/commands/impl/signInInvite.command';
 import { VisitorInviteService } from '@vms/visitor-invite';
-import { GetInviteQuery } from '@vms/visitor-invite/queries/impl/getInvite.query';
 import { generateTrayCommand } from '../src/commands/impl/Tray/generateTray.command';
 import { getTrayListQuery } from '@vms/receptionist/queries/impl/getTrayList.query';
 import { ReceptionistService } from '../src/receptionist.service';
@@ -12,6 +9,7 @@ import { ParkingService } from '@vms/parking';
 import { InviteNotFound } from '../src/errors/inviteNotFound.error';
 import { InvalidSignIn } from '../src/errors/invalidSignIn.error';
 import { Tray } from '@vms/receptionist/models/tray.model';
+import { BulkSignInCommand } from '@vms/receptionist/commands/impl/bulkSignIn.command';
 
 @Injectable()
 export class SignInService {
@@ -84,11 +82,51 @@ export class SignInService {
             return this.commandBus.execute(new generateTrayCommand(await this.generateTrayID(),inviteID, containsResidentID,containsVisitorID));
         }
         
-        //TODO(Daniel)
-        async bulkSignIn(){
-            console.log("do some stuff here");
+        async bulkSignIn(file:string,userEmail:string){
+
+           const fileArray =  file.split(/\r\n|\r|\n/);
+
+           let InviteIDIndex;
+           let VisitorNameIndex;
+           let VisitorEmailIndex;
+           let InviteDateIndex;
+           let VisitorIDIndex;
+
+           let idArray = [];
+           let lineArray = fileArray[0].split(";");
+           for(let i=0;i<lineArray.length;i++){
+            
+            if(lineArray[i].toLocaleLowerCase().includes("email"))
+                VisitorEmailIndex = i;
+            else if(lineArray[i].toLocaleLowerCase().includes("name"))
+                VisitorNameIndex = i;
+            else if(lineArray[i].toLocaleLowerCase().includes("date"))
+                InviteDateIndex = i;
+            else if(lineArray[i].toLocaleLowerCase().includes("id")){
+                if(lineArray[i].toLocaleLowerCase().includes("invite"))
+                    InviteIDIndex = i;
+                else
+                    VisitorIDIndex = i;
+            }
+           }
+           
+           for(var i=1;i<fileArray.length-1;i++){
+            lineArray = fileArray[i].split(";");
+            if(lineArray[InviteIDIndex]!==""){
+                idArray[i-1] = lineArray[InviteIDIndex];
+            } 
+            else{
+                    //TODO (Larisa): extend doc types
+                    idArray[i-1] = await this.inviteService.createInviteForBulkSignIn(0,userEmail,lineArray[VisitorEmailIndex],lineArray[VisitorNameIndex],"RSA-ID",lineArray[VisitorIDIndex],lineArray[InviteDateIndex],false);
+                }
+           }
+
+           await this.commandBus.execute(
+            new BulkSignInCommand(idArray)
+            );
         }
-
-
-
 }
+
+    
+
+

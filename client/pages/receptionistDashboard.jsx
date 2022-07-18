@@ -3,7 +3,6 @@ import { useState, useEffect, setState } from "react";
 import { gql, useQuery, useApolloClient, useLazyQuery } from "@apollo/client";
 
 import { BiQrScan } from "react-icons/bi";
-
 import Layout from "../components/Layout";
 import QRScanner from "../components/QRScanner";
 import SignInPopUp from "../components/SignInPopUp";
@@ -11,6 +10,7 @@ import SignOutPopUp from "../components/SignOutPopUp";
 import VisitInfoModal from "../components/VisitInfoModal";
 import ReceptionistSignButton from "../components/receptionistSignButton";
 import InfoAlert from "../components/InfoAlert";
+import UploadPopUp from "../components/UploadPopUp";
 import ErrorAlert from "../components/ErrorAlert";
 
 const ReceptionistDashboard = () => {
@@ -26,7 +26,8 @@ const ReceptionistDashboard = () => {
     const [showInfoAlert, setShowInfoAlert] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [showScanner, setShowScanner] = useState(false);
-    const [visitModalData, setVisitModalData] = useState("");
+    const [showUploadPopUp, setShowUploadPopUp] = useState(false);
+    const [visitModalData, setVisitModalData] = useState(null);
     const [showVisitorModal, setShowVisitorModal] = useState(false);
 
     const getFormattedDateString = (date) => {
@@ -322,6 +323,23 @@ const ReceptionistDashboard = () => {
                                         </tr>
                                     );
                                 })}
+
+                                <tr>
+                                <td> </td>
+                                <td> </td>
+                                <td> </td>
+                                <td>
+                                <label
+                                    htmlFor="Upload-modal"
+                                    className="modal-button btn btn-secondary float-right"
+                                    onClick={() => setShowUploadPopUp(true)}
+                                
+                                >
+                                    Bulk-SignIn
+                                </label>
+                                </td>
+                                </tr>
+                                
                             </tbody>
                         ) : (
                             <tbody>
@@ -331,6 +349,8 @@ const ReceptionistDashboard = () => {
                             </tbody>
                         )}
                     </table>
+
+                    
                 )}
                 <ErrorAlert
                     message={errorMessage}
@@ -342,7 +362,6 @@ const ReceptionistDashboard = () => {
                     trayNr={trayNr}
                 />
             </div>
-
             <input type="checkbox" id="signIn-modal" className="modal-toggle" />
             <div className="fade modal cursor-pointer" id="signIn-modal">
                 <div className="modal-box">
@@ -402,11 +421,11 @@ const ReceptionistDashboard = () => {
                     >
                         ✕
                     </label>
-                    <QRScanner
-                        setShowScanner={setShowScanner}
-                        setVisitorData={setVisitorData}
-                        setSearch={setSearch}
-                    />
+                    <QRScanner setShowScanner={setShowScanner}
+                               setVisitorData={setVisitorData} 
+                               setSearch={setSearch} 
+                               setShowErrorAlert={setShowErrorAlert} 
+                               setErrorMessage={setErrorMessage} />
                 </div>
             </div>
 
@@ -422,6 +441,25 @@ const ReceptionistDashboard = () => {
                     <VisitInfoModal name={currentName} />
                 </div>
             </div> */}
+
+            <input type="checkbox" id="Upload-modal" className="modal-toggle" checked={showUploadPopUp ? true : false}/>
+            <div className="fade modal" id="Upload-modal">
+                <div className="modal-box flex flex-wrap">
+                    <label
+                        htmlFor="Upload-modal"
+                        className="btn btn-circle btn-sm absolute right-2 top-2 z-10"
+                        onClick={() => setShowUploadPopUp(false)}
+                    >
+                        ✕
+                    </label>
+                    <UploadPopUp setErrorMessage={setErrorMessage} 
+                                 setShowErrorAlert={setShowErrorAlert} 
+                                 setShowUploadPopUp={setShowUploadPopUp} 
+                                 refetch={invitesQuery}/>
+                </div>
+            </div>
+
+            
         </Layout>
     );
 };
