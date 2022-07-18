@@ -44,18 +44,18 @@ const Navbar = () => {
                     </a>
                 </Link>
             </div>
-            <div className="navbar-end">
-                <div className="text-xs md:text-sm text-neutral-content">
-                    {token && (
-                            <p>
-                            Hello{" "}
-                            <span className="font-bold text-secondary">
-                                {token && token.email}
-                            </span>
-                            </p>
-                    )}
+            <div className="navbar-end text-xs md:text-sm text-neutral-content">
+                {token && (
+                    <div>
+                        Hello{" "}
+                        <span className="font-bold text-secondary">
+                            {token && token.email}
+                        </span>
+                    </div>
+                )}
+                <div>
+                    <ThemeSelector />
                 </div>
-                <ThemeSelector />
                 <div className="dropdown dropdown-end">
                     <label tabIndex="0" className="menuIcon btn btn-ghost">
                         <svg
