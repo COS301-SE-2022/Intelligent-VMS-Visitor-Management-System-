@@ -47,8 +47,13 @@ const AdminDashboard = () => {
         useDateRange(getFormattedDateString(new Date(Date.now())), 7);
 
     // Parking Date Range Hook
-    const [parkingStartDate, parkingEndDate, parkingDateMap, setParkingDateMap, setParkingStartDate] =
-        useDateRange(getFormattedDateString(new Date(Date.now())), 7);
+    const [
+        parkingStartDate,
+        parkingEndDate,
+        parkingDateMap,
+        setParkingDateMap,
+        setParkingStartDate,
+    ] = useDateRange(getFormattedDateString(new Date(Date.now())), 7);
 
     // Start Date State
     const [start, setStart] = useState(startDate);
@@ -139,12 +144,12 @@ const AdminDashboard = () => {
     };
 
     const saveRestrictions = () => {
-        if(numInvitesPerResident !== initialNumInvitesPerResident) {
+        if (numInvitesPerResident !== initialNumInvitesPerResident) {
             setInitialNumInvitesPerResident(numInvitesPerResident);
             setNumInvitesPerResidentMutation();
         }
-        
-        if(numParkingSpotsAvailable !== initialNumParkingSpots) {
+
+        if (numParkingSpotsAvailable !== initialNumParkingSpots) {
             setInitialNumParkingSpots(numParkingSpotsAvailable);
         }
 
@@ -190,11 +195,15 @@ const AdminDashboard = () => {
         }
 
         // Num parking in range
-        if(!numParkingInDateRangeQuery.loading && !numParkingInDateRangeQuery.error) {
-            const parkingNumbers = numParkingInDateRangeQuery.data.getUsedParkingsInRange;
-            
+        if (
+            !numParkingInDateRangeQuery.loading &&
+            !numParkingInDateRangeQuery.error
+        ) {
+            const parkingNumbers =
+                numParkingInDateRangeQuery.data.getUsedParkingsInRange;
+
             parkingNumbers.forEach((parking) => {
-                if(!isNaN(parkingDateMap.get(parking.reservationDate))) {
+                if (!isNaN(parkingDateMap.get(parking.reservationDate))) {
                     parkingDateMap.set(
                         parking.reservationDate,
                         parkingDateMap.get(parking.reservationDate) + 1
@@ -207,8 +216,7 @@ const AdminDashboard = () => {
                 labels: Array.from(parkingDateMap.keys()),
                 data: Array.from(parkingDateMap.values()),
             });
-
-        } else if(numParkingInDateRangeQuery.error) {
+        } else if (numParkingInDateRangeQuery.error) {
             console.error(numParkingInDateRangeQuery.error);
         }
 
@@ -217,7 +225,8 @@ const AdminDashboard = () => {
             !numParkingSpotsAvailableQuery.loading &&
             !numParkingSpotsAvailableQuery.error
         ) {
-            const numParkingspots = numParkingSpotsAvailableQuery.data.getAvailableParking;
+            const numParkingspots =
+                numParkingSpotsAvailableQuery.data.getAvailableParking;
             setNumParkingSpotsAvailable(numParkingspots);
             setInitialNumParkingSpots(numParkingspots);
         } else if (numParkingSpotsAvailableQuery.error) {
@@ -416,27 +425,37 @@ const AdminDashboard = () => {
                                 <div className="card-actions flex items-center justify-start">
                                     <div className="flex items-center space-x-3">
                                         <button className="btn btn-circle">
-                                            <AiOutlinePlus onClick={() => {
-                                                setNumParkingSpotsAvailable(
-                                                    numParkingSpotsAvailable + 
-                                                        1
-                                                );
-                                                setRestrictionsChanged(true);
-                                            }}className="text-xl md:text-2xl lg:text-3xl" />
+                                            <AiOutlinePlus
+                                                onClick={() => {
+                                                    setNumParkingSpotsAvailable(
+                                                        numParkingSpotsAvailable +
+                                                            1
+                                                    );
+                                                    setRestrictionsChanged(
+                                                        true
+                                                    );
+                                                }}
+                                                className="text-xl md:text-2xl lg:text-3xl"
+                                            />
                                         </button>
                                         <p className="text-4xl font-bold text-secondary">
                                             {numParkingSpotsAvailable}
                                         </p>
                                         <button className="btn btn-circle">
-                                            <AiOutlineMinus onClick={() => {
-                                                numParkingSpotsAvailable > 0 &&
-                                                    setNumParkingSpotsAvailable(
-                                                        numParkingSpotsAvailable -
-                                                            1
+                                            <AiOutlineMinus
+                                                onClick={() => {
+                                                    numParkingSpotsAvailable >
+                                                        0 &&
+                                                        setNumParkingSpotsAvailable(
+                                                            numParkingSpotsAvailable -
+                                                                1
+                                                        );
+                                                    setRestrictionsChanged(
+                                                        true
                                                     );
-                                                setRestrictionsChanged(true);
-
-                                            }}className="text-xl md:text-2xl lg:text-3xl" />
+                                                }}
+                                                className="text-xl md:text-2xl lg:text-3xl"
+                                            />
                                         </button>
                                     </div>
                                 </div>
