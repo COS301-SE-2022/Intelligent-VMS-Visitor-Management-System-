@@ -10,7 +10,7 @@ const AuthCard = ({
     type,
     permission,
     deleteUserAccount,
-    authorizeUserAccount
+    authorizeUserAccount,
 }) => {
     const [auth, setAuth] = useState(authorized === true ? true : false);
     const [showConfirm, setShowConfirm] = useState(false);
@@ -62,20 +62,29 @@ const AuthCard = ({
                             />
                         </label>
                     </div>
-                    {showConfirm && 
+                    {showConfirm && (
                         <div className="justif-end space-x-3">
-                            <button onClick={() => {
-                                authorizeUserAccount(email, type);
-                            }} className="btn btn-sm btn-primary gap-2">
-                                <BiCheckShield className="text-lg"/> 
+                            <button
+                                onClick={() => {
+                                    authorizeUserAccount(email, type);
+                                }}
+                                className="btn btn-primary btn-sm gap-2"
+                            >
+                                <BiCheckShield className="text-lg" />
                                 Confirm Auth
                             </button>
-                            <button onClick={() => { setAuth(!auth); setShowConfirm(false); }}className="btn btn-sm btn-secondary gap-2">
-                                <BsShieldX className="text-lg"/> 
+                            <button
+                                onClick={() => {
+                                    setAuth(!auth);
+                                    setShowConfirm(false);
+                                }}
+                                className="btn btn-secondary btn-sm gap-2"
+                            >
+                                <BsShieldX className="text-lg" />
                                 Decline
                             </button>
                         </div>
-                    }
+                    )}
                 </div>
             </div>
             <input

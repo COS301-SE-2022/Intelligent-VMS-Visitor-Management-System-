@@ -10,7 +10,7 @@ import Layout from "../components/Layout";
 import ErrorAlert from "../components/ErrorAlert";
 
 const getFormattedDateString = (date) => {
-    if(date instanceof Date) {
+    if (date instanceof Date) {
         const month = date.getMonth() + 1;
         const day = date.getDate();
         return [
@@ -63,7 +63,7 @@ const CreateInvite = () => {
             x: 900,
         },
     };
-    
+
     const isParkingAvailableQuery = useQuery(gql`
         query {
           isParkingAvailable(startDate: "${getFormattedDateString(new Date())}")
@@ -113,13 +113,20 @@ const CreateInvite = () => {
             }
         }
 
-        if(!isParkingAvailableQuery.loading && !isParkingAvailableQuery.error) {
-            setIsParkingAvailable(isParkingAvailableQuery.data.isParkingAvailable);            
-        } else if(!isParkingAvailableQuery.loading && isParkingAvailableQuery.error){
+        if (
+            !isParkingAvailableQuery.loading &&
+            !isParkingAvailableQuery.error
+        ) {
+            setIsParkingAvailable(
+                isParkingAvailableQuery.data.isParkingAvailable
+            );
+        } else if (
+            !isParkingAvailableQuery.loading &&
+            isParkingAvailableQuery.error
+        ) {
             setErrorMessage(isParkingAvailableQuery.error.message);
             setShowErrorAlert(true);
         }
-
     }, [
         numInvitesQuery,
         numInvitesOfResidentQuery,
