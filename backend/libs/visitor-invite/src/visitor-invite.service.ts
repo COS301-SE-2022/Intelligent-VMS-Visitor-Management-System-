@@ -1,5 +1,6 @@
 import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
+import { Cron } from '@nestjs/schedule';
 import { randomUUID } from "crypto";
 
 import { CreateInviteCommand } from "./commands/impl/createInvite.command";
@@ -108,6 +109,7 @@ export class VisitorInviteService {
             // TODO: Might need to change this to allow admin/receptionist to revoke invites
             // Check that the invite belongs to the user that is issuing the request
             if(inviteToDelete.userEmail === email) {
+                await this.parkingService.unreserveParking(inviteID);
                 return await this.commandBus.execute(new CancelInviteCommand(inviteID));
             } else {
                 throw new InviteNotFound(`Invite was not issued by: ${email}`);
@@ -174,10 +176,46 @@ export class VisitorInviteService {
         return await this.queryBus.execute(new GetInviteQuery(inviteID));
     }
 
-
-    
     // Get total number of invites of the given visitor
     async getTotalNumberOfInvitesVisitor(email: string) {
         return await this.queryBus.execute(new GetTotalNumberOfInvitesVisitorQuery(email));
     }
+
+    @Cron("55 23 * * *")
+    async sendInvite() {
+        // Generate inviteID
+        const inviteID = randomUUID();
+
+        // Get current date & time
+        const now = new Date();
+        const year = now.getFullYear();
+        let month = "" + (now.getMonth() + 1);
+        let day = "" + now.getDate();
+            
+        if (month.length < 2) {
+            month = '0' + month;
+        }
+        if (day.length < 2) {
+            day = '0' + day;
+        } 
+
+        const formatDate = [year, month, day].join('-');
+
+        // Entry in db
+        await this.commandBus.execute(
+            new CreateInviteCommand(
+                "admin@mail.com",
+                "visitor@mail.com",
+                "Jim",
+                "RSA-ID",
+                "0109195283010",
+                formatDate,
+                inviteID,
+            ),
+        );
+
+        await this.parkingService.reserveParking(inviteID);
+
+    }
+
 }
