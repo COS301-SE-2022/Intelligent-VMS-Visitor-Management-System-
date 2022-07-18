@@ -32,6 +32,7 @@
     "@nestjs/mongoose": "^9.0.3",
     "@nestjs/passport": "^8.2.1",
     "@nestjs/platform-express": "^8.0.0",
+    "@nestjs/schedule": "^2.1.0",
     "@types/bcrypt": "^5.0.0",
     "@types/cache-manager": "^3.4.3",
     "@types/nodemailer": "^6.4.4",

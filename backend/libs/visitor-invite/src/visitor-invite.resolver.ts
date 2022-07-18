@@ -34,6 +34,11 @@ export class VisitorInviteResolver {
     async getInvites(@CurrentUser() user: User) {
         return this.visitorInviteService.getInvites(user.email);
     }
+    
+    @Query((returns) => {return [Invite]}, { name: "getInvitesWithEmail"})
+    async getInvitesWithEmail(@Args("email") email: string) {
+        return this.visitorInviteService.getInvites(email);
+    }
 
     // Create Invite
     @Mutation((returns) => {return String}, { name: "createInvite" })

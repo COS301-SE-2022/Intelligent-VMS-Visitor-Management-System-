@@ -38,6 +38,7 @@
     "jest-canvas-mock": "^2.4.0",
     "jest-environment-jsdom": "^28.0.2",
     "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.5.25",
     "jwt-decode": "^3.1.2",
     "next": "^12.2.2",
     "react": "^17.0.2",

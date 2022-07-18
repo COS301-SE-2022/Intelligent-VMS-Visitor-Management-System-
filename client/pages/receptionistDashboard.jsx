@@ -262,12 +262,41 @@ const ReceptionistDashboard = () => {
                             <tbody>
                                 {visitorData.map((visit, idx) => {
                                     return (
-                                        <tr   className="hover" key={idx}  >
+                                        <tr className="hover" key={idx}>
                                             {/* Onclicks below display Visitor-Modal and pass it the relavant information for each visitor*/}
-                                            <th onClick={() => {setShowVisitorModal(true),setVisitModalData(visit)} }>{idx + 1}</th>
-                                            <td className="capitalize" onClick={() => {setShowVisitorModal(true),setVisitModalData(visit)} }>{visit.visitorName}</td>
-                                            <td onClick={() => {setShowVisitorModal(true),setVisitModalData(visit)} }>{visit.idNumber}</td>
-                                            {visit.inviteState === "inActive" ? (
+                                            <th
+                                                onClick={() => {
+                                                    setShowVisitorModal(true),
+                                                        setVisitModalData(
+                                                            visit
+                                                        );
+                                                }}
+                                            >
+                                                {idx + 1}
+                                            </th>
+                                            <td
+                                                className="capitalize"
+                                                onClick={() => {
+                                                    setShowVisitorModal(true),
+                                                        setVisitModalData(
+                                                            visit
+                                                        );
+                                                }}
+                                            >
+                                                {visit.visitorName}
+                                            </td>
+                                            <td
+                                                onClick={() => {
+                                                    setShowVisitorModal(true),
+                                                        setVisitModalData(
+                                                            visit
+                                                        );
+                                                }}
+                                            >
+                                                {visit.idNumber}
+                                            </td>
+                                            {visit.inviteState ===
+                                            "inActive" ? (
                                                 <td>
                                                     <ReceptionistSignButton
                                                         onClick={() => {
@@ -280,7 +309,9 @@ const ReceptionistDashboard = () => {
                                                             setCurrentVisitorName(
                                                                 visit.visitorName
                                                             );
-                                                            setShowVisitorModal(false);
+                                                            setShowVisitorModal(
+                                                                false
+                                                            );
                                                         }}
                                                         text="Sign In"
                                                         colour="bg-green-800"
@@ -289,37 +320,62 @@ const ReceptionistDashboard = () => {
                                                 </td>
                                             ) : (
                                                 <td>
-                                                     <ReceptionistSignButton 
-                                                     onClick={() => {
-                                                        setCurrentVisitorID(
-                                                            visit.idNumber
-                                                        );
-                                                        setCurrentInviteID(
-                                                            visit.inviteID
-                                                        );
-                                                        setShowVisitorModal(false);
-                                                        
-                                                    }}
-                                                     text="Sign Out" 
-                                                     htmlFor="signOut-modal" 
-                                                     colour="bg-red-800" />
+                                                    <ReceptionistSignButton
+                                                        onClick={() => {
+                                                            setCurrentVisitorID(
+                                                                visit.idNumber
+                                                            );
+                                                            setCurrentInviteID(
+                                                                visit.inviteID
+                                                            );
+                                                            setShowVisitorModal(
+                                                                false
+                                                            );
+                                                        }}
+                                                        text="Sign Out"
+                                                        htmlFor="signOut-modal"
+                                                        colour="bg-red-800"
+                                                    />
                                                 </td>
                                             )}
                                             {/* Visitor-Modal for displaying information on row click */}
-                                            <input type="checkbox" id="VistorInfo-modal" className="modal-toggle" onChange={() => {}} checked={showVisitorModal ? true : false} />
-                                            <div className="fade modal modal-lg " id="VistorInfo-modal">
+                                            <input
+                                                type="checkbox"
+                                                id="VistorInfo-modal"
+                                                className="modal-toggle"
+                                                onChange={() => {}}
+                                                checked={
+                                                    showVisitorModal
+                                                        ? true
+                                                        : false
+                                                }
+                                            />
+                                            <div
+                                                className="fade modal-lg modal "
+                                                id="VistorInfo-modal"
+                                            >
                                                 <div className="modal-box flex flex-wrap">
                                                     <label
                                                         htmlFor="VistorInfo-modal"
                                                         className="btn btn-circle btn-sm absolute right-2 top-2 z-10"
-                                                        onClick={() => setShowVisitorModal(false)}
+                                                        onClick={() =>
+                                                            setShowVisitorModal(
+                                                                false
+                                                            )
+                                                        }
                                                     >
                                                         ✕
                                                     </label>
-                                                    <VisitInfoModal setShowInfo={setShowVisitorModal} visitModalData={visitModalData}/>
+                                                    <VisitInfoModal
+                                                        setShowInfo={
+                                                            setShowVisitorModal
+                                                        }
+                                                        visitModalData={
+                                                            visitModalData
+                                                        }
+                                                    />
                                                 </div>
                                             </div>
-                                            
                                         </tr>
                                     );
                                 })}

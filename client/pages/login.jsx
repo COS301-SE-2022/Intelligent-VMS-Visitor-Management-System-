@@ -138,7 +138,7 @@ const Login = () => {
                         return (
                             <form
                                 onSubmit={handleSubmit}
-                                className="prose form-control space-y-4 rounded-xl border bg-base-300 p-14 md:p-28 mt-5"
+                                className="prose form-control mt-5 space-y-4 rounded-xl border bg-base-300 p-14 md:p-28"
                             >
                                 <h1>
                                     Welcome Back

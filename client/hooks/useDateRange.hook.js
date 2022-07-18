@@ -29,8 +29,6 @@ const useDateRange = (start, range) => {
                 dateKey.setDate(startDate.getDate() + i);
                 dateMap.set(getFormattedDateString(dateKey), 0);
             }
-            console.log(dateRange);
-            console.log("SIZE: " + dateMap.size);
         }
     }, [endDate, startDate, dateRange, dateMap, start, setRange]);
 

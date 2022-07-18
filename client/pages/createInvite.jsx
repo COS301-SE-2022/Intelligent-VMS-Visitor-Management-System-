@@ -9,6 +9,18 @@ import useAuth from "../store/authStore.js";
 import Layout from "../components/Layout";
 import ErrorAlert from "../components/ErrorAlert";
 
+const getFormattedDateString = (date) => {
+    if (date instanceof Date) {
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        return [
+            date.getFullYear(),
+            (month > 9 ? "" : "0") + month,
+            (day > 9 ? "" : "0") + day,
+        ].join("-");
+    }
+};
+
 const CreateInvite = () => {
     // Get Instance of NextJS router to redirect to different pages
     const router = useRouter();
@@ -27,6 +39,9 @@ const CreateInvite = () => {
 
     // Manipulate state for showing error alert
     const [errorMessage, setErrorMessage] = useState("");
+
+    // Whether or not parking is available
+    const [isParkingAvailable, setIsParkingAvailable] = useState(false);
 
     // Get Data From JWT Token
     const jwtTokenData = useAuth((state) => {
@@ -48,6 +63,12 @@ const CreateInvite = () => {
             x: 900,
         },
     };
+
+    const isParkingAvailableQuery = useQuery(gql`
+        query {
+          isParkingAvailable(startDate: "${getFormattedDateString(new Date())}")
+        }
+    `);
 
     const numInvitesQuery = useQuery(gql`
         query {
@@ -90,6 +111,21 @@ const CreateInvite = () => {
                 setLimitReached(false);
                 setShowErrorAlert(false);
             }
+        }
+
+        if (
+            !isParkingAvailableQuery.loading &&
+            !isParkingAvailableQuery.error
+        ) {
+            setIsParkingAvailable(
+                isParkingAvailableQuery.data.isParkingAvailable
+            );
+        } else if (
+            !isParkingAvailableQuery.loading &&
+            isParkingAvailableQuery.error
+        ) {
+            setErrorMessage(isParkingAvailableQuery.error.message);
+            setShowErrorAlert(true);
         }
     }, [
         numInvitesQuery,

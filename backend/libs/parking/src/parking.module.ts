@@ -19,6 +19,7 @@ import { GetReservationsQueryHandler } from './queries/handlers/getReservationsQ
 import { GetInviteReservationQueryHandler } from './queries/handlers/getInviteReservationQuery.handler';
 import { GetParkingReservationsQueryHandler } from './queries/handlers/getParkingReservationsQuery.handler';
 import { GetReservationsInRangeQueryHandler } from "./queries/handlers/getReservationsInRangeQuery.handler";
+import { GetNumberOfReservationsQueryHandler } from "./queries/handlers/getNumberOfReservationsQuery.handler";
 
 import { VisitorInviteModule} from '@vms/visitor-invite';
 
@@ -42,6 +43,7 @@ import { VisitorInviteModule} from '@vms/visitor-invite';
     AssignParkingCommandHandler,
     UnreserveParkingCommandHandler,
     AddParkingCommandHandler,
+    GetNumberOfReservationsQueryHandler,
     RemoveParkingCommandHandler,
     GetAvailableParkingQueryHandler,
     GetFreeParkingQueryHandler,
