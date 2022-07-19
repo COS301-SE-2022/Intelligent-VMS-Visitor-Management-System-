@@ -144,13 +144,15 @@ export class ParkingService {
     async reserveParking(
         invitationID:string
     ){
+
         //Validate input
-        const invite = await this.inviteService.getInvite(invitationID);
-        const inviteDate = new Date(invite.inviteDate).getDate();
+        const invite = await this.inviteService.getInvite(invitationID);   
 
         if(!invite) {
             throw new InviteNotFound(`Invitation with ID ${invitationID} not found`);
         }
+
+        const inviteDate = new Date(invite.inviteDate).getDate();
 
         //Additional Checks
         const InviteReservation = await this.queryBus.execute(new GetInviteReservationQuery(invitationID));

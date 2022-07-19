@@ -27,6 +27,7 @@ import { GetReservationsByDateQuery } from './queries/impl/getReservationsByDate
 import { GetReservationsByDateQueryHandler } from './queries/handlers/getReservationsByDateQuery.handler';
 import { GetFreeParkingQuery } from './queries/impl/getFreeParking.query';
 import { GetReservationsInRangeQuery } from './queries/impl/getReservationsInRange.query';
+import { getAvailableParkingQuery } from './queries/impl/getAvailableParking.query';
 
 describe('ParkingService', () => {
   let parkingService: ParkingService;
@@ -36,6 +37,27 @@ describe('ParkingService', () => {
       execute: jest.fn((query: IQuery) => {
             if(query instanceof getTotalAvailableParkingQuery) {
                 return 8;
+            } else
+            if(query instanceof getAvailableParkingQuery) {
+
+                let parkings = []
+                let parking = new Parking();
+                parking.parkingNumber=0;
+                parking.visitorEmail="";
+                parking.enabled=false;
+                parkings[0] = parking;
+                parking = new Parking();
+                parking.parkingNumber=1;
+                parking.visitorEmail="";
+                parking.enabled=false;
+                parkings[1] = parking;
+                parking = new Parking();
+                parking.parkingNumber=2;
+                parking.visitorEmail="";
+                parking.enabled=false;
+                parkings[2] = parking;
+                return parkings;
+            
             } else if(query instanceof GetInviteQuery){
                 if(query.inviteID === "cb7c7938-1c41-427d-833e-2c6b77e0e26b")
                 {
@@ -257,7 +279,7 @@ describe('ParkingService', () => {
                 return undefined;
               }
           } else if(command instanceof ReserveParkingCommand) {
-              if(command.parkingNumber === 0 && command.invitationID === "cb7c7938-1c41-427d-833e-2c6b77e0e26b") {
+              if(command.invitationID === "cb7c7938-1c41-427d-833e-2c6b77e0e26b") {
                 const parking = new ParkingReservation();
                 parking.parkingNumber=0;
                 parking.invitationID = "cb7c7938-1c41-427d-833e-2c6b77e0e26b";
