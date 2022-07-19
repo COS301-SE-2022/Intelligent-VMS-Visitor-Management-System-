@@ -32,8 +32,8 @@ const VisitorDashboard = () => {
     const [todayInvites, setTodayInvites] = useState(0);
     const [openInvites, setOpenInvites] = useState([]);
     const [percentage, setPercentage] = useState(0);
-    const [visitorData, setVisitorData] = useState({data: [], labels: []});
-    const [invites,setInvites] = useState([]);
+    const [visitorData, setVisitorData] = useState({ data: [], labels: [] });
+    const [invites, setInvites] = useState([]);
     const now = getFormattedDateString(new Date());
 
     const [
@@ -47,26 +47,32 @@ const VisitorDashboard = () => {
     ] = useDateRange(now, 7);
 
     const router = useRouter();
-    const { loading, error, data } = useQuery(gql`
-        query {
-            getInvites {
-                idNumber
-                visitorEmail
-                idDocType
-                inviteID
-                inviteDate
-                inviteState
+    const { loading, error, data } = useQuery(
+        gql`
+            query {
+                getInvites {
+                    idNumber
+                    visitorEmail
+                    idDocType
+                    inviteID
+                    inviteDate
+                    inviteState
+                }
             }
-        }
-    `, { fetchPolicy: "network-only"});
+        `,
+        { fetchPolicy: "network-only" }
+    );
 
-    const numInvitesQuery = useQuery(gql`
-        query {
-            getNumInvitesPerResident {
-                value
+    const numInvitesQuery = useQuery(
+        gql`
+            query {
+                getNumInvitesPerResident {
+                    value
+                }
             }
-        }
-    `, { fetchPolicy: "network-only"});
+        `,
+        { fetchPolicy: "network-only" }
+    );
 
     const client = useApolloClient();
     const cancelInvite = (inviteID) => {
@@ -77,7 +83,8 @@ const VisitorDashboard = () => {
                     cancelInvite(inviteID: "${inviteID}")
                 }
             `,
-            }).then((res) => {
+            })
+            .then((res) => {
                 const otherInviteData = invites.filter((invite) => {
                     return invite.inviteID !== inviteID;
                 });
@@ -88,10 +95,10 @@ const VisitorDashboard = () => {
                 setInvites(otherInviteData);
 
                 otherInviteData.forEach((invite) => {
-                        dateMap.set(
-                            invite.inviteDate,
-                            dateMap.get(invite.inviteDate) + 1
-                        );
+                    dateMap.set(
+                        invite.inviteDate,
+                        dateMap.get(invite.inviteDate) + 1
+                    );
                 });
                 setDateMap(new Map(dateMap));
 
@@ -99,8 +106,7 @@ const VisitorDashboard = () => {
                     data: Array.from(dateMap.values()),
                     labels: Array.from(dateMap.keys()),
                 });
-                
-                })
+            })
             .catch((err) => {
                 setShowErrorAlert(true);
                 setErrorMessage(err.message);
@@ -119,7 +125,7 @@ const VisitorDashboard = () => {
                     dateMap.get(invite.inviteDate) + 1
                 );
 
-                if(invite.inviteState === "inActive") {
+                if (invite.inviteState === "inActive") {
                     tempInvites.push(invite);
                 }
             });
@@ -131,28 +137,26 @@ const VisitorDashboard = () => {
                 data: Array.from(dateMap.values()),
                 labels: Array.from(dateMap.keys()),
             });
-
         } else if (error) {
             if (error.message === "Unauthorized") {
                 router.push("/expire");
                 return;
             }
         }
-
-    }, [loading,error,data,setStartDate,now,router,range]);
+    }, [loading, error, data, setStartDate, now, router, range]);
 
     useEffect(() => {
-        if(!numInvitesQuery.loading && !numInvitesQuery.error) {
+        if (!numInvitesQuery.loading && !numInvitesQuery.error) {
             const maxNum = numInvitesQuery.data.getNumInvitesPerResident.value;
             setMaxNumInvites(maxNum);
-            if(maxNumInvites > 0) {
-                const percentage = openInvites.length / maxNumInvites * 100;
+            if (maxNumInvites > 0) {
+                const percentage = (openInvites.length / maxNumInvites) * 100;
                 setPercentage(Math.floor(percentage));
             } else {
                 setPercentage(0);
             }
         }
-    },[numInvitesQuery, openInvites.length, maxNumInvites]);
+    }, [numInvitesQuery, openInvites.length, maxNumInvites]);
 
     useEffect(() => {
         const todayInviteData = invites.filter((invite) => {
@@ -165,112 +169,129 @@ const VisitorDashboard = () => {
         <Layout>
             <div className="p-3">
                 <h1 className="mt-5 mb-5 flex items-center text-left text-4xl font-bold">
-                    <span>Welcome back,</span><span className="text-secondary ml-3">{token.name}</span>
+                    <span>Welcome back,</span>
+                    <span className="ml-3 text-secondary">{token.name}</span>
                 </h1>
                 <p>You have {todayInvites} visitors expected today.</p>
             </div>
-            <div className="grid grid-cols-2 gap-4 grid-rows-2">
+            <div className="grid grid-cols-2 grid-rows-2 gap-4">
                 <DownloadChart
-                    title={
-                        "User Invites"
-                    }
-                    filename={token.name+"-forecast.png"}
+                    title={"User Invites"}
+                    filename={token.name + "-forecast.png"}
                     Chart={LineChart}
                     labelvals={visitorData.labels}
                     datavals={visitorData.data}
                 />
-                <div className="flex flex-col gap-5 w-full">
-                    <div className="card w-full h-full bg-base-200 shadow p-5">
-                         <h2 className="card-title font-normal">Total Number Of Invites Sent</h2>
-                         <div className="card-body justify-center">
-                             <h1 className="text-4xl font-bold">{invites.length}</h1>
-                             <p>Invites Sent In Lifetime</p>
-                         </div>
-                         <div className="card-actions">
-                         </div>
+                <div className="flex w-full flex-col gap-5">
+                    <div className="card h-full w-full bg-base-200 p-5 shadow">
+                        <h2 className="card-title font-normal">
+                            Total Number Of Invites Sent
+                        </h2>
+                        <div className="card-body justify-center">
+                            <h1 className="text-4xl font-bold">
+                                {invites.length}
+                            </h1>
+                            <p>Invites Sent In Lifetime</p>
+                        </div>
+                        <div className="card-actions"></div>
                     </div>
-                    <div className="card w-full h-full bg-base-200 shadow p-5">
-                         <h2 className="card-title font-normal">Maximum Invites Allowed</h2>
-                         <div className="card-body justify-center">
-                             <div className="flex items-center space-x-8">
-                                 <div className="radial-progress text-primary-content" style={{ "--value": Number(percentage) }}>{percentage}%</div>
-                                 <div className="flex-col">
-                                     <p>You currently have {openInvites.length} open invites.</p>
-                                     <p>You are allowed to send {maxNumInvites} in total</p>
-                                 </div>
-                             </div>
-                         </div>
-                         <div className="card-actions">
-                         </div>
+                    <div className="card h-full w-full bg-base-200 p-5 shadow">
+                        <h2 className="card-title font-normal">
+                            Maximum Invites Allowed
+                        </h2>
+                        <div className="card-body justify-center">
+                            <div className="flex items-center space-x-8">
+                                <div
+                                    className="radial-progress text-primary-content"
+                                    style={{ "--value": Number(percentage) }}
+                                >
+                                    {percentage}%
+                                </div>
+                                <div className="flex-col">
+                                    <p>
+                                        You currently have {openInvites.length}{" "}
+                                        open invites.
+                                    </p>
+                                    <p>
+                                        You are allowed to send {maxNumInvites}{" "}
+                                        in total
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="card-actions"></div>
                     </div>
                 </div>
                 <div className="col-span-2 space-y-4">
                     <h2 className="text-3xl font-bold">Open Invites</h2>
-                 {loading ? (
-                    <progress className="progress progress-primary w-56">
-                        progress
-                    </progress>
-                ) : (
-                    <table className="mb-5 table w-full">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>Email</th>
-                                <th>ID Document Type</th>
-                                <th>ID Number</th>
-                                <th>Cancel Invite</th>
-                            </tr>
-                        </thead>
-                        {openInvites.length > 0 ? (
-                            <tbody>
-                                {openInvites.map((visit, idx) => {
-                                    return (
-                                        <tr className="hover" key={idx}>
-                                            <th>{idx + 1}</th>
-                                            <td>{visit.visitorEmail}</td>
-                                            <td>{visit.idDocType}</td>
-                                            <td>{visit.idNumber}</td>
-                                            <td>
-                                                <button
-                                                    aria-label="cancel"
-                                                    className="btn btn-primary btn-square"
-                                                    onClick={() => {
-                                                        cancelInvite(
-                                                            visit.inviteID
-                                                        );
-                                                    }}
-                                                >
-                                                    <svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        className="h-6 w-6"
-                                                        fill="none"
-                                                        viewBox="0 0 24 24"
-                                                        stroke="currentColor"
-                                                    >
-                                                        <path
-                                                            strokeLinecap="round"
-                                                            strokeLinejoin="round"
-                                                            strokeWidth="2"
-                                                            d="M6 18L18 6M6 6l12 12"
-                                                        />
-                                                    </svg>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                        ) : (
-                            <tbody>
+                    {loading ? (
+                        <progress className="progress progress-primary w-56">
+                            progress
+                        </progress>
+                    ) : (
+                        <table className="mb-5 table w-full">
+                            <thead>
                                 <tr>
-                                    <th>Nothing to show...</th>
+                                    <th></th>
+                                    <th>Email</th>
+                                    <th>ID Document Type</th>
+                                    <th>ID Number</th>
+                                    <th>Cancel Invite</th>
                                 </tr>
-                            </tbody>
-                        )}
-                    </table>
-                )}
+                            </thead>
+                            {openInvites.length > 0 ? (
+                                <tbody>
+                                    {openInvites.map((visit, idx) => {
+                                        return (
+                                            <tr className="hover" key={idx}>
+                                                <th>{idx + 1}</th>
+                                                <td>{visit.visitorEmail}</td>
+                                                <td>{visit.idDocType}</td>
+                                                <td>{visit.idNumber}</td>
+                                                <td>
+                                                    <button
+                                                        aria-label="cancel"
+                                                        className="btn btn-primary btn-square"
+                                                        onClick={() => {
+                                                            cancelInvite(
+                                                                visit.inviteID
+                                                            );
+                                                        }}
+                                                    >
+                                                        <svg
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                            className="h-6 w-6"
+                                                            fill="none"
+                                                            viewBox="0 0 24 24"
+                                                            stroke="currentColor"
+                                                        >
+                                                            <path
+                                                                strokeLinecap="round"
+                                                                strokeLinejoin="round"
+                                                                strokeWidth="2"
+                                                                d="M6 18L18 6M6 6l12 12"
+                                                            />
+                                                        </svg>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                            ) : (
+                                <tbody>
+                                    <tr>
+                                        <th>Nothing to show...</th>
+                                    </tr>
+                                </tbody>
+                            )}
+                        </table>
+                    )}
                 </div>
-            <ErrorAlert message={errorMessage} showConditon={showErrorAlert} />
+                <ErrorAlert
+                    message={errorMessage}
+                    showConditon={showErrorAlert}
+                />
             </div>
         </Layout>
     );

@@ -41,6 +41,4 @@ describe("VisitorDashboard", () => {
         );
         expect(screen.getByText("Welcome back,")).toBeInTheDocument();
     });
-
-
 });

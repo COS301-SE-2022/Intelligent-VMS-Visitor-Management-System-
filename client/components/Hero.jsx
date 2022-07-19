@@ -56,7 +56,8 @@ const Hero = () => {
                     </motion.h1>
 
                     <motion.p className="py-6">
-                        Get there with the leading system in intelligent visitor management.
+                        Get there with the leading system in intelligent visitor
+                        management.
                     </motion.p>
                     <Link
                         href={

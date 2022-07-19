@@ -129,24 +129,24 @@ const AuthorizeUser = () => {
                         </h1>
                         <p>Authorize and review user accounts.</p>
                     </div>
-                    { token.permission === 0 && 
-                    <div className="input-group input-group-sm justify-end p-2 md:input-group-md">
-                        <input
-                            onChange={(e) => {
-                                setName(e.target.value);
-                            }}
-                            type="text"
-                            placeholder="Search…"
-                            className="input input-bordered input-sm md:input-md"
-                        />
-                        <label
-                            htmlFor="visitor-modal"
-                            className="btn btn-square btn-sm md:btn-md"
-                        >
-                            <FaSearch />
-                        </label>
-                    </div>
-                    }
+                    {token.permission === 0 && (
+                        <div className="input-group input-group-sm justify-end p-2 md:input-group-md">
+                            <input
+                                onChange={(e) => {
+                                    setName(e.target.value);
+                                }}
+                                type="text"
+                                placeholder="Search…"
+                                className="input input-bordered input-sm md:input-md"
+                            />
+                            <label
+                                htmlFor="visitor-modal"
+                                className="btn btn-square btn-sm md:btn-md"
+                            >
+                                <FaSearch />
+                            </label>
+                        </div>
+                    )}
                 </div>
                 {token.permission === 0 && (
                     <div className="divider text-base md:text-lg lg:text-2xl">

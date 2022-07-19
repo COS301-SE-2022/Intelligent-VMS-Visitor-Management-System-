@@ -45,7 +45,6 @@ const VisitInfoModal = ({ setShowInfo, visitModalData }) => {
                 </div>
             </div>
         </div>
-        }
     );
 };
 

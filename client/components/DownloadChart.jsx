@@ -43,21 +43,21 @@ const DownloadChart = ({
                 </a>
 
                 <div>
-                    { setStart &&
-                    <input
-                        type="date"
-                        name="visitDate"
-                        placeholder="Visit Date"
-                        className="input input-bordered w-full text-base-content"
-                        onChange={(e) => {
-                            const date = new Date(e.target.value);
+                    {setStart && (
+                        <input
+                            type="date"
+                            name="visitDate"
+                            placeholder="Visit Date"
+                            className="input input-bordered w-full text-base-content"
+                            onChange={(e) => {
+                                const date = new Date(e.target.value);
 
-                            if (!isNaN(date)) {
-                                setStart(date);
-                            }
-                        }}
-                    />
-                   }
+                                if (!isNaN(date)) {
+                                    setStart(date);
+                                }
+                            }}
+                        />
+                    )}
                 </div>
                 {setRange && (
                     <select

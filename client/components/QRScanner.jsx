@@ -4,7 +4,13 @@ import { gql, useApolloClient } from "@apollo/client";
 
 import useVideo from "../hooks/useVideo.hook";
 
-const QrScanner = ({ setShowScanner, setVisitorData, setSearch, setShowErrorAlert, setErrorMessage }) => {
+const QrScanner = ({
+    setShowScanner,
+    setVisitorData,
+    setSearch,
+    setShowErrorAlert,
+    setErrorMessage,
+}) => {
     //ApolloClient
     const client = useApolloClient();
 
@@ -77,16 +83,13 @@ const QrScanner = ({ setShowScanner, setVisitorData, setSearch, setShowErrorAler
                                         setShowScanner(false);
                                         search(qrData.inviteID);
                                         setShowErrorAlert(false);
-
                                     } else {
                                         setShowErrorAlert(true);
                                         setErrorMessage("Invalid QR Code");
-                                        
                                     }
-                                } catch(error) {
+                                } catch (error) {
                                     setShowErrorAlert(true);
                                     setErrorMessage("Invalid QR Code");
-                                    
                                 }
                             } else if (error) {
                                 console.log(error);

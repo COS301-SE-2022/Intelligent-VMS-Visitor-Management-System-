@@ -167,7 +167,6 @@ const UserAnalytics = () => {
         }
     }, [getTotalNumberOfInvites]);
 
-    
     return (
         <Layout>
             <div className="mb-3 mt-4 space-y-5 px-3">
@@ -189,40 +188,45 @@ const UserAnalytics = () => {
                 </div>
 
                 <div className="flex">
-                    <div className="card bg-base-200 shadow-xl w-full">
+                    <div className="card w-full bg-base-200 shadow-xl">
                         <div className="card-body flex-col">
                             <h2 className="card-title">
                                 <div className="avatar placeholder">
-                                    <div className="bg-neutral-focus text-neutral-content rounded-full w-16">
-                                        <span className="text-3xl font-normal">{name[0]}</span>
+                                    <div className="w-16 rounded-full bg-neutral-focus text-neutral-content">
+                                        <span className="text-3xl font-normal">
+                                            {name[0]}
+                                        </span>
                                     </div>
                                 </div>
                                 <div>
                                     <p className="text-primary">{name}</p>
-                                    <p className="text-sm font-normal text-base">{numInvites} invites in lifetime</p>
+                                    <p className="text-sm text-base font-normal">
+                                        {numInvites} invites in lifetime
+                                    </p>
                                 </div>
                             </h2>
                             <div className="divider">Reports</div>
                             <DownloadChart
-                                title={
-                                "User Invites"
-                            }
-                            filename={name+"-forecast.png"}
-                            Chart={LineChart}
-                            labelvals={visitorVals.labels}
-                            datavals={visitorVals.data}
-                            setStart={setStartDate}
-                            setRange={setRange}
-                        />
+                                title={"User Invites"}
+                                filename={name + "-forecast.png"}
+                                Chart={LineChart}
+                                labelvals={visitorVals.labels}
+                                datavals={visitorVals.data}
+                                setStart={setStartDate}
+                                setRange={setRange}
+                            />
 
-                        {loading && <p>Loading</p>}
-                            <div className="card-actions justify-start items-center">
+                            {loading && <p>Loading</p>}
+                            <div className="card-actions items-center justify-start">
                                 <Link
                                     href={`/viewReport?email=${email}&startDate=${startDate}&endDate=${endDate}&name=${name}&total=${numInvites}`}
                                 >
-                                    <a className="btn btn-primary"><HiOutlineDocumentReport className="text-xl"/>PDF Report</a>
+                                    <a className="btn btn-primary">
+                                        <HiOutlineDocumentReport className="text-xl" />
+                                        PDF Report
+                                    </a>
                                 </Link>
-                                { token.email !== email && 
+                                {token.email !== email && (
                                     <label
                                         className="label cursor-pointer space-x-3"
                                         onChange={() => {
@@ -231,14 +235,16 @@ const UserAnalytics = () => {
                                         }}
                                         onClick={() => setAuth(!auth)}
                                     >
-                                    <span className="label-text">Authorize</span>
-                                    <input
-                                        type="checkbox"
-                                        className="toggle toggle-primary"
-                                        checked={auth ? true : false}
-                                    />
+                                        <span className="label-text">
+                                            Authorize
+                                        </span>
+                                        <input
+                                            type="checkbox"
+                                            className="toggle toggle-primary"
+                                            checked={auth ? true : false}
+                                        />
                                     </label>
-                                }
+                                )}
                             </div>
                         </div>
                     </div>
