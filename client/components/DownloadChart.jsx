@@ -25,11 +25,13 @@ const DownloadChart = ({
     return (
         <div className="card bg-base-300 p-5">
             <h2 className="card-title text-base-content">{title}</h2>
-            <Chart
-                chartRef={chartRef}
-                labelvals={labelvals}
-                datavals={datavals}
-            />
+            <div className="h-full">
+                <Chart
+                    chartRef={chartRef}
+                    labelvals={labelvals}
+                    datavals={datavals}
+                />
+            </div>
             <div className="card-actions mt-3 items-center overflow-visible">
                 <a
                     ref={downloadLinkRef}
@@ -41,19 +43,21 @@ const DownloadChart = ({
                 </a>
 
                 <div>
-                    <input
-                        type="date"
-                        name="visitDate"
-                        placeholder="Visit Date"
-                        className="input input-bordered w-full text-base-content"
-                        onChange={(e) => {
-                            const date = new Date(e.target.value);
+                    {setStart && (
+                        <input
+                            type="date"
+                            name="visitDate"
+                            placeholder="Visit Date"
+                            className="input input-bordered w-full text-base-content"
+                            onChange={(e) => {
+                                const date = new Date(e.target.value);
 
-                            if (!isNaN(date)) {
-                                setStart(date);
-                            }
-                        }}
-                    />
+                                if (!isNaN(date)) {
+                                    setStart(date);
+                                }
+                            }}
+                        />
+                    )}
                 </div>
                 {setRange && (
                     <select

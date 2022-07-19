@@ -40,7 +40,7 @@ describe("AdminDashboard", () => {
             </MockedProvider>
         );
 
-        expect(screen.getAllByText("admin@mail.com").length).toEqual(2);
+        expect(screen.getAllByText("admin@mail.com").length).toEqual(1);
     });
 
     it("renders save and cancel buttons", async () => {

@@ -2,19 +2,27 @@ import { gql, useMutation } from "@apollo/client";
 import React, { useEffect, useRef, useState, setState } from "react";
 import useAuth from "../store/authStore.js";
 
-const UploadPopUp = ({setShowErrorAlert, setErrorMessage, setShowUploadPopUp, refetch}) => {
+const UploadPopUp = ({
+    setShowErrorAlert,
+    setErrorMessage,
+    setShowUploadPopUp,
+    refetch,
+}) => {
+    const [file, setFile] = useState(null);
+    const [fileAsString, setFileAsString] = useState("");
+    const [text, setText] = useState("Upload a csv file");
+    const [signInButton, setSignInButton] = useState(true);
 
-  const [file, setFile] = useState(null)
-  const [fileAsString, setFileAsString] = useState("")
-  const [text, setText] = useState("Upload a csv file")
-  const [signInButton, setSignInButton] = useState(true)
+    // Get Data From JWT Token
+    const jwtTokenData = useAuth((state) => {
+        return state.decodedToken;
+    })();
 
-  // Get Data From JWT Token
-  const jwtTokenData = useAuth((state) => {return state.decodedToken})();
-
-  const [bulkSignInMutation, { data, loading, error}] = useMutation(gql`
+    const [bulkSignInMutation, { data, loading, error }] = useMutation(gql`
         mutation {
-            bulkSignIn(file: "${encodeURI(fileAsString)}", userEmail: "${jwtTokenData.email}")
+            bulkSignIn(file: "${encodeURI(fileAsString)}", userEmail: "${
+        jwtTokenData.email
+    }")
         }
     `);
 
@@ -79,7 +87,7 @@ const UploadPopUp = ({setShowErrorAlert, setErrorMessage, setShowUploadPopUp, re
     </div>
 
   );
+
 };
 
 export default UploadPopUp;
-
