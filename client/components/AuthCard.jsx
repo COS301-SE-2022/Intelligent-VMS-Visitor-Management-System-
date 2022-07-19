@@ -63,7 +63,7 @@ const AuthCard = ({
                         </label>
                     </div>
                     {showConfirm && (
-                        <div className="justif-end space-x-3">
+                        <div className="justify-end space-x-3">
                             <button
                                 onClick={() => {
                                     authorizeUserAccount(email, type);

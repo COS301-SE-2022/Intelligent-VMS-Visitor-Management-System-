@@ -102,7 +102,6 @@ const ReceptionistDashboard = () => {
     const client = useApolloClient();
 
     const search = () => {
-        //TODO (Stefan)
         setSearch(true);
         client
             .query({
@@ -262,7 +261,10 @@ const ReceptionistDashboard = () => {
                             <tbody>
                                 {visitorData.map((visit, idx) => {
                                     return (
-                                        <tr className="hover" key={idx}>
+                                        <tr
+                                            className="hover cursor-pointer"
+                                            key={idx}
+                                        >
                                             {/* Onclicks below display Visitor-Modal and pass it the relavant information for each visitor*/}
                                             <th
                                                 onClick={() => {
@@ -381,21 +383,21 @@ const ReceptionistDashboard = () => {
                                 })}
 
                                 <tr>
-                                <td> </td>
-                                <td> </td>
-                                <td> </td>
-                                <td>
-                                <label
-                                    htmlFor="Upload-modal"
-                                    className="modal-button btn btn-secondary float-right"
-                                    onClick={() => setShowUploadPopUp(true)}
-                                
-                                >
-                                    Bulk-SignIn
-                                </label>
-                                </td>
+                                    <td> </td>
+                                    <td> </td>
+                                    <td> </td>
+                                    <td>
+                                        <label
+                                            htmlFor="Upload-modal"
+                                            className="modal-button btn btn-secondary float-right"
+                                            onClick={() =>
+                                                setShowUploadPopUp(true)
+                                            }
+                                        >
+                                            Bulk-SignIn
+                                        </label>
+                                    </td>
                                 </tr>
-                                
                             </tbody>
                         ) : (
                             <tbody>
@@ -405,8 +407,6 @@ const ReceptionistDashboard = () => {
                             </tbody>
                         )}
                     </table>
-
-                    
                 )}
                 <ErrorAlert
                     message={errorMessage}
@@ -477,11 +477,13 @@ const ReceptionistDashboard = () => {
                     >
                         ✕
                     </label>
-                    <QRScanner setShowScanner={setShowScanner}
-                               setVisitorData={setVisitorData} 
-                               setSearch={setSearch} 
-                               setShowErrorAlert={setShowErrorAlert} 
-                               setErrorMessage={setErrorMessage} />
+                    <QRScanner
+                        setShowScanner={setShowScanner}
+                        setVisitorData={setVisitorData}
+                        setSearch={setSearch}
+                        setShowErrorAlert={setShowErrorAlert}
+                        setErrorMessage={setErrorMessage}
+                    />
                 </div>
             </div>
 
@@ -498,7 +500,12 @@ const ReceptionistDashboard = () => {
                 </div>
             </div> */}
 
-            <input type="checkbox" id="Upload-modal" className="modal-toggle" checked={showUploadPopUp ? true : false}/>
+            <input
+                type="checkbox"
+                id="Upload-modal"
+                className="modal-toggle"
+                checked={showUploadPopUp ? true : false}
+            />
             <div className="fade modal" id="Upload-modal">
                 <div className="modal-box flex flex-wrap">
                     <label
@@ -508,14 +515,14 @@ const ReceptionistDashboard = () => {
                     >
                         ✕
                     </label>
-                    <UploadPopUp setErrorMessage={setErrorMessage} 
-                                 setShowErrorAlert={setShowErrorAlert} 
-                                 setShowUploadPopUp={setShowUploadPopUp} 
-                                 refetch={invitesQuery}/>
+                    <UploadPopUp
+                        setErrorMessage={setErrorMessage}
+                        setShowErrorAlert={setShowErrorAlert}
+                        setShowUploadPopUp={setShowUploadPopUp}
+                        refetch={invitesQuery}
+                    />
                 </div>
             </div>
-
-            
         </Layout>
     );
 };

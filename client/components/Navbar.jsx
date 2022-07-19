@@ -49,7 +49,7 @@ const Navbar = () => {
                     <div>
                         Hello{" "}
                         <span className="font-bold text-secondary">
-                            {token && token.email}
+                            {token && token.name}
                         </span>
                     </div>
                 )}
