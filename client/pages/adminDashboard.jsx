@@ -43,8 +43,17 @@ const AdminDashboard = () => {
     const [parkingVals, setParkingVals] = useState({ data: [], labels: [] });
 
     // Date Range Hook
-    const [startDate, endDate, dateMap, setDateMap, setStartDate] =
+    const [startDate, endDate, inviteDateMap, setDateMap, setStartDate] =
         useDateRange(getFormattedDateString(new Date(Date.now())), 7);
+
+    // Parking Date Range Hook
+    const [
+        parkingStartDate,
+        parkingEndDate,
+        parkingDateMap,
+        setParkingDateMap,
+        setParkingStartDate,
+    ] = useDateRange(getFormattedDateString(new Date(Date.now())), 7);
 
     // Start Date State
     const [start, setStart] = useState(startDate);
@@ -52,6 +61,8 @@ const AdminDashboard = () => {
     // Initial number of invites per resident for fallback
     const [initialNumInvitesPerResident, setInitialNumInvitesPerResident] =
         useState(1);
+
+    const [initialNumParkingSpots, setInitialNumParkingSpots] = useState(0);
 
     // State to track whether the restrictions have changed
     const [restrictionsChanged, setRestrictionsChanged] = useState(false);
@@ -105,7 +116,7 @@ const AdminDashboard = () => {
 
     const numParkingInDateRangeQuery = useQuery(gql`
         query {
-            getUsedParkingsInRange(startDate: "${startDate}", endDate: "${endDate}") {
+            getUsedParkingsInRange(startDate: "${parkingStartDate}", endDate: "${parkingEndDate}") {
                 reservationDate
             }
         }
@@ -128,12 +139,20 @@ const AdminDashboard = () => {
 
     const cancelRestrictions = () => {
         setNumInvitesPerResident(initialNumInvitesPerResident);
+        setNumParkingSpotsAvailable(initialNumParkingSpots);
         setRestrictionsChanged(false);
     };
 
     const saveRestrictions = () => {
-        setInitialNumInvitesPerResident(numInvitesPerResident);
-        setNumInvitesPerResidentMutation();
+        if (numInvitesPerResident !== initialNumInvitesPerResident) {
+            setInitialNumInvitesPerResident(numInvitesPerResident);
+            setNumInvitesPerResidentMutation();
+        }
+
+        if (numParkingSpotsAvailable !== initialNumParkingSpots) {
+            setInitialNumParkingSpots(numParkingSpotsAvailable);
+        }
+
         setRestrictionsChanged(false);
     };
 
@@ -156,36 +175,48 @@ const AdminDashboard = () => {
         ) {
             const invites = numInviteInDateRangeQuery.data.getNumInvitesPerDate;
             invites.forEach((invite) => {
-                if (!isNaN(dateMap.get(invite.inviteDate))) {
-                    dateMap.set(
+                if (!isNaN(inviteDateMap.get(invite.inviteDate))) {
+                    inviteDateMap.set(
                         invite.inviteDate,
-                        dateMap.get(invite.inviteDate) + 1
+                        inviteDateMap.get(invite.inviteDate) + 1
                     );
                 }
             });
 
-            setDateMap(new Map(dateMap));
+            setDateMap(new Map(inviteDateMap));
             setVisitorVals({
-                data: Array.from(dateMap.values()),
-                labels: Array.from(dateMap.keys()),
+                data: Array.from(inviteDateMap.values()),
+                labels: Array.from(inviteDateMap.keys()),
             });
 
-            setTodayInvites(dateMap.get(startDate));
+            setTodayInvites(inviteDateMap.get(startDate));
         } else if (numInviteInDateRangeQuery.error) {
             console.error(numInviteInDateRangeQuery.error);
         }
 
         // Num parking in range
-        if(!numParkingInDateRangeQuery.loading && !numParkingInDateRangeQuery.error) {
-            const parkingNumbers = numParkingInDateRangeQuery.data.getUsedParkingsInRange;
-            console.log(parkingNumbers);
+        if (
+            !numParkingInDateRangeQuery.loading &&
+            !numParkingInDateRangeQuery.error
+        ) {
+            const parkingNumbers =
+                numParkingInDateRangeQuery.data.getUsedParkingsInRange;
 
-            setParkingVals({
-                labels: Array.from(dateMap.keys()),
-                data: Array.from(parkingNumbers),
+            parkingNumbers.forEach((parking) => {
+                if (!isNaN(parkingDateMap.get(parking.reservationDate))) {
+                    parkingDateMap.set(
+                        parking.reservationDate,
+                        parkingDateMap.get(parking.reservationDate) + 1
+                    );
+                }
             });
 
-        } else if(numParkingInDateRangeQuery.error) {
+            setParkingDateMap(new Map(parkingDateMap));
+            setParkingVals({
+                labels: Array.from(parkingDateMap.keys()),
+                data: Array.from(parkingDateMap.values()),
+            });
+        } else if (numParkingInDateRangeQuery.error) {
             console.error(numParkingInDateRangeQuery.error);
         }
 
@@ -196,6 +227,7 @@ const AdminDashboard = () => {
         ) {
             const numParkingspots = numParkingSpotsAvailableQuery.data.getTotalAvailableParking;
             setNumParkingSpotsAvailable(numParkingspots);
+            setInitialNumParkingSpots(numParkingspots);
         } else if (numParkingSpotsAvailableQuery.error) {
             setNumParkingSpotsAvailable("Error");
         }
@@ -290,11 +322,11 @@ const AdminDashboard = () => {
                         />
                         <DownloadChart
                             title={"Parking Forecast For The Week"}
-                            filename="visitor-forecast.png"
+                            filename="parking-forecast.png"
                             Chart={LineChart}
                             labelvals={parkingVals.labels}
                             datavals={parkingVals.data}
-                            setStart={setStartDate}
+                            setStart={setParkingStartDate}
                         />
                     </div>
 
@@ -392,13 +424,37 @@ const AdminDashboard = () => {
                                 <div className="card-actions flex items-center justify-start">
                                     <div className="flex items-center space-x-3">
                                         <button className="btn btn-circle">
-                                            <AiOutlinePlus className="text-xl md:text-2xl lg:text-3xl" />
+                                            <AiOutlinePlus
+                                                onClick={() => {
+                                                    setNumParkingSpotsAvailable(
+                                                        numParkingSpotsAvailable +
+                                                            1
+                                                    );
+                                                    setRestrictionsChanged(
+                                                        true
+                                                    );
+                                                }}
+                                                className="text-xl md:text-2xl lg:text-3xl"
+                                            />
                                         </button>
                                         <p className="text-4xl font-bold text-secondary">
                                             {numParkingSpotsAvailable}
                                         </p>
                                         <button className="btn btn-circle">
-                                            <AiOutlineMinus className="text-xl md:text-2xl lg:text-3xl" />
+                                            <AiOutlineMinus
+                                                onClick={() => {
+                                                    numParkingSpotsAvailable >
+                                                        0 &&
+                                                        setNumParkingSpotsAvailable(
+                                                            numParkingSpotsAvailable -
+                                                                1
+                                                        );
+                                                    setRestrictionsChanged(
+                                                        true
+                                                    );
+                                                }}
+                                                className="text-xl md:text-2xl lg:text-3xl"
+                                            />
                                         </button>
                                     </div>
                                 </div>

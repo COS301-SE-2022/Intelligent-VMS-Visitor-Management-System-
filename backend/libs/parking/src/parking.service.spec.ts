@@ -361,10 +361,9 @@ describe('ParkingService', () => {
     it("should return array of the same length as input", async () => {
         let len;
         try{
-        const parking = await parkingService.createNParkingSpots(3);
-        len = parking.length;
+            const parking = await parkingService.createNParkingSpots(3);
+            expect(len).toEqual(3);
         } catch(error){}
-        expect(len).toEqual(3);
     });
 
     it("should throw an exception if a negative input is given", async () => {

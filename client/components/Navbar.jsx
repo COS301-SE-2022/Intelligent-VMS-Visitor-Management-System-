@@ -44,7 +44,7 @@ const Navbar = () => {
                     </a>
                 </Link>
             </div>
-            <div className="navbar-end text-xs md:text-sm text-neutral-content">
+            <div className="navbar-end text-xs text-neutral-content md:text-sm">
                 {token && (
                     <div>
                         Hello{" "}
@@ -56,7 +56,6 @@ const Navbar = () => {
                 <div>
                     <ThemeSelector />
                 </div>
-
                 <div className="dropdown dropdown-end">
                     <label tabIndex="0" className="menuIcon btn btn-ghost">
                         <svg
@@ -93,7 +92,7 @@ const Navbar = () => {
                     </label>
                     <ul
                         tabIndex="0"
-                        className="dropdown-content menu rounded-box menu-compact mt-3 w-52 bg-neutral p-2 shadow text-neutral-content"
+                        className="dropdown-content menu rounded-box menu-compact mt-3 w-52 bg-neutral p-2 text-neutral-content shadow"
                     >
                         {navlinks.map((link, idx) => {
                             return (

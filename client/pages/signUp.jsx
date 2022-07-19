@@ -53,7 +53,7 @@ const SignUp = () => {
 
     return (
         <Layout>
-            <div className="relative flex h-full min-h-[80vh] w-full flex-col items-center justify-center overflow-hidden mb-4">
+            <div className="relative mb-4 flex h-full min-h-[80vh] w-full flex-col items-center justify-center overflow-hidden">
                 <ul className="steps mb-3 mt-2 text-xs md:text-base">
                     <li className="step step-primary">
                         Tell Us About Yourself
@@ -69,7 +69,7 @@ const SignUp = () => {
                         confirmPassword: "",
                         idDoc: "RSA-ID",
                         idNumber: "",
-                        name: ""
+                        name: "",
                     }}
                     validate={(values) => {
                         const errors = {};
@@ -81,11 +81,11 @@ const SignUp = () => {
                             )
                         ) {
                             errors.email = "Invalid email address";
-                        } else if(!values.name) {
+                        } else if (!values.name) {
                             errors.name = "Name required";
-                        } else if(!/[A-Za-z]+/i.test(values.name)) {
+                        } else if (!/[A-Za-z]+/i.test(values.name)) {
                             errors.name = "Invalid name";
-                        } else if(
+                        } else if (
                             (values.idDoc === "RSA-ID" ||
                                 values.idDoc === "Drivers-License") &&
                             !/^(((\d{2}((0[13578]|1[02])(0[1-9]|[12]\d|3[01])|(0[13456789]|1[012])(0[1-9]|[12]\d|30)|02(0[1-9]|1\d|2[0-8])))|([02468][048]|[13579][26])0229))(( |-)(\d{4})( |-)(\d{3})|(\d{7}))$/i.test(
@@ -189,7 +189,7 @@ const SignUp = () => {
                                 <span className="text-error">
                                     {errors.name && touched.name && errors.name}
                                 </span>
-                                
+
                                 <Field
                                     as="select"
                                     className="select select-primary w-full"
@@ -244,7 +244,7 @@ const SignUp = () => {
                                     onBlur={handleBlur}
                                     value={values.confirmPassword}
                                 ></input>
-                                
+
                                 <span className="text-sm text-error md:text-base">
                                     {errors.confirmPassword &&
                                         touched.confirmPassword &&

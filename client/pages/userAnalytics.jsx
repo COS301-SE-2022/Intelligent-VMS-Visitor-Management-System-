@@ -2,29 +2,44 @@ import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/router";
 import { gql, useQuery } from "@apollo/client";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
 
 import Layout from "../components/Layout";
-import AdminCard from "../components/AdminCard";
 import DownloadChart from "../components/DownloadChart";
 import LineChart from "../components/LineChart";
-import AnalyticsReport from "../components/AnalyticsReport";
 
 import { AiOutlineDoubleLeft } from "react-icons/ai";
-import { BiBuildingHouse } from "react-icons/bi";
+import { HiOutlineDocumentReport } from "react-icons/hi";
 
 import useDateRange from "../hooks/useDateRange.hook";
 
 const UserAnalytics = () => {
     const router = useRouter();
-    const { name, email } = router.query;
+    const { name, email, permission } = router.query;
 
     const now = new Date();
-    const monthNames = ["January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
+    const monthNames = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
     ];
-    const [startDate, endDate, dateMap, setDateMap, setStartDate, setRange, range] = useDateRange(new Date(now.getFullYear(), now.getMonth(), 1), 30);
+    const [
+        startDate,
+        endDate,
+        dateMap,
+        setDateMap,
+        setStartDate,
+        setRange,
+        range,
+    ] = useDateRange(new Date(now.getFullYear(), now.getMonth(), 1), 30);
 
     // Visitor invite data object for chart
     const [visitorVals, setVisitorVals] = useState({ data: [], labels: [] });
@@ -69,12 +84,16 @@ const UserAnalytics = () => {
             }
             console.error(error);
         }
-
     }, [loading, error, router, setDateMap, range]);
 
     useEffect(() => {
-        if(!getTotalNumberOfInvites.loading && !getTotalNumberOfInvites.error) {
-            setNumInvites(getTotalNumberOfInvites.data.getTotalNumberOfInvitesOfResident);
+        if (
+            !getTotalNumberOfInvites.loading &&
+            !getTotalNumberOfInvites.error
+        ) {
+            setNumInvites(
+                getTotalNumberOfInvites.data.getTotalNumberOfInvitesOfResident
+            );
         }
     }, [getTotalNumberOfInvites]);
 
@@ -98,33 +117,46 @@ const UserAnalytics = () => {
                     </Link>
                 </div>
 
-                <div className="stats stats-vertical w-full">
-                    <AdminCard
-                        description="Total Number of Invites Sent"
-                        Icon={BiBuildingHouse}
-                        dataval={numInvites}
-                        unit="Total"
-                    />
-                </div>
-                <div className="flex justify-center">
-                    <div className="w-full">
-                    <DownloadChart
-                        title={"User Invites For The Month Of " + monthNames[now.getMonth()]}
-                        filename="visitor-forecast.png"
-                        Chart={LineChart}
-                        labelvals={visitorVals.labels}
-                        datavals={visitorVals.data}
-                        setStart={setStartDate}
-                        setRange={setRange}
-                    />
-                    {loading && <p>Loading</p>}
+                <div className="flex">
+                    <div className="card bg-base-200 shadow-xl w-full">
+                        <div className="card-body flex-col">
+                            <h2 className="card-title">
+                                <div className="avatar placeholder">
+                                    <div className="bg-neutral-focus text-neutral-content rounded-full w-16">
+                                        <span className="text-3xl font-normal">{name[0]}</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p className="text-primary">{name}</p>
+                                    <p className="text-sm font-normal text-base">{numInvites} invites in lifetime</p>
+                                </div>
+                            </h2>
+                            <div className="divider">Reports</div>
+                            <DownloadChart
+                                title={
+                                "User Invites"
+                            }
+                            filename={name+"-forecast.png"}
+                            Chart={LineChart}
+                            labelvals={visitorVals.labels}
+                            datavals={visitorVals.data}
+                            setStart={setStartDate}
+                            setRange={setRange}
+                        />
+
+                        {loading && <p>Loading</p>}
+
+                            <div className="card-actions justify-start">
+                                <Link
+                                    href={`/viewReport?email=${email}&startDate=${startDate}&endDate=${endDate}&name=${name}&total=${numInvites}`}
+                                >
+                                    <a className="btn btn-primary"><HiOutlineDocumentReport className="text-xl"/>PDF Report</a>
+                                </Link>
+                                
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <Link
-                    href={`/viewReport?email=${email}&startDate=${startDate}&endDate=${endDate}&name=${name}&total=${numInvites}`}
-                >
-                    <a className="btn btn-primary">Generate PDF Report</a>
-                </Link>
             </div>
         </Layout>
     );

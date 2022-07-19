@@ -24,7 +24,7 @@ import { GetParkingQuery } from './queries/impl/getParking.query';
 import { GetReservationsByDateQuery } from './queries/impl/getReservationsByDate.query';
 import { InvalidCommand } from './errors/invalidCommand.error';
 import { getAvailableParkingQuery } from './queries/impl/getAvailableParking.query';
-
+import { GetNumberOfReservationsQuery } from './queries/impl/getNumberOfReservations.query';
 
 @Injectable()
 export class ParkingService {
@@ -158,6 +158,8 @@ export class ParkingService {
         if(InviteReservation) {
             throw new InvalidCommand(`Invitation with ID ${invitationID} already have reserved parking.`)
         }
+
+        //const numParkingspotsAvailable = 
         
         //Find Free Parking
         let parkingNumber = -1;
@@ -311,7 +313,7 @@ export class ParkingService {
             new CreateNParkingSpotsCommand(N));
         
         if(parking) 
-            return parking;
+            return true;
          else 
             throw new ExternalError("Error outside the parking.service.");
             
@@ -398,15 +400,16 @@ export class ParkingService {
         const parkings = await this.queryBus.execute(
             new GetFreeParkingQuery());
 
-        if(parkings)
-        {
-            if(parkings.length > 0) 
+        if(parkings) {
+            if(parkings.length > 0) {
                 return parkings;
-            else
+            } else {
                 throw new ParkingNotFound("No Free parkings.")
+            }
 
-        }else 
+        } else {
             throw new ExternalError("Error outside the parking.service.");
+        }
             
     }
 
@@ -612,5 +615,29 @@ export class ParkingService {
         return amounts;
 
     }
+
+    async getNumberOfReservations(startDate: string) {
+        const start = Date.parse(startDate);
+
+        if(isNaN(start)) {
+            throw new InvalidQuery("Given dates must be of the form yyyy-mm-dd");
+        }     
+        
+        return this.queryBus.execute(new GetNumberOfReservationsQuery(startDate));
+    }
+
+    async isParkingAvailable(startDate: string) {
+        const start = Date.parse(startDate);
+
+        if(isNaN(start)) {
+            throw new InvalidQuery("Given dates must be of the form yyyy-mm-dd");
+        }     
+        
+        const numReservationsForDay = await this.queryBus.execute(new GetNumberOfReservationsQuery(startDate));
+        const numAvailableParkingForDay = await this.queryBus.execute(new getTotalAvailableParkingQuery());
+
+        return numReservationsForDay < numAvailableParkingForDay;
+    }
+
 
 }
