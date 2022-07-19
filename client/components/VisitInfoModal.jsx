@@ -1,33 +1,52 @@
 import React, { useEffect, useRef, useState } from "react";
+import { gql, useLazyQuery } from "@apollo/client";
 
-const VisitInfoModal = ({ setShowInfo, visitModalData }) => {
-    useEffect(() => {
-    }, []);
+const VisitInfoModal = ({ 
+    setShowInfo, 
+    visitModalData ,
+    parkingNumber}) => {
+
+
+        useEffect(() => {
+        },);
     return (
-        <div className="relative flex-auto justify-center items-center text-center w-auto" >
+        <div className="relative grid grid-cols-2 gap-2" >
             {/* display a visitor's name */}
-            <label style={{ fontWeight: "bold" }}>Visitor Name: </label>
+            <label className="justify-self-end" style={{ fontWeight: "bold" }}>Visitor Name: </label>
             <label style={{ fontStyle: "italic", textTransform: 'capitalize' }}>{visitModalData.visitorName}</label>
-            <br></br>
+            
             {/* display a visitor's identification document type */}
-            <label style={{ fontWeight: "bold" }}>Document type: </label>
+            <label className="justify-self-end" style={{ fontWeight: "bold" }}>Document type: </label>
             <label style={{ fontStyle: "italic" }}>{visitModalData.idDocType}</label>
-            <br></br>
+
             {/* display a visitor's Identification number. Either ID or passport or student number */}
-            <label style={{ fontWeight: "bold" }}>Visitor ID: </label>
+            <label className="justify-self-end" style={{ fontWeight: "bold" }}>Visitor ID: </label>
             <label style={{ fontStyle: "italic" }}>{visitModalData.idNumber}</label>
-            <br></br>
+      
             {/* display the invite's valid date */}
-            <label style={{ fontWeight: "bold" }}>Invite date: </label>
+            <label className="justify-self-end" style={{ fontWeight: "bold" }}>Invite date: </label>
             <label style={{ fontStyle: "italic" }}>{visitModalData.inviteDate}</label>
-            <br></br>
+          
             {/* display the host's email for emergencies */}
-            <label style={{ fontWeight: "bold" }}>Host email: </label>
+            <label className="justify-self-end" style={{ fontWeight: "bold" }}>Host email: </label>
             <label style={{ fontStyle: "italic" }}>{visitModalData.userEmail}</label>
-            <br></br>
+       
             {/* display the invite ID */}
-            <label style={{ fontWeight: "bold" }}>Invite ID: </label>
+            <label className="justify-self-end" style={{ fontWeight: "bold" }}>Invite ID: </label>
             <label style={{ fontStyle: "italic" }}>{visitModalData.inviteID}</label>
+            
+            {/* display the parking Number */}
+            <label className="justify-self-end" style={{ fontWeight: "bold" }}>Parking Number: </label>
+
+            {parkingNumber == -1? (
+            <label style={{ fontStyle: "italic" }}>N/A</label>
+            ):(
+            <label style={{ fontStyle: "italic" }}>{parkingNumber}</label>
+            )}    
+
+            {/* display the tray Number */}
+            <label className="justify-self-end" style={{ fontWeight: "bold" }}>Tray Number: </label>
+            <label style={{ fontStyle: "italic" }}>{}</label>
         </div>
     );
 };

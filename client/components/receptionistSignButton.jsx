@@ -2,7 +2,7 @@ const ReceptionistSignButton = ({ htmlFor, text, colour, onClick }) => {
     return (
         <label
             htmlFor={htmlFor}
-            className={`modal-button btn max-w-md border-0 ${colour} text-white`}
+            className={`modal-button btn max-w-md border-0 ${colour} text-white z-10`}
             onClick={onClick}
         >
             {text}

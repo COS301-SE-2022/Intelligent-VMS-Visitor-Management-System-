@@ -23,10 +23,10 @@ const UploadPopUp = ({setShowErrorAlert, setErrorMessage, setShowUploadPopUp, re
         <div className="m-4">
             <div className="flex items-center justify-center w-full">
                 <label
-                    className="flex flex-col w-full h-50 border-2 border-blue-200 border-dashed rounded-lg hover:border-secondary pt-10">
+                    className="flex flex-col w-full h-50 border-2 border-blue-200 border-dashed rounded-lg hover:border-primary pt-10 group">
                     <div className="flex flex-col items-center justify-center ">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="w-12 h-12 group-hover:text-gray-600"
-                            fill="white" viewBox="0 0 490.955 490.955" stroke="none">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-12 h-12 group-hover:fill-primary"
+                            fill="gray" viewBox="0 0 490.955 490.955" stroke="none">
                             <path id="XMLID_448_" d="M445.767,308.42l-53.374-76.49v-20.656v-11.366V97.241c0-6.669-2.604-12.94-7.318-17.645L312.787,7.301
                             C308.073,2.588,301.796,0,295.149,0H77.597C54.161,0,35.103,19.066,35.103,42.494V425.68c0,23.427,19.059,42.494,42.494,42.494
                             h159.307h39.714c1.902,2.54,3.915,5,6.232,7.205c10.033,9.593,23.547,15.576,38.501,15.576c26.935,0-1.247,0,34.363,0
@@ -39,7 +39,7 @@ const UploadPopUp = ({setShowErrorAlert, setErrorMessage, setShowUploadPopUp, re
                             c-2.012-3.866-1.725-8.49,0.783-12.07l61.424-88.064c2.189-3.123,5.769-4.984,9.57-4.984h0.017c3.802,0,7.38,1.861,9.568,4.984
                             l61.427,88.064C412.04,337.28,412.328,341.905,410.316,345.771z"/>
                         </svg>
-                        <p className="pt-1 text-sm tracking-wider text-gray-400 group-hover:text-gray-600">
+                        <p className="pt-1 text-sm tracking-wider text-gray-400">
                             {text}</p>
                     </div>
                     <input className="opacity-0" type="file" 
@@ -59,8 +59,8 @@ const UploadPopUp = ({setShowErrorAlert, setErrorMessage, setShowUploadPopUp, re
                 </label>
             </div>
         </div>
-        <div className="flex justify-center p-2">
-            <button className="w-full py-2 text-white bg-secondary rounded shadow-xl" disabled={signInButton} 
+        <div className="flex justify-center py-2 px-4">
+            <button className="btn w-full text-white border-0 bg-secondary shadow-xl" disabled={signInButton} 
             onClick={()=>{
                 setText("Upload a csv file");
                 const reader = new FileReader();
