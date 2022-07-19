@@ -10,7 +10,9 @@ const VisitInfoModal = ({
         useEffect(() => {
         },);
     return (
-        <div className="relative grid grid-cols-2 gap-2" >
+        <>
+        { visitModalData && 
+        <div className="relative w-auto flex-auto items-center justify-center text-center">
             {/* display a visitor's name */}
             <label className="justify-self-end" style={{ fontWeight: "bold" }}>Visitor Name: </label>
             <label style={{ fontStyle: "italic", textTransform: 'capitalize' }}>{visitModalData.visitorName}</label>
@@ -48,6 +50,8 @@ const VisitInfoModal = ({
             <label className="justify-self-end" style={{ fontWeight: "bold" }}>Tray Number: </label>
             <label style={{ fontStyle: "italic" }}>{}</label>
         </div>
+        }
+        </>
     );
 };
 

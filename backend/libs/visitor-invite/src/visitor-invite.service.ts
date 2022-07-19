@@ -29,6 +29,7 @@ import { ParkingNotFound } from "@vms/parking/errors/parkingNotFound.error";
 import { MailService } from "@vms/mail";
 import { RestrictionsService } from "@vms/restrictions";
 import { ParkingService } from "@vms/parking";
+import { CreateGroupInviteCommand } from "./commands/impl/createGroupInvite.command";
 
 @Injectable()
 export class VisitorInviteService {
@@ -264,6 +265,43 @@ export class VisitorInviteService {
         );
 
         await this.parkingService.reserveParking(inviteID);
+    }
+
+    @Cron("50 23 * * *")
+    async groupInvites() {
+        // Get current date & time
+        const now = new Date();
+        const year = now.getFullYear();
+        let month = "" + (now.getMonth() + 1);
+        let day = "" + now.getDate();
+            
+        if (month.length < 2) {
+            month = '0' + month;
+        }
+        if (day.length < 2) {
+            day = '0' + day;
+        } 
+
+        const formatDate = [year, month, day].join('-');
+
+        // Get All Invites for date
+        const invites = await this.queryBus.execute(new GetInvitesByDateQuery(formatDate));
+        
+        // Get number of invites
+        const numInvites = invites.length;
+
+        // Get signedOut invites
+        const visitorInvites = invites.filter((invite) => {
+            return invite.inviteState === "signedOut";
+        });
+
+        // Get number of signedOut invites
+        const numVisitors = visitorInvites.length;
+
+        // Register for the day
+        await this.commandBus.execute(new CreateGroupInviteCommand(formatDate, numInvites, numVisitors));
+
+        console.log("ADDED Entry");
 
     }
 
