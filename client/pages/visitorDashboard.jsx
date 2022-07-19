@@ -87,8 +87,6 @@ const VisitorDashboard = () => {
                 setOpenInvites(newOpen);
                 setInvites(otherInviteData);
 
-                console.log(otherInviteData);
-
                 otherInviteData.forEach((invite) => {
                         dateMap.set(
                             invite.inviteDate,
