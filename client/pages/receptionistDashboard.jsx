@@ -102,7 +102,6 @@ const ReceptionistDashboard = () => {
     const client = useApolloClient();
 
     const search = () => {
-        //TODO (Stefan)
         setSearch(true);
         client
             .query({
@@ -262,7 +261,7 @@ const ReceptionistDashboard = () => {
                             <tbody>
                                 {visitorData.map((visit, idx) => {
                                     return (
-                                        <tr className="hover" key={idx}>
+                                        <tr className="hover cursor-pointer" key={idx}>
                                             {/* Onclicks below display Visitor-Modal and pass it the relavant information for each visitor*/}
                                             <th
                                                 onClick={() => {

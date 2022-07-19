@@ -56,10 +56,7 @@ const Hero = () => {
                     </motion.h1>
 
                     <motion.p className="py-6">
-                        Go Beyond the Lobby with{" "}
-                        <span className="text-secondary">V Ʌ S</span> is an
-                        intelligent visitor management system aiming to bring an
-                        efficient and customizable interface for our clients.
+                        Get there with the leading system in intelligent visitor management.
                     </motion.p>
                     <Link
                         href={

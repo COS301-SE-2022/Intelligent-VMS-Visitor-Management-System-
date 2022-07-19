@@ -25,11 +25,13 @@ const DownloadChart = ({
     return (
         <div className="card bg-base-300 p-5">
             <h2 className="card-title text-base-content">{title}</h2>
-            <Chart
-                chartRef={chartRef}
-                labelvals={labelvals}
-                datavals={datavals}
-            />
+            <div className="h-full">
+                <Chart
+                    chartRef={chartRef}
+                    labelvals={labelvals}
+                    datavals={datavals}
+                />
+            </div>
             <div className="card-actions mt-3 items-center overflow-visible">
                 <a
                     ref={downloadLinkRef}
@@ -41,6 +43,7 @@ const DownloadChart = ({
                 </a>
 
                 <div>
+                    { setStart &&
                     <input
                         type="date"
                         name="visitDate"
@@ -54,6 +57,7 @@ const DownloadChart = ({
                             }
                         }}
                     />
+                   }
                 </div>
                 {setRange && (
                     <select

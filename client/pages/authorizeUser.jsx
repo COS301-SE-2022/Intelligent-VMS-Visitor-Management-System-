@@ -92,7 +92,6 @@ const AuthorizeUser = () => {
     useEffect(() => {
         if (!loading && !error) {
             const userData = data.getUnauthorizedUsers;
-            console.log(userData);
             const newReceptionistData = [];
             const newResidentData = [];
             userData.forEach((data) => {
@@ -113,7 +112,6 @@ const AuthorizeUser = () => {
             setReceptionistData(newReceptionistData);
             setResidentData(newResidentData);
         } else if (!loading && error) {
-            console.error(error);
             if (error.message === "Unauthorized") {
                 router.push("/expire");
             }
@@ -129,7 +127,9 @@ const AuthorizeUser = () => {
                             <span className="text-secondary">Authorize</span>{" "}
                             User
                         </h1>
+                        <p>Authorize and review user accounts.</p>
                     </div>
+                    { token.permission === 0 && 
                     <div className="input-group input-group-sm justify-end p-2 md:input-group-md">
                         <input
                             onChange={(e) => {
@@ -146,6 +146,7 @@ const AuthorizeUser = () => {
                             <FaSearch />
                         </label>
                     </div>
+                    }
                 </div>
                 {token.permission === 0 && (
                     <div className="divider text-base md:text-lg lg:text-2xl">

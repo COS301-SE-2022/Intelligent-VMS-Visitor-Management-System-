@@ -3,18 +3,23 @@ import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/router";
 import { gql, useQuery } from "@apollo/client";
 
+import { AiOutlineDoubleLeft } from "react-icons/ai";
+import { HiOutlineDocumentReport } from "react-icons/hi";
+import { BiCheckShield } from "react-icons/bi";
+import { BsShieldX } from "react-icons/bs";
+
+import useDateRange from "../hooks/useDateRange.hook";
+
 import Layout from "../components/Layout";
 import DownloadChart from "../components/DownloadChart";
 import LineChart from "../components/LineChart";
 
-import { AiOutlineDoubleLeft } from "react-icons/ai";
-import { HiOutlineDocumentReport } from "react-icons/hi";
-
-import useDateRange from "../hooks/useDateRange.hook";
+import useAuth from "../store/authStore";
 
 const UserAnalytics = () => {
     const router = useRouter();
     const { name, email, permission } = router.query;
+    const token = useAuth((state) => state.decodedToken)();
 
     const now = new Date();
     const monthNames = [
@@ -31,6 +36,7 @@ const UserAnalytics = () => {
         "November",
         "December",
     ];
+
     const [
         startDate,
         endDate,
@@ -41,10 +47,74 @@ const UserAnalytics = () => {
         range,
     ] = useDateRange(new Date(now.getFullYear(), now.getMonth(), 1), 30);
 
+    const deleteUserAccount = (email, type) => {
+        client
+            .mutate({
+                mutation: gql`
+                mutation {
+                    deleteUserAccount(email: "${email}") 
+                }
+            `,
+            })
+            .then((res) => {
+                if (res.data.deleteUserAccount === true) {
+                    if (type === "Receptionist") {
+                        setReceptionistData(
+                            receptionistData.filter(
+                                (data) => data.email !== email
+                            )
+                        );
+                    } else {
+                        setResidentData(
+                            residentData.filter((data) => data.email !== email)
+                        );
+                    }
+                } else {
+                    console.log("ERROR!");
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    };
+
+    const authorizeUserAccount = (email, type) => {
+        client
+            .mutate({
+                mutation: gql`
+                mutation {
+                    authorizeUserAccount(email: "${email}")
+                }
+            `,
+            })
+            .then((res) => {
+                if (res.data.authorizeUserAccount === true) {
+                    if (type === "Receptionist") {
+                        setReceptionistData(
+                            receptionistData.filter(
+                                (data) => data.email !== email
+                            )
+                        );
+                    } else {
+                        setResidentData(
+                            residentData.filter((data) => data.email !== email)
+                        );
+                    }
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    };
+
     // Visitor invite data object for chart
     const [visitorVals, setVisitorVals] = useState({ data: [], labels: [] });
 
     const [numInvites, setNumInvites] = useState(0);
+
+    const [auth, setAuth] = useState(permission >= 0 ? true : false);
+
+    const [showConfirm, setShowConfirm] = useState(false);
 
     const { loading, error, data } = useQuery(gql`
         query {
@@ -97,6 +167,7 @@ const UserAnalytics = () => {
         }
     }, [getTotalNumberOfInvites]);
 
+    
     return (
         <Layout>
             <div className="mb-3 mt-4 space-y-5 px-3">
@@ -145,14 +216,29 @@ const UserAnalytics = () => {
                         />
 
                         {loading && <p>Loading</p>}
-
-                            <div className="card-actions justify-start">
+                            <div className="card-actions justify-start items-center">
                                 <Link
                                     href={`/viewReport?email=${email}&startDate=${startDate}&endDate=${endDate}&name=${name}&total=${numInvites}`}
                                 >
                                     <a className="btn btn-primary"><HiOutlineDocumentReport className="text-xl"/>PDF Report</a>
                                 </Link>
-                                
+                                { token.email !== email && 
+                                    <label
+                                        className="label cursor-pointer space-x-3"
+                                        onChange={() => {
+                                            setAuth(!auth);
+                                            setShowConfirm(!showConfirm);
+                                        }}
+                                        onClick={() => setAuth(!auth)}
+                                    >
+                                    <span className="label-text">Authorize</span>
+                                    <input
+                                        type="checkbox"
+                                        className="toggle toggle-primary"
+                                        checked={auth ? true : false}
+                                    />
+                                    </label>
+                                }
                             </div>
                         </div>
                     </div>
