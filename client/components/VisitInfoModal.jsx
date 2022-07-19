@@ -3,6 +3,8 @@ import React, { useEffect, useRef, useState } from "react";
 const VisitInfoModal = ({ setShowInfo, visitModalData }) => {
     useEffect(() => {}, []);
     return (
+        <>
+        { visitModalData && 
         <div className="relative w-auto flex-auto items-center justify-center text-center">
             {/* display a visitor's name */}
             <label style={{ fontWeight: "bold" }}>Visitor Name: </label>
@@ -40,6 +42,8 @@ const VisitInfoModal = ({ setShowInfo, visitModalData }) => {
                 {visitModalData.inviteID}
             </label>
         </div>
+        }
+        </>
     );
 };
 
