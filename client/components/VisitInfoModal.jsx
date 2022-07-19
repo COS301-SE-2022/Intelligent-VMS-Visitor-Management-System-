@@ -44,38 +44,8 @@ const VisitInfoModal = ({ setShowInfo, visitModalData }) => {
                     <p>User Email: <span className="font-bold">{visitModalData.userEmail}</span></p>
                 </div>
             </div>
-            {/*
-            <label style={{ fontWeight: "bold" }}>Visitor Name: </label>
-            <label style={{ fontStyle: "italic", textTransform: "capitalize" }}>
-                {visitModalData.visitorName}
-            </label>
-            <br></br>
-            <label style={{ fontWeight: "bold" }}>Document type: </label>
-            <label style={{ fontStyle: "italic" }}>
-                {visitModalData.idDocType}
-            </label>
-            <br></br>
-            <label style={{ fontWeight: "bold" }}>Visitor ID: </label>
-            <label style={{ fontStyle: "italic" }}>
-                {visitModalData.idNumber}
-            </label>
-            <br></br>
-            <label style={{ fontWeight: "bold" }}>Invite date: </label>
-            <label style={{ fontStyle: "italic" }}>
-                {visitModalData.inviteDate}
-            </label>
-            <br></br>
-            <label style={{ fontWeight: "bold" }}>Host email: </label>
-            <label style={{ fontStyle: "italic" }}>
-                {visitModalData.userEmail}
-            </label>
-            <br></br>
-            <label style={{ fontWeight: "bold" }}>Invite ID: </label>
-            <label style={{ fontStyle: "italic" }}>
-                {visitModalData.inviteID}
-            </label>
-            */}
         </div>
+        }
     );
 };
 
