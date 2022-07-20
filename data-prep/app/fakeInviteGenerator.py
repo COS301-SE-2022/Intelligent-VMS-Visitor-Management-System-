@@ -52,28 +52,57 @@ def create_fake_invite(fake,resident_email,visitor_email,visitor_name,id_num,inv
       "notes": fake.notes()
   }
 
-def createInvites(startDate,endDate,maxIterations):
+def createInvites(startDate,endDate,maxResidents):
     invites = []
-    for i in range(1,maxIterations):
+    for i in range(1,maxResidents):
         userEmail = fake.email()
-        for i in range(1,20):
+        for i in range(1,45):
             visEmail = fake.email()
             visName = fake.name()
-            visRelation = fake.relation()
             visId = fake.msisdn()
-            for i in range(1,30):
-                inviteDate = fake.date_between_dates(startDate,endDate)
-                #Saturday's, Friday's, Decembers and holidays are always busier
-                if(inviteDate.weekday()==5 or inviteDate.weekday()==4):
-                    for i in range(0,2):
-                        invites.append(create_fake_invite(fake,fake.email(),fake.email(),fake.name(),fake.msisdn(),inviteDate,fake.relation()))
-                if(inviteDate.month==12):
-                    for i in range(0,3):
-                        invites.append(create_fake_invite(fake,fake.email(),fake.email(),fake.name(),fake.msisdn(),inviteDate,fake.relation()))
-                if(inviteDate in ourHolidays):
-                    for i in range(0,1):
-                        invites.append(create_fake_invite(fake,fake.email(),fake.email(),fake.name(),fake.msisdn(),inviteDate,fake.relation()))
-                invites.append(create_fake_invite(fake,userEmail,visEmail,visName,visId,inviteDate,visRelation))
+            visRelation = fake.relation()
+            if(visRelation == "family"):
+                for i in range(1,20):
+                    inviteDate = fake.date_between_dates(startDate,endDate)
+                    #Saturdays, Fridays, Decembers and holidays are always busier
+                    if(inviteDate.weekday()==5 or inviteDate.weekday()==4):
+                        for i in range(0,2):
+                            invites.append(create_fake_invite(fake,fake.email(),fake.email(),fake.name(),fake.msisdn(),inviteDate,fake.relation()))
+                    if(inviteDate.month==12 or inviteDate.month==7):
+                        for i in range(0,3):
+                            invites.append(create_fake_invite(fake,fake.email(),fake.email(),fake.name(),fake.msisdn(),inviteDate,fake.relation()))
+                    if(inviteDate in ourHolidays):
+                        for i in range(0,1):
+                            invites.append(create_fake_invite(fake,fake.email(),fake.email(),fake.name(),fake.msisdn(),inviteDate,fake.relation()))
+                    invites.append(create_fake_invite(fake,userEmail,visEmail,visName,visId,inviteDate,visRelation))
+            elif(visRelation == "friend"):
+                for i in range(1,35):
+                    inviteDate = fake.date_between_dates(startDate,endDate)
+                    #Saturdays, Fridays, Decembers and holidays are always busier
+                    if(inviteDate.weekday()==5 or inviteDate.weekday()==4):
+                        for i in range(0,2):
+                            invites.append(create_fake_invite(fake,fake.email(),fake.email(),fake.name(),fake.msisdn(),inviteDate,fake.relation()))
+                    if(inviteDate.month==12):
+                        for i in range(0,3):
+                            invites.append(create_fake_invite(fake,fake.email(),fake.email(),fake.name(),fake.msisdn(),inviteDate,fake.relation()))
+                    if(inviteDate in ourHolidays):
+                        for i in range(0,1):
+                            invites.append(create_fake_invite(fake,fake.email(),fake.email(),fake.name(),fake.msisdn(),inviteDate,fake.relation()))
+                    invites.append(create_fake_invite(fake,userEmail,visEmail,visName,visId,inviteDate,visRelation))
+            else:
+                for i in range(1,8):
+                    inviteDate = fake.date_between_dates(startDate,endDate)
+                    #Saturdays, Fridays, Decembers and holidays are always busier
+                    if(inviteDate.weekday()==5 or inviteDate.weekday()==4):
+                        for i in range(0,2):
+                            invites.append(create_fake_invite(fake,fake.email(),fake.email(),fake.name(),fake.msisdn(),inviteDate,fake.relation()))
+                    if(inviteDate.month==12):
+                        for i in range(0,3):
+                            invites.append(create_fake_invite(fake,fake.email(),fake.email(),fake.name(),fake.msisdn(),inviteDate,fake.relation()))
+                    if(inviteDate in ourHolidays):
+                        for i in range(0,1):
+                            invites.append(create_fake_invite(fake,fake.email(),fake.email(),fake.name(),fake.msisdn(),inviteDate,fake.relation()))
+                    invites.append(create_fake_invite(fake,userEmail,visEmail,visName,visId,inviteDate,visRelation))
 
     #send generated invites to db
     invitesCollection.insert_many(invites)

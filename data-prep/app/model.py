@@ -14,6 +14,7 @@ from app.fakeInviteGenerator import createInvites
 
 start_date = date(2016,1,1)
 end_date = date(2022,7,1)
+features = []
 
 #Global parameters
 params = { #TODO (Daniel): Play around
@@ -26,32 +27,6 @@ params = { #TODO (Daniel): Play around
 
 #Create regressor
 reg = ensemble.GradientBoostingRegressor(**params)
-
-def hello():
-    data = []
-    output = []
-    #generateTrainingData(data,output)
-    calculateMinMaxAndMedians()
-    
-    return ""
-
-def create_dataTEMP(month,dow,mn_dow,mdn_dow,min_dow,max_dow,mn_days,mn_month,mdn_month,min_month,max_month,mn_months,mn_woy,mdn_woy,min_woy,max_woy,mn_weeks,db,wb,num_inv,prob_vis,hol):
-  row = [
-      month,
-      dow,
-      mn_dow,
-      mn_days,
-      mn_month,
-      mn_months,
-      mn_woy,
-      mn_weeks,
-      db,
-      wb,
-      num_inv,
-      prob_vis,
-      hol
-    ]
-  return row
 
 def create_data(month,dow,mn_dow,mdn_dow,min_dow,max_dow,mn_days,mn_month,mdn_month,min_month,max_month,mn_months,mn_woy,mdn_woy,min_woy,max_woy,mn_weeks,db,wb,num_inv,prob_inv,hol):
   row = [
@@ -298,17 +273,12 @@ def calculateMinMaxAndMedians():
   for i in range(53):
     mdnWOY[i] = (minWOY[i]+maxWOY[i])/2
 
-
   print(minDOW)
   print(maxDOW)
   print(mdnDOW)
-
-
   print(minMonth)
   print(maxMonth)
   print(mdnMonth)
-  
-
   print(minWOY)
   print(maxWOY)
   print(mdnWOY)
@@ -335,60 +305,71 @@ def isHoliday(date):
   else:
     return 0
 
-def generateTrainingData(data,output):
+def generateTrainingData():
+  data = []
+  output = []
 
-    mnDOW,mnWOY,mnMonth = calculateMeans()
+  mnDOW,mnWOY,mnMonth = calculateMeans()
+  minDOW,maxDOW,mdnDOW,minWOY,maxWOY,mdnWOY,minMonth,maxMonth,mdnMonth = calculateMinMaxAndMedians()
 
-    totalVisitors = invitesCollection.count_documents({"inviteState": { '$ne': "inActive" } })
-    totalInvites = invitesCollection.count_documents({})
-    inviteActProb = totalVisitors/totalInvites
+  totalVisitors = invitesCollection.count_documents({"inviteState": { '$ne': "inActive" } })
+  totalInvites = invitesCollection.count_documents({})
+  inviteActProb = totalVisitors/totalInvites
 
-    allInvites = list(invitesCollection.find())
-    for invite in allInvites:
-        invDate = datetime.strptime(invite['inviteDate'], '%Y-%m-%d').date()
+  allInvites = list(invitesCollection.find())
+  for invite in allInvites:
+      invDate = datetime.strptime(invite['inviteDate'], '%Y-%m-%d').date()
 
-        mnDays,mnWeeks,mnMonths = calculateRecentAverages(invDate)
+      mnDays,mnWeeks,mnMonths = calculateRecentAverages(invDate)
 
-        num_inv = getNumInvites(invDate)
-        day_bef =  getNumVisitorsDayBefore(invDate)
-        week_bef = getNumVisitorsWeekBefore(invDate)
-        prob_vis = inviteActProb*num_inv
-        hol = isHoliday(invDate)
+      num_inv = getNumInvites(invDate)
+      day_bef =  getNumVisitorsDayBefore(invDate)
+      week_bef = getNumVisitorsWeekBefore(invDate)
+      prob_vis = inviteActProb*num_inv
+      hol = isHoliday(invDate)
 
-        temp = invitesCollection.count_documents({ "inviteDate": invite['inviteDate'] , "inviteState": { '$ne': "inActive" } })
-        if(temp):
-            output.append(temp)
-        else:
-            output.append(0)
+      temp = invitesCollection.count_documents({ "inviteDate": invite['inviteDate'] , "inviteState": { '$ne': "inActive" } })
+      if(temp):
+          output.append(temp)
+      else:
+          output.append(0)
 
-        data.append(
-            create_dataTEMP(
-                invDate.month,
-                invDate.weekday(),
-                mnDOW[invDate.weekday()],
-                1,1,1,
-                mnDays,
-                mnMonth[invDate.month-1],
-                1,1,1,
-                mnMonths,
-                mnWOY[invDate.isocalendar()[1]-1],
-                1,1,1,
-                mnWeeks,
-                day_bef,
-                week_bef,
-                num_inv,
-                prob_vis,
-                hol
-            )
+      data.append(
+      create_data(
+          invDate.month,
+          invDate.weekday(),
+          mnDOW[invDate.weekday()],
+          mdnDOW[invDate.weekday()],
+          minDOW[invDate.weekday()],
+          maxDOW[invDate.weekday()],
+          mnDays,
+          mnMonth[invDate.month-1],
+          mdnMonth[invDate.month-1],
+          minMonth[invDate.month-1],
+          maxMonth[invDate.month-1],
+          mnMonths,
+          mnWOY[invDate.isocalendar()[1]-1],
+          mdnWOY[invDate.isocalendar()[1]-1],
+          minWOY[invDate.isocalendar()[1]-1],
+          maxWOY[invDate.isocalendar()[1]-1],
+          mnWeeks,
+          day_bef,
+          week_bef,
+          num_inv,
+          prob_vis,
+          hol
+          )
         )
+
+  return data,output
 
 def predictMany(startDate,endDate):
 
   #TODO (Larisa): retraining
-
   data = []
 
   mnDOW,mnWOY,mnMonth = calculateMeans()
+  minDOW,maxDOW,mdnDOW,minWOY,maxWOY,mdnWOY,minMonth,maxMonth,mdnMonth = calculateMinMaxAndMedians()
 
   totalVisitors = invitesCollection.count_documents({"inviteState": { '$ne': "inActive" } })
   totalInvites = invitesCollection.count_documents({})
@@ -401,39 +382,43 @@ def predictMany(startDate,endDate):
     day_bef =  getNumVisitorsDayBefore(startDate)
     week_bef = getNumVisitorsWeekBefore(startDate)
     num_inv = getNumInvites(startDate)
-    prob_inv = inviteActProb * num_inv
+    prob_vis = inviteActProb * num_inv
     hol = isHoliday(startDate)
 
     data.append(
-        create_dataTEMP(
+        create_data(
             startDate.month,
             startDate.weekday(),
             mnDOW[startDate.weekday()],
-            1,1,1,
+            mdnDOW[startDate.weekday()],
+            minDOW[startDate.weekday()],
+            maxDOW[startDate.weekday()],
             mnDays,
             mnMonth[startDate.month-1],
-            1,1,1,
+            mdnMonth[startDate.month-1],
+            minMonth[startDate.month-1],
+            maxMonth[startDate.month-1],
             mnMonths,
-            mnWOY[startDate.isocalendar()[1]-1]
-            ,1,1,1,
+            mnWOY[startDate.isocalendar()[1]-1],
+            mdnWOY[startDate.isocalendar()[1]-1],
+            minWOY[startDate.isocalendar()[1]-1],
+            maxWOY[startDate.isocalendar()[1]-1],
             mnWeeks,
             day_bef,
             week_bef,
             num_inv,
-            prob_inv,
+            prob_vis,
             hol
-            ))
+            )
+          )
 
     startDate+=delta
 
   return reg.predict(data)
 
 def train():
-  output = []
-  data = []
-
   #createInvites(start_date,end_date,1)
-  generateTrainingData(data,output)
+  data,output = generateTrainingData()
 
   #Create training and test set
   X_train, X_test, y_train, y_test = train_test_split( data, output, test_size=0.33, random_state=42)
@@ -443,8 +428,10 @@ def train():
 
   #Test model
   mse = mean_squared_error(y_test, reg.predict(X_test))
+  print(mse)
 
   return "here"
 
 def featureAnalysis():
+    print(reg.feature_importances_)
     return reg.feature_importances_

@@ -1,6 +1,6 @@
 from app import app,APP_ROOT
 
-from app.model import hello,predictMany,train,featureAnalysis
+from app.model import predictMany,train,featureAnalysis
 
 @app.route("/")
 def home():
@@ -11,10 +11,10 @@ def predict(startDate,endDate):
     return predictMany(startDate,endDate)
 
 @app.route("/featureAnalysis")
-def featureAnalysis():
+def fAnalysis():
     return featureAnalysis()
 
 @app.route("/train")
-def train():
+def training():
     return train()
 
