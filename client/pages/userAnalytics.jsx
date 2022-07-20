@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/router";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useApolloClient, useQuery } from "@apollo/client";
 
 import { AiOutlineDoubleLeft } from "react-icons/ai";
 import { HiOutlineDocumentReport } from "react-icons/hi";
+import { RiDeleteBin5Fill } from "react-icons/ri";
 import { BiCheckShield } from "react-icons/bi";
 import { BsShieldX } from "react-icons/bs";
 
@@ -20,22 +21,9 @@ const UserAnalytics = () => {
     const router = useRouter();
     const { name, email, permission } = router.query;
     const token = useAuth((state) => state.decodedToken)();
+    const client = useApolloClient();
 
     const now = new Date();
-    const monthNames = [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December",
-    ];
 
     const [
         startDate,
@@ -58,17 +46,7 @@ const UserAnalytics = () => {
             })
             .then((res) => {
                 if (res.data.deleteUserAccount === true) {
-                    if (type === "Receptionist") {
-                        setReceptionistData(
-                            receptionistData.filter(
-                                (data) => data.email !== email
-                            )
-                        );
-                    } else {
-                        setResidentData(
-                            residentData.filter((data) => data.email !== email)
-                        );
-                    }
+                    router.push("/adminDashboard");
                 } else {
                     console.log("ERROR!");
                 }
@@ -89,21 +67,27 @@ const UserAnalytics = () => {
             })
             .then((res) => {
                 if (res.data.authorizeUserAccount === true) {
-                    if (type === "Receptionist") {
-                        setReceptionistData(
-                            receptionistData.filter(
-                                (data) => data.email !== email
-                            )
-                        );
-                    } else {
-                        setResidentData(
-                            residentData.filter((data) => data.email !== email)
-                        );
-                    }
                 }
             })
             .catch((err) => {
                 console.error(err);
+            });
+    };
+
+    const deauthorizeUserAccount = (email,type) => {
+        client.
+            mutate({
+                mutation: gql`
+                    mutation {
+                        deauthorizeUserAccount(email: "${email}")
+                    }
+                `
+            }).then((res) => {
+                console.log(res.data);
+                if(res.data.deauthorizeUserAccount === true) {
+                    console.log("DONE!");
+                }
+            }).catch((err) => {
             });
     };
 
@@ -115,6 +99,10 @@ const UserAnalytics = () => {
     const [auth, setAuth] = useState(permission >= 0 ? true : false);
 
     const [showConfirm, setShowConfirm] = useState(false);
+
+    const type = permission === 1 || permission === -1 
+                    ? "Receptionist" : permission === 2 || permission === -2 ?
+                    "Resident" : permission === 0 ? "Admin" : "Unknown";
 
     const { loading, error, data } = useQuery(gql`
         query {
@@ -226,6 +214,15 @@ const UserAnalytics = () => {
                                         PDF Report
                                     </a>
                                 </Link>
+
+                                <label
+                                    htmlFor={"admin-confirm-modal-" + email}
+                                    className="modal-button btn btn-error hover:btn-info"
+                                >
+                                    <RiDeleteBin5Fill />
+                                    Delete Account
+                                </label>
+
                                 {token.email !== email && (
                                     <label
                                         className="label cursor-pointer space-x-3"
@@ -245,10 +242,75 @@ const UserAnalytics = () => {
                                         />
                                     </label>
                                 )}
+                    {showConfirm && (
+                        <div className="justify-end space-x-3">
+                            <button
+                                onClick={() => {
+                                    if(auth) {
+                                        authorizeUserAccount(email, type);
+                                    } else {
+                                        console.log("UnAuth");
+                                        deauthorizeUserAccount(email, type);
+                                    }
+                                    setShowConfirm(false);
+                                }}
+                                className="btn btn-primary btn-sm gap-2"
+                            >
+                                <BiCheckShield className="text-lg" />
+                                Confirm 
+                            </button>
+                            <button
+                                onClick={() => {
+                                    setAuth(!auth);
+                                    setShowConfirm(false);
+                                }}
+                                className="btn btn-secondary btn-sm gap-2"
+                            >
+                                <BsShieldX className="text-lg" />
+                                Decline
+                            </button>
+                            </div>
+                        )}
                             </div>
                         </div>
                     </div>
                 </div>
+
+            <input
+                type="checkbox"
+                id={"admin-confirm-modal-" + email}
+                className="modal-toggle"
+            />
+            <label
+                htmlFor={"admin-confirm-modal-" + email}
+                className="modal cursor-pointer"
+            >
+                <label className="modal-box space-y-4">
+                    <label
+                        htmlFor={"admin-confirm-modal-" + email}
+                        className="btn btn-circle btn-sm absolute right-2 top-2"
+                    >
+                        ✕
+                    </label>
+                    <h3 className="text-lg font-bold">Confirm Delete</h3>
+                    <p>
+                        You are about to delete {" "}
+                        account <span className="text-error">{email}</span>{" "}
+                        forever...
+                    </p>
+                    <div className="modal-action">
+                        <label
+                            onClick={() => {
+                                deleteUserAccount(email, type);
+                            }}
+                            htmlFor={"confirm-modal-" + email}
+                            className="btn btn-error"
+                        >
+                            Delete
+                        </label>
+                    </div>
+                </label>
+            </label>
             </div>
         </Layout>
     );

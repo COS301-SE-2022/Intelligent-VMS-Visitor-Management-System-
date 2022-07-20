@@ -316,7 +316,7 @@ const ReceptionistDashboard = () => {
                                                             );
                                                         }}
                                                         text="Sign In"
-                                                        colour="bg-green-800"
+                                                        colour="bg-success"
                                                         htmlFor="signIn-modal"
                                                     />
                                                 </td>
@@ -336,7 +336,7 @@ const ReceptionistDashboard = () => {
                                                         }}
                                                         text="Sign Out"
                                                         htmlFor="signOut-modal"
-                                                        colour="bg-red-800"
+                                                        colour="bg-error"
                                                     />
                                                 </td>
                                             )}

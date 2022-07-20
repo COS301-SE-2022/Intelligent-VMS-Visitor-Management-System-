@@ -44,17 +44,17 @@ const useAuth = create(
                         case 0:
                             return [
                                 { content: "Create Invite", path: "/createInvite" },
+                                { content: "Your Dashboard", path: "/visitorDashboard"},
                                 { content: "Admin Dashboard", path: "/adminDashboard"},
-                                { content: "User Dashboard", path: "/authorizeUser"},
-                                { content: "Dashboard", path: "/visitorDashboard"},
+                                { content: "Manage Users", path: "/authorizeUser"},
                                 { content: "Logout", path: "/", onClick: () => get().logout() }
                             ]; 
 
                         case 1:
                             return [
                                 { content: "Create Invite", path: "/createInvite" },
-                                { content: "Visitor Dashboard", path: "/visitorDashboard" },
-                                { content: "User Dashboard", path: "/authorizeUser"},
+                                { content: "Your Dashboard", path: "/visitorDashboard" },
+                                { content: "Manage Residents", path: "/authorizeUser"},
                                 { content: "Receptionist Dashboard", path: "/receptionistDashboard" },
                                 { content: "Logout", path: "/", onClick: () => get().logout() },
                             ];
@@ -63,7 +63,7 @@ const useAuth = create(
                         case 2:
                             return [
                                 { content: "Create Invite", path: "/createInvite" },
-                                { content: "Dashboard", path: "/visitorDashboard" },
+                                { content: "Your Dashboard", path: "/visitorDashboard" },
                                 { content: "Logout", path: "/", onClick: () => get().logout() },
                             ];
                     }
