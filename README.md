@@ -49,6 +49,8 @@ The VMS is an intelligent visitor management system that allows provides a platf
 
 <a href="https://docs.google.com/document/d/1W9P7WsLX_BxZKqAD-5wMAkKmHbwzmwEzTP8IroRCUY0/edit?usp=sharing">📖 User Manual</a>
 
+<a href="https://docs.google.com/document/d/1r5v45Qm858vFibcYgaT9LOrBdd3hvhhcjkNR2GwYMNw/edit?usp=sharing">📲 Technical Installation Manual</a>
+
 <a href="#">🚧 Demo Video</a>
 
 ### 👏 The Team
