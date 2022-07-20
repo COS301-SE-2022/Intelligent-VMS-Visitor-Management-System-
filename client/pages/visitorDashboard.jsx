@@ -120,10 +120,12 @@ const VisitorDashboard = () => {
 
             const tempInvites = [];
             invites.forEach((invite) => {
-                dateMap.set(
-                    invite.inviteDate,
-                    dateMap.get(invite.inviteDate) + 1
-                );
+                if(invite.inviteDate >= now) {
+                    dateMap.set(
+                        invite.inviteDate,
+                        dateMap.get(invite.inviteDate) + 1
+                    );
+                }
 
                 if (invite.inviteState === "inActive") {
                     tempInvites.push(invite);
@@ -174,15 +176,15 @@ const VisitorDashboard = () => {
                 </h1>
                 <p>You have {todayInvites} visitors expected today.</p>
             </div>
-            <div className="grid grid-cols-2 grid-rows-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 md:grid-rows-2 gap-4">
                 <DownloadChart
                     title={"User Invites"}
-                    filename={token.name + "-forecast.png"}
+                    filename={token.name + "-weekly.png"}
                     Chart={LineChart}
                     labelvals={visitorData.labels}
                     datavals={visitorData.data}
                 />
-                <div className="flex w-full flex-col gap-5">
+                <div className="flex flex-col gap-5">
                     <div className="card h-full w-full bg-base-200 p-5 shadow">
                         <h2 className="card-title font-normal">
                             Total Number Of Invites Sent
@@ -195,19 +197,19 @@ const VisitorDashboard = () => {
                         </div>
                         <div className="card-actions"></div>
                     </div>
-                    <div className="card h-full w-full bg-base-200 p-5 shadow">
+                    <div className="card h-full w-full bg-base-200 p-1 md:p-3 lg:p-5 shadow">
                         <h2 className="card-title font-normal">
                             Maximum Invites Allowed
                         </h2>
                         <div className="card-body justify-center">
                             <div className="flex items-center space-x-8">
                                 <div
-                                    className="radial-progress text-primary-content"
+                                    className="radial-progress text-base-content"
                                     style={{ "--value": Number(percentage) }}
                                 >
                                     {percentage}%
                                 </div>
-                                <div className="flex-col">
+                                <div className="flex-col text-sm md:text-base">
                                     <p>
                                         You currently have {openInvites.length}{" "}
                                         open invites.
@@ -222,14 +224,14 @@ const VisitorDashboard = () => {
                         <div className="card-actions"></div>
                     </div>
                 </div>
-                <div className="col-span-2 space-y-4">
+                <div className="col-span-1 md:col-span-2 space-y-4">
                     <h2 className="text-3xl font-bold">Open Invites</h2>
                     {loading ? (
                         <progress className="progress progress-primary w-56">
                             progress
                         </progress>
                     ) : (
-                        <table className="mb-5 table w-full">
+                        <table className="mb-5 table table-compact md:table-normal w-full">
                             <thead>
                                 <tr>
                                     <th></th>

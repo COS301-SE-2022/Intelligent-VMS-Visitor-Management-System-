@@ -13,6 +13,7 @@ import { GetUnAuthUsersQueryHandler } from "./queries/handlers/getUnAuthUsers.ha
 import { CreateUserCommandHandler } from "./commands/handlers/createUser.handler";
 import { DeleteUserCommandHandler } from "./commands/handlers/deleteUser.handler";
 import { AuthorizeUserCommandHandler } from "./commands/handlers/authorizeUser.handler";
+import { DeauthorizeUserAccountCommandHandler } from "./commands/handlers/deauthorizeUserAccount.handler";
 
 @Module({
     imports: [
@@ -28,7 +29,8 @@ import { AuthorizeUserCommandHandler } from "./commands/handlers/authorizeUser.h
         DeleteUserCommandHandler,
         SearchUserQueryHandler,
         GetUnAuthUsersQueryHandler,
-        AuthorizeUserCommandHandler
+        AuthorizeUserCommandHandler,
+        DeauthorizeUserAccountCommandHandler
     ],
     exports: [UserService],
 })

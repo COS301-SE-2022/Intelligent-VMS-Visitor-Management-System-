@@ -313,7 +313,7 @@ const AdminDashboard = () => {
 
                     <div className="grid grid-cols-1 gap-3 text-secondary-content md:grid-cols-2">
                         <DownloadChart
-                            title={"Visitor Forecase For The Week"}
+                            title={"Visitor Forecast For The Week"}
                             filename="visitor-forecast.png"
                             Chart={LineChart}
                             labelvals={visitorVals.labels}
