@@ -1,8 +1,11 @@
 from pymongo import MongoClient
+from dotenv import load_dotenv
 import os
 
-client = MongoClient(os.environ["MONGO_DB_CONNECTION_STRING"])
+load_dotenv()
+
+client = MongoClient(os.getenv("MONGO_DB_CONNECTION_STRING"))
 db = client["vms"]
  
 invitesCollection = db["invites"]
-groupInvitesCollection = db["groupInvites"]
+groupInvitesCollection = db["groupinvites"]

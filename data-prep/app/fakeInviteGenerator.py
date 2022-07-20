@@ -4,8 +4,8 @@ from datetime import date, timedelta, datetime
 from dateutil.relativedelta import relativedelta
 from random import randint
 
-from database import invitesCollection
-from holidaysSA import ourHolidays
+from app.database import invitesCollection
+from app.holidaysSA import ourHolidays
 
 fake = Faker()
 

@@ -1,21 +1,20 @@
 from app import app,APP_ROOT
 
-from app.model import hello
+from app.model import hello,predictMany,train,featureAnalysis
 
 @app.route("/")
 def home():
     return "hello world"
 
 @app.route("/predict")
-def predict():
-    return "SUPER CLEVER AI DATA"
+def predict(startDate,endDate):
+    return predictMany(startDate,endDate)
 
 @app.route("/featureAnalysis")
 def featureAnalysis():
-    ms = hello
-    return ms
+    return featureAnalysis()
 
-@app.route("/mse")
-def mse():
-    return "SUPER CLEVER AI DATA"
+@app.route("/train")
+def train():
+    return train()
 

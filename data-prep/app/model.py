@@ -6,6 +6,7 @@ from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
 from datetime import date, timedelta, datetime
 from dateutil.relativedelta import relativedelta
+import math
 
 from app.database import invitesCollection,groupInvitesCollection
 from app.holidaysSA import ourHolidays
@@ -14,8 +15,25 @@ from app.fakeInviteGenerator import createInvites
 start_date = date(2016,1,1)
 end_date = date(2022,7,1)
 
+#Global parameters
+params = { #TODO (Daniel): Play around
+    "n_estimators": 500,
+    "max_depth": 4,
+    "min_samples_split": 5,
+    "learning_rate": 0.01,
+    "loss": "squared_error",
+}
+
+#Create regressor
+reg = ensemble.GradientBoostingRegressor(**params)
+
 def hello():
-    return "Larisa says hello"
+    data = []
+    output = []
+    #generateTrainingData(data,output)
+    calculateMinMaxAndMedians()
+    
+    return ""
 
 def create_dataTEMP(month,dow,mn_dow,mdn_dow,min_dow,max_dow,mn_days,mn_month,mdn_month,min_month,max_month,mn_months,mn_woy,mdn_woy,min_woy,max_woy,mn_weeks,db,wb,num_inv,prob_vis,hol):
   row = [
@@ -162,7 +180,11 @@ def calculateMonthsPerMonth():
 
   return totalMonthsPerMonth
 
-def calculateMeans(mnDOW,mnWOY,mnMonth):
+def calculateMeans():
+
+    mnDOW = []
+    mnWOY = []
+    mnMonth = []
 
     visitorsPerMonth = []
     visitorsPerWOY = []
@@ -205,8 +227,10 @@ def calculateMeans(mnDOW,mnWOY,mnMonth):
     for i in range(12):
         if(totalMonthsPerMonth[i]!=0):
             mnMonth[i] = visitorsPerMonth[i]/totalMonthsPerMonth[i]
+
+    return mnDOW,mnWOY,mnMonth
     
-def calculateRecentAverages(mnDays,mnWeeks,mnMonths,invDate):
+def calculateRecentAverages(invDate):
     jumpYear = timedelta(days=365)
 
     intermed_date = invDate-jumpYear; #counting back a year
@@ -217,6 +241,79 @@ def calculateRecentAverages(mnDays,mnWeeks,mnMonths,invDate):
     mnMonths=inviteCount/12
     mnWeeks=inviteCount/52
     mnDays=inviteCount/365
+
+    return mnDays,mnWeeks,mnMonths
+
+def calculateMinMaxAndMedians():
+  groupInvites = list(groupInvitesCollection.find())
+
+  minDOW = []
+  maxDOW = []
+  mdnDOW = [] 
+  minWOY = []
+  maxWOY = []
+  mdnWOY = []
+  minMonth = []
+  maxMonth = []
+  mdnMonth = []
+
+  for i in range(7):
+        minDOW.append(math.inf)
+        maxDOW.append(0)
+        mdnDOW.append(0)
+
+  for i in range(12):
+      minMonth.append(math.inf)
+      maxMonth.append(0)
+      mdnMonth.append(0)
+      
+  for i in range(53):
+      minWOY.append(math.inf)
+      maxWOY.append(0)
+      mdnWOY.append(0)
+
+  for day in groupInvites:
+    currDate = datetime.strptime(day["_id"], '%Y-%m-%d').date()
+    if(day['numVisitors']<minDOW[currDate.weekday()]):
+      minDOW[currDate.weekday()] = day['numVisitors']
+    elif(day['numVisitors']>maxDOW[currDate.weekday()]):
+      maxDOW[currDate.weekday()] = day['numVisitors']
+
+    if(day['numVisitors']<minWOY[currDate.isocalendar()[1]-1]):
+      minWOY[currDate.isocalendar()[1]-1] = day['numVisitors']
+    elif(day['numVisitors']>maxWOY[currDate.isocalendar()[1]-1]):
+      maxWOY[currDate.isocalendar()[1]-1] = day['numVisitors']
+
+    if(day['numVisitors']<minMonth[currDate.month-1]):
+      minMonth[currDate.month-1] = day['numVisitors']
+    elif(day['numVisitors']>maxMonth[currDate.month-1]):
+      maxMonth[currDate.month-1] = day['numVisitors']
+
+  for i in range(7):
+    mdnDOW[i] = (minDOW[i]+maxDOW[i])/2
+
+  for i in range(12):
+    mdnMonth[i]= (minMonth[i]+maxMonth[i])/2
+      
+  for i in range(53):
+    mdnWOY[i] = (minWOY[i]+maxWOY[i])/2
+
+
+  print(minDOW)
+  print(maxDOW)
+  print(mdnDOW)
+
+
+  print(minMonth)
+  print(maxMonth)
+  print(mdnMonth)
+  
+
+  print(minWOY)
+  print(maxWOY)
+  print(mdnWOY)
+
+  return minDOW,maxDOW,mdnDOW,minWOY,maxWOY,mdnWOY,minMonth,maxMonth,mdnMonth
 
 def getNumVisitorsDayBefore(date):
   return invitesCollection.count_documents({ "inviteDate": (date-timedelta(days=1)).strftime("%Y-%m-%d") , "inviteState": { '$ne': "inActive" } })
@@ -240,10 +337,7 @@ def isHoliday(date):
 
 def generateTrainingData(data,output):
 
-    mnDOW = []
-    mnWOY = []
-    mnMonth = []
-    calculateMeans(mnDOW,mnMonth,mnWOY)
+    mnDOW,mnWOY,mnMonth = calculateMeans()
 
     totalVisitors = invitesCollection.count_documents({"inviteState": { '$ne': "inActive" } })
     totalInvites = invitesCollection.count_documents({})
@@ -253,10 +347,7 @@ def generateTrainingData(data,output):
     for invite in allInvites:
         invDate = datetime.strptime(invite['inviteDate'], '%Y-%m-%d').date()
 
-        mnDays = 0
-        mnWeeks = 0
-        mnMonths = 0
-        calculateRecentAverages(mnDays,mnMonths,mnWeeks,invDate)
+        mnDays,mnWeeks,mnMonths = calculateRecentAverages(invDate)
 
         num_inv = getNumInvites(invDate)
         day_bef =  getNumVisitorsDayBefore(invDate)
@@ -272,9 +363,10 @@ def generateTrainingData(data,output):
 
         data.append(
             create_dataTEMP(
-                invDate.month,invDate.weekday(),
-                mnDOW[invDate.weekday()]
-                ,1,1,1,
+                invDate.month,
+                invDate.weekday(),
+                mnDOW[invDate.weekday()],
+                1,1,1,
                 mnDays,
                 mnMonth[invDate.month-1],
                 1,1,1,
@@ -290,16 +382,13 @@ def generateTrainingData(data,output):
             )
         )
 
-def featureAnalysis(reg):
-    return reg.feature_importances_
+def predictMany(startDate,endDate):
 
-def predictMany(startDate,endDate,reg):
+  #TODO (Larisa): retraining
+
   data = []
 
-  mnDOW = []
-  mnWOY = []
-  mnMonth = []
-  calculateMeans(mnDOW,mnMonth,mnWOY)
+  mnDOW,mnWOY,mnMonth = calculateMeans()
 
   totalVisitors = invitesCollection.count_documents({"inviteState": { '$ne': "inActive" } })
   totalInvites = invitesCollection.count_documents({})
@@ -307,10 +396,7 @@ def predictMany(startDate,endDate,reg):
 
   delta = timedelta(days=1)
   while startDate <= endDate:
-    mnDays = 0
-    mnWeeks = 0
-    mnMonths = 0
-    calculateRecentAverages(mnDays,mnMonths,mnWeeks,startDate)
+    mnDays,mnWeeks,mnMonths = calculateRecentAverages(startDate)
 
     day_bef =  getNumVisitorsDayBefore(startDate)
     week_bef = getNumVisitorsWeekBefore(startDate)
@@ -342,35 +428,23 @@ def predictMany(startDate,endDate,reg):
 
   return reg.predict(data)
 
+def train():
+  output = []
+  data = []
 
-############################################## CODE
+  #createInvites(start_date,end_date,1)
+  generateTrainingData(data,output)
 
-#Global parameters
-params = { #TODO (Daniel): Play around
-    "n_estimators": 500,
-    "max_depth": 4,
-    "min_samples_split": 5,
-    "learning_rate": 0.01,
-    "loss": "squared_error",
-}
+  #Create training and test set
+  X_train, X_test, y_train, y_test = train_test_split( data, output, test_size=0.33, random_state=42)
 
-#Create regressor
-reg = ensemble.GradientBoostingRegressor(**params)
+  #Train model
+  reg.fit(X_train, y_train)
 
-output = []
-data = []
+  #Test model
+  mse = mean_squared_error(y_test, reg.predict(X_test))
 
-createInvites(start_date,end_date,1)
-generateTrainingData(data,output)
+  return "here"
 
-#Create training and test set
-X_train, X_test, y_train, y_test = train_test_split( data, output, test_size=0.33, random_state=42)
-
-#Train model
-reg.fit(X_train, y_train)
-
-#Test model
-mse = mean_squared_error(y_test, reg.predict(X_test))
-print("The mean squared error (MSE) on test set: {:.4f}".format(mse))
-
-print(featureAnalysis(reg))
+def featureAnalysis():
+    return reg.feature_importances_
