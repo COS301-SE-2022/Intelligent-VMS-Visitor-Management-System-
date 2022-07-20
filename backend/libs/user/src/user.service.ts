@@ -6,6 +6,7 @@ import { GetUnAuthUsersQuery } from "./queries/impl/getUnAuthUsers.query";
 import { CreateUserCommand } from "./commands/impl/createUser.command";
 import { DeleteUserCommand } from "./commands/impl/deleteUser.command";
 import { AuthorizeUserCommand } from "./commands/impl/authorizeUser.command";
+import { DeauthorizeUserAccountCommand } from "./commands/impl/deauthorizeUserAccount.command";
 
 @Injectable()
 export class UserService {
@@ -34,6 +35,11 @@ export class UserService {
 
     async authorizeUserAccount(email: string) {
         const res = await this.commandBus.execute(new AuthorizeUserCommand(email));        
+        return res.modifiedCount > 0;
+    }
+
+    async deauthorizeUserAccount(email: string) {
+        const res = await this.commandBus.execute(new DeauthorizeUserAccountCommand(email));
         return res.modifiedCount > 0;
     }
 }

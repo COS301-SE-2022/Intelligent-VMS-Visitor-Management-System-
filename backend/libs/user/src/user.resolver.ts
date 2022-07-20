@@ -98,4 +98,12 @@ export class UserResolver {
         return await this.userService.authorizeUserAccount(email); 
     }
 
+    // Deauthorize User Account
+    @UseGuards(GqlAuthGuard, RolesGuard)
+    @Roles("receptionist", "admin")
+    @Mutation((returns) => { return Boolean }, { name: "deauthorizeUserAccount" })
+    async deuthorizeUserAccount(@Args("email") email: string) {
+        return await this.userService.deauthorizeUserAccount(email); 
+    }
+
 }
