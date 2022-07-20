@@ -32,7 +32,7 @@ export const validPageLoad =[
     request: {
         query: gql`
             query {
-                getAvailableParking
+                getTotalAvailableParking
             }
         `
     },

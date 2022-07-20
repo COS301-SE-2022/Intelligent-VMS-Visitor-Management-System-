@@ -7,7 +7,7 @@ import { GqlAuthGuard } from "@vms/auth/guards/GqlAuthGuard.guard";
 import { Parking } from "./models/parking.model";
 import { ParkingReservation } from "./models/reservation.model";
 
-@UseGuards(GqlAuthGuard)
+//@UseGuards(GqlAuthGuard)
 @Resolver((of) => {return Parking})
 export class ParkingResolver {
     constructor(
@@ -20,9 +20,9 @@ export class ParkingResolver {
         return "👋 from Parking";  
     }
 
-    @Query((returns) => {return Number}, { name: "getAvailableParking" })
-    async getAvailableParking() {
-        return this.parkingService.getAvailableParking(); 
+    @Query((returns) => {return Number}, { name: "getTotalAvailableParking" })
+    async getTotalAvailableParking() {
+        return this.parkingService.getTotalAvailableParking(); 
     }
 
     @Query((returns) => {return [Parking]}, { name: "getFreeParking" })
@@ -36,6 +36,14 @@ export class ParkingResolver {
     ) {
         return this.parkingService.getReservations();
     }
+
+    @Query((returns) => {return ParkingReservation}, { name: "getInviteReservation" })
+    async getInviteReservation(
+        @Args("invitationID") invitationID: string,
+    ) {
+        return this.parkingService.getInviteReservation(invitationID);
+    }
+
 
     @Query((returns) => {return [ParkingReservation]}, { name: "getUsedParkingsInRange" })
     async getUsedParkingsByDate(

@@ -136,7 +136,7 @@ const CreateInvite = () => {
 
     return (
         <Layout>
-            <div className="relative flex h-full min-h-[80vh] w-full flex-col items-center justify-center overflow-hidden">
+            <div className="relative flex h-full min-h-[80vh] w-full flex-col items-center justify-center overflow-hidden pb-3">
                 <Formik
                     initialValues={{
                         email: "",

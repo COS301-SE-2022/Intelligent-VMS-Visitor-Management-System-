@@ -124,7 +124,7 @@ const AdminDashboard = () => {
 
     const numParkingSpotsAvailableQuery = useQuery(gql`
         query {
-            getAvailableParking
+            getTotalAvailableParking
         }
     `);
 
@@ -225,8 +225,7 @@ const AdminDashboard = () => {
             !numParkingSpotsAvailableQuery.loading &&
             !numParkingSpotsAvailableQuery.error
         ) {
-            const numParkingspots =
-                numParkingSpotsAvailableQuery.data.getAvailableParking;
+            const numParkingspots = numParkingSpotsAvailableQuery.data.getTotalAvailableParking;
             setNumParkingSpotsAvailable(numParkingspots);
             setInitialNumParkingSpots(numParkingspots);
         } else if (numParkingSpotsAvailableQuery.error) {
