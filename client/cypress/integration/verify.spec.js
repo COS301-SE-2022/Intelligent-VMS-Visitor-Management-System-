@@ -15,7 +15,7 @@ describe('Verify Page', () => {
 
         //Enter sign up info
         describe('Login as receptionist', () => {
-            cy.get('input[name="email"]').type("h@mail.com").should('have.value', 'h@mail.com');
+            cy.get('input[name="email"]').type("MillionsAndMillionsOfDollars@mail.com").should('have.value', 'MillionsAndMillionsOfDollars@mail.com');
             cy.get('input[name="name"]').type("Stefan").should('have.value', 'Stefan');
             cy.get('input[name="password"]').type("P@ssword1").should('have.value', 'P@ssword1');
             cy.get('input[name="confirmPassword"]').type("P@ssword1").should('have.value', 'P@ssword1');
