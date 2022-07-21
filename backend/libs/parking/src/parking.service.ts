@@ -8,6 +8,7 @@ import { DisableParkingSpaceCommand } from './commands/impl/disableParkingSpace.
 import { UnreserveParkingCommand } from './commands/impl/unreserveParking.command';
 import { CreateNParkingSpotsCommand } from './commands/impl/createNParkingSpots.command';
 import { AddParkingCommand } from './commands/impl/addParking.command';
+import { getAvailableParkingQuery } from "./queries/impl/getAvailableParking.query";
 import { getTotalAvailableParkingQuery } from './queries/impl/getTotalAvailableParking.query';
 import { GetFreeParkingQuery } from './queries/impl/getFreeParking.query';
 import { GetInviteReservationQuery } from './queries/impl/getInviteReservation.query';
@@ -150,8 +151,6 @@ export class ParkingService {
                 `Invitation with ID ${invitationID} not found`,
             );
         }
-
-        const inviteDate = new Date(invite.inviteDate).getDate();
 
         //Additional Checks
         const InviteReservation = await this.queryBus.execute(
@@ -661,7 +660,7 @@ export class ParkingService {
             new GetNumberOfReservationsQuery(startDate),
         );
         const numAvailableParkingForDay = await this.queryBus.execute(
-            new GetAvailableParkingQuery(),
+            new getAvailableParkingQuery(),
         );
 
         return numReservationsForDay < numAvailableParkingForDay;

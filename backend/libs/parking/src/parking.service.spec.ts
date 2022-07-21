@@ -40,8 +40,7 @@ describe('ParkingService', () => {
                 return 8;
             } else
             if(query instanceof getAvailableParkingQuery) {
-
-                let parkings = []
+                const parkings = []
                 let parking = new Parking();
                 parking.parkingNumber=0;
                 parking.visitorEmail="";
@@ -57,7 +56,7 @@ describe('ParkingService', () => {
                 parking.visitorEmail="";
                 parking.enabled=false;
                 parkings[2] = parking;
-                return parkings;
+                return 8;
             
             } else if(query instanceof GetInviteQuery){
                 if(query.inviteID === "cb7c7938-1c41-427d-833e-2c6b77e0e26b")
@@ -206,7 +205,7 @@ describe('ParkingService', () => {
                 reservations[1]=reservation;
                 return reservations;
             } else if(query instanceof GetNumberOfReservationsQuery) {
-                return 6;
+                return 0;
             }
             
       }), 
