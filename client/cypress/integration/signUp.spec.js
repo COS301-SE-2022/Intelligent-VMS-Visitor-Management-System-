@@ -14,5 +14,14 @@ describe('Sign Up Page', () => {
         cy.wait(500);
         cy.contains('Signup').click();
     })
+
+    //Enter sign up info
+    describe('Login as receptionist', () => {
+        cy.url().should('include', 'signUp');//confirm correct page
+        cy.get('input[name="email"]').type("u20573783@tuks.co.za" ).should('have.value', 'receptionist@mail.com');
+        cy.get('input[name="name"]').type("Stefan" ).should('have.value', 'Stefan');
+        cy.get('input[name="password"]').type("password" ).should('have.value', 'password');
+        cy.get('.btn-primary ').click();
+    })
     
 })
