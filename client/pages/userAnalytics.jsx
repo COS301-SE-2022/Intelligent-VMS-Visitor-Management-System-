@@ -33,7 +33,7 @@ const UserAnalytics = () => {
         setStartDate,
         setRange,
         range,
-    ] = useDateRange(new Date(now.getFullYear(), now.getMonth(), 1), 30);
+    ] = useDateRange(now, 30);
 
     const deleteUserAccount = (email, type) => {
         client
@@ -215,6 +215,7 @@ const UserAnalytics = () => {
                                     </a>
                                 </Link>
 
+                                { token.email !== email &&
                                 <label
                                     htmlFor={"admin-confirm-modal-" + email}
                                     className="modal-button btn btn-error hover:btn-info"
@@ -222,6 +223,7 @@ const UserAnalytics = () => {
                                     <RiDeleteBin5Fill />
                                     Delete Account
                                 </label>
+                                }
 
                                 {token.email !== email && (
                                     <label
