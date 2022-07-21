@@ -20,9 +20,9 @@ features = []
 #Global parameters
 params = { #TODO (Daniel): Play around
     "n_estimators": 500,
-    "max_depth": 4,
+    "max_depth": 3,
     "min_samples_split": 5,
-    "learning_rate": 0.05,
+    "learning_rate": 0.01,
     "loss": "squared_error",
 }
 
