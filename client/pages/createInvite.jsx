@@ -9,6 +9,18 @@ import useAuth from "../store/authStore.js";
 import Layout from "../components/Layout";
 import ErrorAlert from "../components/ErrorAlert";
 
+const getFormattedDateString = (date) => {
+    if (date instanceof Date) {
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        return [
+            date.getFullYear(),
+            (month > 9 ? "" : "0") + month,
+            (day > 9 ? "" : "0") + day,
+        ].join("-");
+    }
+};
+
 const CreateInvite = () => {
     // Get Instance of NextJS router to redirect to different pages
     const router = useRouter();
@@ -28,11 +40,18 @@ const CreateInvite = () => {
     // Manipulate state for showing error alert
     const [errorMessage, setErrorMessage] = useState("");
 
+    // Whether or not parking is available
+    const [isParkingAvailable, setIsParkingAvailable] = useState(false);
+
     // Get Data From JWT Token
-    const jwtTokenData = useAuth((state) => {return state.decodedToken})();
+    const jwtTokenData = useAuth((state) => {
+        return state.decodedToken;
+    })();
 
     // Get number of parking spots available
-    const numParkingSpotsAvailable = useAuth((state) => {return state.numParkingSpots});
+    const numParkingSpotsAvailable = useAuth((state) => {
+        return state.numParkingSpots;
+    });
 
     // Car Animation Framer Motion Variant
     const driveAway = {
@@ -45,11 +64,17 @@ const CreateInvite = () => {
         },
     };
 
+    const isParkingAvailableQuery = useQuery(gql`
+        query {
+          isParkingAvailable(startDate: "${getFormattedDateString(new Date())}")
+        }
+    `);
+
     const numInvitesQuery = useQuery(gql`
         query {
             getNumInvitesPerResident {
                 value
-          }
+            }
         }
     `);
 
@@ -60,18 +85,25 @@ const CreateInvite = () => {
     `);
 
     useEffect(() => {
-        if(!numInvitesQuery.loading && !numInvitesQuery.error) {
-            setNumInvitesAllowed(numInvitesQuery.data.getNumInvitesPerResident.value);
-        } else if(numInvitesQuery.error) {
-            if(numInvitesQuery.error.message === "Unauthorized") {
+        if (!numInvitesQuery.loading && !numInvitesQuery.error) {
+            setNumInvitesAllowed(
+                numInvitesQuery.data.getNumInvitesPerResident.value
+            );
+        } else if (numInvitesQuery.error) {
+            if (numInvitesQuery.error.message === "Unauthorized") {
                 router.push("/expire");
             }
         }
 
-        if(!numInvitesOfResidentQuery.loading && !numInvitesOfResidentQuery.error && numInvitesAllowed !== 0) {
-            const numSent = numInvitesOfResidentQuery.data.getTotalNumberOfInvitesOfResident
-            console.log(numSent, numInvitesAllowed);
-            if(numSent >= numInvitesAllowed && jwtTokenData.permission === 2) {
+        if (
+            !numInvitesOfResidentQuery.loading &&
+            !numInvitesOfResidentQuery.error &&
+            numInvitesAllowed !== 0
+        ) {
+            const numSent =
+                numInvitesOfResidentQuery.data
+                    .getTotalNumberOfInvitesOfResident;
+            if (numSent >= numInvitesAllowed && jwtTokenData.permission === 2) {
                 setErrorMessage("Invite Limit Reached");
                 setLimitReached(true);
                 setShowErrorAlert(true);
@@ -81,11 +113,30 @@ const CreateInvite = () => {
             }
         }
 
-    }, [numInvitesQuery, numInvitesOfResidentQuery, numInvitesAllowed, limitReached])
+        if (
+            !isParkingAvailableQuery.loading &&
+            !isParkingAvailableQuery.error
+        ) {
+            setIsParkingAvailable(
+                isParkingAvailableQuery.data.isParkingAvailable
+            );
+        } else if (
+            !isParkingAvailableQuery.loading &&
+            isParkingAvailableQuery.error
+        ) {
+            setErrorMessage(isParkingAvailableQuery.error.message);
+            setShowErrorAlert(true);
+        }
+    }, [
+        numInvitesQuery,
+        numInvitesOfResidentQuery,
+        numInvitesAllowed,
+        limitReached,
+    ]);
 
     return (
         <Layout>
-            <div className="relative flex h-full min-h-[80vh] w-full flex-col items-center justify-center overflow-hidden">
+            <div className="relative flex h-full min-h-[80vh] w-full flex-col items-center justify-center overflow-hidden pb-3">
                 <Formik
                     initialValues={{
                         email: "",
@@ -177,133 +228,141 @@ const CreateInvite = () => {
                         handleBlur,
                         handleSubmit,
                         isSubmitting,
-                    }) => {return (
-                        <form
-                            onSubmit={handleSubmit}
-                            className="md:p-26 prose form-control space-y-4 rounded-none bg-base-300 p-14 md:rounded-xl mt-3"
-                        >
-                            <h1>
-                                Let&apos;s{" "}
-                                <span className="text-secondary">Invite</span>{" "}
-                                Someone🔥
-                            </h1>
-                            <input
-                                type="email"
-                                name="email"
-                                placeholder="Visitor Email"
-                                autoComplete="username"
-                                className="input input-bordered w-full"
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                value={values.email}
-                            />
-
-                            <span className="text-error">
-                                {errors.email && touched.email && errors.email}
-                            </span>
-
-                            <Field
-                                as="select"
-                                className="select select-primary w-full"
-                                name="idDoc"
-                                onChange={handleChange}
-                                onBlur={handleBlur}
+                    }) => {
+                        return (
+                            <form
+                                onSubmit={handleSubmit}
+                                className="md:p-26 prose form-control mt-3 space-y-4 rounded-none bg-base-300 p-14 md:rounded-xl"
                             >
-                                <option value="RSA-ID">RSA ID</option>
-                                <option value="Drivers-License">
-                                    Driver&apos;s License
-                                </option>
-                                <option value="UP-Student-ID">
-                                    Student Number
-                                </option>
-                            </Field>
-
-                            <input
-                                type="text"
-                                name="idValue"
-                                placeholder="Enter ID number"
-                                className="input input-bordered w-full"
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                value={values.idValue}
-                            />
-                            <span className="text-error">
-                                {errors.idValue &&
-                                    touched.idValue &&
-                                    errors.idValue}
-                            </span>
-
-                            <input
-                                type="text"
-                                name="name"
-                                placeholder="Enter Visitor Name"
-                                className="input input-bordered w-full"
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                value={values.name}
-                            />
-                            <span className="text-error">
-                                {errors.name && touched.name && errors.name}
-                            </span>
-
-                            <input
-                                type="date"
-                                name="visitDate"
-                                placeholder="Visit Date"
-                                className="input input-bordered w-full"
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                value={values.visitDate}
-                            />
-
-                            <motion.label className="label cursor-pointer">
-                                <motion.span
-                                    initial="initial"
-                                    whileHover="animate"
-                                    className="label-text overflow-x-hidden pr-3"
-                                >
-                                    Reserve Parking{" "}
-                                    <motion.span
-                                        initial="initial"
-                                        className="inline-block"
-                                        animate={{
-                                            x: values.reserveParking ? 0 : -500,
-                                            transition: {
-                                                duration: 0.8,
-                                                ease: "easeInOut",
-                                            },
-                                        }}
-                                        variants={driveAway}
-                                    >
-                                        {" "}
-                                        🚗
-                                    </motion.span>
-                                </motion.span>
-
-                                <motion.input
-                                    className="disabled toggle"
-                                    disabled={
-                                        numParkingSpotsAvailable > 0
-                                            ? false
-                                            : true
-                                    }
-                                    name="reserveParking"
-                                    type="checkbox"
+                                <h1>
+                                    Let&apos;s{" "}
+                                    <span className="text-secondary">
+                                        Invite
+                                    </span>{" "}
+                                    Someone🔥
+                                </h1>
+                                <input
+                                    type="email"
+                                    name="email"
+                                    placeholder="Visitor Email"
+                                    autoComplete="username"
+                                    className="input input-bordered w-full"
                                     onChange={handleChange}
                                     onBlur={handleBlur}
-                                    value={values.reserveParking}
+                                    value={values.email}
                                 />
-                            </motion.label>
 
-                            <button
-                                className="btn btn-primary"
-                                type="submit"
-                                disabled={isSubmitting || limitReached}
-                            >
-                                Invite
-                            </button>
-                        </form>
-                    )}}
+                                <span className="text-error">
+                                    {errors.email &&
+                                        touched.email &&
+                                        errors.email}
+                                </span>
+
+                                <Field
+                                    as="select"
+                                    className="select select-primary w-full"
+                                    name="idDoc"
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                >
+                                    <option value="RSA-ID">RSA ID</option>
+                                    <option value="Drivers-License">
+                                        Driver&apos;s License
+                                    </option>
+                                    <option value="UP-Student-ID">
+                                        Student Number
+                                    </option>
+                                </Field>
+
+                                <input
+                                    type="text"
+                                    name="idValue"
+                                    placeholder="Enter ID number"
+                                    className="input input-bordered w-full"
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    value={values.idValue}
+                                />
+                                <span className="text-error">
+                                    {errors.idValue &&
+                                        touched.idValue &&
+                                        errors.idValue}
+                                </span>
+
+                                <input
+                                    type="text"
+                                    name="name"
+                                    placeholder="Enter Visitor Name"
+                                    className="input input-bordered w-full"
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    value={values.name}
+                                />
+                                <span className="text-error">
+                                    {errors.name && touched.name && errors.name}
+                                </span>
+
+                                <input
+                                    type="date"
+                                    name="visitDate"
+                                    placeholder="Visit Date"
+                                    className="input input-bordered w-full"
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    value={values.visitDate}
+                                />
+
+                                <motion.label className="label cursor-pointer">
+                                    <motion.span
+                                        initial="initial"
+                                        whileHover="animate"
+                                        className="label-text overflow-x-hidden pr-3"
+                                    >
+                                        Reserve Parking{" "}
+                                        <motion.span
+                                            initial={false}
+                                            className="inline-block"
+                                            animate={{
+                                                x: values.reserveParking
+                                                    ? 0
+                                                    : -500,
+                                                transition: {
+                                                    duration: 0.8,
+                                                    ease: "easeInOut",
+                                                },
+                                            }}
+                                            variants={driveAway}
+                                        >
+                                            {" "}
+                                            🚗
+                                        </motion.span>
+                                    </motion.span>
+
+                                    <motion.input
+                                        className="disabled toggle"
+                                        disabled={
+                                            numParkingSpotsAvailable > 0
+                                                ? false
+                                                : true
+                                        }
+                                        name="reserveParking"
+                                        type="checkbox"
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        value={values.reserveParking}
+                                    />
+                                </motion.label>
+
+                                <button
+                                    className="btn btn-primary"
+                                    type="submit"
+                                    disabled={isSubmitting || limitReached}
+                                >
+                                    Invite
+                                </button>
+                            </form>
+                        );
+                    }}
                 </Formik>
 
                 <ErrorAlert

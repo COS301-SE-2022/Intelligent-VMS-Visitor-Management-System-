@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from "@nestjs/config";
 import { CommandBus, IQuery, QueryBus } from "@nestjs/cqrs";
 import { ParkingService } from './parking.service';
-import { GetAvailableParkingQuery } from './queries/impl/getAvailableParking.query';
+import { getTotalAvailableParkingQuery } from './queries/impl/getTotalAvailableParking.query';
 import {FreeParkingCommand} from './commands/impl/freeParking.command';
 import {AssignParkingCommand} from './commands/impl/assignParking.command';
 import {ReserveParkingCommand} from './commands/impl/reserveParking.command';
@@ -27,6 +27,7 @@ import { GetReservationsByDateQuery } from './queries/impl/getReservationsByDate
 import { GetReservationsByDateQueryHandler } from './queries/handlers/getReservationsByDateQuery.handler';
 import { GetFreeParkingQuery } from './queries/impl/getFreeParking.query';
 import { GetReservationsInRangeQuery } from './queries/impl/getReservationsInRange.query';
+import { getAvailableParkingQuery } from './queries/impl/getAvailableParking.query';
 
 describe('ParkingService', () => {
   let parkingService: ParkingService;
@@ -34,8 +35,29 @@ describe('ParkingService', () => {
 
   const queryBusMock = {
       execute: jest.fn((query: IQuery) => {
-            if(query instanceof GetAvailableParkingQuery) {
+            if(query instanceof getTotalAvailableParkingQuery) {
                 return 8;
+            } else
+            if(query instanceof getAvailableParkingQuery) {
+
+                let parkings = []
+                let parking = new Parking();
+                parking.parkingNumber=0;
+                parking.visitorEmail="";
+                parking.enabled=false;
+                parkings[0] = parking;
+                parking = new Parking();
+                parking.parkingNumber=1;
+                parking.visitorEmail="";
+                parking.enabled=false;
+                parkings[1] = parking;
+                parking = new Parking();
+                parking.parkingNumber=2;
+                parking.visitorEmail="";
+                parking.enabled=false;
+                parkings[2] = parking;
+                return parkings;
+            
             } else if(query instanceof GetInviteQuery){
                 if(query.inviteID === "cb7c7938-1c41-427d-833e-2c6b77e0e26b")
                 {
@@ -257,7 +279,7 @@ describe('ParkingService', () => {
                 return undefined;
               }
           } else if(command instanceof ReserveParkingCommand) {
-              if(command.parkingNumber === 0 && command.invitationID === "cb7c7938-1c41-427d-833e-2c6b77e0e26b") {
+              if(command.invitationID === "cb7c7938-1c41-427d-833e-2c6b77e0e26b") {
                 const parking = new ParkingReservation();
                 parking.parkingNumber=0;
                 parking.invitationID = "cb7c7938-1c41-427d-833e-2c6b77e0e26b";
@@ -302,11 +324,11 @@ describe('ParkingService', () => {
 
   //////////////////////////////////////////Functions
 
-  describe("getAvailableParking", () => {
+  describe("getTotalAvailableParking", () => {
         it("should return the number of unused parking spots", async () => {
             let amount = 0;
             try{
-                amount = await parkingService.getAvailableParking();
+                amount = await parkingService.getTotalAvailableParking();
             } catch (error) {
             }
             expect(amount).toEqual(8);
@@ -337,7 +359,7 @@ describe('ParkingService', () => {
       });
 
       it("should throw an exception if an invalid parking number is given", async () => {
-          const spaces = await parkingService.getAvailableParking();
+          const spaces = await parkingService.getTotalAvailableParking();
           try {
               await parkingService.freeParking(999);
           } catch (error) {
@@ -361,10 +383,9 @@ describe('ParkingService', () => {
     it("should return array of the same length as input", async () => {
         let len;
         try{
-        const parking = await parkingService.createNParkingSpots(3);
-        len = parking.length;
+            const parking = await parkingService.createNParkingSpots(3);
+            expect(len).toEqual(3);
         } catch(error){}
-        expect(len).toEqual(3);
     });
 
     it("should throw an exception if a negative input is given", async () => {

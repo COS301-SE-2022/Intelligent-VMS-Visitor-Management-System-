@@ -35,7 +35,6 @@ export class Invite {
     @Prop()
     notes?: string;
 
-    //TODO (Kyle) DEFAULT SHOULD BE INACTIVE
     @Prop()
     inviteState: string
 

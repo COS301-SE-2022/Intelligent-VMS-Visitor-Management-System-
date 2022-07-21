@@ -1,5 +1,5 @@
 /*eslint-disable*/
-export class GetAvailableParkingQuery {
+export class getAvailableParkingQuery {
     constructor(
     ) {}
   }

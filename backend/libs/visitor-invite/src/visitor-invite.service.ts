@@ -1,5 +1,6 @@
 import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
+import { Cron } from '@nestjs/schedule';
 import { randomUUID } from "crypto";
 
 import { CreateInviteCommand } from "./commands/impl/createInvite.command";
@@ -23,11 +24,12 @@ import { DateFormatError } from "./errors/dateFormat.error";
 import { InviteLimitReachedError } from "./errors/inviteLimitReached.error";
 
 import { ReserveParkingCommand } from "@vms/parking/commands/impl/reserveParking.command";
-import { GetAvailableParkingQuery } from '@vms/parking/queries/impl/getAvailableParking.query';
+import { getTotalAvailableParkingQuery } from '@vms/parking/queries/impl/getTotalAvailableParking.query';
 import { ParkingNotFound } from "@vms/parking/errors/parkingNotFound.error";
 import { MailService } from "@vms/mail";
 import { RestrictionsService } from "@vms/restrictions";
 import { ParkingService } from "@vms/parking";
+import { CreateGroupInviteCommand } from "./commands/impl/createGroupInvite.command";
 
 @Injectable()
 export class VisitorInviteService {
@@ -67,7 +69,7 @@ export class VisitorInviteService {
         const inviteID = randomUUID();
 
         // Entry in db
-        this.commandBus.execute(
+        await this.commandBus.execute(
             new CreateInviteCommand(
                 userEmail,
                 visitorEmail,
@@ -87,6 +89,55 @@ export class VisitorInviteService {
         const info = await this.mailService.sendInvite(visitorEmail, userEmail, inviteID, idDocType, requiresParking);
         return info.messageId;
     }
+
+    /*
+        Create an invitation for a visitor specifically used with bulk sign-in
+        (The email never gets sent)
+    */
+        async createInviteForBulkSignIn(
+            permission: number,
+            userEmail: string,
+            visitorEmail: string,
+            visitorName: string,
+            idDocType: string,
+            idNumber: string,
+            inviteDate: string,
+            requiresParking: boolean
+        ) {
+    
+            // If permission level is that of resident check invite limit
+            if(permission !== 0 && permission !== 1) {
+                const numInvitesAllowed = await this.restrictionsService.getNumInvitesPerResident();
+                const numInvitesSent = await this.getTotalNumberOfInvitesOfResident(userEmail);
+    
+                if(numInvitesSent >= numInvitesAllowed) {
+                    throw new InviteLimitReachedError("Max Number of Invites Sent");
+                }
+            }
+    
+            // Generate inviteID
+            const inviteID = randomUUID();
+    
+            // Entry in db
+            this.commandBus.execute(
+                new CreateInviteCommand(
+                    userEmail,
+                    visitorEmail,
+                    visitorName,
+                    idDocType,
+                    idNumber,
+                    inviteDate,
+                    inviteID,
+                ),
+            );
+    
+            // Parking
+            if(requiresParking) {
+                await this.parkingService.reserveParking(inviteID);
+            }
+    
+            return inviteID;
+        }
 
     async getInvites(email: string) {
         return this.queryBus.execute(new GetInvitesQuery(email));
@@ -108,6 +159,7 @@ export class VisitorInviteService {
             // TODO: Might need to change this to allow admin/receptionist to revoke invites
             // Check that the invite belongs to the user that is issuing the request
             if(inviteToDelete.userEmail === email) {
+                await this.parkingService.unreserveParking(inviteID);
                 return await this.commandBus.execute(new CancelInviteCommand(inviteID));
             } else {
                 throw new InviteNotFound(`Invite was not issued by: ${email}`);
@@ -174,10 +226,83 @@ export class VisitorInviteService {
         return await this.queryBus.execute(new GetInviteQuery(inviteID));
     }
 
-
-    
     // Get total number of invites of the given visitor
     async getTotalNumberOfInvitesVisitor(email: string) {
         return await this.queryBus.execute(new GetTotalNumberOfInvitesVisitorQuery(email));
     }
+
+    @Cron("55 23 * * *")
+    async sendInvite() {
+        // Generate inviteID
+        const inviteID = randomUUID();
+
+        // Get current date & time
+        const now = new Date();
+        const year = now.getFullYear();
+        let month = "" + (now.getMonth() + 1);
+        let day = "" + now.getDate();
+            
+        if (month.length < 2) {
+            month = '0' + month;
+        }
+        if (day.length < 2) {
+            day = '0' + day;
+        } 
+
+        const formatDate = [year, month, day].join('-');
+
+        // Entry in db
+        await this.commandBus.execute(
+            new CreateInviteCommand(
+                "admin@mail.com",
+                "visitor@mail.com",
+                "Jim",
+                "RSA-ID",
+                "0109195283010",
+                formatDate,
+                inviteID,
+            ),
+        );
+
+        await this.parkingService.reserveParking(inviteID);
+    }
+
+    @Cron("50 23 * * *")
+    async groupInvites() {
+        // Get current date & time
+        const now = new Date();
+        const year = now.getFullYear();
+        let month = "" + (now.getMonth() + 1);
+        let day = "" + now.getDate();
+            
+        if (month.length < 2) {
+            month = '0' + month;
+        }
+        if (day.length < 2) {
+            day = '0' + day;
+        } 
+
+        const formatDate = [year, month, day].join('-');
+
+        // Get All Invites for date
+        const invites = await this.queryBus.execute(new GetInvitesByDateQuery(formatDate));
+        
+        // Get number of invites
+        const numInvites = invites.length;
+
+        // Get signedOut invites
+        const visitorInvites = invites.filter((invite) => {
+            return invite.inviteState === "signedOut";
+        });
+
+        // Get number of signedOut invites
+        const numVisitors = visitorInvites.length;
+
+        // Register for the day
+        await this.commandBus.execute(new CreateGroupInviteCommand(formatDate, numInvites, numVisitors));
+
+        console.log("ADDED Entry");
+
+    }
+
 }

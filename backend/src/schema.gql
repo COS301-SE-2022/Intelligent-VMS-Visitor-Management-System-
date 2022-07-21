@@ -11,6 +11,17 @@ type Visitor {
 }
 
 type User {
+  email: String!
+  permission: Int!
+}
+
+type SearchUser {
+  email: String!
+  permission: Int!
+  name: String!
+}
+
+type LoginUser {
   email: String
   access_token: String
 }
@@ -68,8 +79,11 @@ type Query {
   hello: String!
   visitors: [Visitor!]!
   helloUser: String!
+  searchUser(searchQuery: String!): [SearchUser!]!
+  getUnauthorizedUsers: [User!]!
   helloInvite: String!
   getInvites: [Invite!]!
+  getInvitesWithEmail(email: String!): [Invite!]!
   getTotalNumberOfVisitors: Float!
   getNumInvitesPerDate(dateStart: String!, dateEnd: String!): [Invite!]!
   getNumInvitesPerDateOfUser(dateStart: String!, dateEnd: String!, email: String!): [Invite!]!
@@ -80,10 +94,13 @@ type Query {
   getNumberOfInvitesOfVisitor(email: String!): Float!
   getInvitesByDate(date: String!): [Invite!]!
   helloParking: String!
-  getAvailableParking: Float!
-  getFreeParking: Parking!
+  getTotalAvailableParking: Float!
+  getFreeParking: [Parking!]!
   getReservations: ParkingReservation!
-  getUsedParkingsInRange(startDate: String!, endDate: String!): [Float!]!
+  getInviteReservation(invitationID: String!): ParkingReservation!
+  getUsedParkingsInRange(startDate: String!, endDate: String!): [ParkingReservation!]!
+  isParkingAvailable(startDate: String!): Boolean!
+  getNumberOfReservations(startDate: String!): Float!
   getNumInvitesPerResident: Restriction!
   helloResident: String!
   helloReceptionist: String!
@@ -91,9 +108,12 @@ type Query {
 
 type Mutation {
   createVisitor(input: VisitorInputType!): Visitor!
-  login(email: String!, password: String!): User!
-  signup(email: String!, password: String!, type: String!, idNumber: String!): String!
+  login(email: String!, password: String!): LoginUser!
+  signup(email: String!, password: String!, type: String!, IDDocType: String!, idNumber: String!, name: String!): Boolean!
   verify(verifyID: String!, email: String!): Boolean!
+  deleteUserAccount(email: String!): Boolean!
+  authorizeUserAccount(email: String!): Boolean!
+  deauthorizeUserAccount(email: String!): Boolean!
   createInvite(userEmail: String!, visitorName: String!, visitorEmail: String!, IDDocType: String!, IDNumber: String!, inviteDate: String!, requiresParking: Boolean!): String!
   cancelInvite(inviteID: String!): Boolean!
   assignParking(invitationID: String!): Parking!
@@ -101,8 +121,9 @@ type Mutation {
   reserveParking(invitationID: String!): ParkingReservation!
   unreservedParking(invitationID: String!): Boolean!
   freeParking(parkingNumber: Float!): Parking!
-  ceatedParkings(N: Float!): Boolean!
+  createNParkingSpots(N: Float!): Boolean!
   setNumInvitesPerResident(numInvites: Float!): Restriction!
   signOut(inviteID: String!): Float!
   signIn(inviteID: String!, notes: String!, time: String!): Float!
+  bulkSignIn(file: String!, userEmail: String!): Float!
 }

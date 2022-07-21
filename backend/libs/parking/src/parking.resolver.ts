@@ -7,7 +7,7 @@ import { GqlAuthGuard } from "@vms/auth/guards/GqlAuthGuard.guard";
 import { Parking } from "./models/parking.model";
 import { ParkingReservation } from "./models/reservation.model";
 
-@UseGuards(GqlAuthGuard)
+//@UseGuards(GqlAuthGuard)
 @Resolver((of) => {return Parking})
 export class ParkingResolver {
     constructor(
@@ -20,12 +20,12 @@ export class ParkingResolver {
         return "👋 from Parking";  
     }
 
-    @Query((returns) => {return Number}, { name: "getAvailableParking" })
-    async getAvailableParking() {
-        return this.parkingService.getAvailableParking(); 
+    @Query((returns) => {return Number}, { name: "getTotalAvailableParking" })
+    async getTotalAvailableParking() {
+        return this.parkingService.getTotalAvailableParking(); 
     }
 
-    @Query((returns) => {return Parking}, { name: "getFreeParking" })
+    @Query((returns) => {return [Parking]}, { name: "getFreeParking" })
     async getFreeParking(
     ) {
         return this.parkingService.getFreeParking();
@@ -37,13 +37,30 @@ export class ParkingResolver {
         return this.parkingService.getReservations();
     }
 
+    @Query((returns) => {return ParkingReservation}, { name: "getInviteReservation" })
+    async getInviteReservation(
+        @Args("invitationID") invitationID: string,
+    ) {
+        return this.parkingService.getInviteReservation(invitationID);
+    }
 
-    @Query((returns) => [Number], { name: "getUsedParkingsInRange" })
+
+    @Query((returns) => {return [ParkingReservation]}, { name: "getUsedParkingsInRange" })
     async getUsedParkingsByDate(
         @Args("startDate") startDate: string,
         @Args("endDate") endDate: string,
     ) {
-        return this.parkingService.getUsedParkingInRangeByDate(startDate,endDate);
+        return this.parkingService.getParkingReservationInRange(startDate,endDate);
+    }
+
+    @Query((returns) => { return Boolean }, { name: "isParkingAvailable"})
+    async isParkingAvailable(@Args("startDate") startDate: string) {
+        return this.parkingService.isParkingAvailable(startDate);
+    }
+
+    @Query((returns) => { return Number }, { name: "getNumberOfReservations"})
+    async numReservations(@Args("startDate") startDate: string) {
+        return this.parkingService.getNumberOfReservations(startDate)
     }
 
     //MUTATIONS
@@ -83,13 +100,12 @@ export class ParkingResolver {
         return this.parkingService.freeParking(parkingNumber);
     }
 
-    @Mutation((returns) => {return Boolean}, { name: "ceatedParkings" })
+    @Mutation((returns) => {return Boolean}, { name: "createNParkingSpots" })
     async createNParkingSpots(
         @Args("N") N: number,
     ) {
         return this.parkingService.createNParkingSpots(N);
     }
 
-    
 
 }

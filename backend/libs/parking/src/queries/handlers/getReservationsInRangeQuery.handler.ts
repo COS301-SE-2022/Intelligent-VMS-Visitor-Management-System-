@@ -12,7 +12,7 @@ export class GetReservationsInRangeQueryHandler implements IQueryHandler {
 
   async execute(query: GetReservationsInRangeQuery):Promise<ParkingReservation[]> {
     const { startDate, endDate } = query;
-    const reservations = await this.parkingReservationModel.find({ $and: [{inviteDate: {$gte: startDate}}, {inviteDate: {$lte: endDate}}] });
+    const reservations = await this.parkingReservationModel.find({ $and: [{reservationDate: {$gte: startDate}}, {reservationDate: {$lte: endDate}}] });
     return reservations;
   }
 }
