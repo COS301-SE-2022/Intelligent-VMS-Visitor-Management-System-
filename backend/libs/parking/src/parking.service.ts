@@ -1,37 +1,42 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
-import { AssignParkingCommand } from './commands/impl/assignParking.command';
-import { FreeParkingCommand } from './commands/impl/freeParking.command';
-import { ReserveParkingCommand } from './commands/impl/reserveParking.command';
-import { EnableParkingSpaceCommand } from './commands/impl/enableParkingSpace.command';
-import { DisableParkingSpaceCommand } from './commands/impl/disableParkingSpace.command';
-import { UnreserveParkingCommand } from './commands/impl/unreserveParking.command';
-import { CreateNParkingSpotsCommand } from './commands/impl/createNParkingSpots.command';
-import { AddParkingCommand } from './commands/impl/addParking.command';
-import { GetAvailableParkingQuery } from './queries/impl/getAvailableParking.query';
-import { GetFreeParkingQuery } from './queries/impl/getFreeParking.query';
-import { GetInviteReservationQuery } from './queries/impl/getInviteReservation.query';
-import { GetReservationsQuery } from './queries/impl/getReservations.query';
-import { GetParkingReservationsQuery } from './queries/impl/getParkingReservations.query';
+import { AssignParkingCommand } from "./commands/impl/assignParking.command";
+import { FreeParkingCommand } from "./commands/impl/freeParking.command";
+import { ReserveParkingCommand } from "./commands/impl/reserveParking.command";
+import { EnableParkingSpaceCommand } from "./commands/impl/enableParkingSpace.command";
+import { DisableParkingSpaceCommand } from "./commands/impl/disableParkingSpace.command";
+import { UnreserveParkingCommand } from "./commands/impl/unreserveParking.command";
+import { CreateNParkingSpotsCommand } from "./commands/impl/createNParkingSpots.command";
+import { AddParkingCommand } from "./commands/impl/addParking.command";
+import { GetAvailableParkingQuery } from "./queries/impl/getAvailableParking.query";
+import { GetFreeParkingQuery } from "./queries/impl/getFreeParking.query";
+import { GetInviteReservationQuery } from "./queries/impl/getInviteReservation.query";
+import { GetReservationsQuery } from "./queries/impl/getReservations.query";
+import { GetParkingReservationsQuery } from "./queries/impl/getParkingReservations.query";
 import { GetReservationsInRangeQuery } from "./queries/impl/getReservationsInRange.query";
-import { InvalidQuery } from './errors/invalidQuery.error';
-import { ReservationNotFound } from './errors/reservationNotFound.error';
+import { InvalidQuery } from "./errors/invalidQuery.error";
+import { ReservationNotFound } from "./errors/reservationNotFound.error";
 import { ParkingNotFound } from "./errors/parkingNotFound.error";
-import { ExternalError } from './errors/externalError.error';
-import { InviteNotFound } from '@vms/visitor-invite/errors/inviteNotFound.error';
-import { VisitorInviteService } from '@vms/visitor-invite/visitor-invite.service';
-import { GetParkingQuery } from './queries/impl/getParking.query';
-import { GetReservationsByDateQuery } from './queries/impl/getReservationsByDate.query';
-import { InvalidCommand } from './errors/invalidCommand.error';
-import { GetNumberOfReservationsQuery } from './queries/impl/getNumberOfReservations.query';
+import { ExternalError } from "./errors/externalError.error";
+import { InviteNotFound } from "@vms/visitor-invite/errors/inviteNotFound.error";
+import { VisitorInviteService } from "@vms/visitor-invite/visitor-invite.service";
+import { GetParkingQuery } from "./queries/impl/getParking.query";
+import { GetReservationsByDateQuery } from "./queries/impl/getReservationsByDate.query";
+import { InvalidCommand } from "./errors/invalidCommand.error";
+import { GetNumberOfReservationsQuery } from "./queries/impl/getNumberOfReservations.query";
 
 @Injectable()
 export class ParkingService {
-
-    constructor(private commandBus: CommandBus, 
-                private queryBus: QueryBus,
-                @Inject(forwardRef(() => {return VisitorInviteService}))
-                private inviteService: VisitorInviteService) {}
+    constructor(
+        private commandBus: CommandBus,
+        private queryBus: QueryBus,
+        @Inject(
+            forwardRef(() => {
+                return VisitorInviteService;
+            }),
+        )
+        private inviteService: VisitorInviteService,
+    ) {}
 
     /*
     Create more visitor parking
@@ -41,18 +46,12 @@ export class ParkingService {
 
     Status: Done
     */
-    async addParking(
-    ){
-        const parking = await this.commandBus.execute(
-            new AddParkingCommand()
-        );
+    async addParking() {
+        const parking = await this.commandBus.execute(new AddParkingCommand());
 
-        if(parking)
-            return parking;
-        else
-            //for testing purposes
-            throw new ExternalError("Error outside the parking.service");
-
+        if (parking) return parking;
+        //for testing purposes
+        else throw new ExternalError("Error outside the parking.service");
     }
 
     /*
@@ -66,25 +65,22 @@ export class ParkingService {
 
     Status: Done
     */
-    async freeParking(
-        parkingNumber: number
-    ){
+    async freeParking(parkingNumber: number) {
         //Validate input
         const spaces = await this.getAvailableParking();
 
-        if(parkingNumber<0 || parkingNumber>spaces)
-            throw new InvalidCommand(`Parking number ${parkingNumber} is out of parking range. Parking range from 0 to ${spaces}`);
+        if (parkingNumber < 0 || parkingNumber > spaces)
+            throw new InvalidCommand(
+                `Parking number ${parkingNumber} is out of parking range. Parking range from 0 to ${spaces}`,
+            );
 
         //Send to db
-        const parking =  this.commandBus.execute(
-            new FreeParkingCommand(parkingNumber)
-        )
+        const parking = this.commandBus.execute(
+            new FreeParkingCommand(parkingNumber),
+        );
 
-        if(parking) 
-            return parking;
-         else 
-            throw new ExternalError("Error outside the parking.service");
-        
+        if (parking) return parking;
+        else throw new ExternalError("Error outside the parking.service");
     }
 
     /*
@@ -99,33 +95,36 @@ export class ParkingService {
 
     Status: Done
     */
-    async assignParking(
-        invitationID: string,
-    ){
+    async assignParking(invitationID: string) {
         //Validate input
         const invite = await this.inviteService.getInvite(invitationID);
 
-        if(!invite)
-        throw new InviteNotFound(`Invitation with ID ${invitationID} not found`);
-    
+        if (!invite)
+            throw new InviteNotFound(
+                `Invitation with ID ${invitationID} not found`,
+            );
+
         //Additional Checks
         const reservation = await this.queryBus.execute(
-            new GetInviteReservationQuery(invitationID)
-        )
-
-        if(!reservation)
-        throw new ReservationNotFound(`Reservation for ${invitationID} not found`);
-        
-        //Send to db
-        const parking = await this.commandBus.execute(
-            new AssignParkingCommand(invite.visitorEmail, reservation.parkingNumber)
+            new GetInviteReservationQuery(invitationID),
         );
 
-        if(parking)
-            return parking;
-         else 
-            throw new ExternalError("Error outside the parking.service");
-     }
+        if (!reservation)
+            throw new ReservationNotFound(
+                `Reservation for ${invitationID} not found`,
+            );
+
+        //Send to db
+        const parking = await this.commandBus.execute(
+            new AssignParkingCommand(
+                invite.visitorEmail,
+                reservation.parkingNumber,
+            ),
+        );
+
+        if (parking) return parking;
+        else throw new ExternalError("Error outside the parking.service");
+    }
 
     /*
     Reserve the first open parking space
@@ -140,27 +139,32 @@ export class ParkingService {
 
     Status: Still need 1 test case ( when no free parking available )
     */
-    async reserveParking(
-        invitationID:string
-    ){
+    async reserveParking(invitationID: string) {
         //Validate input
         const invite = await this.inviteService.getInvite(invitationID);
 
-        if(!invite) {
-            throw new InviteNotFound(`Invitation with ID ${invitationID} not found`);
+        if (!invite) {
+            throw new InviteNotFound(
+                `Invitation with ID ${invitationID} not found`,
+            );
         }
 
         //Additional Checks
-        const InviteReservation = await this.queryBus.execute(new GetInviteReservationQuery(invitationID));
+        const InviteReservation = await this.queryBus.execute(
+            new GetInviteReservationQuery(invitationID),
+        );
 
-        if(InviteReservation) {
-            throw new InvalidCommand(`Invitation with ID ${invitationID} already have reserved parking.`)
+        if (InviteReservation) {
+            throw new InvalidCommand(
+                `Invitation with ID ${invitationID} already have reserved parking.`,
+            );
         }
-        
-        console.log(invite);
-        const isParkingAvailable = await this.isParkingAvailable(invite.inviteDate);
 
-        if(!isParkingAvailable) {
+        const isParkingAvailable = await this.isParkingAvailable(
+            invite.inviteDate,
+        );
+
+        if (!isParkingAvailable) {
             throw new InvalidCommand("Parking not available");
         }
 
@@ -169,39 +173,43 @@ export class ParkingService {
         let temp = true;
         const spaces = await this.getAvailableParking();
 
-        for(let i=0;i<spaces;i++){
+        for (let i = 0; i < spaces; i++) {
             const reservations = await this.queryBus.execute(
-                new GetParkingReservationsQuery(parkingNumber));
+                new GetParkingReservationsQuery(parkingNumber),
+            );
 
             temp = true;
-            for(let j=0;j<reservations.length;j++) {
-                const resInvite = await this.inviteService.getInvite(reservations[j].invitationID);
-                if(resInvite && resInvite.inviteDate === invite.inviteDate) {
-                    temp =false;
+            for (let j = 0; j < reservations.length; j++) {
+                const resInvite = await this.inviteService.getInvite(
+                    reservations[j].invitationID,
+                );
+                if (resInvite && resInvite.inviteDate === invite.inviteDate) {
+                    temp = false;
                     break;
                 }
             }
 
-            if(temp) {
+            if (temp) {
                 parkingNumber = i;
                 break;
             }
         }
 
-        if(parkingNumber == -1) {
+        if (parkingNumber == -1) {
             throw new ParkingNotFound("There is no parking available");
         }
 
         //Send to db
         const parkingReservation = await this.commandBus.execute(
-            new ReserveParkingCommand(invitationID,parkingNumber,invite.inviteDate)
+            new ReserveParkingCommand(
+                invitationID,
+                parkingNumber,
+                invite.inviteDate,
+            ),
         );
 
-        if(parkingReservation) 
-            return parkingReservation;
-         else 
-            throw new ExternalError("Error outside the parking.service");
-        
+        if (parkingReservation) return parkingReservation;
+        else throw new ExternalError("Error outside the parking.service");
     }
 
     /*
@@ -216,54 +224,67 @@ export class ParkingService {
 
     Status: Done
     */
-    async reserveParkingSpace(
-        parkingNumber:number,
-        invitationID:string
-    ){
+    async reserveParkingSpace(parkingNumber: number, invitationID: string) {
         //Validate input
         const invite = await this.inviteService.getInvite(invitationID);
 
-        if(!invite)
-        throw new InviteNotFound(`Invitation with ID ${invitationID} not found`);
+        if (!invite)
+            throw new InviteNotFound(
+                `Invitation with ID ${invitationID} not found`,
+            );
 
         const spaces = await this.getAvailableParking();
 
-        if(parkingNumber<0 ||  parkingNumber>spaces)
-            throw new InvalidCommand(`Parking number ${parkingNumber} is out of parking range. Parking range from 0 to ${spaces}`);
-        
+        if (parkingNumber < 0 || parkingNumber > spaces)
+            throw new InvalidCommand(
+                `Parking number ${parkingNumber} is out of parking range. Parking range from 0 to ${spaces}`,
+            );
+
         //Additional Checks
         const parking = await this.queryBus.execute(
-            new GetParkingQuery(parkingNumber));
+            new GetParkingQuery(parkingNumber),
+        );
 
-        if(parking.enabled == false)
-            throw new ParkingNotFound(`Parking number ${parkingNumber} is temporarily disabled.`);
+        if (parking.enabled == false)
+            throw new ParkingNotFound(
+                `Parking number ${parkingNumber} is temporarily disabled.`,
+            );
 
         const InviteReservation = await this.queryBus.execute(
-            new GetInviteReservationQuery(invitationID));
+            new GetInviteReservationQuery(invitationID),
+        );
 
-        if(InviteReservation)
-            throw new InvalidCommand(`Invitation with ID ${invitationID} already have reserved parking.`)
+        if (InviteReservation)
+            throw new InvalidCommand(
+                `Invitation with ID ${invitationID} already have reserved parking.`,
+            );
 
         const ParkingReservations = await this.queryBus.execute(
-            new GetParkingReservationsQuery(parkingNumber)
-        )
+            new GetParkingReservationsQuery(parkingNumber),
+        );
 
         //TODO (Kyle) : Is there a more efficient way?
-        for(let i=0;i<ParkingReservations.length;i++){
-            if(ParkingReservations[i].reservationDate === invite.inviteDate)
-                throw new InvalidCommand(`Parking number ${parkingNumber} is not available.`);
+        for (let i = 0; i < ParkingReservations.length; i++) {
+            if (ParkingReservations[i].reservationDate === invite.inviteDate)
+                throw new InvalidCommand(
+                    `Parking number ${parkingNumber} is not available.`,
+                );
         }
 
         //Send to db
         const parkingReservation = await this.commandBus.execute(
-            new ReserveParkingCommand(invitationID,parkingNumber,invite.inviteDate)
+            new ReserveParkingCommand(
+                invitationID,
+                parkingNumber,
+                invite.inviteDate,
+            ),
         );
-        
-        if(parkingReservation) 
-            return parkingReservation;
-        else 
-            throw new ParkingNotFound(`Parking with Number: ${parkingNumber} not found.`);
-            
+
+        if (parkingReservation) return parkingReservation;
+        else
+            throw new ParkingNotFound(
+                `Parking with Number: ${parkingNumber} not found.`,
+            );
     }
 
     /*
@@ -276,19 +297,19 @@ export class ParkingService {
 
     Status: Done
     */
-    async unreserveParking(
-        invitationID:string,
-    ){
+    async unreserveParking(invitationID: string) {
         //Validate input
         const invite = await this.inviteService.getInvite(invitationID);
 
-        if(!invite)
-        throw new InviteNotFound(`Invitation with ID ${invitationID} not found.`);
-        
+        if (!invite)
+            throw new InviteNotFound(
+                `Invitation with ID ${invitationID} not found.`,
+            );
+
         //Send to db
         await this.commandBus.execute(
-            new UnreserveParkingCommand(invitationID));
-
+            new UnreserveParkingCommand(invitationID),
+        );
     }
 
     /*
@@ -302,22 +323,20 @@ export class ParkingService {
 
     Status: Done
     */
-    async createNParkingSpots(
-        N:number,
-    ){
+    async createNParkingSpots(N: number) {
         //Validate input
-        if(N<0)
-            throw new InvalidCommand(`Cannot create ${N} number of parking spots.`)
+        if (N < 0)
+            throw new InvalidCommand(
+                `Cannot create ${N} number of parking spots.`,
+            );
 
         //Send to db
         const parking = await this.commandBus.execute(
-            new CreateNParkingSpotsCommand(N));
-        
-        if(parking) 
-            return true;
-         else 
-            throw new ExternalError("Error outside the parking.service.");
-            
+            new CreateNParkingSpotsCommand(N),
+        );
+
+        if (parking) return true;
+        else throw new ExternalError("Error outside the parking.service.");
     }
 
     /*
@@ -331,24 +350,22 @@ export class ParkingService {
 
     Status: Done
     */
-    async enableParkingSpace(
-        parkingNumber:number,
-    ){
+    async enableParkingSpace(parkingNumber: number) {
         //Validate input
         const spaces = await this.getAvailableParking();
 
-        if(parkingNumber<0 ||  parkingNumber>spaces)
-            throw new InvalidCommand(`Parking number ${parkingNumber} is out of parking range. Parking range from 0 to ${spaces}`);
+        if (parkingNumber < 0 || parkingNumber > spaces)
+            throw new InvalidCommand(
+                `Parking number ${parkingNumber} is out of parking range. Parking range from 0 to ${spaces}`,
+            );
 
         //Send to db
         const parking = await this.commandBus.execute(
-            new EnableParkingSpaceCommand(parkingNumber));
-        
-        if(parking) 
-            return parking;
-         else 
-            throw new ExternalError("Error outside the parking.service.");
-            
+            new EnableParkingSpaceCommand(parkingNumber),
+        );
+
+        if (parking) return parking;
+        else throw new ExternalError("Error outside the parking.service.");
     }
 
     /*
@@ -362,25 +379,22 @@ export class ParkingService {
 
     Status: Done
     */
-    async disableParkingSpace(
-        parkingNumber:number,
-    ){
+    async disableParkingSpace(parkingNumber: number) {
         //Validate input
         const spaces = await this.getAvailableParking();
 
-        if(parkingNumber<0 ||  parkingNumber>spaces)
-            throw new InvalidCommand(`Parking number ${parkingNumber} is out of parking range. Parking range from 0 to ${spaces}`);
+        if (parkingNumber < 0 || parkingNumber > spaces)
+            throw new InvalidCommand(
+                `Parking number ${parkingNumber} is out of parking range. Parking range from 0 to ${spaces}`,
+            );
 
         //Send to db
         const parking = await this.commandBus.execute(
-            new DisableParkingSpaceCommand(parkingNumber));
-        
-        if(parking) 
-            return parking;
-         else 
-            
-         throw new ExternalError("Error outside the parking.service.");
-            
+            new DisableParkingSpaceCommand(parkingNumber),
+        );
+
+        if (parking) return parking;
+        else throw new ExternalError("Error outside the parking.service.");
     }
 
     //////////////////////////////////////QUERIES
@@ -396,22 +410,18 @@ export class ParkingService {
 
     Status: Missing one test case
     */
-    async getFreeParking(
-    ){
-        const parkings = await this.queryBus.execute(
-            new GetFreeParkingQuery());
+    async getFreeParking() {
+        const parkings = await this.queryBus.execute(new GetFreeParkingQuery());
 
-        if(parkings) {
-            if(parkings.length > 0) {
+        if (parkings) {
+            if (parkings.length > 0) {
                 return parkings;
             } else {
-                throw new ParkingNotFound("No Free parkings.")
+                throw new ParkingNotFound("No Free parkings.");
             }
-
         } else {
             throw new ExternalError("Error outside the parking.service.");
         }
-            
     }
 
     /*
@@ -423,21 +433,15 @@ export class ParkingService {
 
     Returns: an array of parking reservations
     */
-    async getReservations(
-        ){
-            const parkings = await this.queryBus.execute(
-                new GetReservationsQuery());
-    
-            if(parkings)
-            {
-                if(parkings.length > 0) 
-                    return parkings;
-                else
-                    throw new ReservationNotFound("No Reserved parkings")
-    
-            }else 
-                throw new ExternalError("Error outside the parking.service");
-                
+    async getReservations() {
+        const parkings = await this.queryBus.execute(
+            new GetReservationsQuery(),
+        );
+
+        if (parkings) {
+            if (parkings.length > 0) return parkings;
+            else throw new ReservationNotFound("No Reserved parkings");
+        } else throw new ExternalError("Error outside the parking.service");
     }
 
     /*
@@ -452,28 +456,26 @@ export class ParkingService {
 
     Status: Done except if the parking number should be checked differently?
     */
-    async getParkingReservations(
-        parkingNumber: number,
-        ){
-            //Validate input
-            const spaces = await this.getAvailableParking();
+    async getParkingReservations(parkingNumber: number) {
+        //Validate input
+        const spaces = await this.getAvailableParking();
 
-            if(parkingNumber<0 ||  parkingNumber>spaces)
-            throw new InvalidQuery(`Parking number ${parkingNumber} is out of parking range. Parking range from 0 to ${spaces}`);
+        if (parkingNumber < 0 || parkingNumber > spaces)
+            throw new InvalidQuery(
+                `Parking number ${parkingNumber} is out of parking range. Parking range from 0 to ${spaces}`,
+            );
 
-            const reservations = await this.queryBus.execute(
-                new GetParkingReservationsQuery(parkingNumber));
-    
-            if(reservations)
-            {
-                if(reservations.length > 0) 
-                    return reservations;
-                else
-                    throw new ParkingNotFound(`No reservations for parking number ${parkingNumber}`)
-    
-            }else 
-                throw new ExternalError("Error outside the parking.service");
-                
+        const reservations = await this.queryBus.execute(
+            new GetParkingReservationsQuery(parkingNumber),
+        );
+
+        if (reservations) {
+            if (reservations.length > 0) return reservations;
+            else
+                throw new ParkingNotFound(
+                    `No reservations for parking number ${parkingNumber}`,
+                );
+        } else throw new ExternalError("Error outside the parking.service");
     }
 
     /*
@@ -487,23 +489,24 @@ export class ParkingService {
 
     Status: Done
     */
-    async getInviteReservation(
-        invitationID: string,
-        ){
-            const invite = await this.inviteService.getInvite(invitationID);
+    async getInviteReservation(invitationID: string) {
+        const invite = await this.inviteService.getInvite(invitationID);
 
-            if(!invite)
-            throw new InviteNotFound(`Invitation with ID ${invitationID} not found.`);
+        if (!invite)
+            throw new InviteNotFound(
+                `Invitation with ID ${invitationID} not found.`,
+            );
 
-            const reservation = await this.queryBus.execute(
-                new GetInviteReservationQuery(invitationID));
-    
-            if(reservation)
-            {
-                return reservation;
-            }else 
-                throw new ParkingNotFound(`No reservations for invitation with ID ${invitationID}`)
-                
+        const reservation = await this.queryBus.execute(
+            new GetInviteReservationQuery(invitationID),
+        );
+
+        if (reservation) {
+            return reservation;
+        } else
+            throw new ParkingNotFound(
+                `No reservations for invitation with ID ${invitationID}`,
+            );
     }
 
     /*
@@ -516,19 +519,14 @@ export class ParkingService {
 
     Status: Done
     */
-    async getAvailableParking(
-        ){
-            const amount = this.queryBus.execute(
-                new GetAvailableParkingQuery()
-            )
-    
-            if(amount)
-                return amount;
-            else
-                throw new ExternalError("Error outside the parking.service");
-        }
+    async getAvailableParking() {
+        const amount = this.queryBus.execute(new GetAvailableParkingQuery());
 
-     /*
+        if (amount) return amount;
+        else throw new ExternalError("Error outside the parking.service");
+    }
+
+    /*
     Get the reservations within the range
 
     Throws:
@@ -539,24 +537,22 @@ export class ParkingService {
 
     Status: 
     */
-    async getParkingReservationInRange(
-        startDate: string,
-        endDate: string
-    ){
+    async getParkingReservationInRange(startDate: string, endDate: string) {
         //Validate Input
         const start = Date.parse(startDate);
         const end = Date.parse(endDate);
 
-        if(isNaN(start) || isNaN(end)) {
+        if (isNaN(start) || isNaN(end)) {
             throw new InvalidQuery("Given date is not of the form yyyy-mm-dd");
-        } else if(start > end) {
-            throw new InvalidQuery("Start date can not be later than the end date");
+        } else if (start > end) {
+            throw new InvalidQuery(
+                "Start date can not be later than the end date",
+            );
         }
 
         return this.queryBus.execute(
-            new GetReservationsInRangeQuery(startDate,endDate)
+            new GetReservationsInRangeQuery(startDate, endDate),
         );
-
     }
 
     /*
@@ -570,74 +566,79 @@ export class ParkingService {
 
     Status: Done
     */
-    async getUsedParkingInRangeByDate(
-        startDate: string,
-        endDate: string
-    ){
-
+    async getUsedParkingInRangeByDate(startDate: string, endDate: string) {
         //Validate Input
         const start = Date.parse(startDate);
         const end = Date.parse(endDate);
 
-        if(isNaN(start) || isNaN(end)) {
-            throw new InvalidQuery("Given dates must be of the form yyyy-mm-dd");
-        } else if(start > end) {
-            throw new InvalidQuery("Start date can not be later than the end date");
+        if (isNaN(start) || isNaN(end)) {
+            throw new InvalidQuery(
+                "Given dates must be of the form yyyy-mm-dd",
+            );
+        } else if (start > end) {
+            throw new InvalidQuery(
+                "Start date can not be later than the end date",
+            );
         }
-        
+
         let amounts = [];
 
         let endD = new Date(endDate);
         let loopD = new Date(startDate);
         let i = 0;
-        while(loopD <= endD){   
+        while (loopD <= endD) {
             let temp = await this.queryBus.execute(
-                new GetReservationsByDateQuery(loopD.toDateString())
-            )
+                new GetReservationsByDateQuery(loopD.toDateString()),
+            );
             amounts[i] = temp.length;
             loopD = new Date(loopD.setDate(loopD.getDate() + 1));
             i++;
         }
 
         return amounts;
-
     }
 
     async getNumberOfReservations(startDate: string) {
         const start = Date.parse(startDate);
 
-        if(isNaN(start)) {
-            throw new InvalidQuery("Given dates must be of the form yyyy-mm-dd");
-        }     
-        
-        return this.queryBus.execute(new GetNumberOfReservationsQuery(startDate));
+        if (isNaN(start)) {
+            throw new InvalidQuery(
+                "Given dates must be of the form yyyy-mm-dd",
+            );
+        }
+
+        return this.queryBus.execute(
+            new GetNumberOfReservationsQuery(startDate),
+        );
     }
 
     async isParkingAvailable(startDate?: string) {
         const start = Date.parse(startDate);
 
-        if(isNaN(start)) {
+        if (isNaN(start)) {
             const now = new Date();
             const year = now.getFullYear();
             let month = "" + (now.getMonth() + 1);
             let day = "" + now.getDate();
-                
+
             if (month.length < 2) {
-                month = '0' + month;
+                month = "0" + month;
             }
 
             if (day.length < 2) {
-                day = '0' + day;
-            } 
+                day = "0" + day;
+            }
 
-            startDate = [year, month, day].join('-');
-        }     
-        
-        const numReservationsForDay = await this.queryBus.execute(new GetNumberOfReservationsQuery(startDate));
-        const numAvailableParkingForDay = await this.queryBus.execute(new GetAvailableParkingQuery());
+            startDate = [year, month, day].join("-");
+        }
+
+        const numReservationsForDay = await this.queryBus.execute(
+            new GetNumberOfReservationsQuery(startDate),
+        );
+        const numAvailableParkingForDay = await this.queryBus.execute(
+            new GetAvailableParkingQuery(),
+        );
 
         return numReservationsForDay < numAvailableParkingForDay;
     }
-
-
 }
