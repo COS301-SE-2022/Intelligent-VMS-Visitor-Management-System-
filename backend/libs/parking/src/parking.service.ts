@@ -1,18 +1,18 @@
 import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
-import { AssignParkingCommand } from "./commands/impl/assignParking.command";
-import { FreeParkingCommand } from "./commands/impl/freeParking.command";
-import { ReserveParkingCommand } from "./commands/impl/reserveParking.command";
-import { EnableParkingSpaceCommand } from "./commands/impl/enableParkingSpace.command";
-import { DisableParkingSpaceCommand } from "./commands/impl/disableParkingSpace.command";
-import { UnreserveParkingCommand } from "./commands/impl/unreserveParking.command";
-import { CreateNParkingSpotsCommand } from "./commands/impl/createNParkingSpots.command";
-import { AddParkingCommand } from "./commands/impl/addParking.command";
-import { GetAvailableParkingQuery } from "./queries/impl/getAvailableParking.query";
-import { GetFreeParkingQuery } from "./queries/impl/getFreeParking.query";
-import { GetInviteReservationQuery } from "./queries/impl/getInviteReservation.query";
-import { GetReservationsQuery } from "./queries/impl/getReservations.query";
-import { GetParkingReservationsQuery } from "./queries/impl/getParkingReservations.query";
+import { AssignParkingCommand } from './commands/impl/assignParking.command';
+import { FreeParkingCommand } from './commands/impl/freeParking.command';
+import { ReserveParkingCommand } from './commands/impl/reserveParking.command';
+import { EnableParkingSpaceCommand } from './commands/impl/enableParkingSpace.command';
+import { DisableParkingSpaceCommand } from './commands/impl/disableParkingSpace.command';
+import { UnreserveParkingCommand } from './commands/impl/unreserveParking.command';
+import { CreateNParkingSpotsCommand } from './commands/impl/createNParkingSpots.command';
+import { AddParkingCommand } from './commands/impl/addParking.command';
+import { getTotalAvailableParkingQuery } from './queries/impl/getTotalAvailableParking.query';
+import { GetFreeParkingQuery } from './queries/impl/getFreeParking.query';
+import { GetInviteReservationQuery } from './queries/impl/getInviteReservation.query';
+import { GetReservationsQuery } from './queries/impl/getReservations.query';
+import { GetParkingReservationsQuery } from './queries/impl/getParkingReservations.query';
 import { GetReservationsInRangeQuery } from "./queries/impl/getReservationsInRange.query";
 import { InvalidQuery } from "./errors/invalidQuery.error";
 import { ReservationNotFound } from "./errors/reservationNotFound.error";
@@ -67,7 +67,7 @@ export class ParkingService {
     */
     async freeParking(parkingNumber: number) {
         //Validate input
-        const spaces = await this.getAvailableParking();
+        const spaces = await this.getTotalAvailableParking();
 
         if (parkingNumber < 0 || parkingNumber > spaces)
             throw new InvalidCommand(
@@ -139,15 +139,19 @@ export class ParkingService {
 
     Status: Still need 1 test case ( when no free parking available )
     */
-    async reserveParking(invitationID: string) {
+    async reserveParking(
+        invitationID:string
+    ){
         //Validate input
-        const invite = await this.inviteService.getInvite(invitationID);
+        const invite = await this.inviteService.getInvite(invitationID);   
 
         if (!invite) {
             throw new InviteNotFound(
                 `Invitation with ID ${invitationID} not found`,
             );
         }
+
+        const inviteDate = new Date(invite.inviteDate).getDate();
 
         //Additional Checks
         const InviteReservation = await this.queryBus.execute(
@@ -233,7 +237,7 @@ export class ParkingService {
                 `Invitation with ID ${invitationID} not found`,
             );
 
-        const spaces = await this.getAvailableParking();
+        const spaces = await this.getTotalAvailableParking();
 
         if (parkingNumber < 0 || parkingNumber > spaces)
             throw new InvalidCommand(
@@ -352,7 +356,7 @@ export class ParkingService {
     */
     async enableParkingSpace(parkingNumber: number) {
         //Validate input
-        const spaces = await this.getAvailableParking();
+        const spaces = await this.getTotalAvailableParking();
 
         if (parkingNumber < 0 || parkingNumber > spaces)
             throw new InvalidCommand(
@@ -381,7 +385,7 @@ export class ParkingService {
     */
     async disableParkingSpace(parkingNumber: number) {
         //Validate input
-        const spaces = await this.getAvailableParking();
+        const spaces = await this.getTotalAvailableParking();
 
         if (parkingNumber < 0 || parkingNumber > spaces)
             throw new InvalidCommand(
@@ -456,9 +460,11 @@ export class ParkingService {
 
     Status: Done except if the parking number should be checked differently?
     */
-    async getParkingReservations(parkingNumber: number) {
-        //Validate input
-        const spaces = await this.getAvailableParking();
+    async getParkingReservations(
+        parkingNumber: number,
+        ){
+            //Validate input
+            const spaces = await this.getTotalAvailableParking();
 
         if (parkingNumber < 0 || parkingNumber > spaces)
             throw new InvalidQuery(
@@ -519,14 +525,33 @@ export class ParkingService {
 
     Status: Done
     */
-    async getAvailableParking() {
-        const amount = this.queryBus.execute(new GetAvailableParkingQuery());
-
-        if (amount) return amount;
-        else throw new ExternalError("Error outside the parking.service");
-    }
+    async getTotalAvailableParking(
+        ){
+            const amount = this.queryBus.execute(
+                new getTotalAvailableParkingQuery()
+            )
+    
+            if(amount)
+                return amount;
+            else
+                throw new ExternalError("Error outside the parking.service");
+        }
 
     /*
+    */
+    async getAvailableParking(
+        ){
+            const parking = this.queryBus.execute(
+                new getAvailableParkingQuery()
+            )
+    
+            if(parking)
+                return parking;
+            else
+                throw new ExternalError("Error outside the parking.service");
+        }
+
+     /*
     Get the reservations within the range
 
     Throws:

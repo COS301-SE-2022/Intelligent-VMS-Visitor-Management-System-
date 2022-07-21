@@ -24,7 +24,7 @@ import { DateFormatError } from "./errors/dateFormat.error";
 import { InviteLimitReachedError } from "./errors/inviteLimitReached.error";
 
 import { ReserveParkingCommand } from "@vms/parking/commands/impl/reserveParking.command";
-import { GetAvailableParkingQuery } from '@vms/parking/queries/impl/getAvailableParking.query';
+import { getTotalAvailableParkingQuery } from '@vms/parking/queries/impl/getTotalAvailableParking.query';
 import { ParkingNotFound } from "@vms/parking/errors/parkingNotFound.error";
 import { MailService } from "@vms/mail";
 import { RestrictionsService } from "@vms/restrictions";
