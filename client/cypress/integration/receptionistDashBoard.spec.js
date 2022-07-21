@@ -38,20 +38,51 @@ describe('My First Test', () => {
         })
         
         //Checking visitor dashboard
-        describe('Navigate to visitor dashboard/confirm', () => {
+        describe('Navigate to receptionist dashboard/confirm navigation success', () => {
             cy.url().should('include', '/visitorDashboard');//confirm correct page
+        })
+        describe('Checking receptionist dashboard contents', () => {
+            //checks for the relavant elements on the page
             cy.contains('Welcome back,Receptionist');
             cy.contains('User Invites');
             cy.contains('Total Number Of Invites Sent');
             cy.contains('Maximum Invites Allowed');
+            cy.contains('Open invites', { matchCase: false });
+
+            cy.get('.table-compact').children().should('contain','Email')//check for table/correct table headings.
+            .and('contain','ID Document Type')
+            .and('contain','ID Number')
+            .and('contain','Date')
+            .and('contain','Cancel Invite');
+
+            //check that the footer has rendered
+            cy.contains('Team Firestorm').and('contain','Providing reliable tech since 2022');
         })
+       
             
+        //uncomment the 5 lines of code below to have it download a pdf as well
+        /*
         describe("will click the download button",()=>{
             cy.get('[download="Receptionist-weekly.png"]')
             .should('be.visible')
             .click()
+        })*/
+
+        describe('Navigate to receptionist invite user/confirm navigation success', () => {
+            cy.get('.menuIcon').click();
+            cy.contains('create invite', { matchCase: false }).click();
+            cy.url().should('include', '/createInvite');//confirm correct page
         })
-       
+
+        describe('Filling in a user invite', () => {
+            cy.get('input[name="email"]').type('Stefan1234@mail.com').should('have.value', 'Stefan1234@mail.com');
+            cy.get('input[name="idValue"]').type('9910304129088').should('have.value', '9910304129088');
+            cy.get('input[name="name"]').type('Steffany').should('have.value', 'Steffany');
+        })
+
+
+
+        //===============================ignore below...will implement it if we have time=====================
        //file download attempt
         // describe('file download', () => {
         //   //  it('verifies download', () => {
