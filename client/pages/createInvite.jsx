@@ -50,11 +50,6 @@ const CreateInvite = () => {
         return state.decodedToken;
     })();
 
-    // Get number of parking spots available
-    const numParkingSpotsAvailable = useAuth((state) => {
-        return state.numParkingSpots;
-    });
-
     // Car Animation Framer Motion Variant
     const driveAway = {
         initial: {
@@ -113,6 +108,10 @@ const CreateInvite = () => {
                 setLimitReached(false);
                 setShowErrorAlert(false);
             }
+        } else if(!numInvitesOfResidentQuery.loading && numInvitesOfResidentQuery.error){
+            if(numInvitesOfResidentQuery.error.message === "Unauthorized") {
+                router.push("/expire");
+            }
         }
 
         if (
@@ -126,6 +125,9 @@ const CreateInvite = () => {
             !isParkingAvailableQuery.loading &&
             isParkingAvailableQuery.error
         ) {
+            if(isParkingAvailableQuery.error.message === "Unauthorized") {
+                router.push("/expire");
+            }
             setErrorMessage(isParkingAvailableQuery.error.message);
             setShowErrorAlert(true);
         }
