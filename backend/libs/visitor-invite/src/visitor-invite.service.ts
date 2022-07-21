@@ -13,6 +13,7 @@ import { GetNumberOfInvitesOfResidentQuery } from "./queries/impl/getNumberOfInv
 import { GetInvitesByNameQuery } from "./queries/impl/getInvitesByName.query";
 import { GetInvitesInRangeByEmailQuery } from "./queries/impl/getInvitesInRangeByEmail.query";
 import { GetTotalNumberOfInvitesVisitorQuery } from "./queries/impl/getTotalNumberOfInvitesVisitor.query";
+import { GetNumberOfOpenInvitesQuery } from "./queries/impl/getNumberOfOpenInvites.query";
 
 import { GetInvitesByDateQuery } from "./queries/impl/getInvitesByDate.query";
 
@@ -67,6 +68,11 @@ export class VisitorInviteService {
 
         // Generate inviteID
         const inviteID = randomUUID();
+        
+        // Parking
+        if(requiresParking) {
+            await this.parkingService.reserveParking(inviteID);
+        }
 
         // Entry in db
         await this.commandBus.execute(
@@ -80,11 +86,6 @@ export class VisitorInviteService {
                 inviteID,
             ),
         );
-
-        // Parking
-        if(requiresParking) {
-            await this.parkingService.reserveParking(inviteID);
-        }
 
         const info = await this.mailService.sendInvite(visitorEmail, userEmail, inviteID, idDocType, requiresParking);
         return info.messageId;
@@ -201,9 +202,30 @@ export class VisitorInviteService {
        return await this.queryBus.execute(new GetInvitesInRangeByEmailQuery(dateStart, dateEnd, email));
     }
 
-    // Get Number of total open invites per resident
+    // Get Number of total invites per resident
     async getTotalNumberOfInvitesOfResident(email: string) {
         return await this.queryBus.execute(new GetNumberOfInvitesOfResidentQuery(email)); 
+    }
+
+    // Get Number of invites per resident
+    async getNumberOfOpenInvites(email: string) {
+        const now = new Date();
+        const year = now.getFullYear();
+        let month = "" + (now.getMonth() + 1);
+        let day = "" + now.getDate();
+
+        if (month.length < 2) {
+            month = "0" + month;
+        }
+
+        if (day.length < 2) {
+            day = "0" + day;
+        }
+
+        const currDate = [year, month, day].join("-");
+
+        return await this.queryBus.execute(new GetNumberOfOpenInvitesQuery(email,currDate)); 
+
     }
 
     // Get All Invites regardless of user

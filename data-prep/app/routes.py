@@ -1,4 +1,5 @@
 from app import app,APP_ROOT
+from flask import request
 
 from app.model import predictMany,train,featureAnalysis
 
@@ -7,7 +8,9 @@ def home():
     return "hello world"
 
 @app.route("/predict")
-def predict(startDate,endDate):
+def predict():
+    startDate = request.args.get('startDate')
+    endDate = request.args.get('endDate')
     return predictMany(startDate,endDate)
 
 @app.route("/featureAnalysis")

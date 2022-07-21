@@ -111,7 +111,6 @@ export class VisitorInviteResolver {
         return await this.visitorInviteService.getInvitesByName(name);
     }
 
-
     // Get the invites associated with given name for receptionist search
     @UseGuards(GqlAuthGuard, RolesGuard)
     @Roles("receptionist")
@@ -137,13 +136,21 @@ export class VisitorInviteResolver {
         return await this.visitorInviteService.getTotalNumberOfInvitesVisitor(email);
     }
 
-     //Get all invites in the database
-     @UseGuards(GqlAuthGuard, RolesGuard)
-     @Roles("receptionist", "admin")
-     @Query((returns) => [Invite], { name: "getInvitesByDate" })
-     async getAllInvites(@Args("date") date: string) {
-         return this.visitorInviteService.getInvitesByDate(date)
-     }
+    //Get all invites in the database
+    @UseGuards(GqlAuthGuard, RolesGuard)
+    @Roles("receptionist", "admin")
+    @Query((returns) => [Invite], { name: "getInvitesByDate" })
+    async getAllInvites(@Args("date") date: string) {
+        return this.visitorInviteService.getInvitesByDate(date)
+    }
+
+    // Get number of open invites for given user by email
+    @UseGuards(GqlAuthGuard, RolesGuard)
+    @Roles("receptionist", "admin", "resident")
+    @Query((returns) => { return Number}, { name: "getNumberOfOpenInvites"})
+    async getNumberOfOpenInvites(@Args("email") email: string) {
+        return await this.visitorInviteService.getNumberOfOpenInvites(email);
+    }
 
 }
 

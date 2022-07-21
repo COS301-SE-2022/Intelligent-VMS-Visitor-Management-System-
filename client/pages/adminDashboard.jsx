@@ -332,14 +332,14 @@ const AdminDashboard = () => {
                         />
                     </div>
 
-                    <h1 className="flex flex-col items-center space-x-3 text-2xl font-bold lg:flex-row">
+                    <h1 className="flex flex-col items-center justify-center space-x-3 text-2xl font-bold lg:flex-row">
                         <span className="mr-3 text-xl text-primary md:text-3xl">
                             <MdBlock />
                         </span>{" "}
                         System Restrictions
-                        <span>
+                        <div className="flex items-center">
                             {restrictionsChanged && (
-                                <div className="space-x-5">
+                                <div className="space-x-1 flex">
                                     <button
                                         onClick={saveRestrictions}
                                         className="btn btn-primary btn-sm space-x-3 lg:btn-md"
@@ -360,7 +360,7 @@ const AdminDashboard = () => {
                                     </button>
                                 </div>
                             )}
-                        </span>
+                        </div>
                     </h1>
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                         <div className="card bg-base-200">
