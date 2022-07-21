@@ -73,6 +73,8 @@ const AdminDashboard = () => {
     // Search visitor name state
     const [name, setName] = useState("");
 
+    const now = getFormattedDateString(new Date());
+
     const [numParkingSpotsAvailable, setNumParkingSpotsAvailable] = useState(0);
     const updateParkingSpots = useAuth((state) => {
         return state.updateParkingSpots;
@@ -216,6 +218,7 @@ const AdminDashboard = () => {
                 labels: Array.from(parkingDateMap.keys()),
                 data: Array.from(parkingDateMap.values()),
             });
+
         } else if (numParkingInDateRangeQuery.error) {
             console.error(numParkingInDateRangeQuery.error);
         }
@@ -242,6 +245,7 @@ const AdminDashboard = () => {
             setInitialNumInvitesPerResident(numInvitesPerResident);
         } else if (numInvitesPerResident.error) {
         }
+
     }, [
         numInvitesQuery,
         numInviteInDateRangeQuery,
@@ -259,14 +263,14 @@ const AdminDashboard = () => {
                 <div className="flex flex-col items-center justify-between md:flex-row">
                     <div className="flex-col">
                         <h1 className="mt-4 mb-4 text-3xl font-bold">
-                            Hello{" "}
+                            <span className="text-primary">Hi</span>{" "}
                             <span className="text-secondary">
-                                {decodedToken.email}
+                                {decodedToken.name}
+                            </span>
+                            <span>
+                                👋
                             </span>
                         </h1>
-                        <p className="text-tertiary prose mb-4">
-                            Welcome Back!
-                        </p>
                     </div>
 
                     <div>
@@ -304,9 +308,9 @@ const AdminDashboard = () => {
                             unit="Total"
                         />
                         <AdminCard
-                            description="Total Number Of Parking Spots Available"
+                            description="Number Of Parking Spots Available"
                             Icon={AiOutlineCar}
-                            dataval={numParkingSpotsAvailable}
+                            dataval={parkingDateMap.get(now) ? numParkingSpotsAvailable - parkingDateMap.get(now) : 0}
                             unit="Total"
                         />
                     </div>
@@ -318,7 +322,6 @@ const AdminDashboard = () => {
                             Chart={LineChart}
                             labelvals={visitorVals.labels}
                             datavals={visitorVals.data}
-                            setStart={setStartDate}
                         />
                         <DownloadChart
                             title={"Parking Forecast For The Week"}
@@ -326,7 +329,6 @@ const AdminDashboard = () => {
                             Chart={LineChart}
                             labelvals={parkingVals.labels}
                             datavals={parkingVals.data}
-                            setStart={setParkingStartDate}
                         />
                     </div>
 
@@ -361,7 +363,7 @@ const AdminDashboard = () => {
                         </span>
                     </h1>
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                        <div className="card bg-base-300">
+                        <div className="card bg-base-200">
                             <div className="card-body">
                                 <h2 className="card-title">
                                     Invites Per Resident{" "}
@@ -409,7 +411,7 @@ const AdminDashboard = () => {
                             </div>
                         </div>
 
-                        <div className="card bg-base-300">
+                        <div className="card bg-base-200">
                             <div className="card-body">
                                 <h2 className="card-title">
                                     Parking Spots Available{" "}

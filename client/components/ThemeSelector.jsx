@@ -6,13 +6,10 @@ import useTheme from "../store/themeStore";
 
 const ThemeSelector = () => {
     const themes = [
-        "night",
         "dark",
-        "dracula",
-        "light",
-        "retro",
-        "bumblebee",
-        "cyberpunk",
+        "business",
+        "winter",
+        "autumn",
         "random",
     ];
 
