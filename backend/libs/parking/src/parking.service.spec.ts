@@ -24,6 +24,7 @@ import { GetParkingQuery } from './queries/impl/getParking.query';
 import { EnableParkingSpaceCommand } from './commands/impl/enableParkingSpace.command';
 import { DisableParkingSpaceCommand } from './commands/impl/disableParkingSpace.command';
 import { GetReservationsByDateQuery } from './queries/impl/getReservationsByDate.query';
+import { GetNumberOfReservationsQuery } from './queries/impl/getNumberOfReservations.query';
 import { GetReservationsByDateQueryHandler } from './queries/handlers/getReservationsByDateQuery.handler';
 import { GetFreeParkingQuery } from './queries/impl/getFreeParking.query';
 import { GetReservationsInRangeQuery } from './queries/impl/getReservationsInRange.query';
@@ -39,8 +40,7 @@ describe('ParkingService', () => {
                 return 8;
             } else
             if(query instanceof getAvailableParkingQuery) {
-
-                let parkings = []
+                const parkings = []
                 let parking = new Parking();
                 parking.parkingNumber=0;
                 parking.visitorEmail="";
@@ -56,7 +56,7 @@ describe('ParkingService', () => {
                 parking.visitorEmail="";
                 parking.enabled=false;
                 parkings[2] = parking;
-                return parkings;
+                return 8;
             
             } else if(query instanceof GetInviteQuery){
                 if(query.inviteID === "cb7c7938-1c41-427d-833e-2c6b77e0e26b")
@@ -204,9 +204,9 @@ describe('ParkingService', () => {
                 reservation.reservationDate = "2022-03-06";
                 reservations[1]=reservation;
                 return reservations;
-            
-        }
-
+            } else if(query instanceof GetNumberOfReservationsQuery) {
+                return 0;
+            }
             
       }), 
   };

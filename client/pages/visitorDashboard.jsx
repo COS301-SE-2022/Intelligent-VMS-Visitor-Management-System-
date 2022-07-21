@@ -176,7 +176,7 @@ const VisitorDashboard = () => {
                 </h1>
                 <p>You have {todayInvites} visitors expected today.</p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 md:grid-rows-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 md:grid-rows-1 gap-4">
                 <DownloadChart
                     title={"User Invites"}
                     filename={token.name + "-weekly.png"}
@@ -185,7 +185,7 @@ const VisitorDashboard = () => {
                     datavals={visitorData.data}
                 />
                 <div className="flex flex-col gap-5">
-                    <div className="card h-full w-full bg-base-200 p-5 shadow">
+                    <div className="card w-full h-full bg-base-200 p-5 shadow">
                         <h2 className="card-title font-normal">
                             Total Number Of Invites Sent
                         </h2>
@@ -197,7 +197,7 @@ const VisitorDashboard = () => {
                         </div>
                         <div className="card-actions"></div>
                     </div>
-                    <div className="card h-full w-full bg-base-200 p-1 md:p-3 lg:p-5 shadow">
+                    <div className="card w-full h-full bg-base-200 p-1 md:p-3 lg:p-5 shadow">
                         <h2 className="card-title font-normal">
                             Maximum Invites Allowed
                         </h2>
@@ -238,6 +238,7 @@ const VisitorDashboard = () => {
                                     <th>Email</th>
                                     <th>ID Document Type</th>
                                     <th>ID Number</th>
+                                    <th>Date</th>
                                     <th>Cancel Invite</th>
                                 </tr>
                             </thead>
@@ -250,14 +251,17 @@ const VisitorDashboard = () => {
                                                 <td>{visit.visitorEmail}</td>
                                                 <td>{visit.idDocType}</td>
                                                 <td>{visit.idNumber}</td>
+                                                <td>{visit.inviteDate}</td>
                                                 <td>
                                                     <button
                                                         aria-label="cancel"
                                                         className="btn btn-primary btn-square"
-                                                        onClick={() => {
+                                                        onClick={(e) => {
+                                                            e.currentTarget.classList.add("loading");
                                                             cancelInvite(
                                                                 visit.inviteID
                                                             );
+                                                            e.currentTarget.classList.remove("loading");
                                                         }}
                                                     >
                                                         <svg

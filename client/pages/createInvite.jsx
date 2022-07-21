@@ -41,17 +41,14 @@ const CreateInvite = () => {
     const [errorMessage, setErrorMessage] = useState("");
 
     // Whether or not parking is available
-    const [isParkingAvailable, setIsParkingAvailable] = useState(false);
+    const [isParkingAvailable, setIsParkingAvailable] = useState(true);
+
+    const [now, setNow] = useState(getFormattedDateString(new Date()));
 
     // Get Data From JWT Token
     const jwtTokenData = useAuth((state) => {
         return state.decodedToken;
     })();
-
-    // Get number of parking spots available
-    const numParkingSpotsAvailable = useAuth((state) => {
-        return state.numParkingSpots;
-    });
 
     // Car Animation Framer Motion Variant
     const driveAway = {
@@ -66,7 +63,7 @@ const CreateInvite = () => {
 
     const isParkingAvailableQuery = useQuery(gql`
         query {
-          isParkingAvailable(startDate: "${getFormattedDateString(new Date())}")
+          isParkingAvailable(startDate: "${now}")
         }
     `);
 
@@ -111,6 +108,10 @@ const CreateInvite = () => {
                 setLimitReached(false);
                 setShowErrorAlert(false);
             }
+        } else if(!numInvitesOfResidentQuery.loading && numInvitesOfResidentQuery.error){
+            if(numInvitesOfResidentQuery.error.message === "Unauthorized") {
+                router.push("/expire");
+            }
         }
 
         if (
@@ -124,6 +125,9 @@ const CreateInvite = () => {
             !isParkingAvailableQuery.loading &&
             isParkingAvailableQuery.error
         ) {
+            if(isParkingAvailableQuery.error.message === "Unauthorized") {
+                router.push("/expire");
+            }
             setErrorMessage(isParkingAvailableQuery.error.message);
             setShowErrorAlert(true);
         }
@@ -132,6 +136,7 @@ const CreateInvite = () => {
         numInvitesOfResidentQuery,
         numInvitesAllowed,
         limitReached,
+        setNow
     ]);
 
     return (
@@ -143,7 +148,7 @@ const CreateInvite = () => {
                         idDoc: "RSA-ID",
                         name: "",
                         idValue: "",
-                        visitDate: "",
+                        visitDate: now,
                         reserveParking: false,
                     }}
                     validate={(values) => {
@@ -307,7 +312,10 @@ const CreateInvite = () => {
                                     name="visitDate"
                                     placeholder="Visit Date"
                                     className="input input-bordered w-full"
-                                    onChange={handleChange}
+                                    onChange={(e) => {
+                                        handleChange(e);
+                                        setNow(e.currentTarget.value);
+                                    }}
                                     onBlur={handleBlur}
                                     value={values.visitDate}
                                 />
@@ -341,7 +349,7 @@ const CreateInvite = () => {
                                     <motion.input
                                         className="disabled toggle"
                                         disabled={
-                                            numParkingSpotsAvailable > 0
+                                             isParkingAvailable
                                                 ? false
                                                 : true
                                         }
@@ -351,6 +359,11 @@ const CreateInvite = () => {
                                         onBlur={handleBlur}
                                         value={values.reserveParking}
                                     />
+                                    { !isParkingAvailable && 
+                                    <span className="text-error">
+                                        Parking Full 
+                                    </span>
+                                    }
                                 </motion.label>
 
                                 <button
