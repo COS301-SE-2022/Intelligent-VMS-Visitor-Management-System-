@@ -24,6 +24,7 @@ import { GetParkingQuery } from './queries/impl/getParking.query';
 import { EnableParkingSpaceCommand } from './commands/impl/enableParkingSpace.command';
 import { DisableParkingSpaceCommand } from './commands/impl/disableParkingSpace.command';
 import { GetReservationsByDateQuery } from './queries/impl/getReservationsByDate.query';
+import { GetNumberOfReservationsQuery } from './queries/impl/getNumberOfReservations.query';
 import { GetReservationsByDateQueryHandler } from './queries/handlers/getReservationsByDateQuery.handler';
 import { GetFreeParkingQuery } from './queries/impl/getFreeParking.query';
 import { GetReservationsInRangeQuery } from './queries/impl/getReservationsInRange.query';
@@ -182,9 +183,9 @@ describe('ParkingService', () => {
                 reservation.reservationDate = "2022-03-06";
                 reservations[1]=reservation;
                 return reservations;
-            
-        }
-
+            } else if(query instanceof GetNumberOfReservationsQuery) {
+                return 6;
+            }
             
       }), 
   };
