@@ -156,9 +156,14 @@ export class ParkingService {
         if(InviteReservation) {
             throw new InvalidCommand(`Invitation with ID ${invitationID} already have reserved parking.`)
         }
-
-        //const numParkingspotsAvailable = 
         
+        console.log(invite);
+        const isParkingAvailable = await this.isParkingAvailable(invite.inviteDate);
+
+        if(!isParkingAvailable) {
+            throw new InvalidCommand("Parking not available");
+        }
+
         //Find Free Parking
         let parkingNumber = -1;
         let temp = true;
@@ -608,11 +613,24 @@ export class ParkingService {
         return this.queryBus.execute(new GetNumberOfReservationsQuery(startDate));
     }
 
-    async isParkingAvailable(startDate: string) {
+    async isParkingAvailable(startDate?: string) {
         const start = Date.parse(startDate);
 
         if(isNaN(start)) {
-            throw new InvalidQuery("Given dates must be of the form yyyy-mm-dd");
+            const now = new Date();
+            const year = now.getFullYear();
+            let month = "" + (now.getMonth() + 1);
+            let day = "" + now.getDate();
+                
+            if (month.length < 2) {
+                month = '0' + month;
+            }
+
+            if (day.length < 2) {
+                day = '0' + day;
+            } 
+
+            startDate = [year, month, day].join('-');
         }     
         
         const numReservationsForDay = await this.queryBus.execute(new GetNumberOfReservationsQuery(startDate));
