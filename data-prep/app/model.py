@@ -14,6 +14,7 @@ from app.fakeInviteGenerator import createInvites
 
 start_date = date(2016,1,1)
 end_date = date(2022,7,1)
+current_date = end_date
 features = []
 
 #Global parameters
@@ -21,7 +22,7 @@ params = { #TODO (Daniel): Play around
     "n_estimators": 500,
     "max_depth": 4,
     "min_samples_split": 5,
-    "learning_rate": 0.01,
+    "learning_rate": 0.05,
     "loss": "squared_error",
 }
 
@@ -248,7 +249,7 @@ def calculateMinMaxAndMedians():
       mdnWOY.append(0)
 
   for day in groupInvites:
-    currDate = datetime.strptime(day["_id"], '%Y-%m-%d').date()
+    currDate = datetime.strptime(day['_id'], '%Y-%m-%d').date()
     if(day['numVisitors']<minDOW[currDate.weekday()]):
       minDOW[currDate.weekday()] = day['numVisitors']
     elif(day['numVisitors']>maxDOW[currDate.weekday()]):
@@ -286,8 +287,12 @@ def calculateMinMaxAndMedians():
   return minDOW,maxDOW,mdnDOW,minWOY,maxWOY,mdnWOY,minMonth,maxMonth,mdnMonth
 
 def getNumVisitorsDayBefore(date):
-  return invitesCollection.count_documents({ "inviteDate": (date-timedelta(days=1)).strftime("%Y-%m-%d") , "inviteState": { '$ne': "inActive" } })
-
+  temp = groupInvitesCollection.find_one({ "_id": (date-timedelta(days=1)).strftime("%Y-%m-%d")})
+  if(temp):
+    return temp['numVisitors']
+  else:
+    return 0
+  
 def getNumVisitorsWeekBefore(date):
   return invitesCollection.count_documents({ "inviteDate": {'$gte': (date-timedelta(days=7)).strftime("%Y-%m-%d") , '$lt': date.strftime("%Y-%m-%d")} , "inviteState": { '$ne': "inActive" } })
 
@@ -297,7 +302,7 @@ def getNumProbableVisitors(numInvites):
   return (totalVisitors/totalInvites) * numInvites 
 
 def getNumInvites(date):
-  return invitesCollection.count_documents({"inviteDate": date.strftime("%Y-%m-%d") })
+  return groupInvitesCollection.find_one({"_id": date.strftime("%Y-%m-%d") })['numInvites']
 
 def isHoliday(date):
   if( date in ourHolidays):
@@ -316,42 +321,37 @@ def generateTrainingData():
   totalInvites = invitesCollection.count_documents({})
   inviteActProb = totalVisitors/totalInvites
 
-  allInvites = list(invitesCollection.find())
-  for invite in allInvites:
-      invDate = datetime.strptime(invite['inviteDate'], '%Y-%m-%d').date()
+  allDays = list(groupInvitesCollection.find())
+  for day in allDays:
+      cDate = datetime.strptime(day['_id'], '%Y-%m-%d').date()
 
-      mnDays,mnWeeks,mnMonths = calculateRecentAverages(invDate)
+      mnDays,mnWeeks,mnMonths = calculateRecentAverages(cDate)
 
-      num_inv = getNumInvites(invDate)
-      day_bef =  getNumVisitorsDayBefore(invDate)
-      week_bef = getNumVisitorsWeekBefore(invDate)
+      num_inv = getNumInvites(cDate)
+      day_bef =  getNumVisitorsDayBefore(cDate)
+      week_bef = getNumVisitorsWeekBefore(cDate)
       prob_vis = inviteActProb*num_inv
-      hol = isHoliday(invDate)
-
-      temp = invitesCollection.count_documents({ "inviteDate": invite['inviteDate'] , "inviteState": { '$ne': "inActive" } })
-      if(temp):
-          output.append(temp)
-      else:
-          output.append(0)
+      hol = isHoliday(cDate)
+      output.append(day['numVisitors'])
 
       data.append(
       create_data(
-          invDate.month,
-          invDate.weekday(),
-          mnDOW[invDate.weekday()],
-          mdnDOW[invDate.weekday()],
-          minDOW[invDate.weekday()],
-          maxDOW[invDate.weekday()],
+          cDate.month,
+          cDate.weekday(),
+          mnDOW[cDate.weekday()],
+          mdnDOW[cDate.weekday()],
+          minDOW[cDate.weekday()],
+          maxDOW[cDate.weekday()],
           mnDays,
-          mnMonth[invDate.month-1],
-          mdnMonth[invDate.month-1],
-          minMonth[invDate.month-1],
-          maxMonth[invDate.month-1],
+          mnMonth[cDate.month-1],
+          mdnMonth[cDate.month-1],
+          minMonth[cDate.month-1],
+          maxMonth[cDate.month-1],
           mnMonths,
-          mnWOY[invDate.isocalendar()[1]-1],
-          mdnWOY[invDate.isocalendar()[1]-1],
-          minWOY[invDate.isocalendar()[1]-1],
-          maxWOY[invDate.isocalendar()[1]-1],
+          mnWOY[cDate.isocalendar()[1]-1],
+          mdnWOY[cDate.isocalendar()[1]-1],
+          minWOY[cDate.isocalendar()[1]-1],
+          maxWOY[cDate.isocalendar()[1]-1],
           mnWeeks,
           day_bef,
           week_bef,
