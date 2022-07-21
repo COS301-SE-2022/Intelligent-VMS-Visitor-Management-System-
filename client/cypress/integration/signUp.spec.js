@@ -18,15 +18,21 @@ describe('Sign Up Page', () => {
         //Enter sign up info
         describe('Login as receptionist', () => {
             cy.url().should('include', 'signUp');//confirm correct page
-            cy.get('input[name="email"]').type("MillionsAndMillionsOfDollars@mail.com").should('have.value', 'MillionsAndMillionsOfDollars@mail.com');
+            cy.get('input[name="email"]').type("d@mail.com").should('have.value', 'd@mail.com');
             cy.get('input[name="name"]').type("Stefan").should('have.value', 'Stefan');
             cy.get('input[name="password"]').type("P@ssword1").should('have.value', 'P@ssword1');
             cy.get('input[name="confirmPassword"]').type("P@ssword1").should('have.value', 'P@ssword1');
             cy.get('input[name="idNumber"]').type("0105085368078").should('have.value', '0105085368078');
             cy.get('input[name="userType"]').first().check();
-            // cy.get('[type="radio"].radio checked:bg-primary').first().check()
-            // cy.get('.btn-primary ').click();
+            cy.get('.btn-primary ').click();
         })
+
+        describe('confirm page movement', () => {
+            cy.wait(1000);
+            cy.url().should('include', 'verify');
+            cy.contains('Please check your email to verify your account');//confirm correct page
+        })
+
     })
 
 })
