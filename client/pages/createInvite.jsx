@@ -77,7 +77,7 @@ const CreateInvite = () => {
 
     const numInvitesOfResidentQuery = useQuery(gql`
         query {
-             getTotalNumberOfInvitesOfResident(email: "${jwtTokenData.email}") 
+             getNumberOfOpenInvites(email: "${jwtTokenData.email}") 
         }
     `);
 
