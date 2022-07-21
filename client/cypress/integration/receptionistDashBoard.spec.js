@@ -46,25 +46,25 @@ describe('My First Test', () => {
             cy.contains('Maximum Invites Allowed');
         })
             
-        // describe("will click the download button",()=>{
-        //     cy.get('[download="Receptionist-weekly.png"]')
-        //     .should('be.visible')
-        //     .click()
-        // })
+        describe("will click the download button",()=>{
+            cy.get('[download="Receptionist-weekly.png"]')
+            .should('be.visible')
+            .click()
+        })
        
        //file download attempt
-        describe('file download', () => {
-          //  it('verifies download', () => {
-              cy.visit('/');
-              cy.get('[download="Receptionist-weekly.png"]').click();
+        // describe('file download', () => {
+        //   //  it('verifies download', () => {
+        //       cy.visit('/');
+        //       cy.get('[download="Receptionist-weekly.png"]').click();
               
-              const downloadsFolder = Cypress.config('downloadsFolder')
-              const downloadedFilename = path.join(downloadsFolder, 'Receptionist-weekly.png')
+        //       const downloadsFolder = Cypress.config('downloadsFolder')
+        //       const downloadedFilename = path.join(downloadsFolder, 'Receptionist-weekly.png')
               
-              cy.readFile(downloadedFilename, 'binary', { timeout: 15000 })
-              .should(buffer => expect(buffer.length).to.be.gt(100));
-           // });
-          });
+        //       cy.readFile(downloadedFilename, 'binary', { timeout: 15000 })
+        //       .should(buffer => expect(buffer.length).to.be.gt(100));
+        //    // });
+        //   });
             
 
 
