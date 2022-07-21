@@ -29,7 +29,6 @@ dill==0.3.4
 distlib==0.3.4
 Django==3.2.5
 dnspython==2.2.1
-ecos==2.0.7.post1
 Faker==13.15.0
 filelock==3.7.1
 Flask==2.1.2
@@ -90,7 +89,6 @@ pyasn1-modules==0.2.8
 pycodestyle==2.6.0
 pycparser==2.20
 pyEX==0.3.0
-pyfiglet==0.8.post1
 pyglet==1.5.0
 Pygments==2.7.3
 PyHamcrest==2.0.2
@@ -104,7 +102,6 @@ python-dateutil==2.8.1
 python-dotenv==0.20.0
 python-engineio==4.0.0
 python-socketio==5.0.4
-pyttsx3==2.90
 pytz==2020.5
 PyWavelets==1.1.1
 pyzmq==20.0.0
