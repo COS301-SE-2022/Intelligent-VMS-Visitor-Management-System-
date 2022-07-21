@@ -143,6 +143,29 @@ export class ParkingService {
     async reserveParking(
         invitationID:string
     ){
+        const now = new Date();
+        const year = now.getFullYear();
+        let month = "" + (now.getMonth() + 1);
+        let day = "" + now.getDate();
+
+        if (month.length < 2) {
+            month = "0" + month;
+        }
+
+        if (day.length < 2) {
+            day = "0" + day;
+        }
+
+        const currDate = [year, month, day].join("-");
+
+        const isParkingAvailable = await this.isParkingAvailable(
+            currDate,
+        );
+
+        if (!isParkingAvailable) {
+            throw new InvalidCommand("Parking not available");
+        }
+
         //Validate input
         const invite = await this.inviteService.getInvite(invitationID);   
 
@@ -161,14 +184,6 @@ export class ParkingService {
             throw new InvalidCommand(
                 `Invitation with ID ${invitationID} already have reserved parking.`,
             );
-        }
-
-        const isParkingAvailable = await this.isParkingAvailable(
-            invite.inviteDate,
-        );
-
-        if (!isParkingAvailable) {
-            throw new InvalidCommand("Parking not available");
         }
 
         //Find Free Parking

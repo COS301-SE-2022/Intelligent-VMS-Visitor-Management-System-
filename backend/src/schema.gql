@@ -93,6 +93,7 @@ type Query {
   getInvitesByIDForSearch(inviteID: String!): Invite!
   getNumberOfInvitesOfVisitor(email: String!): Float!
   getInvitesByDate(date: String!): [Invite!]!
+  getNumberOfOpenInvites(email: String!): Float!
   helloParking: String!
   getTotalAvailableParking: Float!
   getFreeParking: [Parking!]!
