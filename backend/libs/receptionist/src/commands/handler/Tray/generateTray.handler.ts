@@ -26,10 +26,9 @@ export class generateTrayCommandHandler implements ICommandHandler {
         }
 
         return await this.trayModel.create({trayID:trayID, inviteID: inviteID, containsResidentID: containsResidentID, containsVisitorID:containsVisitorID});
-        
-    
 
-        
-        
     }
 }
+
+const trayIDGenerator = () => //returns a random integer from 0 to 100:
+Math.floor(Math.random()*101);
