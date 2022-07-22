@@ -674,8 +674,9 @@ export class ParkingService {
         const numReservationsForDay = await this.queryBus.execute(
             new GetNumberOfReservationsQuery(startDate),
         );
+
         const numAvailableParkingForDay = await this.queryBus.execute(
-            new getAvailableParkingQuery(),
+            new getTotalAvailableParkingQuery(),
         );
 
         return numReservationsForDay < numAvailableParkingForDay;
