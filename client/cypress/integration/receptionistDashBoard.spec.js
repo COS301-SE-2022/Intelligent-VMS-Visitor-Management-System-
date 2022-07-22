@@ -1,21 +1,18 @@
-describe('My First Test', () => {
-    it('Visits the Kitchen Sink', () => {
-        //Navigate to Home page
+describe('Receptionist tests', () => {
+    it('tests various receptionist functions', () => {
+
         describe('Navigate to Home page/confirm', () => {
             cy.visit('https://vms-client.vercel.app/');
             cy.contains('Go Beyond The Lobby');//confirm correct page
          })
 
-        //Navigate to login page
         describe('Navigate to login page/confirm', () => {
-            
             cy.get('.menuIcon').click();//misses it sometimes if it is not clicked twice
             cy.get('.menuIcon').click();//do not remove redundancy without running it a few times to test
             cy.get('.menuIcon').click();
             cy.contains('Login', {timeout: 7000}).click();
         })
 
-        //Login as receptionist
         describe('Login as receptionist', () => {
             cy.url().should('include', 'login');//confirm correct page
             cy.get('input[name="email"]').type("receptionist@mail.com" ).should('have.value', 'receptionist@mail.com');
@@ -37,10 +34,10 @@ describe('My First Test', () => {
             cy.contains('Your Dashboard').click();
         })
         
-        //Checking visitor dashboard
         describe('Navigate to visitor dashboard/confirm navigation success', () => {
             cy.url().should('include', '/visitorDashboard');//confirm correct page
         })
+
         describe('Checking receptionist dashboard contents', () => {
             //checks for the relavant elements on the page
             cy.contains('Welcome back,Receptionist');
@@ -49,7 +46,8 @@ describe('My First Test', () => {
             cy.contains('Maximum Invites Allowed');
             cy.contains('Open invites', { matchCase: false });
 
-            cy.get('.table-compact').children().should('contain','Email')//check for table/correct table headings.
+            //check for table/correct table headings.
+            cy.get('.table-compact').children().should('contain','Email')
             .and('contain','ID Document Type')
             .and('contain','ID Number')
             .and('contain','Date')
@@ -77,7 +75,6 @@ describe('My First Test', () => {
             cy.url().should('include', '/createInvite');//confirm correct page
         })
 
-
         describe('Filling in a user invite', () => {
             cy.get('input[name="email"]').type('Stefan1234@mail.com').should('have.value', 'Stefan1234@mail.com');
             cy.get('input[name="idValue"]').type('9910304129088').should('have.value', '9910304129088');
@@ -97,45 +94,11 @@ describe('My First Test', () => {
 
         describe('canceling invite', () => {
             cy.contains('td', 'Stefan1234@mail.com')//find stafans column
-            .parent()//his row
-            .within(($tr)=>{//search only within the row
+            .parent()                               //his row
+            .within(($tr)=>{                        //search only within the row
                 cy.get('td button').click()
             })  
          })
-
-         
-
-        //===============================ignore below...will implement it if we have time=====================
-       //file download attempt
-        // describe('file download', () => {
-        //   //  it('verifies download', () => {
-        //       cy.visit('/');
-        //       cy.get('[download="Receptionist-weekly.png"]').click();
-              
-        //       const downloadsFolder = Cypress.config('downloadsFolder')
-        //       const downloadedFilename = path.join(downloadsFolder, 'Receptionist-weekly.png')
-              
-        //       cy.readFile(downloadedFilename, 'binary', { timeout: 15000 })
-        //       .should(buffer => expect(buffer.length).to.be.gt(100));
-        //    // });
-        //   });
-            
-
-
-        //code for conditional example
-      /*cy.get('header').then(($a) => { 
-        if ($a.text().includes('Account')) {
-            cy.contains('Account')
-            .click({force:true})
-        } else if ($a.text().includes('Sign')) { 
-            cy.contains('Sign In')
-            .click({force:true})  
-        } else {
-            cy.get('.navUser-item--account .navUser-action').click({force:true})
-        }
-       
-    }) */
-      
     })
   })
   
