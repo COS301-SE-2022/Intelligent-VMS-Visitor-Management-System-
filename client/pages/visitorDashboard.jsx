@@ -170,13 +170,13 @@ const VisitorDashboard = () => {
     return (
         <Layout>
             <div className="p-3">
-                <h1 className="mt-5 mb-5 flex items-center text-left text-4xl font-bold">
+                <h1 className="mt-5 mb-5 flex items-center text-left text-xl md:text-2xl lg:text-4xl font-bold">
                     <span>Welcome back,</span>
                     <span className="ml-3 text-secondary">{token.name}</span>
                 </h1>
                 <p>You have {todayInvites} visitors expected today.</p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 md:grid-rows-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 md:grid-rows-1 gap-4">
                 <DownloadChart
                     title={"User Invites"}
                     filename={token.name + "-weekly.png"}
@@ -185,7 +185,7 @@ const VisitorDashboard = () => {
                     datavals={visitorData.data}
                 />
                 <div className="flex flex-col gap-5">
-                    <div className="card h-full w-full bg-base-200 p-5 shadow">
+                    <div className="card w-full h-full bg-base-200 p-5 shadow">
                         <h2 className="card-title font-normal">
                             Total Number Of Invites Sent
                         </h2>
@@ -197,17 +197,19 @@ const VisitorDashboard = () => {
                         </div>
                         <div className="card-actions"></div>
                     </div>
-                    <div className="card h-full w-full bg-base-200 p-1 md:p-3 lg:p-5 shadow">
+                    <div className="card w-full h-full bg-base-200 p-5 shadow">
                         <h2 className="card-title font-normal">
                             Maximum Invites Allowed
                         </h2>
                         <div className="card-body justify-center">
                             <div className="flex items-center space-x-8">
-                                <div
-                                    className="radial-progress text-base-content"
-                                    style={{ "--value": Number(percentage) }}
-                                >
-                                    {percentage}%
+                                <div className="flex items-center justify-center">
+                                    <div
+                                        className="radial-progress text-base-content"
+                                        style={{ "--value": Number(percentage) }}
+                                    >
+                                        {percentage}%
+                                    </div>
                                 </div>
                                 <div className="flex-col text-sm md:text-base">
                                     <p>
@@ -224,20 +226,21 @@ const VisitorDashboard = () => {
                         <div className="card-actions"></div>
                     </div>
                 </div>
-                <div className="col-span-1 md:col-span-2 space-y-4">
-                    <h2 className="text-3xl font-bold">Open Invites</h2>
+                <h2 className="text-3xl font-bold ml-2">Open Invites</h2>
+                <div className="col-span-1 md:col-span-2 space-y-4 overflow-x-auto">
                     {loading ? (
                         <progress className="progress progress-primary w-56">
                             progress
                         </progress>
                     ) : (
-                        <table className="mb-5 table table-compact md:table-normal w-full">
+                        <table className="mb-5 table table-compact md:table-normal w-full m-2">
                             <thead>
                                 <tr>
                                     <th></th>
                                     <th>Email</th>
                                     <th>ID Document Type</th>
                                     <th>ID Number</th>
+                                    <th>Date</th>
                                     <th>Cancel Invite</th>
                                 </tr>
                             </thead>
@@ -250,14 +253,17 @@ const VisitorDashboard = () => {
                                                 <td>{visit.visitorEmail}</td>
                                                 <td>{visit.idDocType}</td>
                                                 <td>{visit.idNumber}</td>
+                                                <td>{visit.inviteDate}</td>
                                                 <td>
                                                     <button
                                                         aria-label="cancel"
                                                         className="btn btn-primary btn-square"
-                                                        onClick={() => {
+                                                        onClick={(e) => {
+                                                            e.currentTarget.classList.add("loading");
                                                             cancelInvite(
                                                                 visit.inviteID
                                                             );
+                                                            e.currentTarget.classList.remove("loading");
                                                         }}
                                                     >
                                                         <svg

@@ -33,7 +33,7 @@ const UserAnalytics = () => {
         setStartDate,
         setRange,
         range,
-    ] = useDateRange(new Date(now.getFullYear(), now.getMonth(), 1), 30);
+    ] = useDateRange(now, 30);
 
     const deleteUserAccount = (email, type) => {
         client
@@ -157,7 +157,7 @@ const UserAnalytics = () => {
 
     return (
         <Layout>
-            <div className="mb-3 mt-4 space-y-5 px-3">
+            <div className="mb-3 mt-4 space-y-5 md:px-3">
                 <div className="flex-col">
                     <h1 className="text-xl font-bold md:text-2xl lg:text-3xl">
                         User Report For{" "}
@@ -188,21 +188,23 @@ const UserAnalytics = () => {
                                 </div>
                                 <div>
                                     <p className="text-primary">{name}</p>
-                                    <p className="text-sm text-base font-normal">
+                                    <p className="text-sm font-normal">
                                         {numInvites} invites in lifetime
                                     </p>
                                 </div>
                             </h2>
                             <div className="divider">Reports</div>
-                            <DownloadChart
-                                title={"User Invites"}
-                                filename={name + "-forecast.png"}
-                                Chart={LineChart}
-                                labelvals={visitorVals.labels}
-                                datavals={visitorVals.data}
-                                setStart={setStartDate}
-                                setRange={setRange}
-                            />
+                            <div className="w-full h-full">
+                                <DownloadChart
+                                    title={"User Invites"}
+                                    filename={name + "-forecast.png"}
+                                    Chart={LineChart}
+                                    labelvals={visitorVals.labels}
+                                    datavals={visitorVals.data}
+                                    setStart={setStartDate}
+                                    setRange={setRange}
+                                />
+                            </div>
 
                             {loading && <p>Loading</p>}
                             <div className="card-actions items-center justify-start">
@@ -215,6 +217,7 @@ const UserAnalytics = () => {
                                     </a>
                                 </Link>
 
+                                { token.email !== email &&
                                 <label
                                     htmlFor={"admin-confirm-modal-" + email}
                                     className="modal-button btn btn-error hover:btn-info"
@@ -222,6 +225,7 @@ const UserAnalytics = () => {
                                     <RiDeleteBin5Fill />
                                     Delete Account
                                 </label>
+                                }
 
                                 {token.email !== email && (
                                     <label

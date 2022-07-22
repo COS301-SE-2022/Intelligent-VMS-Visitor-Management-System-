@@ -23,7 +23,7 @@ const DownloadChart = ({
     };
 
     return (
-        <div className="card bg-base-300 p-5">
+        <div className="card bg-base-300 p-3 lg:p-5 w-full">
             <h2 className="card-title text-base-content">{title}</h2>
             <div className="h-full">
                 <Chart
@@ -32,7 +32,7 @@ const DownloadChart = ({
                     datavals={datavals}
                 />
             </div>
-            <div className="card-actions mt-3 items-center overflow-visible">
+            <div className="card-actions mt-1 items-center overflow-visible">
                 <a
                     ref={downloadLinkRef}
                     onClick={downloadGraph}
