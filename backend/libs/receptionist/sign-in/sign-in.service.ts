@@ -61,9 +61,7 @@ export class SignInService {
                 return trayList.length; 
                 
                 
-            else{
-               
-            }
+        
         }
 
         async generateTray(inviteID: string,containsResidentID: boolean,containsVisitorID: boolean):Promise<Tray>{
