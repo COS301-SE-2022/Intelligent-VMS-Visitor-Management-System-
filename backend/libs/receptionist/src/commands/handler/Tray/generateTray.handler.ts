@@ -12,7 +12,12 @@ export class generateTrayCommandHandler implements ICommandHandler {
 
     async execute(command: generateTrayCommand):Promise<Tray> {
         const{ inviteID, containsResidentID, containsVisitorID} = command;
-        
+        let trayID = 0;
+        let tries = 0;
+        while((tries++!==100)){
+            
+        }
+
 
         
         
