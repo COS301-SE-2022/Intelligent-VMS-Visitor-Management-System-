@@ -56,9 +56,6 @@ export class SignInService {
         }
 
         async generateTrayID(){
-            const trayList = await this.queryBus.execute(
-                new getTrayListQuery()
-            )
             
             if (trayList) {
                 for (let index = 0; index < trayList.length; index++) {
