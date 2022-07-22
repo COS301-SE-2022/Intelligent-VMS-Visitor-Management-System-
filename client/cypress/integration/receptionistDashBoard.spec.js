@@ -157,6 +157,20 @@ describe('Receptionist tests', () => {
                 cy.contains('Sign in').click();
             });
         })
+        describe('sign out the visitor that was just signed in', () => {
+            cy.contains('Sign Out',{timeout:8000})
+            cy.wait(1000);
+            cy.contains('td', '9910304129088')//find stafans column
+            .parent()                               //his row
+            .within(($tr)=>{                        //search only within the row
+                cy.get('td label').click()
+            })  
+
+
+            cy.get('div[class="modal-box"]').within(($div)=>{
+                cy.contains('Sign out').click();
+            });
+        })
     })
   })
   
