@@ -302,7 +302,11 @@ def getNumProbableVisitors(numInvites):
   return (totalVisitors/totalInvites) * numInvites 
 
 def getNumInvites(date):
-  return groupInvitesCollection.find_one({"_id": date.strftime("%Y-%m-%d") })['numInvites']
+  temp = groupInvitesCollection.find_one({"_id": date.strftime("%Y-%m-%d") })
+  if(temp):
+    return temp['numVisitors']
+  else:
+    return 0
 
 def isHoliday(date):
   if( date in ourHolidays):
@@ -363,7 +367,10 @@ def generateTrainingData():
 
   return data,output
 
-def predictMany(startDate,endDate):
+def predictMany(startingDate,endingDate):
+
+  startDate = datetime.strptime(startingDate, '%Y-%m-%d').date()
+  endDate = datetime.strptime(endingDate, '%Y-%m-%d').date()
 
   #TODO (Larisa): retraining
   data = []
@@ -413,8 +420,11 @@ def predictMany(startDate,endDate):
           )
 
     startDate+=delta
+  
+  pred = reg.predict(data)
+  print(pred)
 
-  return reg.predict(data)
+  return pred
 
 def train():
   #createInvites(start_date,end_date,1)
@@ -430,7 +440,7 @@ def train():
   mse = mean_squared_error(y_test, reg.predict(X_test))
   print(mse)
 
-  return "here"
+  return mse
 
 def featureAnalysis():
     print(reg.feature_importances_)
