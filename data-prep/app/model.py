@@ -435,7 +435,7 @@ def predictMany(startingDate,endingDate):
   loopDate = startDate
   i=0
   while loopDate <= endDate:
-    output.append({"date": loopDate.strftime("%Y-%m-%d"), "data": pred[i]})
+    output.append({'date': loopDate.strftime("%Y-%m-%d"), 'data': pred[i]})
     i+=1
     loopDate+=delta
 
@@ -447,7 +447,7 @@ def train():
   data,output = generateTrainingData()
 
   #Create training and test set
-  X_train, X_test, y_train, y_test = train_test_split( data, output, test_size=0.33, random_state=42)
+  X_train, X_test, y_train, y_test = train_test_split( data, output, test_size=0.33)
 
   #Train model
   reg.fit(X_train, y_train)
@@ -456,7 +456,7 @@ def train():
   mse = mean_squared_error(y_test, reg.predict(X_test))
   print(mse)
 
-  return json.dumps({"MSE": mse})
+  return json.dumps({'MSE': mse})
 
 def featureAnalysis():
     imp = reg.feature_importances_
