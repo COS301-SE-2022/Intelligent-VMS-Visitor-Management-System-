@@ -1,6 +1,4 @@
-import matplotlib.pyplot as plt
-import numpy as np
-from sklearn import datasets, ensemble
+from sklearn import ensemble
 from sklearn.inspection import permutation_importance
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
@@ -12,10 +10,14 @@ from app.database import invitesCollection,groupInvitesCollection
 from app.holidaysSA import ourHolidays
 from app.fakeInviteGenerator import createInvites
 
-start_date = date(2016,1,1)
+import json 
+
+start_date = date(2015,1,1)
 end_date = date(2022,7,1)
 current_date = end_date
 features = []
+
+#################################################################
 
 #Global parameters
 params = { #TODO (Daniel): Play around
@@ -302,7 +304,11 @@ def getNumProbableVisitors(numInvites):
   return (totalVisitors/totalInvites) * numInvites 
 
 def getNumInvites(date):
-  return groupInvitesCollection.find_one({"_id": date.strftime("%Y-%m-%d") })['numInvites']
+  temp = groupInvitesCollection.find_one({"_id": date.strftime("%Y-%m-%d") })
+  if(temp):
+    return temp['numVisitors']
+  else:
+    return 0
 
 def isHoliday(date):
   if( date in ourHolidays):
@@ -363,7 +369,12 @@ def generateTrainingData():
 
   return data,output
 
-def predictMany(startDate,endDate):
+##################################################################
+
+def predictMany(startingDate,endingDate):
+
+  startDate = datetime.strptime(startingDate, '%Y-%m-%d').date()
+  endDate = datetime.strptime(endingDate, '%Y-%m-%d').date()
 
   #TODO (Larisa): retraining
   data = []
@@ -376,33 +387,34 @@ def predictMany(startDate,endDate):
   inviteActProb = totalVisitors/totalInvites
 
   delta = timedelta(days=1)
-  while startDate <= endDate:
-    mnDays,mnWeeks,mnMonths = calculateRecentAverages(startDate)
+  loopDate = startDate
+  while loopDate <= endDate:
+    mnDays,mnWeeks,mnMonths = calculateRecentAverages(loopDate)
 
-    day_bef =  getNumVisitorsDayBefore(startDate)
-    week_bef = getNumVisitorsWeekBefore(startDate)
-    num_inv = getNumInvites(startDate)
+    day_bef =  getNumVisitorsDayBefore(loopDate)
+    week_bef = getNumVisitorsWeekBefore(loopDate)
+    num_inv = getNumInvites(loopDate)
     prob_vis = inviteActProb * num_inv
-    hol = isHoliday(startDate)
+    hol = isHoliday(loopDate)
 
     data.append(
         create_data(
-            startDate.month,
-            startDate.weekday(),
-            mnDOW[startDate.weekday()],
-            mdnDOW[startDate.weekday()],
-            minDOW[startDate.weekday()],
-            maxDOW[startDate.weekday()],
+            loopDate.month,
+            loopDate.weekday(),
+            mnDOW[loopDate.weekday()],
+            mdnDOW[loopDate.weekday()],
+            minDOW[loopDate.weekday()],
+            maxDOW[loopDate.weekday()],
             mnDays,
-            mnMonth[startDate.month-1],
-            mdnMonth[startDate.month-1],
-            minMonth[startDate.month-1],
-            maxMonth[startDate.month-1],
+            mnMonth[loopDate.month-1],
+            mdnMonth[loopDate.month-1],
+            minMonth[loopDate.month-1],
+            maxMonth[loopDate.month-1],
             mnMonths,
-            mnWOY[startDate.isocalendar()[1]-1],
-            mdnWOY[startDate.isocalendar()[1]-1],
-            minWOY[startDate.isocalendar()[1]-1],
-            maxWOY[startDate.isocalendar()[1]-1],
+            mnWOY[loopDate.isocalendar()[1]-1],
+            mdnWOY[loopDate.isocalendar()[1]-1],
+            minWOY[loopDate.isocalendar()[1]-1],
+            maxWOY[loopDate.isocalendar()[1]-1],
             mnWeeks,
             day_bef,
             week_bef,
@@ -412,16 +424,28 @@ def predictMany(startDate,endDate):
             )
           )
 
-    startDate+=delta
+    loopDate+=delta
+  
+  pred = reg.predict(data)
+  print(pred)
+  output = []
 
-  return reg.predict(data)
+  loopDate = startDate
+  i=0
+  while loopDate <= endDate:
+    output.append({'date': loopDate.strftime("%Y-%m-%d"), 'data': pred[i]})
+    i+=1
+    loopDate+=delta
+
+  return json.dumps(output)
 
 def train():
-  #createInvites(start_date,end_date,1)
+  #createInvites(start_date,end_date,25)
+
   data,output = generateTrainingData()
 
   #Create training and test set
-  X_train, X_test, y_train, y_test = train_test_split( data, output, test_size=0.33, random_state=42)
+  X_train, X_test, y_train, y_test = train_test_split( data, output, test_size=0.33)
 
   #Train model
   reg.fit(X_train, y_train)
@@ -430,8 +454,10 @@ def train():
   mse = mean_squared_error(y_test, reg.predict(X_test))
   print(mse)
 
-  return "here"
+  return json.dumps({'MSE': mse})
 
 def featureAnalysis():
-    print(reg.feature_importances_)
-    return reg.feature_importances_
+    imp = reg.feature_importances_
+    print(imp)
+
+    return json.dumps(imp)
