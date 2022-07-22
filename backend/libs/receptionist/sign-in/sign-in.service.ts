@@ -59,9 +59,7 @@ export class SignInService {
             
             if (trayList) {
                 for (let index = 0; index < trayList.length; index++) {
-                        //say we have 2 trays and tray[0] has id 0 and tray[1] has id 2 then
-                        //next tray should have id 1
-                    }
+                        
                 }
                 return trayList.length; 
                 //if it reaches this point and we have say 4 trays it means their id's are
