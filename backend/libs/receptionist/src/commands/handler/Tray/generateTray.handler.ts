@@ -24,8 +24,10 @@ export class generateTrayCommandHandler implements ICommandHandler {
             break;
 
         }
-        
 
+        return await this.trayModel.create({trayID:trayID, inviteID: inviteID, containsResidentID: containsResidentID, containsVisitorID:containsVisitorID});
+        
+    
 
         
         
