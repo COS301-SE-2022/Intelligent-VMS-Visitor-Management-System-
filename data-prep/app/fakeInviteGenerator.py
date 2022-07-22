@@ -1,9 +1,5 @@
 from faker import Faker
 from faker.providers import DynamicProvider
-from datetime import date, timedelta, datetime
-from dateutil.relativedelta import relativedelta
-from random import randint
-
 from app.database import invitesCollection,groupInvitesCollection
 from app.holidaysSA import ourHolidays
 
