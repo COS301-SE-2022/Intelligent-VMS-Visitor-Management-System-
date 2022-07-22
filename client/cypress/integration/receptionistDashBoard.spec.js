@@ -1,5 +1,11 @@
 describe('Receptionist tests', () => {
     it('tests various receptionist functions', () => {
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0');
+        var yyyy = today.getFullYear();
+
+        today =yyyy + '-' + mm + '-' + dd ;
 
         describe('Navigate to Home page/confirm', () => {
             cy.visit('https://vms-client.vercel.app/');
@@ -79,7 +85,9 @@ describe('Receptionist tests', () => {
             cy.get('input[name="email"]').type('Stefan1234@mail.com').should('have.value', 'Stefan1234@mail.com');
             cy.get('input[name="idValue"]').type('9910304129088').should('have.value', '9910304129088');
             cy.get('input[name="name"]').type('Steffany').should('have.value', 'Steffany');
-            cy.get('input[name="visitDate"]').type('2022-07-30').should('have.value', '2022-07-30');
+           
+          
+            cy.get('input[name="visitDate"]').type(today).should('have.value', today);
             cy.get('button[type="submit"]').click();
         })
 
@@ -88,17 +96,39 @@ describe('Receptionist tests', () => {
            .children()
            .should('contain','Stefan1234@mail.com')
            .should('contain','9910304129088')
-           .should('contain','2022-07-30')
+           .should('contain',today)
            .should('contain','RSA-ID');
         })
 
-        describe('canceling invite', () => {
+        describe('canceling a personal invite', () => {
             cy.contains('td', 'Stefan1234@mail.com')//find stafans column
             .parent()                               //his row
             .within(($tr)=>{                        //search only within the row
                 cy.get('td button').click()
             })  
-         })
+        })
+
+        describe('Navigate to receptionist invite user/confirm navigation success', () => {
+            cy.get('.menuIcon').click();
+            cy.contains('create invite', { matchCase: false }).click();
+            cy.url().should('include', '/createInvite');//confirm correct page
+        })
+
+        describe('Filling in a user invite', () => {
+            cy.get('input[name="email"]').type('Stefan1234@mail.com').should('have.value', 'Stefan1234@mail.com');
+            cy.get('input[name="idValue"]').type('9910304129088').should('have.value', '9910304129088');
+            cy.get('input[name="name"]').type('Steffany').should('have.value', 'Steffany');
+            cy.get('input[name="visitDate"]').type('2022-07-30').should('have.value', '2022-07-30');
+            cy.get('button[type="submit"]').click();
+        })
+
+        describe('receptionistDashboard/confirm navigation success', () => {
+            cy.contains('Open Invites', {timeout: 8000})
+            cy.get('.menuIcon').click();
+            cy.get('.menuIcon').click();
+            cy.contains('Receptionist Dashboard', { matchCase: false }).click();
+            cy.url().should('include', '/receptionistDashboard');//confirm correct page
+        })
     })
   })
   
