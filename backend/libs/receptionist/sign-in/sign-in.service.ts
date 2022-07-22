@@ -59,7 +59,7 @@ export class SignInService {
             
             if (trayList) {
                 return trayList.length; 
-                //if it reaches this point and we have say 4 trays it means their id's are
+                
                 
             else{
                return 0;
