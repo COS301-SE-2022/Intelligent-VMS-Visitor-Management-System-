@@ -12,7 +12,7 @@ from app.database import invitesCollection,groupInvitesCollection
 from app.holidaysSA import ourHolidays
 from app.fakeInviteGenerator import createInvites
 
-start_date = date(2016,1,1)
+start_date = date(2015,1,1)
 end_date = date(2022,7,1)
 current_date = end_date
 features = []
@@ -427,7 +427,8 @@ def predictMany(startingDate,endingDate):
   return pred
 
 def train():
-  #createInvites(start_date,end_date,1)
+  #createInvites(start_date,end_date,25)
+
   data,output = generateTrainingData()
 
   #Create training and test set
