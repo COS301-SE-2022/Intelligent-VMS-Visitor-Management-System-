@@ -11,7 +11,8 @@ export class generateTrayCommandHandler implements ICommandHandler {
     ) {}
 
     async execute(command: generateTrayCommand):Promise<Tray> {
-        const { trayID, inviteID, containsResidentID,containsVisitorID } = command;
-        return await this.trayModel.create({ trayID: trayID, inviteID: inviteID, containsResidentID: containsResidentID, containsVisitorID: containsVisitorID});
+        
+        
+        
     }
 }
