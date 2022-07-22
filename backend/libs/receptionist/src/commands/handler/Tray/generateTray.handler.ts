@@ -15,8 +15,16 @@ export class generateTrayCommandHandler implements ICommandHandler {
         let trayID = 0;
         let tries = 0;
         while((tries++!==100)){
-            
+            trayID = trayIDGenerator();
+            const doesTrayExist = await this.trayModel.findOne({trayID});
+            if(doesTrayExist&& doesTrayExist.containsResidentID && doesTrayExist.containsVisitorID){
+                continue;
+
+            }
+            break;
+
         }
+        
 
 
         
