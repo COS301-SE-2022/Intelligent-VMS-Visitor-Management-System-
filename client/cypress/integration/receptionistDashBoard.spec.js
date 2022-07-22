@@ -3,16 +3,16 @@ describe('My First Test', () => {
         //Navigate to Home page
         describe('Navigate to Home page/confirm', () => {
             cy.visit('https://vms-client.vercel.app/');
-            cy.wait(500);
             cy.contains('Go Beyond The Lobby');//confirm correct page
          })
 
         //Navigate to login page
         describe('Navigate to login page/confirm', () => {
-            cy.wait(500);
+            
+            cy.get('.menuIcon').click();//misses it sometimes if it is not clicked twice
+            cy.get('.menuIcon').click();//do not remove redundancy without running it a few times to test
             cy.get('.menuIcon').click();
-            cy.wait(500);
-            cy.contains('Login').click();
+            cy.contains('Login', {timeout: 7000}).click();
         })
 
         //Login as receptionist
@@ -38,7 +38,7 @@ describe('My First Test', () => {
         })
         
         //Checking visitor dashboard
-        describe('Navigate to receptionist dashboard/confirm navigation success', () => {
+        describe('Navigate to visitor dashboard/confirm navigation success', () => {
             cy.url().should('include', '/visitorDashboard');//confirm correct page
         })
         describe('Checking receptionist dashboard contents', () => {
@@ -59,6 +59,9 @@ describe('My First Test', () => {
             cy.contains('Team Firestorm').and('contain','Providing reliable tech since 2022');
         })
        
+        describe('Confirm receptionist', () => {
+
+        })
             
         //uncomment the 5 lines of code below to have it download a pdf as well
         /*
@@ -74,13 +77,33 @@ describe('My First Test', () => {
             cy.url().should('include', '/createInvite');//confirm correct page
         })
 
+
         describe('Filling in a user invite', () => {
             cy.get('input[name="email"]').type('Stefan1234@mail.com').should('have.value', 'Stefan1234@mail.com');
             cy.get('input[name="idValue"]').type('9910304129088').should('have.value', '9910304129088');
             cy.get('input[name="name"]').type('Steffany').should('have.value', 'Steffany');
+            cy.get('input[name="visitDate"]').type('2022-07-30').should('have.value', '2022-07-30');
+            cy.get('button[type="submit"]').click();
         })
 
+        describe('checking that invite correctly displays on visitor dashboard', () => {
+           cy.get('table[class="table-compact m-2 mb-5 table w-full md:table-normal"]', {timeout: 8000})
+           .children()
+           .should('contain','Stefan1234@mail.com')
+           .should('contain','9910304129088')
+           .should('contain','2022-07-30')
+           .should('contain','RSA-ID');
+        })
 
+        describe('canceling invite', () => {
+            cy.contains('td', 'Stefan1234@mail.com')//find stafans column
+            .parent()//his row
+            .within(($tr)=>{//search only within the row
+                cy.get('td button').click()
+            })  
+         })
+
+         
 
         //===============================ignore below...will implement it if we have time=====================
        //file download attempt
