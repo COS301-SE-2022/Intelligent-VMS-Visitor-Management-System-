@@ -59,8 +59,6 @@ export class SignInService {
             
             if (trayList) {
                 for (let index = 0; index < trayList.length; index++) {
-                    if (trayList[index].trayID!=index) {
-                        return index;
                         //say we have 2 trays and tray[0] has id 0 and tray[1] has id 2 then
                         //next tray should have id 1
                     }
