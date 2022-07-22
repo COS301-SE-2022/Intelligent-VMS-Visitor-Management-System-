@@ -60,8 +60,7 @@ export class SignInService {
             if (trayList) {
                 return trayList.length; 
                 //if it reaches this point and we have say 4 trays it means their id's are
-                //0,1,2,3 and so next tray number should be 4   
-            }
+                
             else{
                return 0;
             }
