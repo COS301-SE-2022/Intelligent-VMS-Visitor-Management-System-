@@ -43,7 +43,7 @@ const AdminDashboard = () => {
     const [parkingVals, setParkingVals] = useState({ data: [], labels: [] });
 
     // Date Range Hook
-    const [startDate, endDate, inviteDateMap, setDateMap, setStartDate] =
+    const [startDate, endDate, inviteDateMap, setDateMap] =
         useDateRange(getFormattedDateString(new Date(Date.now())), 7);
 
     // Parking Date Range Hook
@@ -52,7 +52,6 @@ const AdminDashboard = () => {
         parkingEndDate,
         parkingDateMap,
         setParkingDateMap,
-        setParkingStartDate,
     ] = useDateRange(getFormattedDateString(new Date(Date.now())), 7);
 
     // Start Date State
@@ -63,6 +62,8 @@ const AdminDashboard = () => {
         useState(1);
 
     const [initialNumParkingSpots, setInitialNumParkingSpots] = useState(0);
+
+    const [numParkingSpotsAvailableToday, setNumParkingSpotsAvailableToday] = useState(0);
 
     // State to track whether the restrictions have changed
     const [restrictionsChanged, setRestrictionsChanged] = useState(false);
@@ -76,9 +77,6 @@ const AdminDashboard = () => {
     const now = getFormattedDateString(new Date());
 
     const [numParkingSpotsAvailable, setNumParkingSpotsAvailable] = useState(0);
-    const updateParkingSpots = useAuth((state) => {
-        return state.updateParkingSpots;
-    });
 
     // JWT Token data from Model
     const decodedToken = useAuth((state) => {
@@ -231,6 +229,7 @@ const AdminDashboard = () => {
             const numParkingspots = numParkingSpotsAvailableQuery.data.getTotalAvailableParking;
             setNumParkingSpotsAvailable(numParkingspots);
             setInitialNumParkingSpots(numParkingspots);
+            setNumParkingSpotsAvailableToday(numParkingSpotsAvailable - parkingDateMap.get(parkingStartDate));
         } else if (numParkingSpotsAvailableQuery.error) {
             setNumParkingSpotsAvailable("Error");
         }
@@ -249,9 +248,8 @@ const AdminDashboard = () => {
     }, [
         numInvitesQuery,
         numInviteInDateRangeQuery,
-        numParkingSpotsAvailableQuery,
         numParkingInDateRangeQuery,
-        startDate,
+        numParkingSpotsAvailableQuery,
         setParkingVals,
         setNumParkingSpotsAvailable,
         numInvitesPerResidentQuery,
@@ -310,7 +308,7 @@ const AdminDashboard = () => {
                         <AdminCard
                             description="Number Of Parking Spots Available"
                             Icon={AiOutlineCar}
-                            dataval={parkingDateMap.get(now) ? numParkingSpotsAvailable - parkingDateMap.get(now) : 0}
+                            dataval={numParkingSpotsAvailableToday}
                             unit="Total"
                         />
                     </div>
