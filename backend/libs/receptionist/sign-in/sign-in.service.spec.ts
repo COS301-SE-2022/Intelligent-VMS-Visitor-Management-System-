@@ -194,7 +194,10 @@ describe('SignInService', () => {
     expect(inviteService).toBeDefined();
     expect(receptionistService).toBeDefined();
   });
-
+   
+  describe("generateTrayID",()=>{
+    
+  })
   
 
   describe("generateTray", () => {
