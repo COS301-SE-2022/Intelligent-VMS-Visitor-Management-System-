@@ -204,7 +204,7 @@ describe('SignInService', () => {
   });
 
   describe("signIn", () => {
-      
+      /*
     it("should return a tray number,assign parking if a valid invite id is given", async () => {
       const trayNr = await service.signIn("cb7c7938-1c41-427d-833e-2c6b77e0e26b","some notes","13:02:01");
       expect(trayNr).toEqual(0);
@@ -214,6 +214,7 @@ describe('SignInService', () => {
       const trayNr = await service.signIn("f11ae766-ce23-4f27-b428-83cff1afbf04","some notes","13:02:01");
       expect(trayNr).toEqual(0);
     });
+    */
     
 
     it("should throw an exception if invite with wrong date is given", async () => {
