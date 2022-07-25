@@ -10,7 +10,7 @@ export class GetInvitesByDateQueryHandler implements IQueryHandler {
 
     async execute(query: GetInvitesByDateQuery) {
         const { date } = query;
-        const invites = await this.inviteModel.find({inviteDate:date});
+        const invites = await this.inviteModel.find({$and: [{inviteDate: date}, {inviteID: {$exists: true}}]});
         return invites;
     }
 }
