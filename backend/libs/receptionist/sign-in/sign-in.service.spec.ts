@@ -196,12 +196,6 @@ describe('SignInService', () => {
     expect(receptionistService).toBeDefined();
   });
    
-  describe("generateTrayID",()=>{
-    
-
-  });
-  
-
   describe("generateTray", () => {
     it("should generate a tray", async () => {
       const generatedTray=await service.generateTray("hello",true,true);
