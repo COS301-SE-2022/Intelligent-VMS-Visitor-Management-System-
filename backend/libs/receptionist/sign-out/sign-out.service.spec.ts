@@ -1,6 +1,7 @@
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ConfigService } from "@nestjs/config";
 import { Test, TestingModule } from '@nestjs/testing';
+import { HttpModule } from '@nestjs/axios';
 import { MailService } from '@vms/mail';
 import { ParkingService } from '@vms/parking';
 import { removeTrayByInviteIDCommand } from '@vms/receptionist/commands/impl/Tray/removeTrayByInviteID.command';
@@ -53,6 +54,7 @@ describe('SignOutService', () => {
   beforeEach(async () => {
     
     const module: TestingModule = await Test.createTestingModule({
+      imports: [HttpModule],
       providers: [SignOutService,
         VisitorInviteService,
         ParkingService,

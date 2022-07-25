@@ -1,6 +1,7 @@
 import { CommandBus, IQuery, QueryBus } from '@nestjs/cqrs';
 import { ConfigService } from "@nestjs/config";
 import { Test, TestingModule } from '@nestjs/testing';
+import { HttpModule } from "@nestjs/axios";
 import { MailService } from '@vms/mail';
 import { ParkingService } from '@vms/parking';
 import { AssignParkingCommand } from '@vms/parking/commands/impl/assignParking.command';
@@ -169,6 +170,7 @@ describe('SignInService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [HttpModule],
       providers: [
         SignInService,
         VisitorInviteService,

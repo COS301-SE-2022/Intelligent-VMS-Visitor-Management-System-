@@ -13,6 +13,7 @@ import { User } from "@vms/user/models/user.model";
 import { CurrentUser } from "@vms/auth/decorators/CurrentUserDecorator.decorator";
 import { RolesGuard } from "@vms/user/guards/roles.guard";
 import { Roles } from "@vms/user/decorators/roles.decorator";
+import { PredictedInviteData } from "./models/predictedInviteData.model";
 
 @UseGuards(GqlAuthGuard)
 @Resolver((of) => {return Invite})
@@ -147,9 +148,17 @@ export class VisitorInviteResolver {
     // Get number of open invites for given user by email
     @UseGuards(GqlAuthGuard, RolesGuard)
     @Roles("receptionist", "admin", "resident")
-    @Query((returns) => { return Number}, { name: "getNumberOfOpenInvites"})
+    @Query((returns) => {return Number}, { name: "getNumberOfOpenInvites"})
     async getNumberOfOpenInvites(@Args("email") email: string) {
         return await this.visitorInviteService.getNumberOfOpenInvites(email);
+    }
+
+    // Get Predicted number of visitors
+    @UseGuards(GqlAuthGuard, RolesGuard)
+    @Roles("admin")
+    @Query((returns) => {return [PredictedInviteData]})
+    async getPredictedInviteData(@Args("startDate") startDate: string, @Args("endDate") endDate: string) {
+        return await this.visitorInviteService.getPredictedInviteData(startDate, endDate);
     }
 
 }

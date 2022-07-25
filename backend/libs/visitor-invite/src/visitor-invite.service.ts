@@ -1,5 +1,7 @@
 import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
+import { HttpService } from "@nestjs/axios";
+import { ConfigService } from "@nestjs/config";
 import { Cron } from '@nestjs/schedule';
 import { randomUUID } from "crypto";
 
@@ -19,7 +21,6 @@ import { GetInvitesByDateQuery } from "./queries/impl/getInvitesByDate.query";
 
 import { GetInvitesByNameForSearchQuery } from "./queries/impl/getInviteByNameForSearch.query";
 
-
 import { InviteNotFound } from "./errors/inviteNotFound.error";
 import { DateFormatError } from "./errors/dateFormat.error";
 import { InviteLimitReachedError } from "./errors/inviteLimitReached.error";
@@ -31,11 +32,14 @@ import { MailService } from "@vms/mail";
 import { RestrictionsService } from "@vms/restrictions";
 import { ParkingService } from "@vms/parking";
 import { CreateGroupInviteCommand } from "./commands/impl/createGroupInvite.command";
+import { firstValueFrom } from "rxjs";
 
 @Injectable()
 export class VisitorInviteService {
     constructor(private readonly commandBus: CommandBus, 
                 private readonly queryBus: QueryBus, 
+                private readonly httpService: HttpService,
+                private readonly configService: ConfigService,
                 private readonly mailService: MailService,
                 private readonly restrictionsService: RestrictionsService,
                 @Inject(forwardRef(() => {return ParkingService}))
@@ -66,14 +70,17 @@ export class VisitorInviteService {
             }
         }
 
+        // Check if parking is available
+        if(requiresParking) {
+            const isParkingAvaliable = await this.parkingService.isParkingAvailable(inviteDate);
+            if(!isParkingAvaliable) {
+                throw new ParkingNotFound("Parking not available");
+            }
+        } 
+
         // Generate inviteID
         const inviteID = randomUUID();
         
-        // Parking
-        if(requiresParking) {
-            await this.parkingService.reserveParking(inviteID);
-        }
-
         // Entry in db
         await this.commandBus.execute(
             new CreateInviteCommand(
@@ -86,6 +93,11 @@ export class VisitorInviteService {
                 inviteID,
             ),
         );
+        
+        // Parking
+        if(requiresParking) {
+            await this.parkingService.reserveParking(inviteID);
+        }
 
         const info = await this.mailService.sendInvite(visitorEmail, userEmail, inviteID, idDocType, requiresParking);
         return info.messageId;
@@ -253,6 +265,14 @@ export class VisitorInviteService {
         return await this.queryBus.execute(new GetTotalNumberOfInvitesVisitorQuery(email));
     }
 
+    // Get predicted number of invites in range
+    async getPredictedInviteData(startDate: string, endDate: string) {
+        const baseURL = this.configService.get<string>("AI_API_CONNECTION");
+        const data = await firstValueFrom(this.httpService.get(`${baseURL}/predict?startDate=${startDate}&endDate=${endDate}`)); 
+        console.log(data.data);
+        return data.data;
+    }
+
     @Cron("55 23 * * *")
     async sendInvite() {
         // Generate inviteID
@@ -274,17 +294,19 @@ export class VisitorInviteService {
         const formatDate = [year, month, day].join('-');
 
         // Entry in db
-        await this.commandBus.execute(
-            new CreateInviteCommand(
-                "admin@mail.com",
-                "visitor@mail.com",
-                "Jim",
-                "RSA-ID",
-                "0109195283010",
-                formatDate,
-                inviteID,
-            ),
-        );
+        for(let i = 0; i < 10; i++) {
+            await this.commandBus.execute(
+                new CreateInviteCommand(
+                    "admin@mail.com",
+                    "visitor@mail.com",
+                    "Jim",
+                    "RSA-ID",
+                    "0109195283010",
+                    formatDate,
+                    inviteID,
+                ),
+            );
+        }
 
         await this.parkingService.reserveParking(inviteID);
     }
@@ -322,9 +344,6 @@ export class VisitorInviteService {
 
         // Register for the day
         await this.commandBus.execute(new CreateGroupInviteCommand(formatDate, numInvites, numVisitors));
-
-        console.log("ADDED Entry");
-
     }
 
 }

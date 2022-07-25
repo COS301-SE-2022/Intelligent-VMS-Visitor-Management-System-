@@ -21,7 +21,7 @@ ChartJS.register(
     Legend
 );
 
-const LineChart = ({ chartRef, labelvals, datavals }) => {
+const LineChart = ({ chartRef, labelvals, datavals, datalabels }) => {
     const options = {
         responsive: true,
         plugins: {
@@ -31,20 +31,24 @@ const LineChart = ({ chartRef, labelvals, datavals }) => {
         },
     };
 
+    const colours = ["white","gray"];
+
     const labels = labelvals;
+
+    const datasets = datavals.map((dataSet,idx) => {
+        return {
+            label: `${datalabels ? datalabels[idx] : "Data Set " + (idx+1)}`,
+            lineTension: 0.2,
+            data: dataSet,
+            borderColor: colours[idx],
+            backgroundColor: colours[idx],
+            borderWidth: 2,
+        };
+    });
 
     const data = {
         labels,
-        datasets: [
-            {
-                label: "Data",
-                lineTension: 0.2,
-                data: datavals,
-                borderColor: "white",
-                backgroundColor: "white",
-                borderWidth: 2,
-            },
-        ],
+        datasets: datasets,
     };
 
     return <Line ref={chartRef} options={options} data={data} />;

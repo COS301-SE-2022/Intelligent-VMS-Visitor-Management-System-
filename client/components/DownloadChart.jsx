@@ -7,6 +7,7 @@ const DownloadChart = ({
     Chart,
     labelvals,
     datavals,
+    datalabels,
     setStart,
     setRange,
 }) => {
@@ -30,6 +31,7 @@ const DownloadChart = ({
                     chartRef={chartRef}
                     labelvals={labelvals}
                     datavals={datavals}
+                    datalabels={datalabels}
                 />
             </div>
             <div className="card-actions mt-1 items-center overflow-visible">
