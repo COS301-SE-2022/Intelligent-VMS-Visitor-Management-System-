@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from "@nestjs/config";
 import { CommandBus, IQuery, QueryBus } from "@nestjs/cqrs";
+import { HttpModule } from "@nestjs/axios";
 import { ParkingService } from './parking.service';
 import { getTotalAvailableParkingQuery } from './queries/impl/getTotalAvailableParking.query';
 import {FreeParkingCommand} from './commands/impl/freeParking.command';
@@ -298,6 +299,7 @@ describe('ParkingService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+        imports: [HttpModule],
         providers: [
             ParkingService, 
             VisitorInviteService,
