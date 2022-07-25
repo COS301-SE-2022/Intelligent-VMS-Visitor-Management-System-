@@ -55,16 +55,6 @@ export class SignInService {
   
         }
             
-        async generateTrayID() {
-            
-            
-        }
-                
-                
-                
-        
-        
-
         async generateTray(inviteID: string,containsResidentID: boolean,containsVisitorID: boolean):Promise<Tray>{
             console.log("generating tray");
             return this.commandBus.execute(new generateTrayCommand(await 0, inviteID, containsResidentID, containsVisitorID));
