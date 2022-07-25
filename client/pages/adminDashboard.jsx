@@ -37,10 +37,13 @@ const AdminDashboard = () => {
     const [numInvitesSent, setNumInvitesSent] = useState(0);
 
     // Visitor invite data object for chart
-    const [visitorVals, setVisitorVals] = useState({ data: [], labels: [] });
+    const [visitorVals, setVisitorVals] = useState({ data: [], labels: [], label: "Actual Visitors" });
 
     // Parking data object for chart
-    const [parkingVals, setParkingVals] = useState({ data: [], labels: [] });
+    const [parkingVals, setParkingVals] = useState({ data: [], labels: [], label: "Parking" });
+
+    // Predicted Visitor Values
+    const [predictedVisitorVals, setPredictedVisitorVals] = useState([]);
 
     // Date Range Hook
     const [startDate, endDate, inviteDateMap, setDateMap] =
@@ -128,6 +131,15 @@ const AdminDashboard = () => {
         }
     `);
 
+    const predictedInvitesQuery = useQuery(gql`
+        query {
+          getPredictedInviteData(startDate: "${startDate}", endDate: "${endDate}") {
+            date
+            data
+          }
+        }
+    `);
+
     const [setNumInvitesPerResidentMutation, { data, loading, error }] =
         useMutation(gql`
         mutation {
@@ -187,6 +199,7 @@ const AdminDashboard = () => {
             setVisitorVals({
                 data: Array.from(inviteDateMap.values()),
                 labels: Array.from(inviteDateMap.keys()),
+                label: "Actual Visitors"
             });
 
             setTodayInvites(inviteDateMap.get(startDate));
@@ -215,6 +228,7 @@ const AdminDashboard = () => {
             setParkingVals({
                 labels: Array.from(parkingDateMap.keys()),
                 data: Array.from(parkingDateMap.values()),
+                label: "Parking",
             });
 
         } else if (numParkingInDateRangeQuery.error) {
@@ -254,6 +268,15 @@ const AdminDashboard = () => {
         setNumParkingSpotsAvailable,
         numInvitesPerResidentQuery,
     ]);
+
+    useEffect(() => {
+        if(!predictedInvitesQuery.loading && !predictedInvitesQuery.error) {
+            const predictedData = predictedInvitesQuery.data.getPredictedInviteData.map((invite) => {
+                return invite.data;
+            });
+            setPredictedVisitorVals(predictedData);
+        }
+    }, [predictedInvitesQuery])
 
     return (
         <Layout>
@@ -319,14 +342,16 @@ const AdminDashboard = () => {
                             filename="visitor-forecast.png"
                             Chart={LineChart}
                             labelvals={visitorVals.labels}
-                            datavals={visitorVals.data}
+                            datavals={[visitorVals.data, predictedVisitorVals]}
+                            datalabels={[visitorVals.label, "Predicted Visitors"]}
                         />
                         <DownloadChart
                             title={"Parking Forecast For The Week"}
                             filename="parking-forecast.png"
                             Chart={LineChart}
                             labelvals={parkingVals.labels}
-                            datavals={parkingVals.data}
+                            datavals={[parkingVals.data]}
+                            datalabels={[parkingVals.label]}
                         />
                     </div>
 
