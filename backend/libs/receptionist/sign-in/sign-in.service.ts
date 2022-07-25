@@ -55,7 +55,9 @@ export class SignInService {
   
         }
             
+        async generateTrayID() {
             
+        }
                 
                 
                 
