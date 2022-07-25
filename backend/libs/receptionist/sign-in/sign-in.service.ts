@@ -56,7 +56,7 @@ export class SignInService {
         }
             
         async generateTrayID() {
-            const trayList = await this.queryBus
+            
             
         }
                 
