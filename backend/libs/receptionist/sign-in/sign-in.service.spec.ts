@@ -17,6 +17,7 @@ import { Invite } from '@vms/visitor-invite/models/invite.model';
 import { GetInviteQuery } from '@vms/visitor-invite/queries/impl/getInvite.query';
 import { RestrictionsService } from "@vms/restrictions";
 import { SignInService } from './sign-in.service';
+import { async } from 'rxjs';
 
 describe('SignInService', () => {
   let service: SignInService;
@@ -196,8 +197,11 @@ describe('SignInService', () => {
   });
    
   describe("generateTrayID",()=>{
-    
-  })
+    it("should return a valid Tray id", async()=>{
+
+    });
+
+  });
   
 
   describe("generateTray", () => {
