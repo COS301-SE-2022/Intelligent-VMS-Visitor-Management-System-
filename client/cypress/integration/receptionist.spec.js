@@ -4,7 +4,6 @@ describe('Receptionist tests', () => {
         var dd = String(today.getDate()).padStart(2, '0');
         var mm = String(today.getMonth() + 1).padStart(2, '0');
         var yyyy = today.getFullYear();
-
         today =yyyy + '-' + mm + '-' + dd ;
 
         describe('Navigate to Home page/confirm', () => {
@@ -16,9 +15,7 @@ describe('Receptionist tests', () => {
             cy.get('.menuIcon').click();//misses it sometimes if it is not clicked twice
             cy.wait(1000);
             cy.get('.menuIcon').click();//do not remove redundancy without running it a few times to test
-            cy.wait(1000);
-            cy.get('.menuIcon').click();
-            cy.wait(1000);
+        
             cy.contains('Login', {timeout: 7000}).click();
         })
 
@@ -88,8 +85,6 @@ describe('Receptionist tests', () => {
             cy.get('input[name="email"]').type('Stefan1234@mail.com').should('have.value', 'Stefan1234@mail.com');
             cy.get('input[name="idValue"]').type('9910304129088').should('have.value', '9910304129088');
             cy.get('input[name="name"]').type('Steffany').should('have.value', 'Steffany');
-           
-          
             cy.get('input[name="visitDate"]').type(today).should('have.value', today);
             cy.get('button[type="submit"]').click();
         })
@@ -146,7 +141,7 @@ describe('Receptionist tests', () => {
         })
 
         describe('sign in a visitor', () => {
-            cy.contains('td', '9910304129088')//find stafans column
+            cy.contains('td', '9910304129088')      //find Stefans column
             .parent()                               //his row
             .within(($tr)=>{                        //search only within the row
                 cy.get('td label').click()
@@ -160,13 +155,11 @@ describe('Receptionist tests', () => {
         describe('sign out the visitor that was just signed in', () => {
             cy.contains('Sign Out',{timeout:8000})
             cy.wait(1000);
-            cy.contains('td', '9910304129088')//find stafans column
+            cy.contains('td', '9910304129088')      //find Stefans column
             .parent()                               //his row
             .within(($tr)=>{                        //search only within the row
                 cy.get('td label').click()
             })  
-
-
             cy.get('div[class="modal-box"]').within(($div)=>{
                 cy.contains('Sign out').click();
             });
