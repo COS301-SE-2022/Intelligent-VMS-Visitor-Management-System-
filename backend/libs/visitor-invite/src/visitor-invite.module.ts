@@ -30,6 +30,10 @@ import { GetNumberOfOpenInvitesQueryHandler } from "./queries/handlers/getNumber
 @Module({
     imports: [
         CqrsModule,
+        HttpModule.register({
+            timeout: 20000,
+            maxRedirects: 5,
+        }),
         AuthModule,
         forwardRef(() => {return ParkingModule}),
         MailModule,
