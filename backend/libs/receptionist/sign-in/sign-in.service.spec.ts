@@ -1,4 +1,5 @@
 import { CommandBus, IQuery, QueryBus } from '@nestjs/cqrs';
+import { CACHE_MANAGER } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { Test, TestingModule } from '@nestjs/testing';
 import { HttpModule } from "@nestjs/axios";
@@ -18,7 +19,6 @@ import { Invite } from '@vms/visitor-invite/models/invite.model';
 import { GetInviteQuery } from '@vms/visitor-invite/queries/impl/getInvite.query';
 import { RestrictionsService } from "@vms/restrictions";
 import { SignInService } from './sign-in.service';
-import { async } from 'rxjs';
 
 describe('SignInService', () => {
   let service: SignInService;
@@ -179,6 +179,13 @@ describe('SignInService', () => {
         MailService,
         ConfigService,
         RestrictionsService,
+        {
+            provide: CACHE_MANAGER,
+            useValue: {
+                get: () => {return 'any value'},
+                set: () => {return jest.fn()},
+            },
+        },
         {
           provide: QueryBus, useValue: queryBusMock
         },

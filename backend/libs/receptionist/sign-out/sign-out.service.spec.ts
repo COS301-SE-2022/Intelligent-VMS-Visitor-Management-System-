@@ -1,4 +1,5 @@
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { CACHE_MANAGER } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { Test, TestingModule } from '@nestjs/testing';
 import { HttpModule } from '@nestjs/axios';
@@ -67,6 +68,13 @@ describe('SignOutService', () => {
         },
         {
           provide: ReceptionistService, useValue: receptionistService 
+        },
+        {
+            provide: CACHE_MANAGER,
+            useValue: {
+                get: () => {return 'any value'},
+                set: () => {return jest.fn()},
+            },
         },
         {
           provide: CommandBus, useValue: commandBusMock

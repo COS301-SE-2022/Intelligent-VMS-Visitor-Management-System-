@@ -1,4 +1,5 @@
-import { forwardRef, Inject, Injectable } from "@nestjs/common";
+import { forwardRef, Inject, Injectable, CACHE_MANAGER } from "@nestjs/common";
+import { Cache } from 'cache-manager';
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import { HttpService } from "@nestjs/axios";
 import { ConfigService } from "@nestjs/config";
@@ -42,6 +43,7 @@ export class VisitorInviteService {
                 private readonly configService: ConfigService,
                 private readonly mailService: MailService,
                 private readonly restrictionsService: RestrictionsService,
+                @Inject(CACHE_MANAGER) private cacheManager: Cache,
                 @Inject(forwardRef(() => {return ParkingService}))
                 private readonly parkingService: ParkingService,
                ) {}
@@ -267,12 +269,26 @@ export class VisitorInviteService {
 
     // Get predicted number of invites in range
     async getPredictedInviteData(startDate: string, endDate: string) {
-        const baseURL = this.configService.get<string>("AI_API_CONNECTION");
-        const data = await firstValueFrom(this.httpService.get(`${baseURL}/predict?startDate=${startDate}&endDate=${endDate}`)); 
-        console.log(data.data);
-        return data.data;
+        const cachedPredictedInvites = await this.cacheManager.get("PREDICTIONS");
+
+        if(cachedPredictedInvites) {
+            console.log("HIT!");
+            return cachedPredictedInvites;
+        } else {
+            console.log("MISS");
+            const baseURL = this.configService.get<string>("AI_API_CONNECTION");
+            const data = await firstValueFrom(this.httpService.get(`${baseURL}/predict?startDate=${startDate}&endDate=${endDate}`)); 
+            if(data.data.length === 1) {
+                return [];
+            }
+            await this.cacheManager.set("PREDICTIONS", data.data, { ttl: 90000 });
+            console.log(data.data);
+            return data.data;
+        }
+
     }
 
+    /* CRON JOBS */
     @Cron("55 23 * * *")
     async sendInvite() {
         // Generate inviteID

@@ -30,6 +30,7 @@ import { GetReservationsByDateQueryHandler } from './queries/handlers/getReserva
 import { GetFreeParkingQuery } from './queries/impl/getFreeParking.query';
 import { GetReservationsInRangeQuery } from './queries/impl/getReservationsInRange.query';
 import { getAvailableParkingQuery } from './queries/impl/getAvailableParking.query';
+import { CACHE_MANAGER } from '@nestjs/common';
 
 describe('ParkingService', () => {
   let parkingService: ParkingService;
@@ -306,6 +307,13 @@ describe('ParkingService', () => {
             MailService,
             RestrictionsService,
             ConfigService,
+            {
+                provide: CACHE_MANAGER,
+                useValue: {
+                    get: () => {return 'any value'},
+                    set: () => {return jest.fn()},
+                },
+            },
             {
                 provide: QueryBus, useValue: queryBusMock
             },

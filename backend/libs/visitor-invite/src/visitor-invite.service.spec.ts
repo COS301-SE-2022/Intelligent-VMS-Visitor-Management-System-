@@ -1,4 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
+import { CACHE_MANAGER } from "@nestjs/common";
 import { CommandBus, IQuery, QueryBus } from "@nestjs/cqrs";
 import { ConfigService } from "@nestjs/config";
 import { HttpModule } from "@nestjs/axios";
@@ -87,6 +88,13 @@ describe("VisitorInviteService", () => {
                 CommandBus, 
                 {
                     provide: QueryBus, useValue: queryBusMock
+                },
+                {
+                      provide: CACHE_MANAGER,
+                      useValue: {
+                        get: () => {return 'any value'},
+                        set: () => {return jest.fn()},
+                    },
                 },
             ],
         }).compile();
