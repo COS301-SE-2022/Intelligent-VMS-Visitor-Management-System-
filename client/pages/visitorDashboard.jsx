@@ -267,7 +267,6 @@ const VisitorDashboard = () => {
                                                             cancelInvite(
                                                                 visit.inviteID
                                                             );
-                                                            e.currentTarget.classList.remove("loading");
                                                         }}
                                                     >
                                                         <svg

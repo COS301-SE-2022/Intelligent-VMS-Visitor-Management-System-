@@ -319,6 +319,7 @@ const ReceptionistDashboard = () => {
                                                 <td>
                                                     <ReceptionistSignButton
                                                         onClick={(e) => {
+                                                            e.currentTarget.classList.add("loading");
                                                             e.stopPropagation();
                                                             setCurrentVisitorID(
                                                                 visit.idNumber
@@ -340,6 +341,7 @@ const ReceptionistDashboard = () => {
                                                 <td>
                                                     <ReceptionistSignButton
                                                         onClick={(e) => {
+                                                            e.currentTarget.classList.add("loading");
                                                             e.stopPropagation();
                                                             setCurrentVisitorID(
                                                                 visit.idNumber
