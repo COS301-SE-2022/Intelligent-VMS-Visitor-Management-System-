@@ -37,13 +37,16 @@ const AdminDashboard = () => {
     const [numInvitesSent, setNumInvitesSent] = useState(0);
 
     // Visitor invite data object for chart
-    const [visitorVals, setVisitorVals] = useState({ data: [], labels: [] });
+    const [visitorVals, setVisitorVals] = useState({ data: [], labels: [], label: "Actual Visitors" });
 
     // Parking data object for chart
-    const [parkingVals, setParkingVals] = useState({ data: [], labels: [] });
+    const [parkingVals, setParkingVals] = useState({ data: [], labels: [], label: "Parking" });
+
+    // Predicted Visitor Values
+    const [predictedVisitorVals, setPredictedVisitorVals] = useState([]);
 
     // Date Range Hook
-    const [startDate, endDate, inviteDateMap, setDateMap, setStartDate] =
+    const [startDate, endDate, inviteDateMap, setDateMap] =
         useDateRange(getFormattedDateString(new Date(Date.now())), 7);
 
     // Parking Date Range Hook
@@ -52,7 +55,6 @@ const AdminDashboard = () => {
         parkingEndDate,
         parkingDateMap,
         setParkingDateMap,
-        setParkingStartDate,
     ] = useDateRange(getFormattedDateString(new Date(Date.now())), 7);
 
     // Start Date State
@@ -63,6 +65,8 @@ const AdminDashboard = () => {
         useState(1);
 
     const [initialNumParkingSpots, setInitialNumParkingSpots] = useState(0);
+
+    const [numParkingSpotsAvailableToday, setNumParkingSpotsAvailableToday] = useState(0);
 
     // State to track whether the restrictions have changed
     const [restrictionsChanged, setRestrictionsChanged] = useState(false);
@@ -76,9 +80,6 @@ const AdminDashboard = () => {
     const now = getFormattedDateString(new Date());
 
     const [numParkingSpotsAvailable, setNumParkingSpotsAvailable] = useState(0);
-    const updateParkingSpots = useAuth((state) => {
-        return state.updateParkingSpots;
-    });
 
     // JWT Token data from Model
     const decodedToken = useAuth((state) => {
@@ -127,6 +128,15 @@ const AdminDashboard = () => {
     const numParkingSpotsAvailableQuery = useQuery(gql`
         query {
             getTotalAvailableParking
+        }
+    `);
+
+    const predictedInvitesQuery = useQuery(gql`
+        query {
+          getPredictedInviteData(startDate: "${startDate}", endDate: "${endDate}") {
+            date
+            data
+          }
         }
     `);
 
@@ -189,6 +199,7 @@ const AdminDashboard = () => {
             setVisitorVals({
                 data: Array.from(inviteDateMap.values()),
                 labels: Array.from(inviteDateMap.keys()),
+                label: "Actual Visitors"
             });
 
             setTodayInvites(inviteDateMap.get(startDate));
@@ -217,6 +228,7 @@ const AdminDashboard = () => {
             setParkingVals({
                 labels: Array.from(parkingDateMap.keys()),
                 data: Array.from(parkingDateMap.values()),
+                label: "Parking",
             });
 
         } else if (numParkingInDateRangeQuery.error) {
@@ -231,6 +243,7 @@ const AdminDashboard = () => {
             const numParkingspots = numParkingSpotsAvailableQuery.data.getTotalAvailableParking;
             setNumParkingSpotsAvailable(numParkingspots);
             setInitialNumParkingSpots(numParkingspots);
+            setNumParkingSpotsAvailableToday(numParkingSpotsAvailable - parkingDateMap.get(parkingStartDate));
         } else if (numParkingSpotsAvailableQuery.error) {
             setNumParkingSpotsAvailable("Error");
         }
@@ -249,13 +262,21 @@ const AdminDashboard = () => {
     }, [
         numInvitesQuery,
         numInviteInDateRangeQuery,
-        numParkingSpotsAvailableQuery,
         numParkingInDateRangeQuery,
-        startDate,
+        numParkingSpotsAvailableQuery,
         setParkingVals,
         setNumParkingSpotsAvailable,
         numInvitesPerResidentQuery,
     ]);
+
+    useEffect(() => {
+        if(!predictedInvitesQuery.loading && !predictedInvitesQuery.error) {
+            const predictedData = predictedInvitesQuery.data.getPredictedInviteData.map((invite) => {
+                return invite.data;
+            });
+            setPredictedVisitorVals(predictedData);
+        }
+    }, [predictedInvitesQuery])
 
     return (
         <Layout>
@@ -310,7 +331,7 @@ const AdminDashboard = () => {
                         <AdminCard
                             description="Number Of Parking Spots Available"
                             Icon={AiOutlineCar}
-                            dataval={parkingDateMap.get(now) ? numParkingSpotsAvailable - parkingDateMap.get(now) : 0}
+                            dataval={numParkingSpotsAvailableToday}
                             unit="Total"
                         />
                     </div>
@@ -321,14 +342,16 @@ const AdminDashboard = () => {
                             filename="visitor-forecast.png"
                             Chart={LineChart}
                             labelvals={visitorVals.labels}
-                            datavals={visitorVals.data}
+                            datavals={[visitorVals.data, predictedVisitorVals]}
+                            datalabels={[visitorVals.label, "Predicted Visitors"]}
                         />
                         <DownloadChart
                             title={"Parking Forecast For The Week"}
                             filename="parking-forecast.png"
                             Chart={LineChart}
                             labelvals={parkingVals.labels}
-                            datavals={parkingVals.data}
+                            datavals={[parkingVals.data]}
+                            datalabels={[parkingVals.label]}
                         />
                     </div>
 

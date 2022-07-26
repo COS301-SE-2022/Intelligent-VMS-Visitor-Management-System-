@@ -136,6 +136,7 @@ const CreateInvite = () => {
         numInvitesOfResidentQuery,
         numInvitesAllowed,
         limitReached,
+        isParkingAvailableQuery,
         setNow
     ]);
 

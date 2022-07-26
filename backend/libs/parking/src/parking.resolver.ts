@@ -107,5 +107,4 @@ export class ParkingResolver {
         return this.parkingService.createNParkingSpots(N);
     }
 
-
 }

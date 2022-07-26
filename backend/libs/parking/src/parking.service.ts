@@ -143,6 +143,7 @@ export class ParkingService {
     async reserveParking(
         invitationID:string
     ){
+        /*
         const now = new Date();
         const year = now.getFullYear();
         let month = "" + (now.getMonth() + 1);
@@ -165,6 +166,7 @@ export class ParkingService {
         if (!isParkingAvailable) {
             throw new InvalidCommand("Parking not available");
         }
+        */
 
         //Validate input
         const invite = await this.inviteService.getInvite(invitationID);   
@@ -213,9 +215,11 @@ export class ParkingService {
             }
         }
 
+        /*
         if (parkingNumber == -1) {
             throw new ParkingNotFound("There is no parking available");
         }
+        */
 
         //Send to db
         const parkingReservation = await this.commandBus.execute(
@@ -674,8 +678,9 @@ export class ParkingService {
         const numReservationsForDay = await this.queryBus.execute(
             new GetNumberOfReservationsQuery(startDate),
         );
+
         const numAvailableParkingForDay = await this.queryBus.execute(
-            new getAvailableParkingQuery(),
+            new getTotalAvailableParkingQuery(),
         );
 
         return numReservationsForDay < numAvailableParkingForDay;

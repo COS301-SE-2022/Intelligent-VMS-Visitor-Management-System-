@@ -1,6 +1,7 @@
 import { CommandBus, IQuery, QueryBus } from '@nestjs/cqrs';
 import { ConfigService } from "@nestjs/config";
 import { Test, TestingModule } from '@nestjs/testing';
+import { HttpModule } from "@nestjs/axios";
 import { MailService } from '@vms/mail';
 import { ParkingService } from '@vms/parking';
 import { AssignParkingCommand } from '@vms/parking/commands/impl/assignParking.command';
@@ -17,6 +18,7 @@ import { Invite } from '@vms/visitor-invite/models/invite.model';
 import { GetInviteQuery } from '@vms/visitor-invite/queries/impl/getInvite.query';
 import { RestrictionsService } from "@vms/restrictions";
 import { SignInService } from './sign-in.service';
+import { async } from 'rxjs';
 
 describe('SignInService', () => {
   let service: SignInService;
@@ -168,6 +170,7 @@ describe('SignInService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [HttpModule],
       providers: [
         SignInService,
         VisitorInviteService,
@@ -194,14 +197,7 @@ describe('SignInService', () => {
     expect(inviteService).toBeDefined();
     expect(receptionistService).toBeDefined();
   });
-
-  describe("generateTrayID", () => {
-    it("should return a valid Tray id", async () => {
-      const generatedTrayID=await service.generateTrayID();
-      expect( generatedTrayID).toEqual(1);
-    });
-  });
-
+   
   describe("generateTray", () => {
     it("should generate a tray", async () => {
       const generatedTray=await service.generateTray("hello",true,true);
@@ -221,6 +217,7 @@ describe('SignInService', () => {
       expect(trayNr).toEqual(0);
     });
     */
+    
 
     it("should throw an exception if invite with wrong date is given", async () => {
       try {

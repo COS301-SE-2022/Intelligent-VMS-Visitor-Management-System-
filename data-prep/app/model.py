@@ -1,5 +1,5 @@
+import joblib
 from sklearn import ensemble
-from sklearn.inspection import permutation_importance
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
 from datetime import date, timedelta, datetime
@@ -11,6 +11,7 @@ from app.holidaysSA import ourHolidays
 from app.fakeInviteGenerator import createInvites
 
 import json 
+import joblib
 
 start_date = date(2015,1,1)
 end_date = date(2022,7,1)
@@ -18,18 +19,6 @@ current_date = end_date
 features = []
 
 #################################################################
-
-#Global parameters
-params = { #TODO (Daniel): Play around
-    "n_estimators": 500,
-    "max_depth": 3,
-    "min_samples_split": 5,
-    "learning_rate": 0.01,
-    "loss": "squared_error",
-}
-
-#Create regressor
-reg = ensemble.GradientBoostingRegressor(**params)
 
 def create_data(month,dow,mn_dow,mdn_dow,min_dow,max_dow,mn_days,mn_month,mdn_month,min_month,max_month,mn_months,mn_woy,mdn_woy,min_woy,max_woy,mn_weeks,db,wb,num_inv,prob_inv,hol):
   row = [
@@ -373,6 +362,8 @@ def generateTrainingData():
 
 def predictMany(startingDate,endingDate):
 
+  reg = joblib.load("VMS_reg-model.pkl")
+
   startDate = datetime.strptime(startingDate, '%Y-%m-%d').date()
   endDate = datetime.strptime(endingDate, '%Y-%m-%d').date()
 
@@ -440,6 +431,20 @@ def predictMany(startingDate,endingDate):
   return json.dumps(output)
 
 def train():
+
+  #Global parameters
+  params = { 
+      "n_estimators": 500,
+      "max_depth": 3,
+      "min_samples_split": 5,
+      "criterion": "friedman_mse",
+      "learning_rate": 0.01,
+      "loss": "squared_error",
+  }
+
+  #Create regressor
+  reg = ensemble.GradientBoostingRegressor(**params)
+
   #createInvites(start_date,end_date,25)
 
   data,output = generateTrainingData()
@@ -450,6 +455,9 @@ def train():
   #Train model
   reg.fit(X_train, y_train)
 
+  #Export model
+  joblib.dump(reg, "VMS_reg-model.pkl")
+
   #Test model
   mse = mean_squared_error(y_test, reg.predict(X_test))
   print(mse)
@@ -457,7 +465,9 @@ def train():
   return json.dumps({'MSE': mse})
 
 def featureAnalysis():
-    imp = reg.feature_importances_
+    reg = joblib.load("VMS_reg-model.pkl")
+
+    imp = reg.feature_importances_.tolist()
     print(imp)
 
     return json.dumps(imp)
