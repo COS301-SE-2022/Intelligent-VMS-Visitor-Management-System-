@@ -144,6 +144,7 @@ describe('Receptionist tests', () => {
                 cy.contains('Sign in').click();
             });
         })
+        
         describe('sign out the visitor that was just signed in', () => {
 
             cy.wait(4000);

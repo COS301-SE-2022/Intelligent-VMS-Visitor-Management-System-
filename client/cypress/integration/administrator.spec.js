@@ -49,22 +49,20 @@ describe('Receptionist tests', () => {
             cy.location('pathname', { timeout: 60000 }).should('include', '/visitorDashboard');//waiting for backend to wake up.
             cy.wait(2000)
 
-            cy.contains('p', 'You are allowed to send ')      //find Stefans column
+            cy.contains('p', 'You are allowed to send ')//find Stefans column
                 .parent().then(($span) => {
-
+                    //below extracts the values from the text box
                     myObj.inText = $span.text();
-                    let temp= myObj.inText.search("send");
+                    let temp = myObj.inText.search("send");
                     temp = parseInt(temp);
-                    myObj.numberAllowed = myObj.inText.slice(temp+5,temp+7);
+                    myObj.numberAllowed = myObj.inText.slice(temp + 5, temp + 7);
                     myObj.numberSent = myObj.inText.slice(19, 21);
-                     myObj.numberAllowed = parseInt(myObj.numberAllowed);
-                     myObj.numberSent = parseInt(myObj.numberSent);
-                   
-                    // cy.log(Math.trunc(myObj.numberAllowed));
-                    // cy.log(Math.trunc((myObj.numberSent / myObj.numberAllowed) * 100));
-                     cy.get('div[class="radial-progress text-base-content"]').within(($tr) => {                        //search only within the row
-                        cy.contains(Math.trunc((myObj.numberSent / myObj.numberAllowed) * 100));
-                     })
+                    myObj.numberAllowed = parseInt(myObj.numberAllowed);
+                    myObj.numberSent = parseInt(myObj.numberSent);
+
+                    cy.get('div[class="radial-progress text-base-content"]').within(($tr) => {                        //search only within the row
+                        cy.contains(Math.trunc((myObj.numberSent / myObj.numberAllowed) * 100));//for rounding
+                    })
 
                     describe('canceling the personal invite', () => {
                         cy.contains('td', 'Stefan1234@mail.com')//find stafans column
@@ -86,21 +84,21 @@ describe('Receptionist tests', () => {
                             })
                     })
                 })
-
-
         })
+
         describe('Navigate to admin dashboard/confirm navigation success', () => {
             cy.get('.menuIcon').click();
             cy.contains('Admin Dashboard', { matchCase: false }).click({ force: true });
             cy.url().should('include', '/adminDashboard');//confirm correct page
         })
+
         describe('set new visitor limit and confirm it correctly changes', () => {
             cy.wait(4000)
             cy.get('p[ id="numInvitesPerResident"]').parent().then(($span) => {
                 myObj.inText = $span.text();
-                let temp= myObj.inText.search("send");
+                let temp = myObj.inText.search("send");
                 temp = parseInt(temp);
-                myObj.numberAllowed = myObj.inText.slice(temp+5,temp+7);
+                myObj.numberAllowed = myObj.inText.slice(temp + 5, temp + 7);
                 myObj.numberSent = myObj.inText.slice(19, 21);
                 cy.log(myObj.inText);
                 cy.get('button[data-testid="increaseInvites"]').click();
@@ -115,9 +113,9 @@ describe('Receptionist tests', () => {
                 cy.contains('p', 'You are allowed to send ')        //find Stefans column
                     .parent().then(($span) => {
                         let myText = $span.text();
-                        let temp=myText.search("send");
+                        let temp = myText.search("send");
                         temp = parseInt(temp);
-                        let myallowed =myText.slice(temp+5,temp+7);
+                        let myallowed = myText.slice(temp + 5, temp + 7);
                         cy.log(myallowed);
                         cy.log(myObj.inText);
                         myObj.inText = parseInt(myObj.inText);
@@ -128,13 +126,13 @@ describe('Receptionist tests', () => {
                     })
             })
         })
+
         describe('resetting the allowed invites', () => {
             cy.get('.menuIcon').click();
             cy.contains('admin dashboard', { matchCase: false }).click({ force: true });
             cy.url().should('include', '/adminDashboard');      //confirm correct page
             cy.wait(3000);
             cy.get('button[data-testid="decreaseInvites"]').click();
-            //cy.wait(5000);
             cy.get('button[class="btn btn-primary btn-sm space-x-3 lg:btn-md"]').click();
         })
 
