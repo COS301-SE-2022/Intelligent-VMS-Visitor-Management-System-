@@ -87,12 +87,29 @@ describe('Receptionist tests', () => {
                             }
                         })
                 })
-
             })
-           // cy.log(myObj.numberSent); 
+           
+        
         })
-          
+        describe('Navigate to admin dashboard/confirm navigation success', () => {
+            cy.log('hmm');  
+            cy.wait(6000);
+            cy.get('.menuIcon').click();
+            cy.contains('Admin Dashboard', { matchCase: false }).click();
+            cy.url().should('include', '/adminDashboard');//confirm correct page
+        })
+        describe('set new visitor limit and confirm it correctly changes', () => {
+            cy.wait(4000)
+            // cy.get('p[ id="invPerRes"]').parent().then(($span) => {
+            //     myObj.inText = $span.text();   
+            //     cy.log(myObj.inText);
+            // })
 
+          
+                       
+        })
+
+       
 
     })
 })
