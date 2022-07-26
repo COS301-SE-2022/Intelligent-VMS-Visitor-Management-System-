@@ -68,7 +68,25 @@ describe('Receptionist tests', () => {
                 })  
                 cy.log(myObj.numberSent); 
 
-                
+                describe('canceling the personal invite', () => {
+                    cy.contains('td', 'Stefan1234@mail.com')//find stafans column
+                    .parent()                               //his row
+                    .within(($tr)=>{                        //search only within the row
+                        cy.get('td button').click()
+                    })  
+                })
+
+                describe('confirming that the Invites sent has correctly updated', () => {
+                    cy.wait(2000);//wait for page information to be updated
+                    cy.contains('p', 'You are allowed to send ')      //find Stefans column
+                        .parent().then(($span) => {
+                            let myText = $span.text();
+                            let newSent= myText.slice(19, 20);
+                            if (newSent!=(myObj.numberSent-1)) {
+                                throw new Error("Error, 'sent invites' value did not update correctly update after dismissing the invite");
+                            }
+                        })
+                })
 
             })
            // cy.log(myObj.numberSent); 
