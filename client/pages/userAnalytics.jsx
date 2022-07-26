@@ -200,7 +200,7 @@ const UserAnalytics = () => {
                                     filename={name + "-forecast.png"}
                                     Chart={LineChart}
                                     labelvals={visitorVals.labels}
-                                    datavals={visitorVals.data}
+                                    datavals={[visitorVals.data]}
                                     setStart={setStartDate}
                                     setRange={setRange}
                                 />

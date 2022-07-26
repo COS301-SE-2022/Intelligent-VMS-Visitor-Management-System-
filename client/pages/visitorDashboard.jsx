@@ -88,13 +88,16 @@ const VisitorDashboard = () => {
                 const otherInviteData = invites.filter((invite) => {
                     return invite.inviteID !== inviteID;
                 });
+
                 const newOpen = openInvites.filter((invite) => {
-                    return invite.inviteID !== inviteID;
+                    return invite.inviteID !== inviteID && invite.inviteDate >= now;
                 });
+
                 setOpenInvites(newOpen);
                 setInvites(otherInviteData);
-
+                
                 otherInviteData.forEach((invite) => {
+                    invite.inviteDate >= now && 
                     dateMap.set(
                         invite.inviteDate,
                         dateMap.get(invite.inviteDate) + 1
@@ -127,7 +130,7 @@ const VisitorDashboard = () => {
                     );
                 }
 
-                if (invite.inviteState === "inActive") {
+                if (invite.inviteState === "inActive" && invite.inviteDate >= now) {
                     tempInvites.push(invite);
                 }
             });
@@ -178,11 +181,12 @@ const VisitorDashboard = () => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 md:grid-rows-1 gap-4">
                 <DownloadChart
-                    title={"User Invites"}
+                    title={"User Invites For The Week"}
                     filename={token.name + "-weekly.png"}
                     Chart={LineChart}
                     labelvals={visitorData.labels}
-                    datavals={visitorData.data}
+                    datavals={[visitorData.data]}
+                    datalabels={["Visitors"]}
                 />
                 <div className="flex flex-col gap-5">
                     <div className="card w-full h-full bg-base-200 p-5 shadow">

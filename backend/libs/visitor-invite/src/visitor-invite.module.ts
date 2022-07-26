@@ -2,6 +2,7 @@ import { forwardRef, Module } from "@nestjs/common";
 import { VisitorInviteService } from "./visitor-invite.service";
 import { MongooseModule } from "@nestjs/mongoose";
 import { CqrsModule } from "@nestjs/cqrs";
+import { HttpModule, HttpService } from "@nestjs/axios";
 
 import { AuthModule } from "@vms/auth";
 import { ParkingModule } from "@vms/parking";
@@ -60,7 +61,7 @@ import { GetNumberOfOpenInvitesQueryHandler } from "./queries/handlers/getNumber
         GetTotalNumberOfInvitesVisitorQueryHandler,
         CreateGroupInviteCommandHandler,
         GetNumberOfOpenInvitesQueryHandler,
-        getNumberOfVisitors
+        getNumberOfVisitors,
     ],
     exports: [VisitorInviteService],
 })
