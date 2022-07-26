@@ -153,8 +153,8 @@ describe('Receptionist tests', () => {
             });
         })
         describe('sign out the visitor that was just signed in', () => {
-            cy.contains('Sign Out',{timeout:8000})
-            cy.wait(1000);
+           
+            cy.wait(4000);
             cy.contains('td', '9910304129088')      //find Stefans column
             .parent()                               //his row
             .within(($tr)=>{                        //search only within the row

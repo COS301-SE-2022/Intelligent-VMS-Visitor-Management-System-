@@ -92,21 +92,45 @@ describe('Receptionist tests', () => {
         
         })
         describe('Navigate to admin dashboard/confirm navigation success', () => {
-            cy.log('hmm');  
-            cy.wait(6000);
+            // cy.log('hmm');  
+            // cy.wait(6000);
             cy.get('.menuIcon').click();
             cy.contains('Admin Dashboard', { matchCase: false }).click();
             cy.url().should('include', '/adminDashboard');//confirm correct page
         })
         describe('set new visitor limit and confirm it correctly changes', () => {
             cy.wait(4000)
-            // cy.get('p[ id="invPerRes"]').parent().then(($span) => {
-            //     myObj.inText = $span.text();   
-            //     cy.log(myObj.inText);
-            // })
+            cy.get('p[ id="numInvitesPerResident"]').parent().then(($span) => {
+                myObj.inText = $span.text();   
+                myObj.numberAllowed=myObj.inText.slice(-10, -9);
+                myObj.numberSent= myObj.inText.slice(19, 20);
+                cy.log(myObj.inText);
+                 cy.get('button[data-testid="increaseInvites"]').click();
+                 cy.get('button[class="btn btn-primary btn-sm space-x-3 lg:btn-md"]').click();
 
-          
-                       
+                describe('Navigate to visitor dashboard/confirm navigation success', () => {
+                    cy.get('.menuIcon').click();
+                    cy.contains('your Dashboard', { matchCase: false }).click();
+                    cy.url().should('include', '/visitorDashboard');//confirm correct page
+                })
+                cy.wait(2000);//wait for page information to be updated
+                cy.contains('p', 'You are allowed to send ')      //find Stefans column
+                    .parent().then(($span) => {
+                        let myText = $span.text();
+                       let myallowed=myText.slice(-10, -9);
+                       cy.log(myallowed);
+                       cy.log(myObj.inText);
+                       myObj.inText=parseInt(myObj.inText);
+                       myallowed=parseInt(myallowed);
+                       //cy.log(myallowed+1);
+                        if (myallowed!=(myObj.inText+1)) {
+                            //cy.log("hmmmm");
+                            throw new Error("Error, 'number of allowed invites does not update correctly");
+                        }
+                    })
+            })
+
+                 
         })
 
        
