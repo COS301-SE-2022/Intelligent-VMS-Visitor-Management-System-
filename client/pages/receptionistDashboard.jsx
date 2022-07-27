@@ -318,6 +318,7 @@ const ReceptionistDashboard = () => {
                                             {visit.inviteState === "inActive" ? (
                                                 <td>
                                                     <ReceptionistSignButton
+                                                        key={visit.inviteID}
                                                         onClick={(e) => {
                                                             e.currentTarget.classList.add("loading");
                                                             e.stopPropagation();

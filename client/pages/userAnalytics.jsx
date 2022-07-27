@@ -92,7 +92,7 @@ const UserAnalytics = () => {
     };
 
     // Visitor invite data object for chart
-    const [visitorVals, setVisitorVals] = useState({ data: [], labels: [] });
+    const [visitorVals, setVisitorVals] = useState({ data: [], labels: [], label: "Invites" });
 
     const [numInvites, setNumInvites] = useState(0);
 
@@ -135,6 +135,7 @@ const UserAnalytics = () => {
             setVisitorVals({
                 data: Array.from(dateMap.values()),
                 labels: Array.from(dateMap.keys()),
+                label: "Invites"
             });
         } else if (error) {
             if (error.message === "Unauthorized") {
@@ -182,7 +183,7 @@ const UserAnalytics = () => {
                                 <div className="avatar placeholder">
                                     <div className="w-16 rounded-full bg-neutral-focus text-neutral-content">
                                         <span className="text-3xl font-normal">
-                                            {name[0]}
+                                            {name && name[0]}
                                         </span>
                                     </div>
                                 </div>
@@ -203,6 +204,7 @@ const UserAnalytics = () => {
                                     datavals={[visitorVals.data]}
                                     setStart={setStartDate}
                                     setRange={setRange}
+                                    datalabels={[visitorVals.label]}
                                 />
                             </div>
 
