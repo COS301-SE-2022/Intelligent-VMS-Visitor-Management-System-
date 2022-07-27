@@ -16,7 +16,7 @@ describe('Sign Up Page', () => {
         })
 
         //Enter sign up info
-        describe('', () => {
+        describe('Sign up new user', () => {
             cy.url().should('include', 'signUp');//confirm correct page
             cy.get('input[name="email"]').type("MillionsAndMillionsOfDollars@mail.com").should('have.value', 'MillionsAndMillionsOfDollars@mail.com');
             cy.get('input[name="name"]').type("Stefan").should('have.value', 'Stefan');
