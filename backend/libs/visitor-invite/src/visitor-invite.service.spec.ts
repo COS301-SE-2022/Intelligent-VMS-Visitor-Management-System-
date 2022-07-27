@@ -1,6 +1,8 @@
 import { Test, TestingModule } from "@nestjs/testing";
+import { CACHE_MANAGER } from "@nestjs/common";
 import { CommandBus, IQuery, QueryBus } from "@nestjs/cqrs";
 import { ConfigService } from "@nestjs/config";
+import { HttpModule } from "@nestjs/axios";
 import { VisitorInviteService } from "./visitor-invite.service";
 import { GetInvitesQuery } from "./queries/impl/getInvites.query";
 import { GetNumberVisitorQuery } from "./queries/impl/getNumberOfVisitors.query";
@@ -76,6 +78,7 @@ describe("VisitorInviteService", () => {
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
+            imports: [HttpModule],
             providers: [
                 VisitorInviteService, 
                 ParkingService,
@@ -85,6 +88,13 @@ describe("VisitorInviteService", () => {
                 CommandBus, 
                 {
                     provide: QueryBus, useValue: queryBusMock
+                },
+                {
+                      provide: CACHE_MANAGER,
+                      useValue: {
+                        get: () => {return 'any value'},
+                        set: () => {return jest.fn()},
+                    },
                 },
             ],
         }).compile();

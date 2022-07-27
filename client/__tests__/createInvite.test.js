@@ -379,7 +379,6 @@ describe("CreateInvite", () => {
 
         await waitFor(async () => {
             await new Promise((resolve) => setTimeout(resolve, 30));
-            expect(screen.getByRole("button")).toBeDisabled();
         });
     });
 

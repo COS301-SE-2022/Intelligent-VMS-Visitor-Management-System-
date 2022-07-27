@@ -1,6 +1,8 @@
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { CACHE_MANAGER } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { Test, TestingModule } from '@nestjs/testing';
+import { HttpModule } from '@nestjs/axios';
 import { MailService } from '@vms/mail';
 import { ParkingService } from '@vms/parking';
 import { removeTrayByInviteIDCommand } from '@vms/receptionist/commands/impl/Tray/removeTrayByInviteID.command';
@@ -53,6 +55,7 @@ describe('SignOutService', () => {
   beforeEach(async () => {
     
     const module: TestingModule = await Test.createTestingModule({
+      imports: [HttpModule],
       providers: [SignOutService,
         VisitorInviteService,
         ParkingService,
@@ -65,6 +68,13 @@ describe('SignOutService', () => {
         },
         {
           provide: ReceptionistService, useValue: receptionistService 
+        },
+        {
+            provide: CACHE_MANAGER,
+            useValue: {
+                get: () => {return 'any value'},
+                set: () => {return jest.fn()},
+            },
         },
         {
           provide: CommandBus, useValue: commandBusMock

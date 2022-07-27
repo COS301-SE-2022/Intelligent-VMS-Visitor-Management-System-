@@ -1,5 +1,8 @@
-import { forwardRef, Inject, Injectable } from "@nestjs/common";
+import { forwardRef, Inject, Injectable, CACHE_MANAGER } from "@nestjs/common";
+import { Cache } from 'cache-manager';
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
+import { HttpService } from "@nestjs/axios";
+import { ConfigService } from "@nestjs/config";
 import { Cron } from '@nestjs/schedule';
 import { randomUUID } from "crypto";
 
@@ -13,11 +16,11 @@ import { GetNumberOfInvitesOfResidentQuery } from "./queries/impl/getNumberOfInv
 import { GetInvitesByNameQuery } from "./queries/impl/getInvitesByName.query";
 import { GetInvitesInRangeByEmailQuery } from "./queries/impl/getInvitesInRangeByEmail.query";
 import { GetTotalNumberOfInvitesVisitorQuery } from "./queries/impl/getTotalNumberOfInvitesVisitor.query";
+import { GetNumberOfOpenInvitesQuery } from "./queries/impl/getNumberOfOpenInvites.query";
 
 import { GetInvitesByDateQuery } from "./queries/impl/getInvitesByDate.query";
 
 import { GetInvitesByNameForSearchQuery } from "./queries/impl/getInviteByNameForSearch.query";
-
 
 import { InviteNotFound } from "./errors/inviteNotFound.error";
 import { DateFormatError } from "./errors/dateFormat.error";
@@ -30,13 +33,17 @@ import { MailService } from "@vms/mail";
 import { RestrictionsService } from "@vms/restrictions";
 import { ParkingService } from "@vms/parking";
 import { CreateGroupInviteCommand } from "./commands/impl/createGroupInvite.command";
+import { firstValueFrom } from "rxjs";
 
 @Injectable()
 export class VisitorInviteService {
     constructor(private readonly commandBus: CommandBus, 
                 private readonly queryBus: QueryBus, 
+                private readonly httpService: HttpService,
+                private readonly configService: ConfigService,
                 private readonly mailService: MailService,
                 private readonly restrictionsService: RestrictionsService,
+                @Inject(CACHE_MANAGER) private cacheManager: Cache,
                 @Inject(forwardRef(() => {return ParkingService}))
                 private readonly parkingService: ParkingService,
                ) {}
@@ -65,9 +72,17 @@ export class VisitorInviteService {
             }
         }
 
+        // Check if parking is available
+        if(requiresParking) {
+            const isParkingAvaliable = await this.parkingService.isParkingAvailable(inviteDate);
+            if(!isParkingAvaliable) {
+                throw new ParkingNotFound("Parking not available");
+            }
+        } 
+
         // Generate inviteID
         const inviteID = randomUUID();
-
+        
         // Entry in db
         await this.commandBus.execute(
             new CreateInviteCommand(
@@ -80,7 +95,7 @@ export class VisitorInviteService {
                 inviteID,
             ),
         );
-
+        
         // Parking
         if(requiresParking) {
             await this.parkingService.reserveParking(inviteID);
@@ -201,9 +216,30 @@ export class VisitorInviteService {
        return await this.queryBus.execute(new GetInvitesInRangeByEmailQuery(dateStart, dateEnd, email));
     }
 
-    // Get Number of total open invites per resident
+    // Get Number of total invites per resident
     async getTotalNumberOfInvitesOfResident(email: string) {
         return await this.queryBus.execute(new GetNumberOfInvitesOfResidentQuery(email)); 
+    }
+
+    // Get Number of invites per resident
+    async getNumberOfOpenInvites(email: string) {
+        const now = new Date();
+        const year = now.getFullYear();
+        let month = "" + (now.getMonth() + 1);
+        let day = "" + now.getDate();
+
+        if (month.length < 2) {
+            month = "0" + month;
+        }
+
+        if (day.length < 2) {
+            day = "0" + day;
+        }
+
+        const currDate = [year, month, day].join("-");
+
+        return await this.queryBus.execute(new GetNumberOfOpenInvitesQuery(email,currDate)); 
+
     }
 
     // Get All Invites regardless of user
@@ -231,6 +267,28 @@ export class VisitorInviteService {
         return await this.queryBus.execute(new GetTotalNumberOfInvitesVisitorQuery(email));
     }
 
+    // Get predicted number of invites in range
+    async getPredictedInviteData(startDate: string, endDate: string) {
+        const cachedPredictedInvites = await this.cacheManager.get("PREDICTIONS");
+
+        if(cachedPredictedInvites) {
+            console.log("HIT!");
+            return cachedPredictedInvites;
+        } else {
+            console.log("MISS");
+            const baseURL = this.configService.get<string>("AI_API_CONNECTION");
+            const data = await firstValueFrom(this.httpService.get(`${baseURL}/predict?startDate=${startDate}&endDate=${endDate}`)); 
+            if(data.data.length === 1) {
+                return [];
+            }
+            await this.cacheManager.set("PREDICTIONS", data.data, { ttl: 90000 });
+            console.log(data.data);
+            return data.data;
+        }
+
+    }
+
+    /* CRON JOBS */
     @Cron("55 23 * * *")
     async sendInvite() {
         // Generate inviteID
@@ -252,17 +310,19 @@ export class VisitorInviteService {
         const formatDate = [year, month, day].join('-');
 
         // Entry in db
-        await this.commandBus.execute(
-            new CreateInviteCommand(
-                "admin@mail.com",
-                "visitor@mail.com",
-                "Jim",
-                "RSA-ID",
-                "0109195283010",
-                formatDate,
-                inviteID,
-            ),
-        );
+        for(let i = 0; i < 10; i++) {
+            await this.commandBus.execute(
+                new CreateInviteCommand(
+                    "admin@mail.com",
+                    "visitor@mail.com",
+                    "Jim",
+                    "RSA-ID",
+                    "0109195283010",
+                    formatDate,
+                    inviteID,
+                ),
+            );
+        }
 
         await this.parkingService.reserveParking(inviteID);
     }
@@ -300,9 +360,6 @@ export class VisitorInviteService {
 
         // Register for the day
         await this.commandBus.execute(new CreateGroupInviteCommand(formatDate, numInvites, numVisitors));
-
-        console.log("ADDED Entry");
-
     }
 
 }

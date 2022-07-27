@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from "@nestjs/config";
 import { CommandBus, IQuery, QueryBus } from "@nestjs/cqrs";
+import { HttpModule } from "@nestjs/axios";
 import { ParkingService } from './parking.service';
 import { getTotalAvailableParkingQuery } from './queries/impl/getTotalAvailableParking.query';
 import {FreeParkingCommand} from './commands/impl/freeParking.command';
@@ -29,6 +30,7 @@ import { GetReservationsByDateQueryHandler } from './queries/handlers/getReserva
 import { GetFreeParkingQuery } from './queries/impl/getFreeParking.query';
 import { GetReservationsInRangeQuery } from './queries/impl/getReservationsInRange.query';
 import { getAvailableParkingQuery } from './queries/impl/getAvailableParking.query';
+import { CACHE_MANAGER } from '@nestjs/common';
 
 describe('ParkingService', () => {
   let parkingService: ParkingService;
@@ -298,12 +300,20 @@ describe('ParkingService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+        imports: [HttpModule],
         providers: [
             ParkingService, 
             VisitorInviteService,
             MailService,
             RestrictionsService,
             ConfigService,
+            {
+                provide: CACHE_MANAGER,
+                useValue: {
+                    get: () => {return 'any value'},
+                    set: () => {return jest.fn()},
+                },
+            },
             {
                 provide: QueryBus, useValue: queryBusMock
             },

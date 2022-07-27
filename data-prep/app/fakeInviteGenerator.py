@@ -1,10 +1,6 @@
 from faker import Faker
 from faker.providers import DynamicProvider
-from datetime import date, timedelta, datetime
-from dateutil.relativedelta import relativedelta
-from random import randint
-
-from app.database import invitesCollection
+from app.database import invitesCollection,groupInvitesCollection
 from app.holidaysSA import ourHolidays
 
 fake = Faker()
@@ -106,5 +102,29 @@ def createInvites(startDate,endDate,maxResidents):
 
     #send generated invites to db
     invitesCollection.insert_many(invites)
+    groupInvitesCollection.delete_many({})
+    invitesCollection.aggregate([
+    {
+        '$group': {
+            '_id': '$inviteDate', 
+            'numInvites': {
+                '$sum': 1
+            }, 
+            'numVisitors': {
+                '$sum': {
+                    '$cond': [
+                        {
+                            '$eq': [
+                                '$inviteState', 'signedOut'
+                            ]
+                        }, 1, 0
+                    ]
+                }
+            }
+        }
+    }, {
+        '$out': 'groupinvites'
+    }
+    ])
 
 

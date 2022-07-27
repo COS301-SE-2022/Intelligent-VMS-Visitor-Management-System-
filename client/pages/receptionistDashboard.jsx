@@ -166,8 +166,9 @@ const ReceptionistDashboard = () => {
         if (!loading && !error) {
             if (data) {
                 const invites = data.getInvitesByDate.filter((invite) => {
-                    return invite.inviteState !== "signedOut";
+                    return invite.inviteState !== "signedOut" && invite.inviteID;
                 });
+                console.log(invites);
                 setVisitorData(invites);
             }
         } else if (error) {
@@ -178,15 +179,15 @@ const ReceptionistDashboard = () => {
 
             setVisitorData([
                 {
+                    visitorID: "ERROR",
                     visitorEmail: "ERROR",
                     idDocType: "ERROR",
                     isNumber: "ERROR",
                 },
             ]);
         }
-    }, [loading, error, router, data]);
+    }, [loading, error, router, data, invitesQuery]);
 
-    //const [notes, setNotes] = useState("");
     const [visitorName, setName] = useState("");
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -280,20 +281,20 @@ const ReceptionistDashboard = () => {
                             <tbody>
                                 {visitorData.map((visit, idx) => {
                                     return (
-                                        <tr className="relative z-0 pointer-events-auto" 
+                                        <tr className="relative z-0 hover cursor-pointer" 
                                             key={idx} 
                                             onClick={() => {
-                                            setVisitModalData(visit)
+                                                setVisitModalData(visit)
 
-                                            client.query({
-                                                query: gql`
-                                                query {
-                                                    getInviteReservation(invitationID: "${visit.inviteID}"){
-                                                        parkingNumber
-                                                    } 
-                                                }
-                                            `,
-                                            })
+                                                client.query({
+                                                    query: gql`
+                                                    query {
+                                                        getInviteReservation(invitationID: "${visit.inviteID}"){
+                                                            parkingNumber
+                                                        } 
+                                                    }
+                                                `,
+                                                })
                                             .then((res) => {
                                                 const reservation = res.data.getInviteReservation;
                                                 setCurrentParkingNumber(reservation.parkingNumber);
@@ -318,6 +319,7 @@ const ReceptionistDashboard = () => {
                                                 <td>
                                                     <ReceptionistSignButton
                                                         onClick={(e) => {
+                                                            e.currentTarget.classList.add("loading");
                                                             e.stopPropagation();
                                                             setCurrentVisitorID(
                                                                 visit.idNumber
@@ -338,7 +340,9 @@ const ReceptionistDashboard = () => {
                                             ) : (
                                                 <td>
                                                     <ReceptionistSignButton
-                                                        onClick={() => {
+                                                        onClick={(e) => {
+                                                            e.currentTarget.classList.add("loading");
+                                                            e.stopPropagation();
                                                             setCurrentVisitorID(
                                                                 visit.idNumber
                                                             );
@@ -355,7 +359,6 @@ const ReceptionistDashboard = () => {
                                                     />
                                                 </td>
                                             )}
-                                            
                                         </tr>
                                     );
                                 })}
@@ -442,8 +445,6 @@ const ReceptionistDashboard = () => {
                         setShowScanner={setShowScanner}
                         setVisitorData={setVisitorData}
                         setSearch={setSearch}
-                        setShowErrorAlert={setShowErrorAlert}
-                        setErrorMessage={setErrorMessage}
                     />
                 </div>
             </div>

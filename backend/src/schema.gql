@@ -64,6 +64,11 @@ type SearchInvite {
   visitorName: String!
 }
 
+type PredictedInviteData {
+  date: String!
+  data: Float!
+}
+
 input VisitorInputType {
   id: Float!
   name: String!
@@ -93,6 +98,8 @@ type Query {
   getInvitesByIDForSearch(inviteID: String!): Invite!
   getNumberOfInvitesOfVisitor(email: String!): Float!
   getInvitesByDate(date: String!): [Invite!]!
+  getNumberOfOpenInvites(email: String!): Float!
+  getPredictedInviteData(startDate: String!, endDate: String!): [PredictedInviteData!]!
   helloParking: String!
   getTotalAvailableParking: Float!
   getFreeParking: [Parking!]!
