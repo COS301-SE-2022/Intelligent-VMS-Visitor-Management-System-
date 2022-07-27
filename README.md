@@ -47,7 +47,7 @@ The VMS is an intelligent visitor management system that allows provides a platf
 
 <a href="https://docs.google.com/document/d/1Kf-5MxLnLUtDd3b5bp-AUGTrLjr4tCdsoLqV4UA1I04/edit">🧶 Coding Standards Document</a>
 
-<a href="#">🤖 Machine Learning Model Specification Document</a>
+<a href="https://docs.google.com/document/d/1y0HffcN_IsIZRsBgDtSsn6qh53J1bAoKyN5Jm0LLbfU/edit?usp=sharing">🤖 Machine Learning Model Specification Document</a>
 
 <a href="https://docs.google.com/document/d/1W9P7WsLX_BxZKqAD-5wMAkKmHbwzmwEzTP8IroRCUY0/edit?usp=sharing">📖 User Manual</a>
 

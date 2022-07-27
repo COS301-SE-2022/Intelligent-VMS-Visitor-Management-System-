@@ -6,7 +6,7 @@ import { UserService } from "@vms/user";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import { Model } from "mongoose";
 import { getModelToken } from "@nestjs/mongoose";
-import {CACHE_MANAGER} from "@nestjs/common";
+import { CACHE_MANAGER } from "@nestjs/common";
 
 import { LoginFailed } from "./errors/loginFailed.error";
 import * as bcrypt from "bcrypt";
@@ -52,7 +52,6 @@ describe("AuthService", () => {
                         get: () => {return 'any value'},
                         set: () => {return jest.fn()},
                     },
-
                 },
                 MailService,
             ],

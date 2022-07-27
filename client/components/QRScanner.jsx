@@ -4,12 +4,10 @@ import { gql, useApolloClient } from "@apollo/client";
 
 import useVideo from "../hooks/useVideo.hook";
 
-const QrScanner = ({
+const QRScanner = ({
     setShowScanner,
     setVisitorData,
     setSearch,
-    setShowErrorAlert,
-    setErrorMessage,
 }) => {
     //ApolloClient
     const client = useApolloClient();
@@ -19,6 +17,11 @@ const QrScanner = ({
 
     // Video state
     const [showVideo, setShowVideo] = useState(true);
+
+    // Error State
+    const [errorMessage, setErrorMessage] = useState("");
+
+    const [showErrorMessage, setShowErrorMessage] = useState(false);
 
     //Search function that actually queries the database
     const search = (data) => {
@@ -64,6 +67,9 @@ const QrScanner = ({
     return (
         <div className="relative flex-col items-center justify-center text-center">
             <p>Ensure that QR Code is visible</p>
+            { showErrorMessage &&
+                <p className="text-error">{errorMessage}</p>
+            }
             {showVideo ? (
                 <div>
                     <video
@@ -82,19 +88,17 @@ const QrScanner = ({
                                         setData(qrData.inviteID);
                                         setShowScanner(false);
                                         search(qrData.inviteID);
-                                        setShowErrorAlert(false);
+                                        setShowErrorMessage(false);
                                     } else {
-                                        setShowErrorAlert(true);
+                                        setShowErrorMessage(true);
                                         setErrorMessage("Invalid QR Code");
                                     }
                                 } catch (error) {
-                                    setShowErrorAlert(true);
+                                    setShowErrorMessage(true);
                                     setErrorMessage("Invalid QR Code");
                                 }
                             } else if (error) {
-                                console.log(error);
                                 if (error.name === "NotFoundError") {
-                                    console.log("YES!");
                                     setShowVideo(false);
                                 }
                             }
@@ -112,4 +116,4 @@ const QrScanner = ({
     );
 };
 
-export default QrScanner;
+export default QRScanner;

@@ -1,5 +1,6 @@
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ConfigService } from "@nestjs/config";
+import { HttpModule } from '@nestjs/axios';
 import { Test, TestingModule } from '@nestjs/testing';
 import { MailService } from '@vms/mail';
 import { ParkingService } from '@vms/parking';
@@ -8,6 +9,7 @@ import { getTrayFromInviteQuery } from './queries/impl/getTrayFromInvite.query';
 import { ReceptionistService } from './receptionist.service';
 import { RestrictionsService } from "@vms/restrictions";
 import { Tray } from './schema/tray.schema';
+import { CACHE_MANAGER } from '@nestjs/common';
 
 describe('ReceptionistService', () => {
   let service: ReceptionistService;
@@ -38,12 +40,20 @@ describe('ReceptionistService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [HttpModule],
       providers: [ReceptionistService,
         VisitorInviteService,
         ParkingService,
         MailService,
         ConfigService,
         RestrictionsService,
+        {
+            provide: CACHE_MANAGER,
+            useValue: {
+                get: () => {return 'any value'},
+                set: () => {return jest.fn()},
+            },
+        },
         {
           provide: QueryBus, useValue: queryBusMock
         },
