@@ -37,7 +37,7 @@ const AdminDashboard = () => {
     const [numInvitesSent, setNumInvitesSent] = useState(0);
 
     // Visitor invite data object for chart
-    const [visitorVals, setVisitorVals] = useState({ data: [], labels: [], label: "Actual Visitors" });
+    const [visitorVals, setVisitorVals] = useState({ data: [], labels: [], label: "Invites" });
 
     // Parking data object for chart
     const [parkingVals, setParkingVals] = useState({ data: [], labels: [], label: "Parking" });
@@ -199,7 +199,7 @@ const AdminDashboard = () => {
             setVisitorVals({
                 data: Array.from(inviteDateMap.values()),
                 labels: Array.from(inviteDateMap.keys()),
-                label: "Actual Visitors"
+                label: "Invites"
             });
 
             setTodayInvites(inviteDateMap.get(startDate));

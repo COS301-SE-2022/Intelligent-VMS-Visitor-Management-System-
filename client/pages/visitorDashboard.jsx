@@ -1,6 +1,9 @@
-import { useState, useEffect, CSSProperties } from "react";
+import { useState, useEffect } from "react";
 import { gql, useQuery, useApolloClient } from "@apollo/client";
 import { useRouter } from "next/router";
+
+import { BiMailSend } from "react-icons/bi";
+import { AiFillAlert } from "react-icons/ai";
 
 import Layout from "../components/Layout";
 import ErrorAlert from "../components/ErrorAlert";
@@ -191,6 +194,7 @@ const VisitorDashboard = () => {
                 <div className="flex flex-col gap-5">
                     <div className="card w-full h-full bg-base-200 p-5 shadow">
                         <h2 className="card-title font-normal">
+                            <span className="text-2xl text-primary"><BiMailSend /></span>
                             Total Number Of Invites Sent
                         </h2>
                         <div className="card-body justify-center">
@@ -203,6 +207,7 @@ const VisitorDashboard = () => {
                     </div>
                     <div className="card w-full h-full bg-base-200 p-5 shadow">
                         <h2 className="card-title font-normal">
+                            <span className="text-2xl text-primary"><AiFillAlert /></span>
                             Maximum Invites Allowed
                         </h2>
                         <div className="card-body justify-center">
@@ -260,10 +265,13 @@ const VisitorDashboard = () => {
                                                 <td>{visit.inviteDate}</td>
                                                 <td>
                                                     <button
+                                                        key={visit.inviteID}
                                                         aria-label="cancel"
                                                         className="btn btn-primary btn-square"
                                                         onClick={(e) => {
-                                                            e.currentTarget.classList.add("loading");
+                                                            if(!e.currentTarget.classList.contains("loading")) {
+                                                                e.currentTarget.classList.add("loading");
+                                                            }
                                                             cancelInvite(
                                                                 visit.inviteID
                                                             );

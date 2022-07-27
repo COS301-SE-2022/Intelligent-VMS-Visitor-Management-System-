@@ -51,7 +51,7 @@ const UploadPopUp = ({
                             {text}</p>
                     </div>
                     <input className="opacity-0" type="file" 
-                    onChange={()=>{
+                    onChange={(event)=>{
                         
                         if(event.target.files[0].type === "text/csv" || event.target.files[0].type === "application/vnd.ms-excel")
                         {
