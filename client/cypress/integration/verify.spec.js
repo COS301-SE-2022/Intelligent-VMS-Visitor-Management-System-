@@ -11,6 +11,7 @@ describe('Verify Page', () => {
             cy.wait(500);
             cy.get('.menuIcon').click();
             cy.wait(500);
+            cy.contains('Signup').click();
         })
 
         //Enter sign up info
