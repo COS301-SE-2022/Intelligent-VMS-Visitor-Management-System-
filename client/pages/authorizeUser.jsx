@@ -120,7 +120,7 @@ const AuthorizeUser = () => {
 
     return (
         <Layout>
-            <div className="space-y-6">
+            <div className="space-y-6 pl-3">
                 <div className="mt-3 flex w-full items-center justify-between">
                     <div className="w-full">
                         <h1 className="text-lg font-bold md:text-xl lg:text-3xl">

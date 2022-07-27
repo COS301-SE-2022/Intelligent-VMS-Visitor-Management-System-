@@ -44,7 +44,7 @@ const Navbar = () => {
                     </a>
                 </Link>
             </div>
-            <div className="navbar-end text-xs text-neutral-content md:text-sm">
+            <div className="navbar-end text-xs text-neutral-content md:text-sm space-x-5">
                 <div>
                     <ThemeSelector />
                 </div>

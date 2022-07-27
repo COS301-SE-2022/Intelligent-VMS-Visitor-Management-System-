@@ -313,6 +313,7 @@ const CreateInvite = () => {
                                     name="visitDate"
                                     placeholder="Visit Date"
                                     className="input input-bordered w-full"
+                                    min={getFormattedDateString(new Date())}
                                     onChange={(e) => {
                                         handleChange(e);
                                         setNow(e.currentTarget.value);
