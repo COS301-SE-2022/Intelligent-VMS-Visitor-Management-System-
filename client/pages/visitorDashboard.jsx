@@ -57,6 +57,7 @@ const VisitorDashboard = () => {
                 getInvites {
                     idNumber
                     visitorEmail
+                    visitorName
                     idDocType
                     inviteID
                     inviteDate
@@ -258,7 +259,7 @@ const VisitorDashboard = () => {
                             <thead>
                                 <tr>
                                     <th></th>
-                                    <th>Email</th>
+                                    <th className="capitalize">Name</th>
                                     <th>ID Document Type</th>
                                     <th>ID Number</th>
                                     <th>Date</th>
@@ -271,7 +272,7 @@ const VisitorDashboard = () => {
                                         return (
                                             <tr className="hover" key={idx}>
                                                 <th>{idx + 1}</th>
-                                                <td>{visit.visitorEmail}</td>
+                                                <td>{visit.visitorName}</td>
                                                 <td>{visit.idDocType}</td>
                                                 <td>{visit.idNumber}</td>
                                                 <td>{visit.inviteDate}</td>
@@ -323,7 +324,7 @@ const VisitorDashboard = () => {
                             <thead>
                                 <tr>
                                     <th></th>
-                                    <th>Email</th>
+                                    <th>Name</th>
                                     <th>ID Document Type</th>
                                     <th>ID Number</th>
                                     <th>Date</th>
@@ -336,7 +337,7 @@ const VisitorDashboard = () => {
                                         return (
                                             <tr className="hover" key={idx}>
                                                 <th>{idx + 1}</th>
-                                                <td>{visit.visitorEmail}</td>
+                                                <td className="capitalize">{visit.visitorName}</td>
                                                 <td>{visit.idDocType}</td>
                                                 <td>{visit.idNumber}</td>
                                                 <td>{visit.inviteDate}</td>
