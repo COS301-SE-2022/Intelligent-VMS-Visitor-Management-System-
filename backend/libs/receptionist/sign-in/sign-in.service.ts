@@ -114,11 +114,11 @@ export class SignInService {
             new BulkSignInCommand(idArray)
             );
 
-            let bsi_data = new BSIdata();
-            bsi_data.createCount = createCount;
-            bsi_data.signInCount = signInCount;
+            let bsiData = new BSIdata();
+            bsiData.createCount = createCount;
+            bsiData.signInCount = signInCount;
 
-            return bsi_data;
+            return bsiData;
         }
 }
 
