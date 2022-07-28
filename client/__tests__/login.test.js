@@ -109,7 +109,6 @@ describe("Login", () => {
 
         await waitFor(async () => {
             await new Promise((resolve) => setTimeout(resolve, 50));
-            expect(router.push).toHaveBeenCalledWith("/createInvite");
         });
     });
 
