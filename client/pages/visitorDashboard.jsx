@@ -36,6 +36,7 @@ const VisitorDashboard = () => {
     const [openInvites, setOpenInvites] = useState([]);
     const [percentage, setPercentage] = useState(0);
     const [visitorData, setVisitorData] = useState({ data: [], labels: [] });
+    const [historyInvites, setHistoryInvites] = useState([]);
     const [invites, setInvites] = useState([]);
     const now = getFormattedDateString(new Date());
 
@@ -125,12 +126,17 @@ const VisitorDashboard = () => {
             setInvites(invites);
 
             const tempInvites = [];
+            const tempHistoryInvites = [];
             invites.forEach((invite) => {
                 if(invite.inviteDate >= now) {
                     dateMap.set(
                         invite.inviteDate,
                         dateMap.get(invite.inviteDate) + 1
                     );
+                } 
+
+                if(invite.inviteDate < now || invite.inviteState === "signedOut" || invite.inviteState === "signedIn") {
+                    tempHistoryInvites.push(invite);
                 }
 
                 if (invite.inviteState === "inActive" && invite.inviteDate >= now) {
@@ -138,8 +144,14 @@ const VisitorDashboard = () => {
                 }
             });
 
+            tempHistoryInvites.sort((lhs,rhs) => {
+                return new Date(lhs.inviteDate) - new Date(rhs.inviteDate);
+            });
+
             setOpenInvites(tempInvites);
             setDateMap(new Map(dateMap));
+            setHistoryInvites(tempHistoryInvites);
+
 
             setVisitorData({
                 data: Array.from(dateMap.values()),
@@ -182,7 +194,7 @@ const VisitorDashboard = () => {
                 </h1>
                 <p>You have {todayInvites} visitors expected today.</p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 md:grid-rows-1 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 md:grid-rows-1 gap-4 mb-10">
                 <DownloadChart
                     title={"User Invites For The Week"}
                     filename={token.name + "-weekly.png"}
@@ -235,7 +247,7 @@ const VisitorDashboard = () => {
                         <div className="card-actions"></div>
                     </div>
                 </div>
-                <h2 className="text-3xl font-bold ml-2">Open Invites</h2>
+                <h2 className="text-3xl font-bold ml-2 divider col-span-2">Open Invites</h2>
                 <div className="col-span-1 md:col-span-2 space-y-4 overflow-x-auto">
                     {loading ? (
                         <progress className="progress progress-primary w-56">
@@ -306,6 +318,41 @@ const VisitorDashboard = () => {
                             )}
                         </table>
                     )}
+                    <h2 className="text-3xl font-bold ml-2 divider col-span-2 mt-5">Invite History</h2>
+                    <table className="table table-compact md:table-normal w-full">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Email</th>
+                                    <th>ID Document Type</th>
+                                    <th>ID Number</th>
+                                    <th>Date</th>
+                                    <th>Invite State</th>
+                                </tr>
+                            </thead>
+                            {historyInvites.length > 0 ? (
+                                <tbody>
+                                    {historyInvites.map((visit, idx) => {
+                                        return (
+                                            <tr className="hover" key={idx}>
+                                                <th>{idx + 1}</th>
+                                                <td>{visit.visitorEmail}</td>
+                                                <td>{visit.idDocType}</td>
+                                                <td>{visit.idNumber}</td>
+                                                <td>{visit.inviteDate}</td>
+                                                <td>{visit.inviteState}</td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                            ) : (
+                                <tbody>
+                                    <tr>
+                                        <th>Nothing to show...</th>
+                                    </tr>
+                                </tbody>
+                            )}
+                    </table>
                 </div>
                 <ErrorAlert
                     message={errorMessage}

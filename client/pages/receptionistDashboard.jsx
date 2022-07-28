@@ -61,7 +61,6 @@ const ReceptionistDashboard = () => {
                 idNumber
                 visitorName
                 inviteState
-                # requiresParking
                 idDocType
                 userEmail
             }
@@ -83,7 +82,6 @@ const ReceptionistDashboard = () => {
                         idNumber
                         visitorName
                         inviteState
-                        # requiresParking
                         idDocType
                         userEmail
                     }
@@ -119,7 +117,6 @@ const ReceptionistDashboard = () => {
                         idNumber
                         visitorName
                         inviteState
-                        # requiresParking
                         idDocType
                         userEmail
                     }
@@ -288,28 +285,7 @@ const ReceptionistDashboard = () => {
                                             key={visit.inviteID} 
                                             onClick={() => {
                                                 setVisitModalData(visit)
-
-                                                client.query({
-                                                    query: gql`
-                                                    query {
-                                                        getInviteReservation(invitationID: "${visit.inviteID}"){
-                                                            parkingNumber
-                                                        } 
-                                                    }
-                                                `,
-                                                })
-                                            .then((res) => {
-                                                const reservation = res.data.getInviteReservation;
-                                                setCurrentParkingNumber(reservation.parkingNumber);
                                                 setShowVisitorModal(true);
-                                            })
-                                            .catch((err) => {
-                                                console.log(err);
-                                                setCurrentParkingNumber(-1);
-                                                setShowVisitorModal(true);
-                                                
-                                            });
-
                                             } 
 
                                             
@@ -319,7 +295,7 @@ const ReceptionistDashboard = () => {
                                             <td className="capitalize" >{visit.visitorName}</td>
                                             <td>{visit.idNumber}</td>
                                             {visit.inviteState === "inActive" ? (
-                                                <td>
+                                                <td key={visit.inviteID}>
                                                     <ReceptionistSignButton
                                                         key={visit.inviteID}
                                                         onClick={(e) => {
@@ -342,8 +318,9 @@ const ReceptionistDashboard = () => {
                                                     />
                                                 </td>
                                             ) : (
-                                                <td>
+                                                <td key={visit.inviteID}>
                                                     <ReceptionistSignButton
+                                                        key={visit.inviteID}
                                                         onClick={(e) => {
                                                             e.currentTarget.classList.add("loading");
                                                             e.stopPropagation();
@@ -353,6 +330,9 @@ const ReceptionistDashboard = () => {
                                                             setCurrentInviteID(
                                                                 visit.inviteID
                                                             );
+                                                            setCurrentVisitorName(
+                                                                visit.visitorName
+                                                            );      
                                                             setShowVisitorModal(
                                                                 false
                                                             );
@@ -384,11 +364,14 @@ const ReceptionistDashboard = () => {
                     message={successMessage}
                     showConditon={showSuccessAlert}
                 />
+                { showInfoAlert &&
                 <InfoAlert
                     visitorName={currentVisitorName}
                     showConditon={showInfoAlert}
+                    setShowCondition={setShowInfoAlert}
                     trayNr={trayNr}
                 />
+                }
             </div>
             <input type="checkbox" id="signIn-modal" className="modal-toggle" />
             <div className="fade modal cursor-pointer" id="signIn-modal">

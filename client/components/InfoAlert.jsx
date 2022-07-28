@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 
-const InfoAlert = ({ trayNr, visitorName, showConditon }) => {
+const InfoAlert = ({ trayNr, visitorName, showConditon, setShowCondition }) => {
     const alertVariants = {
         hidden: { opacity: 1, y: -200 },
         enter: { opacity: 1, y: 0 },
@@ -17,6 +17,10 @@ const InfoAlert = ({ trayNr, visitorName, showConditon }) => {
             whileTap="click"
             transition={{ type: "linear" }}
             className="fixed top-3"
+            onClick={() => { 
+                console.log("HERE!");
+                setShowCondition(false); 
+            }}
         >
             <div className="alert shadow-lg">
                 <div>

@@ -14,6 +14,7 @@ const UploadPopUp = ({
     const [fileAsString, setFileAsString] = useState("");
     const [text, setText] = useState("Upload a csv file");
     const [signInButton, setSignInButton] = useState(true);
+    const [showSuccess, setShowSuccess] = useState(false);
 
     // Get Data From JWT Token
     const jwtTokenData = useAuth((state) => {
@@ -87,10 +88,7 @@ const UploadPopUp = ({
                         setShowSuccessAlert(true);
                         refetch();
                     })
-                    
                   };
-
-
             }} >Sign-In</button>
         </div>
     </div>

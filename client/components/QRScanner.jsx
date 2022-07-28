@@ -37,6 +37,8 @@ const QRScanner = ({
                         idNumber
                         visitorName
                         inviteState
+                        idDocType
+                        userEmail
                     }
                 }
             `,
@@ -44,7 +46,7 @@ const QRScanner = ({
             .then((res) => {
                 //creating an array of 1 element to send to VisitorData
                 const visitor = [];
-                visitor[0] = res.data.getInvitesByIDForSearch;
+                visitor.push(res.data.getInvitesByIDForSearch);
                 setVisitorData(visitor);
             })
             .catch((err) => {
