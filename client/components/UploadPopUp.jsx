@@ -4,7 +4,9 @@ import useAuth from "../store/authStore.js";
 
 const UploadPopUp = ({
     setShowErrorAlert,
+    setShowSuccessAlert,
     setErrorMessage,
+    setSuccessMessage,
     setShowUploadPopUp,
     refetch,
 }) => {
@@ -13,16 +15,12 @@ const UploadPopUp = ({
     const [text, setText] = useState("Upload a csv file");
     const [signInButton, setSignInButton] = useState(true);
 
-    // Get Data From JWT Token
-    const jwtTokenData = useAuth((state) => {
-        return state.decodedToken;
-    })();
-
     const [bulkSignInMutation, { data, loading, error }] = useMutation(gql`
         mutation {
-            bulkSignIn(file: "${encodeURI(fileAsString)}", userEmail: "${
-        jwtTokenData.email
-    }")
+            bulkSignIn(file: "${encodeURI(fileAsString)}"){
+                signInCount,
+                createCount
+            }
         }
     `);
 
@@ -73,12 +71,15 @@ const UploadPopUp = ({
                 setText("Upload a csv file");
                 const reader = new FileReader();
                 reader.readAsText(file, "UTF-8");
-                reader.onload = (evt) => {
+                reader.onload = async(evt) => {
                     setFileAsString(evt.target.result);
-                    bulkSignInMutation();   
-                    setShowUploadPopUp(false);     
-                    refetch();
-                    //TODO (LARISA): Show confirmation popup     
+                    setShowUploadPopUp(false); 
+                    bulkSignInMutation().then((res) => {
+                        setSuccessMessage(`Invites created: ${res.data.bulkSignIn.createCount} \r Invites signed in: ${res.data.bulkSignIn.signInCount} `) 
+                        setShowSuccessAlert(true);
+                        refetch();
+                    })
+                    
                   };
 
 

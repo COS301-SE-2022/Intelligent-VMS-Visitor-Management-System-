@@ -6,6 +6,7 @@ import { SignInService } from "../sign-in/sign-in.service";
 import { SignOutService } from "../sign-out/sign-out.service";
 import { Invite } from "@vms/visitor-invite/models/invite.model";
 import { stringify } from "querystring";
+import { BSIdata } from "./models/BSIdata.model";
 
 //@UseGuards(GqlAuthGuard)
 @Resolver((of) => {return Invite})
@@ -37,12 +38,10 @@ export class ReceptionistResolver {
         return this.signInService.signIn(inviteID, notes, time);
     }
 
-    @Mutation((returns) => Number, { name: "bulkSignIn" })
+    @Mutation((returns) => BSIdata, { name: "bulkSignIn" })
     async bulkSignIn(
         @Args("file") file: string,
-        @Args("userEmail") userEmail:string
     ) {
-        this.signInService.bulkSignIn(decodeURI(file),userEmail);
-        return 0;
+        return this.signInService.bulkSignIn(decodeURI(file));
     }
 }

@@ -10,6 +10,7 @@ import { InviteNotFound } from '../src/errors/inviteNotFound.error';
 import { InvalidSignIn } from '../src/errors/invalidSignIn.error';
 import { Tray } from '@vms/receptionist/models/tray.model';
 import { BulkSignInCommand } from '@vms/receptionist/commands/impl/bulkSignIn.command';
+import { BSIdata } from '@vms/receptionist/models/BSIdata.model';
 
 @Injectable()
 export class SignInService {
@@ -60,7 +61,7 @@ export class SignInService {
             return this.commandBus.execute(new generateTrayCommand(await 0, inviteID, containsResidentID, containsVisitorID));
         }
         
-        async bulkSignIn(file:string,userEmail:string){
+        async bulkSignIn(file:string):Promise<BSIdata>{
 
            const fileArray =  file.split(/\r\n|\r|\n/);
 
@@ -69,14 +70,22 @@ export class SignInService {
            let VisitorEmailIndex;
            let InviteDateIndex;
            let VisitorIDIndex;
+           let ResidentEmailIndex;
+
+           let signInCount = 0;
+           let createCount = 0;
 
            let idArray = [];
            let lineArray = fileArray[0].split(";");
            for(let i=0;i<lineArray.length;i++){
             
             if(lineArray[i].toLocaleLowerCase().includes("email"))
-                VisitorEmailIndex = i;
-            else if(lineArray[i].toLocaleLowerCase().includes("name"))
+            {
+                if(lineArray[i].toLocaleLowerCase().includes("user") || lineArray[i].toLocaleLowerCase().includes("resident"))
+                    ResidentEmailIndex = i;
+                else
+                    VisitorEmailIndex = i;
+            }else if(lineArray[i].toLocaleLowerCase().includes("name"))
                 VisitorNameIndex = i;
             else if(lineArray[i].toLocaleLowerCase().includes("date"))
                 InviteDateIndex = i;
@@ -92,16 +101,24 @@ export class SignInService {
             lineArray = fileArray[i].split(";");
             if(lineArray[InviteIDIndex]!==""){
                 idArray[i-1] = lineArray[InviteIDIndex];
+                signInCount++;
             } 
             else{
                     //TODO (Larisa): extend doc types
-                    idArray[i-1] = await this.inviteService.createInviteForBulkSignIn(0,userEmail,lineArray[VisitorEmailIndex],lineArray[VisitorNameIndex],"RSA-ID",lineArray[VisitorIDIndex],lineArray[InviteDateIndex],false);
+                    idArray[i-1] = await this.inviteService.createInviteForBulkSignIn(0,lineArray[ResidentEmailIndex],lineArray[VisitorEmailIndex],lineArray[VisitorNameIndex],"RSA-ID",lineArray[VisitorIDIndex],lineArray[InviteDateIndex],false);
+                    createCount++;
                 }
            }
 
            await this.commandBus.execute(
             new BulkSignInCommand(idArray)
             );
+
+            let bsi_data = new BSIdata();
+            bsi_data.createCount = createCount;
+            bsi_data.signInCount = signInCount;
+
+            return bsi_data;
         }
 }
 
