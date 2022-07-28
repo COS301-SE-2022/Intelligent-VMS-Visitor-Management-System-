@@ -282,7 +282,7 @@ const ReceptionistDashboard = () => {
                                 {visitorData.map((visit, idx) => {
                                     return (
                                         <tr className="relative z-0 hover cursor-pointer" 
-                                            key={idx} 
+                                            key={visit.inviteID} 
                                             onClick={() => {
                                                 setVisitModalData(visit)
 

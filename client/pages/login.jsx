@@ -21,6 +21,9 @@ const Login = () => {
     const verify = useAuth((state) => {
         return state.setVerify;
     });
+    const decodedToken = useAuth((state) => {
+        return state.decodedToken;
+    });
     const router = useRouter();
 
     const [showErrorAlert, setShowErrorAlert] = useState(false);
@@ -116,8 +119,16 @@ const Login = () => {
 
                                 // Add token to store
                                 login(token);
+                                
+                                const permission = decodedToken().permission;
 
-                                router.push("/createInvite");
+                                if(permission === 2) {
+                                    router.push("/createInvite");
+                                } else if(permission === 1) {
+                                    router.push("/receptionistDashboard");
+                                } else if(permission === 0) {
+                                    router.push("/adminDashboard");     
+                                }
                             })
                             .catch((err) => {
                                 setShowErrorAlert(true);
