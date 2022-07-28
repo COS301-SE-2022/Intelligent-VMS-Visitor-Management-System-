@@ -13,6 +13,7 @@ import ReceptionistSignButton from "../components/receptionistSignButton";
 import InfoAlert from "../components/InfoAlert";
 import UploadPopUp from "../components/UploadPopUp";
 import ErrorAlert from "../components/ErrorAlert";
+import SuccessAlert from "../components/SuccessAlert";
 
 const ReceptionistDashboard = () => {
     const [currentVisitorID, setCurrentVisitorID] = useState("");
@@ -25,8 +26,10 @@ const ReceptionistDashboard = () => {
     const [visitorData, setVisitorData] = useState([]);
     const [reload, setReload] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [showSuccessAlert, setShowSuccessAlert] = useState(false);
     const [showInfoAlert, setShowInfoAlert] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+    const [successMessage, setSuccessMessage] = useState("");
     const [showScanner, setShowScanner] = useState(false);
     const [showUploadPopUp, setShowUploadPopUp] = useState(false);
     const [visitModalData, setVisitModalData] = useState("");
@@ -377,6 +380,10 @@ const ReceptionistDashboard = () => {
                     message={errorMessage}
                     showConditon={showErrorAlert}
                 />
+                <SuccessAlert
+                    message={successMessage}
+                    showConditon={showSuccessAlert}
+                />
                 <InfoAlert
                     visitorName={currentVisitorName}
                     showConditon={showInfoAlert}
@@ -482,6 +489,8 @@ const ReceptionistDashboard = () => {
                     <UploadPopUp
                         setErrorMessage={setErrorMessage}
                         setShowErrorAlert={setShowErrorAlert}
+                        setSuccessMessage={setSuccessMessage}
+                        setShowSuccessAlert={setShowSuccessAlert}
                         setShowUploadPopUp={setShowUploadPopUp}
                         refetch={invitesQuery}
                     />

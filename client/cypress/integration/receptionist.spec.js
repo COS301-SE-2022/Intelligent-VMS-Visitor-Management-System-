@@ -29,7 +29,7 @@ describe('Receptionist tests', () => {
         //========================Signed in as Receptionist=================================
 
         describe('confirm signed-in and  check for elements', () => {
-            cy.location('pathname', { timeout: 60000 }).should('include', '/createInvite');//waiting for backend to wake up.
+            cy.location('pathname', { timeout: 60000 }).should('include', '/receptionistDashboard');//waiting for backend to wake up.
             cy.get('.menuIcon').click();
             cy.get('.dropdown-content').children().should('contain', 'Create Invite')//check for correct menu options.
                 .and('contain', 'Your Dashboard')

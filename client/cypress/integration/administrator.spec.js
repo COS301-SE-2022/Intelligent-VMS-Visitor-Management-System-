@@ -27,14 +27,14 @@ describe('Receptionist tests', () => {
         })
 
         describe('confirm signed-in and  check for elements', () => {
-            cy.location('pathname', { timeout: 60000 }).should('include', '/createInvite');//waiting for backend to wake up.
+            cy.location('pathname', { timeout: 60000 }).should('include', '/adminDashboard');//waiting for backend to wake up.
             cy.get('.menuIcon').click();
             cy.get('.dropdown-content').children().should('contain', 'Create Invite')//check for correct menu options.
                 .and('contain', 'Your Dashboard')
                 .and('contain', 'Manage Users')
                 .and('contain', 'Admin Dashboard')
                 .and('contain', 'Logout');
-            cy.get('.menuIcon').click();
+            cy.contains('Create Invite', { timeout: 7000 }).click({ force: true });
         })
 
         describe('Filling in a user invite', () => {
