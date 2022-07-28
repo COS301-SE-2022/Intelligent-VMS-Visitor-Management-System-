@@ -255,7 +255,7 @@ const VisitorDashboard = () => {
                             progress
                         </progress>
                     ) : (
-                        <table className="mb-5 table table-compact md:table-normal w-full m-2">
+                        <table className="mb-3 table table-compact md:table-normal w-full">
                             <thead>
                                 <tr>
                                     <th></th>
