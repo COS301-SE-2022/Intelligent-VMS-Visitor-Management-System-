@@ -137,5 +137,5 @@ type Mutation {
   setNumInvitesPerResident(numInvites: Float!): Restriction!
   signOut(inviteID: String!): Float!
   signIn(inviteID: String!, notes: String!, time: String!): Float!
-  bulkSignIn(file: String!): BSIdata!
+  bulkSignIn(file: String!, userEmail: String!): BSIdata!
 }

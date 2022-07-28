@@ -15,12 +15,20 @@ const UploadPopUp = ({
     const [text, setText] = useState("Upload a csv file");
     const [signInButton, setSignInButton] = useState(true);
 
+    // Get Data From JWT Token
+    const jwtTokenData = useAuth((state) => {
+        return state.decodedToken;
+    })();
+
     const [bulkSignInMutation, { data, loading, error }] = useMutation(gql`
         mutation {
-            bulkSignIn(file: "${encodeURI(fileAsString)}"){
-                signInCount,
-                createCount
-            }
+            bulkSignIn(
+                file: "${encodeURI(fileAsString)}", 
+                userEmail: "${jwtTokenData.email}"
+                ){
+                        signInCount,
+                        createCount
+                }
         }
     `);
 

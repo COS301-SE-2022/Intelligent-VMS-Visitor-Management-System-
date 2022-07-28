@@ -61,7 +61,7 @@ export class SignInService {
             return this.commandBus.execute(new generateTrayCommand(await 0, inviteID, containsResidentID, containsVisitorID));
         }
         
-        async bulkSignIn(file:string):Promise<BSIdata>{
+        async bulkSignIn(file:string, userEmail:string):Promise<BSIdata>{
 
            const fileArray =  file.split(/\r\n|\r|\n/);
 
@@ -105,7 +105,12 @@ export class SignInService {
             } 
             else{
                     //TODO (Larisa): extend doc types
-                    idArray[i-1] = await this.inviteService.createInviteForBulkSignIn(0,lineArray[ResidentEmailIndex],lineArray[VisitorEmailIndex],lineArray[VisitorNameIndex],"RSA-ID",lineArray[VisitorIDIndex],lineArray[InviteDateIndex],false);
+                    let residentEmail;
+                    if(!ResidentEmailIndex)
+                        residentEmail = userEmail;
+                    else
+                        residentEmail = lineArray[ResidentEmailIndex];
+                    idArray[i-1] = await this.inviteService.createInviteForBulkSignIn(0,residentEmail,lineArray[VisitorEmailIndex],lineArray[VisitorNameIndex],"RSA-ID",lineArray[VisitorIDIndex],lineArray[InviteDateIndex].replace(new RegExp('/','g'),'-'),false);
                     createCount++;
                 }
            }

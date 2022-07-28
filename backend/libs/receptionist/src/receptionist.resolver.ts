@@ -41,7 +41,8 @@ export class ReceptionistResolver {
     @Mutation((returns) => BSIdata, { name: "bulkSignIn" })
     async bulkSignIn(
         @Args("file") file: string,
+        @Args("userEmail") userEmail: string,
     ) {
-        return this.signInService.bulkSignIn(decodeURI(file));
+        return this.signInService.bulkSignIn(decodeURI(file),userEmail);
     }
 }
