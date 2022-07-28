@@ -75,12 +75,11 @@ export class SignInService {
            let signInCount = 0;
            let createCount = 0;
 
-           let idArray = [];
+           const idArray = [];
            let lineArray = fileArray[0].split(";");
            for(let i=0;i<lineArray.length;i++){
             
-            if(lineArray[i].toLocaleLowerCase().includes("email"))
-            {
+            if(lineArray[i].toLocaleLowerCase().includes("email")) {
                 if(lineArray[i].toLocaleLowerCase().includes("user") || lineArray[i].toLocaleLowerCase().includes("resident"))
                     ResidentEmailIndex = i;
                 else
@@ -97,13 +96,13 @@ export class SignInService {
             }
            }
            
-           for(var i=1;i<fileArray.length-1;i++){
+           console.log(fileArray);
+           for(let i=0;i<fileArray.length-1;i++){
             lineArray = fileArray[i].split(";");
             if(lineArray[InviteIDIndex]!==""){
                 idArray[i-1] = lineArray[InviteIDIndex];
                 signInCount++;
-            } 
-            else{
+            } else{
                     //TODO (Larisa): extend doc types
                     let residentEmail;
                     if(!ResidentEmailIndex)
@@ -115,9 +114,7 @@ export class SignInService {
                 }
            }
 
-           await this.commandBus.execute(
-            new BulkSignInCommand(idArray)
-            );
+            await this.commandBus.execute(new BulkSignInCommand(idArray));
 
             let bsiData = new BSIdata();
             bsiData.createCount = createCount;

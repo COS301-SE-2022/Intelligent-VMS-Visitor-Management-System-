@@ -134,7 +134,7 @@ export class VisitorInviteService {
             const inviteID = randomUUID();
     
             // Entry in db
-            this.commandBus.execute(
+            await this.commandBus.execute(
                 new CreateInviteCommand(
                     userEmail,
                     visitorEmail,

@@ -12,7 +12,7 @@ export class BulkSignInCommandHandler implements ICommandHandler<BulkSignInComma
     ) {}
 
     async execute(command: BulkSignInCommand) {
-        const { inviteIDs} = command;
+        const { inviteIDs } = command;
         await this.inviteModel.updateMany({inviteID: {$in: inviteIDs}}, {inviteState: "signedOut", signInTime: "NA", signOutTime: "NA"});
     }
 }
