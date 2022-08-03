@@ -21,6 +21,7 @@ const ReceptionistDashboard = () => {
     const [searching, setSearch] = useState(false); 
     const [searchName, setSearchName] = useState("");
 
+    const [currentButton, setCurrentButton] = useState(()=>{}); 
     const [currentVisitorID, setCurrentVisitorID] = useState("");
     const [currentInviteID, setCurrentInviteID] = useState("");
     const [currentVisitorName, setCurrentVisitorName] = useState("");
@@ -260,8 +261,11 @@ const ReceptionistDashboard = () => {
                                                         <ReceptionistSignButton
                                                             key={visit.inviteID}
                                                             onClick={(e) => {
-                                                                e.currentTarget.classList.add("loading");
                                                                 e.stopPropagation();
+                                                                
+                                                                setCurrentButton(
+                                                                    e.currentTarget.classList
+                                                                );
                                                                 setCurrentVisitorID(
                                                                     visit.idNumber
                                                                 );
@@ -282,9 +286,12 @@ const ReceptionistDashboard = () => {
                                                     <td key={visit.inviteID}>
                                                         <ReceptionistSignButton
                                                             key={visit.inviteID}
-                                                            onClick={(e) => {
-                                                                e.currentTarget.classList.add("loading");
+                                                            onClick={(e) => {  
                                                                 e.stopPropagation();
+
+                                                                setCurrentButton(
+                                                                    e.currentTarget.classList
+                                                                );
                                                                 setCurrentVisitorID(
                                                                     visit.idNumber
                                                                 );
@@ -353,6 +360,7 @@ const ReceptionistDashboard = () => {
                         setShowInfoAlert={setShowInfoAlert}
                         refetch={invitesQuery}
                         todayString={todayString}
+                        currentButton = {currentButton}
                     />
                 </div>
             </div>
@@ -376,6 +384,7 @@ const ReceptionistDashboard = () => {
                         setShowInfoAlert={setShowInfoAlert}
                         setTrayNr={setTrayNr}
                         refetch={invitesQuery}
+                        currentButton = {currentButton}
                     />
                 </div>
             </div>

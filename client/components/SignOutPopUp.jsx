@@ -8,6 +8,7 @@ const SignOutPopUp = ({
     setTrayNr,
     setShowInfoAlert,
     refetch,
+    currentButton
 }) => {
     const [signOutMutation, { data, loading, error }] = useMutation(gql`
         mutation {
@@ -43,6 +44,7 @@ const SignOutPopUp = ({
                 className="modal-button btn btn-primary mt-5 mb-5 w-5/6"
                 onClick={() => {
                     signOutMutation();
+                    currentButton.add("loading");
                 }}
             >
                 Sign out

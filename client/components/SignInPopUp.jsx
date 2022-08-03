@@ -9,6 +9,7 @@ const SignInPopUp = ({
     setShowInfoAlert,
     setTrayNr,
     todayString,
+    currentButton
 }) => {
     const [notes, setNotes] = useState("");
     const time = new Date();
@@ -76,6 +77,7 @@ const SignInPopUp = ({
                 htmlFor="signIn-modal"
                 onClick={() => {
                     signInMutation();
+                    currentButton.add("loading");
                 }}
             >
                 Sign in
