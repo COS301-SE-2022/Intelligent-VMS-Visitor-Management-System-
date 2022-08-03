@@ -10,6 +10,6 @@ export class GetInvitesInRangeByEmailQueryHandler implements IQueryHandler {
 
     async execute(query: GetInvitesInRangeByEmailQuery) {
         const { dateStart, dateEnd, email } = query;
-        return await this.inviteModel.find({ $and: [{ $and: [{inviteDate: {$gte: dateStart}},{inviteDate: {$lte: dateEnd}}]}, { visitorEmail: email }]})
+        return await this.inviteModel.find({ $and: [{ $and: [{inviteDate: {$gte: dateStart}},{inviteDate: {$lte: dateEnd}}]}, { userEmail: email }]})
     }
 }

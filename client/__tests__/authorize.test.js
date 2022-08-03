@@ -11,9 +11,7 @@ describe("Authorize", () => {
             </MockedProvider>
         );
         expect(
-            screen.getByText(
-                "Woops: you are unauthorized"
-            )
+            screen.getByText("Woops: you are unauthorized")
         ).toBeInTheDocument();
     });
 });

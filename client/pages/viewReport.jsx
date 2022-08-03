@@ -11,27 +11,33 @@ const ViewReport = () => {
 
     const { loading, error, data } = useQuery(gql`
         query {
-            getNumInvitesPerDateOfUser(email: "${email}", dateStart: "${startDate}", dateEnd: "${endDate}") {
+            getInvitesWithEmail(email: "${email}") {
                 visitorEmail,
                 visitorName,
                 inviteDate,
                 idDocType,
-                userEmail
+                userEmail,
+                inviteState
             }
         }
     `);
 
     useEffect(() => {
-        if(!loading && !error) {
-            console.log(data);
-        } else if(error) {
-            console.error("Something went wrong");
+        if (!loading && !error) {
+        } else if (error) {
+            if (error.message === "Unauthorized") {
+                router.push("/expire");
+            }
         }
     }, [data]);
 
-    return(
+    return (
         <Layout>
-            <AnalyticsReport name={name} data={data && data.getNumInvitesPerDateOfUser} total={total} startDate={startDate} endDate={endDate}/>
+            <AnalyticsReport
+                name={name}
+                data={data && data.getInvitesWithEmail}
+                total={total}
+            />
         </Layout>
     );
 };

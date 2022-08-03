@@ -1,6 +1,8 @@
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { CACHE_MANAGER } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { Test, TestingModule } from '@nestjs/testing';
+import { HttpModule } from '@nestjs/axios';
 import { MailService } from '@vms/mail';
 import { ParkingService } from '@vms/parking';
 import { removeTrayByInviteIDCommand } from '@vms/receptionist/commands/impl/Tray/removeTrayByInviteID.command';
@@ -13,7 +15,10 @@ import { ReceptionistService } from '@vms/receptionist';
 describe('SignOutService', () => {
   let service: SignOutService;
   let inviteService: VisitorInviteService;
+  let receptionistService = {
+    getTrayByInviteID: jest.fn(()=> ({}))
 
+  };
   /*eslint-disable*/
   const commandBusMock = {
     execute: jest.fn((command) => {
@@ -50,6 +55,7 @@ describe('SignOutService', () => {
   beforeEach(async () => {
     
     const module: TestingModule = await Test.createTestingModule({
+      imports: [HttpModule],
       providers: [SignOutService,
         VisitorInviteService,
         ParkingService,
@@ -59,6 +65,16 @@ describe('SignOutService', () => {
         RestrictionsService,
         {
           provide: QueryBus, useValue: queryBusMock
+        },
+        {
+          provide: ReceptionistService, useValue: receptionistService 
+        },
+        {
+            provide: CACHE_MANAGER,
+            useValue: {
+                get: () => {return 'any value'},
+                set: () => {return jest.fn()},
+            },
         },
         {
           provide: CommandBus, useValue: commandBusMock
@@ -75,11 +91,11 @@ describe('SignOutService', () => {
 
   it("should sign out", async()=>{
     //Arrange
-    //jest.spyOn(service, 'removeTrayByInviteID').mockReturnValueOnce(Promise.resolve(123));
+    receptionistService.getTrayByInviteID.mockReturnValueOnce({trayID:123});
     //Act
-    //const resp = await service.signOut('dwvsdvsd');
+    const resp = await service.signOut('dwvsdvsd');
     //Assert
-    //expect(resp).toEqual(123);
+    expect(resp).toEqual(123);
   });
 
   describe("removeTrayByInviteID", () => {

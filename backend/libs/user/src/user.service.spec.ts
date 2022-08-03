@@ -1,16 +1,45 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { QueryBus, CommandBus } from "@nestjs/cqrs";
+import { QueryBus, IQuery, CommandBus } from "@nestjs/cqrs";
 import { Model } from "mongoose";
 import { getModelToken } from "@nestjs/mongoose";
 
 import { UserService } from "./user.service";
 import { User, UserDocument } from "./schema/user.schema";
+import { GetUserQuery } from "./queries/impl/getUser.query";
+import { GetUnAuthUsersQuery } from "./queries/impl/getUnAuthUsers.query";
 
 describe("UserService", () => {
     let service: UserService;
     let mockUserModel: Model<UserDocument>;
     const queryBusMock = {
-        execute: jest.fn(() => {return {data: 'email'}})
+        execute: jest.fn((query: IQuery) => {
+            if(query instanceof GetUserQuery) {
+                return { data: "email" };
+            } else if(query instanceof GetUnAuthUsersQuery) {
+                if(query.permission === -1) {
+                    return [
+                        {
+                            email: "unauthreceptionist@mail.com",
+                            password: "hashed",
+                            permission: -1,
+                        }, 
+                        {
+                            email: "unauthreceptionist@mail.com",
+                            password: "hashed",
+                            permission: -2,
+                        }, 
+                    ];
+                } else if(query.permission === -2) {
+                    return [
+                        {
+                            email: "unauthreceptionist@mail.com",
+                            password: "hashed",
+                            permission: -1,
+                        }, 
+                    ];
+                }                               
+            }
+        })
     }
 
     beforeEach(async () => {
@@ -37,14 +66,29 @@ describe("UserService", () => {
         expect(mockUserModel).toBeDefined();
         expect(service).toBeDefined();
     });
-     describe("findOne", () => {
-        it("should find one", async() => {
+
+    describe("findOne", () => {
+        it("should find one", async () => {
             // Act
-            const resp = await service.findOne('tab@email.com');
+            const resp = await service.findOne("tab@mail.com");
             // Assert
             expect(resp).toEqual({data: 'email'});
             expect(queryBusMock.execute).toHaveBeenCalledTimes(1);
         })
-    })   
+    });   
+
+    describe("getUnAuthorizedUsers", () => {
+        it("should get unauthorized resident and receptionist when user is admin", async () => {
+            const userData = await service.getUnAuthorizedUsers(0);
+
+            expect(userData.length).toEqual(2);
+        });
+
+        it("should get unauthorized resident when user is receptionist", async () => {
+            const userData = await service.getUnAuthorizedUsers(1);
+            expect(userData.length).toEqual(1);
+        });
+
+    });
     
 });

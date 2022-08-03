@@ -1,13 +1,14 @@
-const ReceptionistSignButton = ({ htmlFor, text, colour, onClick }) => {
+const ReceptionistSignButton = ({ htmlFor, text, colour, onClick, key }) => {
     return (
         <label
             htmlFor={htmlFor}
-            className={`modal-button btn max-w-md border-0 ${colour} text-white`}
+            key={key}
+            className={`modal-button btn max-w-md border-0 ${colour} text-white z-10`}
             onClick={onClick}
-            >
-                { text }
+        >
+            {text}
         </label>
     );
-}
+};
 
 export default ReceptionistSignButton;

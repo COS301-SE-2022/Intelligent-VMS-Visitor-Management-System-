@@ -30,7 +30,7 @@ describe("AdminDashboard", () => {
 
         act(() => {
             authHook.result.current.login(
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJhZG1pbkBtYWlsLmNvbSIsImlhdCI6MTUxNjIzOTAyMiwicGVybWlzc2lvbiI6MH0.bh6yTWV0lN9A0_xOGcgqN_za3M35BewXpJNuuprcaJ8"
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJhZG1pbkBtYWlsLmNvbSIsIm5hbWUiOiJhZG1pbiIsImlhdCI6MTUxNjIzOTAyMiwicGVybWlzc2lvbiI6MH0.DJkzWVCzuQH43IPtFIOChY4VURwQ1b_HSqDUiN9wJuY"
             );
         });
 
@@ -40,7 +40,7 @@ describe("AdminDashboard", () => {
             </MockedProvider>
         );
 
-        expect(screen.getByText("admin@mail.com")).toBeInTheDocument();
+        expect(screen.getAllByText("admin").length).toEqual(1);
     });
 
     it("renders save and cancel buttons", async () => {
@@ -55,7 +55,7 @@ describe("AdminDashboard", () => {
 
         act(() => {
             authHook.result.current.login(
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJhZG1pbkBtYWlsLmNvbSIsImlhdCI6MTUxNjIzOTAyMiwicGVybWlzc2lvbiI6MH0.bh6yTWV0lN9A0_xOGcgqN_za3M35BewXpJNuuprcaJ8"
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJhZG1pbkBtYWlsLmNvbSIsIm5hbWUiOiJhZG1pbiIsImlhdCI6MTUxNjIzOTAyMiwicGVybWlzc2lvbiI6MH0.DJkzWVCzuQH43IPtFIOChY4VURwQ1b_HSqDUiN9wJuY"
             );
         });
 
@@ -68,8 +68,5 @@ describe("AdminDashboard", () => {
         const user = userEvent.setup();
 
         user.click(screen.getByTestId("increaseInvites"));
-
-
-    });    
-
+    });
 });

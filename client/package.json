@@ -23,6 +23,7 @@
     "apollo-server": "^3.8.2",
     "apollo-server-integration-testing": "^3.0.0",
     "apollo-server-testing": "^2.25.3",
+    "axios": "^0.27.2",
     "chart.js": "^3.8.0",
     "cross-fetch": "^3.1.5",
     "cypress": "^9.6.0",
@@ -37,8 +38,9 @@
     "jest-canvas-mock": "^2.4.0",
     "jest-environment-jsdom": "^28.0.2",
     "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.5.25",
     "jwt-decode": "^3.1.2",
-    "next": "^12.1.6",
+    "next": "^12.2.3",
     "react": "^17.0.2",
     "react-chartjs-2": "^4.1.0",
     "react-dom": "^17.0.2",
@@ -48,6 +50,7 @@
     "request": "^2.88.2",
     "request-promise": "^4.2.6",
     "supertest": "^6.2.3",
+    "theme-change": "^2.0.2",
     "zustand": "^4.0.0-rc.1"
   },
   "devDependencies": {
