@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { useState, useEffect, setState } from "react";
 import { gql, useApolloClient, useLazyQuery } from "@apollo/client";
 import { BiQrScan } from "react-icons/bi";
-import { BsBoxArrowInRight } from "react-icons/bs";
+import { BsBoxArrowInRight, BsInfoCircle} from "react-icons/bs";
 import Layout from "../components/Layout";
 import QRScanner from "../components/QRScanner";
 import SignInPopUp from "../components/SignInPopUp";
@@ -252,7 +252,9 @@ const ReceptionistDashboard = () => {
                                                 setShowVisitorModal(true);
                                             }} >
 
-                                            <th></th>
+                                            <th> 
+                                                <BsInfoCircle/>
+                                            </th>
                                             <td className="capitalize" >{visit.visitorName}</td>
                                             <td>{visit.idNumber}</td>
                                             { !searching || visit.inviteDate=== todayString ? (
@@ -262,7 +264,7 @@ const ReceptionistDashboard = () => {
                                                             key={visit.inviteID}
                                                             onClick={(e) => {
                                                                 e.stopPropagation();
-                                                                
+
                                                                 setCurrentButton(
                                                                     e.currentTarget.classList
                                                                 );

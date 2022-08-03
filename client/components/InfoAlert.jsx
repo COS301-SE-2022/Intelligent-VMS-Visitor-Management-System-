@@ -18,7 +18,6 @@ const InfoAlert = ({ trayNr, visitorName, showConditon, setShowCondition }) => {
             transition={{ type: "linear" }}
             className="fixed top-3"
             onClick={() => { 
-                console.log("HERE!");
                 setShowCondition(false); 
             }}
         >
