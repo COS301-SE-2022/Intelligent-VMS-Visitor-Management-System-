@@ -20,7 +20,6 @@ const QRScanner = ({
 
     // Error State
     const [errorMessage, setErrorMessage] = useState("");
-
     const [showErrorMessage, setShowErrorMessage] = useState(false);
 
     //Search function that actually queries the database
