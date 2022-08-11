@@ -3,16 +3,16 @@ import React, { useEffect, useRef, useState, setState } from "react";
 import { ImExit } from "react-icons/im";
 
 const SignOutPopUp = ({
-    visitorID,
-    inviteID,
     setTrayNr,
     setShowInfoAlert,
     refetch,
-    currentButton
+    currentButton,
+    visitData,
+    setShowSignOutModal
 }) => {
     const [signOutMutation, { data, loading, error }] = useMutation(gql`
         mutation {
-            signOut(inviteID: "${inviteID}")
+            signOut(inviteID: "${visitData.inviteID}")
         }
     `);
 
@@ -38,13 +38,16 @@ const SignOutPopUp = ({
             <h1 className="mt-5 text-center text-3xl font-bold ">
                 Confirm Sign-Out
             </h1>
-            <p>Confirm sign-out of visitor with id {visitorID}</p>
+            <p>Confirm sign-out of visitor with id {visitData.idNumber}</p>
             <label
                 htmlFor="signOut-modal"
                 className="modal-button btn btn-primary mt-5 mb-5 w-5/6"
                 onClick={() => {
                     signOutMutation();
-                    currentButton.add("loading");
+                    if(currentButton){
+                        currentButton.add("loading");
+                    }
+                    setShowSignOutModal(false);
                 }}
             >
                 Sign out

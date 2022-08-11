@@ -22,8 +22,6 @@ const ReceptionistDashboard = () => {
     const [searchName, setSearchName] = useState("");
 
     const [currentButton, setCurrentButton] = useState(()=>{}); 
-    const [currentVisitorID, setCurrentVisitorID] = useState("");
-    const [currentInviteID, setCurrentInviteID] = useState("");
     const [currentVisitorName, setCurrentVisitorName] = useState("");
     const [currentParkingNumber, setCurrentParkingNumber] = useState(-1);
     const [visitorData, setVisitorData] = useState([]);
@@ -38,6 +36,8 @@ const ReceptionistDashboard = () => {
     const [showScanner, setShowScanner] = useState(false);
     const [showUploadPopUp, setShowUploadPopUp] = useState(false);
     const [showVisitorModal, setShowVisitorModal] = useState(false);
+    const [showSignInModal, setShowSignInModal] = useState(false);
+    const [showSignOutModal, setShowSignOutModal] = useState(false);
     const [visitModalData, setVisitModalData] = useState("");
     
 
@@ -265,18 +265,15 @@ const ReceptionistDashboard = () => {
                                                             onClick={(e) => {
                                                                 e.stopPropagation();
 
+                                                                setVisitModalData(visit)
+
                                                                 setCurrentButton(
                                                                     e.currentTarget.classList
                                                                 );
-                                                                setCurrentVisitorID(
-                                                                    visit.idNumber
-                                                                );
-                                                                setCurrentInviteID(
-                                                                    visit.inviteID
-                                                                );
                                                                 setCurrentVisitorName(
                                                                     visit.visitorName
-                                                                );      
+                                                                );  
+                                                                setShowSignInModal(true);    
                                                             }}
                                                             text="Sign In"
                                                             colour="bg-success"
@@ -291,14 +288,10 @@ const ReceptionistDashboard = () => {
                                                             onClick={(e) => {  
                                                                 e.stopPropagation();
 
+                                                                setVisitModalData(visit)
+                                                            
                                                                 setCurrentButton(
                                                                     e.currentTarget.classList
-                                                                );
-                                                                setCurrentVisitorID(
-                                                                    visit.idNumber
-                                                                );
-                                                                setCurrentInviteID(
-                                                                    visit.inviteID
                                                                 );
                                                                 setCurrentVisitorName(
                                                                     visit.visitorName
@@ -306,6 +299,7 @@ const ReceptionistDashboard = () => {
                                                                 setShowVisitorModal(
                                                                     false
                                                                 );
+                                                                setShowSignOutModal(true)
                                                             }}
                                                             text="Sign Out"
                                                             htmlFor="signOut-modal"
@@ -346,23 +340,25 @@ const ReceptionistDashboard = () => {
                 />
                 }
             </div>
-            <input type="checkbox" id="signIn-modal" className="modal-toggle" />
+
+            <input type="checkbox" id="signIn-modal" className="modal-toggle"onChange={() => {}} checked={showSignInModal ? true : false} />
             <div className="fade modal cursor-pointer" id="signIn-modal">
                 <div className="modal-box">
                     <label
                         htmlFor="signIn-modal"
                         className="btn btn-circle btn-sm"
+                        onClick={() => {setShowSignInModal(false);}}
                     >
                         ✕
                     </label>
                     <SignInPopUp
-                        visitorID={currentVisitorID}
-                        inviteID={currentInviteID}
+                        visitData={visitModalData}
                         setTrayNr={setTrayNr}
                         setShowInfoAlert={setShowInfoAlert}
                         refetch={invitesQuery}
                         todayString={todayString}
                         currentButton = {currentButton}
+                        setShowSignInModal={setShowSignInModal}
                     />
                 </div>
             </div>
@@ -372,21 +368,24 @@ const ReceptionistDashboard = () => {
                 id="signOut-modal"
                 className="modal-toggle"
             />
+
+            <input type="checkbox" id="signOut-modal" className="modal-toggle" onChange={() => {}} checked={showSignOutModal ? true : false} />
             <div className="fade modal cursor-pointer" id="signOut-modal">
                 <div className="modal-box">
                     <label
                         htmlFor="signOut-modal"
                         className="btn btn-circle btn-sm"
+                        onClick={() => {setShowSignOutModal(false);}}
                     >
                         ✕
                     </label>
                     <SignOutPopUp
-                        visitorID={currentVisitorID}
-                        inviteID={currentInviteID}
+                        visitData={visitModalData}
                         setShowInfoAlert={setShowInfoAlert}
                         setTrayNr={setTrayNr}
                         refetch={invitesQuery}
                         currentButton = {currentButton}
+                        setShowSignOutModal={setShowSignOutModal}
                     />
                 </div>
             </div>
@@ -403,14 +402,20 @@ const ReceptionistDashboard = () => {
                     <label
                         htmlFor="QRScan-modal"
                         className="btn btn-circle btn-sm absolute right-2 top-2 z-10"
-                        onClick={() => {setShowScanner(false); setShowErrorAlert(false);}}
+                        onClick={() => {setShowScanner(false);}}
                     >
                         ✕
                     </label>
                     <QRScanner
+                        setCurrentVisitData={setVisitModalData}
                         setShowScanner={setShowScanner}
+                        setShowSignInModal={setShowSignInModal}
+                        setShowSignOutModal={setShowSignOutModal}
                         setVisitorData={setVisitorData}
                         setSearch={setSearch}
+                        todayString={todayString}
+                        setErrorMessage={setErrorMessage}
+                        setShowErrorAlert={setErrorMessage}
                     />
                 </div>
             </div>

@@ -3,20 +3,20 @@ import React, { useEffect, useRef, useState, setState } from "react";
 import { ImEnter } from "react-icons/im";
 
 const SignInPopUp = ({
-    visitorID,
-    inviteID,
     refetch,
     setShowInfoAlert,
     setTrayNr,
     todayString,
-    currentButton
+    currentButton,
+    visitData,
+    setShowSignInModal
 }) => {
     const [notes, setNotes] = useState("");
     const time = new Date();
     const [signInMutation, { data, loading, error }] = useMutation(
         gql`
             mutation {
-                signIn(inviteID: "${inviteID}", notes: "${notes}", time: "${time.toLocaleTimeString()}") 
+                signIn(inviteID: "${visitData.inviteID}", notes: "${notes}", time: "${time.toLocaleTimeString()}") 
             }
     `,
         {
@@ -63,7 +63,7 @@ const SignInPopUp = ({
             </h1>
             <p className="max-w-5/6">
                 Confirm sign-in of visitor with id{" "}
-                <span className="font-bold">{visitorID}</span>
+                <span className="font-bold">{visitData.idNumber}</span>
             </p>
             <input
                 type="text"
@@ -77,7 +77,10 @@ const SignInPopUp = ({
                 htmlFor="signIn-modal"
                 onClick={() => {
                     signInMutation();
-                    currentButton.add("loading");
+                    if(currentButton){
+                        currentButton.add("loading");
+                    }
+                    setShowSignInModal(false);
                 }}
             >
                 Sign in
