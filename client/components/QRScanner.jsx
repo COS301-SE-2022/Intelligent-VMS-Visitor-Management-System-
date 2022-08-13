@@ -4,11 +4,7 @@ import { gql, useApolloClient } from "@apollo/client";
 
 import useVideo from "../hooks/useVideo.hook";
 
-const QRScanner = ({
-    setShowScanner,
-    setVisitorData,
-    setSearch,
-}) => {
+const QRScanner = ({ setShowScanner, setVisitorData, setSearch }) => {
     //ApolloClient
     const client = useApolloClient();
 
@@ -69,9 +65,7 @@ const QRScanner = ({
     return (
         <div className="relative flex-col items-center justify-center text-center">
             <p>Ensure that QR Code is visible</p>
-            { showErrorMessage &&
-                <p className="text-error">{errorMessage}</p>
-            }
+            {showErrorMessage && <p className="text-error">{errorMessage}</p>}
             {showVideo ? (
                 <div>
                     <video

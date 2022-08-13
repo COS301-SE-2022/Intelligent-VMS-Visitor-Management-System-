@@ -1,12 +1,12 @@
 import { gql, useMutation } from "@apollo/client";
 import React, { useEffect, useRef, useState, setState } from "react";
 import { ImExit } from "react-icons/im";
+import { alert } from "react-custom-alert";
 
 const SignOutPopUp = ({
+    visitorName,
     visitorID,
     inviteID,
-    setTrayNr,
-    setShowInfoAlert,
     refetch,
 }) => {
     const [signOutMutation, { data, loading, error }] = useMutation(gql`
@@ -18,9 +18,8 @@ const SignOutPopUp = ({
     useEffect(() => {
         if (!loading && !error) {
             if (data) {
-                setTrayNr(data.signOut);
                 refetch();
-                setShowInfoAlert(true);
+                alert({ message: `Tray Number ${data.signOut} for ${visitorName}`, type: "info" })
             }
         } else {
         }

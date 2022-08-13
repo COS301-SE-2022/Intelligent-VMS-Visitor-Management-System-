@@ -1,13 +1,13 @@
+import { useEffect, useRef, useState, setState } from "react";
 import { gql, useMutation } from "@apollo/client";
-import React, { useEffect, useRef, useState, setState } from "react";
+import { alert } from "react-custom-alert";
 import { ImEnter } from "react-icons/im";
 
 const SignInPopUp = ({
+    visitorName,
     visitorID,
     inviteID,
     refetch,
-    setShowInfoAlert,
-    setTrayNr,
     todayString,
 }) => {
     const [notes, setNotes] = useState("");
@@ -40,10 +40,8 @@ const SignInPopUp = ({
     useEffect(() => {
         if (!loading && !error) {
             if (data) {
-                console.log(data);
-                setTrayNr(data.signIn);
                 refetch();
-                setShowInfoAlert(true);
+                alert({ message: `Tray Number ${data.signIn} for ${visitorName}`, type: "info"});
             }
         } else {
         }
