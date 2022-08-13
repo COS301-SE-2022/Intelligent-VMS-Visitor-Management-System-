@@ -1,13 +1,20 @@
 import React, { useEffect, useRef, useState } from "react";
 import { QrReader } from "react-qr-reader";
 import { gql, useApolloClient } from "@apollo/client";
+import { TiWarning } from "react-icons/ti";
 
 import useVideo from "../hooks/useVideo.hook";
 
 const QRScanner = ({
+    setCurrentVisitData,
     setShowScanner,
+    setShowSignInModal,
+    setShowSignOutModal,
     setVisitorData,
     setSearch,
+    todayString,
+    setErrorMessage,
+    setShowErrorAlert
 }) => {
     //ApolloClient
     const client = useApolloClient();
@@ -18,15 +25,11 @@ const QRScanner = ({
     // Video state
     const [showVideo, setShowVideo] = useState(true);
 
-    // Error State
-    const [errorMessage, setErrorMessage] = useState("");
-
-    const [showErrorMessage, setShowErrorMessage] = useState(false);
-
     //Search function that actually queries the database
     const search = (data) => {
         //setting the searching variable to true in order to update the table heading
         setSearch(true);
+
         client
             .query({
                 query: gql`
@@ -44,17 +47,44 @@ const QRScanner = ({
             `,
             })
             .then((res) => {
-                //creating an array of 1 element to send to VisitorData
-                const visitor = [];
-                visitor.push(res.data.getInvitesByIDForSearch);
-                setVisitorData(visitor);
+
+                var invites = res.data.getInvitesByIDForSearch;
+
+                //TODO (Larisa): this might be affected by the invite extension
+                if(invites.inviteDate !== todayString){
+                    setErrorMessage("Invite is not scheduled for today.");
+                    setShowErrorAlert(true);       
+                } else {
+
+                    if(invites.inviteState === "signedOut"){
+                        setErrorMessage("Invite already signed out!");
+                        setShowErrorAlert(true);
+                    } else {
+
+                        setShowScanner(false);
+                        setCurrentVisitData(res.data.getInvitesByIDForSearch)
+                        
+                        //creating an array of 1 element to send to VisitorData
+                        const visitor = [];
+                        visitor.push(res.data.getInvitesByIDForSearch);
+                        setVisitorData(visitor);
+
+                        console.log(invites.inviteState)
+                        if(invites.inviteState === "inActive"){         
+                            setShowSignInModal(true);
+                        } else if(invites.inviteState === "signedIn"){
+                            setShowSignOutModal(true);
+                        }
+
+                    }
+                
+                }
+                
             })
             .catch((err) => {
                 console.log(err);
             });
     };
-
-    const [invalid, setInvalid] = useState(false);
 
     // DOM Reference to Video element
     const videoRef = useRef(null);
@@ -68,10 +98,6 @@ const QRScanner = ({
 
     return (
         <div className="relative flex-col items-center justify-center text-center">
-            <p>Ensure that QR Code is visible</p>
-            { showErrorMessage &&
-                <p className="text-error">{errorMessage}</p>
-            }
             {showVideo ? (
                 <div>
                     <video
@@ -88,16 +114,14 @@ const QRScanner = ({
                                     const qrData = JSON.parse(result?.text);
                                     if (qrData.inviteID) {
                                         setData(qrData.inviteID);
-                                        setShowScanner(false);
                                         search(qrData.inviteID);
-                                        setShowErrorMessage(false);
                                     } else {
-                                        setShowErrorMessage(true);
                                         setErrorMessage("Invalid QR Code");
+                                        setShowErrorAlert(true);
                                     }
                                 } catch (error) {
-                                    setShowErrorMessage(true);
                                     setErrorMessage("Invalid QR Code");
+                                    setShowErrorAlert(true);  
                                 }
                             } else if (error) {
                                 if (error.name === "NotFoundError") {
@@ -114,6 +138,11 @@ const QRScanner = ({
                     </p>
                 </div>
             )}
+
+      <div class="flex mt-3 justify-center">
+        <span class="fill-current text-error w-6 h-full align-middle fill-bg-error"><TiWarning size="lg" color="bg-error"/></span>
+        <p class="ml-2 font-bold text-error">Ensure that QR Code is visible</p>
+      </div>
         </div>
     );
 };

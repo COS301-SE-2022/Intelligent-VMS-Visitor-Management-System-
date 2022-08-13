@@ -18,7 +18,7 @@ export class ReceptionistService {
 
     async getTrayByInviteID(inviteID:string):Promise<Tray>{
         const tray =  this.queryBus.execute(new getTrayFromInviteQuery(inviteID))
-        console.log("getTrayByInviteID");
+        //console.log("getTrayByInviteID");
         return tray;
     }
 
