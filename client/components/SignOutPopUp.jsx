@@ -4,14 +4,17 @@ import { ImExit } from "react-icons/im";
 import { alert } from "react-custom-alert";
 
 const SignOutPopUp = ({
-    visitorName,
-    visitorID,
-    inviteID,
+    setTrayNr,
+    setShowInfoAlert,
     refetch,
+    currentButton,
+    visitData,
+    setShowSignOutModal,
+    setSearch,
 }) => {
     const [signOutMutation, { data, loading, error }] = useMutation(gql`
         mutation {
-            signOut(inviteID: "${inviteID}")
+            signOut(inviteID: "${visitData.inviteID}")
         }
     `);
 
@@ -19,7 +22,8 @@ const SignOutPopUp = ({
         if (!loading && !error) {
             if (data) {
                 refetch();
-                alert({ message: `Tray Number ${data.signOut} for ${visitorName}`, type: "info" })
+                setShowInfoAlert(true);
+                setSearch(false)
             }
         } else {
         }
@@ -36,12 +40,16 @@ const SignOutPopUp = ({
             <h1 className="mt-5 text-center text-3xl font-bold ">
                 Confirm Sign-Out
             </h1>
-            <p>Confirm sign-out of visitor with id {visitorID}</p>
+            <p>Confirm sign-out of visitor with id {visitData.idNumber}</p>
             <label
                 htmlFor="signOut-modal"
                 className="modal-button btn btn-primary mt-5 mb-5 w-5/6"
                 onClick={() => {
                     signOutMutation();
+                    if(currentButton){
+                        currentButton.add("loading");
+                    }
+                    setShowSignOutModal(false);
                 }}
             >
                 Sign out
