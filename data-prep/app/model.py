@@ -12,8 +12,9 @@ from app.fakeInviteGenerator import createInvites
 
 import json 
 import joblib
+import time
 
-start_date = date(2015,1,1)
+start_date = date(2016,1,1)
 end_date = date(2022,7,1)
 current_date = end_date
 features = []
@@ -41,8 +42,8 @@ def create_data(month,dow,mn_dow,mdn_dow,min_dow,max_dow,mn_days,mn_month,mdn_mo
       mn_weeks,
       db,
       wb,
-      num_inv,
-      prob_inv,
+      # num_inv,
+      # prob_inv,
       hol
   ]
   return row
@@ -288,8 +289,8 @@ def getNumVisitorsWeekBefore(date):
   return invitesCollection.count_documents({ "inviteDate": {'$gte': (date-timedelta(days=7)).strftime("%Y-%m-%d") , '$lt': date.strftime("%Y-%m-%d")} , "inviteState": { '$ne': "inActive" } })
 
 def getNumProbableVisitors(numInvites):
-  totalVisitors = invitesCollection.count_documents({"inviteState": { '$ne': "inActive" } })
-  totalInvites = invitesCollection.count_documents({})
+  totalVisitors = invitesCollection.count_documents({ "inviteState": { '$ne': "inActive" } })
+  totalInvites = invitesCollection.count_documents({"inviteDate": {'$gte': start_date.strftime("%Y-%m-%d") , '$lt': date.today().strftime("%Y-%m-%d")}})
   return (totalVisitors/totalInvites) * numInvites 
 
 def getNumInvites(date):
@@ -312,8 +313,8 @@ def generateTrainingData():
   mnDOW,mnWOY,mnMonth = calculateMeans()
   minDOW,maxDOW,mdnDOW,minWOY,maxWOY,mdnWOY,minMonth,maxMonth,mdnMonth = calculateMinMaxAndMedians()
 
-  totalVisitors = invitesCollection.count_documents({"inviteState": { '$ne': "inActive" } })
-  totalInvites = invitesCollection.count_documents({})
+  totalVisitors = invitesCollection.count_documents({ "inviteState": { '$ne': "inActive" } })
+  totalInvites = invitesCollection.count_documents({"inviteDate": {'$gte': start_date.strftime("%Y-%m-%d") , '$lt': date.today().strftime("%Y-%m-%d")}})
   inviteActProb = totalVisitors/totalInvites
 
   allDays = list(groupInvitesCollection.find())
@@ -360,9 +361,65 @@ def generateTrainingData():
 
 ##################################################################
 
+def predictOne(date):
+
+  startTime = time.time()
+
+  reg = joblib.load("VMS_visitor-reg-model.pkl")
+
+  #TODO (Larisa): retraining
+  data = []
+
+  mnDOW,mnWOY,mnMonth = calculateMeans()
+  minDOW,maxDOW,mdnDOW,minWOY,maxWOY,mdnWOY,minMonth,maxMonth,mdnMonth = calculateMinMaxAndMedians()
+
+  mnDays,mnWeeks,mnMonths = calculateRecentAverages(date)
+
+  day_bef =  getNumVisitorsDayBefore(date)
+  week_bef = getNumVisitorsWeekBefore(date)
+  num_inv = getNumInvites(date)
+  prob_vis = getNumProbableVisitors(date)
+  hol = isHoliday(date)
+
+  data.append(
+      create_data(
+          date.month,
+          date.weekday(),
+          mnDOW[date.weekday()],
+          mdnDOW[date.weekday()],
+          minDOW[date.weekday()],
+          maxDOW[date.weekday()],
+          mnDays,
+          mnMonth[date.month-1],
+          mdnMonth[date.month-1],
+          minMonth[date.month-1],
+          maxMonth[date.month-1],
+          mnMonths,
+          mnWOY[date.isocalendar()[1]-1],
+          mdnWOY[date.isocalendar()[1]-1],
+          minWOY[date.isocalendar()[1]-1],
+          maxWOY[date.isocalendar()[1]-1],
+          mnWeeks,
+          day_bef,
+          week_bef,
+          num_inv,
+          prob_vis,
+          hol
+          )
+        )
+  
+  pred = reg.predict(data)
+  print(pred)
+
+  print(time.time()-startTime)
+
+  return json.dumps({'date': date, 'data': pred})
+
 def predictMany(startingDate,endingDate):
 
-  reg = joblib.load("VMS_reg-model.pkl")
+  startTime = time.time()
+
+  reg = joblib.load("VMS_visitor-reg-model.pkl")
 
   startDate = datetime.strptime(startingDate, '%Y-%m-%d').date()
   endDate = datetime.strptime(endingDate, '%Y-%m-%d').date()
@@ -373,8 +430,8 @@ def predictMany(startingDate,endingDate):
   mnDOW,mnWOY,mnMonth = calculateMeans()
   minDOW,maxDOW,mdnDOW,minWOY,maxWOY,mdnWOY,minMonth,maxMonth,mdnMonth = calculateMinMaxAndMedians()
 
-  totalVisitors = invitesCollection.count_documents({"inviteState": { '$ne': "inActive" } })
-  totalInvites = invitesCollection.count_documents({})
+  totalVisitors = invitesCollection.count_documents({ "inviteState": { '$ne': "inActive" } })
+  totalInvites = invitesCollection.count_documents({"inviteDate": {'$gte': start_date.strftime("%Y-%m-%d") , '$lt': date.today().strftime("%Y-%m-%d")}})
   inviteActProb = totalVisitors/totalInvites
 
   delta = timedelta(days=1)
@@ -428,44 +485,52 @@ def predictMany(startingDate,endingDate):
     i+=1
     loopDate+=delta
 
+  print(time.time()-startTime)
+
   return json.dumps(output)
 
 def train():
 
+  startTime = time.time()
+
   #Global parameters
   params = { 
-      "n_estimators": 500,
-      "max_depth": 3,
-      "min_samples_split": 5,
+      "n_estimators": 600,
+      "max_depth": 20,
+      "min_samples_split": 4,
       "criterion": "friedman_mse",
-      "learning_rate": 0.01,
+      "learning_rate": 0.015,
       "loss": "squared_error",
+      # "alpha": 0.5,
+      "verbose": True
   }
 
   #Create regressor
   reg = ensemble.GradientBoostingRegressor(**params)
 
-  #createInvites(start_date,end_date,25)
+  createInvites(start_date,date(2022,12,31),30)
 
   data,output = generateTrainingData()
 
   #Create training and test set
-  X_train, X_test, y_train, y_test = train_test_split( data, output, test_size=0.33)
+  X_train, X_test, y_train, y_test = train_test_split( data, output, test_size=0.33, shuffle=True)
 
   #Train model
   reg.fit(X_train, y_train)
-
-  #Export model
-  joblib.dump(reg, "VMS_reg-model.pkl")
 
   #Test model
   mse = mean_squared_error(y_test, reg.predict(X_test))
   print(mse)
 
+  #Export model
+  joblib.dump(reg, "VMS_visitor-reg-model.pkl")
+
+  print(time.time()-startTime)
+
   return json.dumps({'MSE': mse})
 
 def featureAnalysis():
-    reg = joblib.load("VMS_reg-model.pkl")
+    reg = joblib.load("VMS_visitor-reg-model.pkl")
 
     imp = reg.feature_importances_.tolist()
     print(imp)
