@@ -22,7 +22,6 @@ const ReceptionistDashboard = () => {
     const [searchName, setSearchName] = useState("");
 
     const [currentButton, setCurrentButton] = useState(()=>{}); 
-    const [currentVisitorName, setCurrentVisitorName] = useState("");
     const [currentParkingNumber, setCurrentParkingNumber] = useState(-1);
     const [visitorData, setVisitorData] = useState([]);
 
@@ -38,7 +37,7 @@ const ReceptionistDashboard = () => {
     const [showVisitorModal, setShowVisitorModal] = useState(false);
     const [showSignInModal, setShowSignInModal] = useState(false);
     const [showSignOutModal, setShowSignOutModal] = useState(false);
-    const [visitModalData, setVisitModalData] = useState("");
+    const [currentVisitData, setCurrentVisitData] = useState("");
     
 
     const getFormattedDateString = (date) => {
@@ -76,7 +75,9 @@ const ReceptionistDashboard = () => {
     );    
 
     const search = () => {
+        
         setSearch(true);
+
         client
             .query({
                 query: gql`
@@ -108,13 +109,13 @@ const ReceptionistDashboard = () => {
     };
 
     const resetDefaultResults = () => {
-        setSearch(false);
 
         if ((!loading && !error)) {
             const invites = data.getInvitesByDate.filter((invite) => {
                 return invite.inviteState !== "signedOut";
             });
             setVisitorData(invites);
+            setSearch(false);
 
         } else if (error) {
             if (error.message === "Unauthorized") {
@@ -201,9 +202,21 @@ const ReceptionistDashboard = () => {
 
             <div className="flow-root w-full pt-7">
                 
-                <h1 className="base-100 pl-3 text-xl font-bold md:text-3xl lg:text-4xl float-left">
+                <div className="flex flex-wrap float-left">
+                    <h1 className="base-100 pl-3 text-xl font-bold md:text-3xl lg:text-4xl ">
                     {searching ? "Search Results" : "Today's Invites"}
-                </h1>
+                    </h1>
+                    {searching ? (
+                        <label
+                        className="btn btn-circle border-none bg-error btn-xs ml-2"
+                        onClick={() => resetDefaultResults()}
+                    >
+                        ✕
+                    </label>
+                    ):(<div></div>)}
+                    
+                </div>
+                
                     
                 <label
                     htmlFor="QRScan-modal"
@@ -222,9 +235,9 @@ const ReceptionistDashboard = () => {
                     <BsBoxArrowInRight/>
                     Bulk-SignIn
                 </label> 
-           
+        
             </div>
-            
+                
 
             <div className="flex h-full items-center justify-center overflow-x-auto p-3">
                 {loading ? (
@@ -248,7 +261,7 @@ const ReceptionistDashboard = () => {
                                         <tr className="relative z-0 hover cursor-pointer" 
                                             key={visit.inviteID} 
                                             onClick={() => {
-                                                setVisitModalData(visit)
+                                                setCurrentVisitData(visit)
                                                 setShowVisitorModal(true);
                                             }} >
 
@@ -265,14 +278,11 @@ const ReceptionistDashboard = () => {
                                                             onClick={(e) => {
                                                                 e.stopPropagation();
 
-                                                                setVisitModalData(visit)
+                                                                setCurrentVisitData(visit)
 
                                                                 setCurrentButton(
                                                                     e.currentTarget.classList
                                                                 );
-                                                                setCurrentVisitorName(
-                                                                    visit.visitorName
-                                                                );  
                                                                 setShowSignInModal(true);    
                                                             }}
                                                             text="Sign In"
@@ -288,14 +298,11 @@ const ReceptionistDashboard = () => {
                                                             onClick={(e) => {  
                                                                 e.stopPropagation();
 
-                                                                setVisitModalData(visit)
+                                                                setCurrentVisitData(visit)
                                                             
                                                                 setCurrentButton(
                                                                     e.currentTarget.classList
-                                                                );
-                                                                setCurrentVisitorName(
-                                                                    visit.visitorName
-                                                                );      
+                                                                );    
                                                                 setShowVisitorModal(
                                                                     false
                                                                 );
@@ -331,15 +338,14 @@ const ReceptionistDashboard = () => {
                     message={successMessage}
                     showConditon={showSuccessAlert}
                 />
-                { showInfoAlert &&
                 <InfoAlert
-                    visitorName={currentVisitorName}
+                    currentVisitData={currentVisitData}
                     showConditon={showInfoAlert}
                     setShowCondition={setShowInfoAlert}
                     trayNr={trayNr}
                 />
-                }
             </div>
+            
 
             <input type="checkbox" id="signIn-modal" className="modal-toggle"onChange={() => {}} checked={showSignInModal ? true : false} />
             <div className="fade modal cursor-pointer" id="signIn-modal">
@@ -352,13 +358,14 @@ const ReceptionistDashboard = () => {
                         ✕
                     </label>
                     <SignInPopUp
-                        visitData={visitModalData}
+                        visitData={currentVisitData}
                         setTrayNr={setTrayNr}
                         setShowInfoAlert={setShowInfoAlert}
                         refetch={invitesQuery}
                         todayString={todayString}
                         currentButton = {currentButton}
                         setShowSignInModal={setShowSignInModal}
+                        setSearch={setSearch}
                     />
                 </div>
             </div>
@@ -380,12 +387,13 @@ const ReceptionistDashboard = () => {
                         ✕
                     </label>
                     <SignOutPopUp
-                        visitData={visitModalData}
+                        visitData={currentVisitData}
                         setShowInfoAlert={setShowInfoAlert}
                         setTrayNr={setTrayNr}
                         refetch={invitesQuery}
                         currentButton = {currentButton}
                         setShowSignOutModal={setShowSignOutModal}
+                        setSearch={setSearch}
                     />
                 </div>
             </div>
@@ -407,7 +415,7 @@ const ReceptionistDashboard = () => {
                         ✕
                     </label>
                     <QRScanner
-                        setCurrentVisitData={setVisitModalData}
+                        setCurrentVisitData={setCurrentVisitData}
                         setShowScanner={setShowScanner}
                         setShowSignInModal={setShowSignInModal}
                         setShowSignOutModal={setShowSignOutModal}
@@ -432,7 +440,7 @@ const ReceptionistDashboard = () => {
                     </label>
                     <VisitInfoModal 
                         setShowInfo={setShowVisitorModal} 
-                        visitModalData={visitModalData} 
+                        visitModalData={currentVisitData} 
                         parkingNumber={currentParkingNumber}/>
                 </div>
             </div>

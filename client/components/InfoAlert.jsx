@@ -1,6 +1,11 @@
 import { motion } from "framer-motion";
 
-const InfoAlert = ({ trayNr, visitorName, showConditon, setShowCondition }) => {
+const InfoAlert = ({ 
+    trayNr, 
+    currentVisitData, 
+    showConditon, 
+    setShowCondition 
+}) => {
     const alertVariants = {
         hidden: { opacity: 1, y: -200 },
         enter: { opacity: 1, y: 0 },
@@ -37,7 +42,7 @@ const InfoAlert = ({ trayNr, visitorName, showConditon, setShowCondition }) => {
                         ></path>
                     </svg>
                     <span>
-                        Tray number for {visitorName} : {trayNr}{" "}
+                        Tray number for {currentVisitData.visitorName} : {trayNr}{" "}
                     </span>
                 </div>
             </div>

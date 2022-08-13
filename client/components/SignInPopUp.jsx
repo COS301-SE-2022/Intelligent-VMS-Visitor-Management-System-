@@ -9,7 +9,8 @@ const SignInPopUp = ({
     todayString,
     currentButton,
     visitData,
-    setShowSignInModal
+    setShowSignInModal,
+    setSearch
 }) => {
     const [notes, setNotes] = useState("");
     const time = new Date();
@@ -45,6 +46,7 @@ const SignInPopUp = ({
                 setTrayNr(data.signIn);
                 refetch();
                 setShowInfoAlert(true);
+                setSearch(false);
             }
         } else {
         }
