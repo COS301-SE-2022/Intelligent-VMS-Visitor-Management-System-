@@ -17,9 +17,9 @@ const InfoAlert = ({ trayNr, visitorName, showConditon, setShowCondition }) => {
             whileTap="click"
             transition={{ type: "linear" }}
             className="fixed top-3"
-            onClick={() => { 
+            onClick={() => {
                 console.log("HERE!");
-                setShowCondition(false); 
+                setShowCondition(false);
             }}
         >
             <div className="alert shadow-lg">
