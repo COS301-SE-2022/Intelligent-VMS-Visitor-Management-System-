@@ -8,6 +8,7 @@ import useAuth from "../store/authStore.js";
 
 import Layout from "../components/Layout";
 import ErrorAlert from "../components/ErrorAlert";
+import VisitorSuggestions from "../components/VisitorSuggestions.jsx";
 
 const getFormattedDateString = (date) => {
     if (date instanceof Date) {
@@ -247,6 +248,28 @@ const CreateInvite = () => {
                                     </span>{" "}
                                     Someone🔥
                                 </h1>
+
+                                <div>
+                                    <p>
+                                        Invite Date:
+                                    </p>
+                                    <input
+                                        type="date"
+                                        name="visitDate"
+                                        placeholder="Visit Date"
+                                        className="input input-bordered w-full"
+                                        min={getFormattedDateString(new Date())}
+                                        onChange={(e) => {
+                                            handleChange(e);
+                                            setNow(e.currentTarget.value);
+                                        }}
+                                        onBlur={handleBlur}
+                                        value={values.visitDate}
+                                    />
+                                </div>
+
+                                <VisitorSuggestions date={now}/>
+
                                 <input
                                     type="email"
                                     name="email"
@@ -307,20 +330,6 @@ const CreateInvite = () => {
                                 <span className="text-error">
                                     {errors.name && touched.name && errors.name}
                                 </span>
-
-                                <input
-                                    type="date"
-                                    name="visitDate"
-                                    placeholder="Visit Date"
-                                    className="input input-bordered w-full"
-                                    min={getFormattedDateString(new Date())}
-                                    onChange={(e) => {
-                                        handleChange(e);
-                                        setNow(e.currentTarget.value);
-                                    }}
-                                    onBlur={handleBlur}
-                                    value={values.visitDate}
-                                />
 
                                 <motion.label className="label cursor-pointer">
                                     <motion.span
