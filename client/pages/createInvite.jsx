@@ -239,7 +239,7 @@ const CreateInvite = () => {
                         return (
                             <form
                                 onSubmit={handleSubmit}
-                                className="md:p-26 prose form-control mt-3 space-y-4 rounded-none bg-base-300 p-14 md:rounded-xl"
+                                className="md:p-26 prose form-control mt-3 space-y-3 rounded-none bg-base-300 p-14 md:rounded-xl"
                             >
                                 <h1>
                                     Let&apos;s{" "}
@@ -249,26 +249,31 @@ const CreateInvite = () => {
                                     Someone🔥
                                 </h1>
 
-                                <div>
-                                    <p>
-                                        Invite Date:
-                                    </p>
-                                    <input
-                                        type="date"
-                                        name="visitDate"
-                                        placeholder="Visit Date"
-                                        className="input input-bordered w-full"
-                                        min={getFormattedDateString(new Date())}
-                                        onChange={(e) => {
-                                            handleChange(e);
-                                            setNow(e.currentTarget.value);
-                                        }}
-                                        onBlur={handleBlur}
-                                        value={values.visitDate}
-                                    />
-                                </div>
+                                <span className="text-sm mb-1 font-bold">
+                                    Invite Date:
+                                </span>
+                                
+                                <input
+                                    type="date"
+                                    name="visitDate"
+                                    placeholder="Visit Date"
+                                    className="input input-bordered w-full"
+                                    min={getFormattedDateString(new Date())}
+                                    onChange={(e) => {
+                                        handleChange(e);
+                                        setNow(e.currentTarget.value);
+                                    }}
+                                    onBlur={handleBlur}
+                                    value={values.visitDate}
+                                />
+
 
                                 <VisitorSuggestions date={now}/>
+                                <br/>
+
+                                <span className="text-sm mb-1 font-bold">
+                                        Visitor Details:
+                                </span>
 
                                 <input
                                     type="email"

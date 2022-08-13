@@ -139,10 +139,10 @@ const QRScanner = ({
                 </div>
             )}
 
-      <div class="flex mt-3 justify-center">
-        <span class="fill-current text-error w-6 h-full align-middle fill-bg-error"><TiWarning size="lg" color="bg-error"/></span>
-        <p class="ml-2 font-bold text-error">Ensure that QR Code is visible</p>
-      </div>
+            <div class="flex mt-3 justify-center">
+                <span class="fill-current text-error w-6 h-full align-middle"><TiWarning size="lg" color="bg-error"/></span>
+                <p class="ml-2 font-bold text-error">Ensure that QR Code is visible</p>
+            </div>
         </div>
     );
 };
