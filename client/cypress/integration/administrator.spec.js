@@ -1,4 +1,4 @@
-var myObj = { inText: 0, numberAllowed: 0, numberSent: 0 };
+/*var myObj = { inText: 0, numberAllowed: 0, numberSent: 0 };
 describe('Receptionist tests', () => {
     it('tests various administrator functions', () => {
         var today = new Date();
@@ -138,3 +138,4 @@ describe('Receptionist tests', () => {
 
     })
 })
+*/
