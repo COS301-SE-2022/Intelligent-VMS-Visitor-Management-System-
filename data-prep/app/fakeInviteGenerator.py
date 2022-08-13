@@ -36,7 +36,7 @@ notes_provider = DynamicProvider(
 # Invite state provider
 state_provider = DynamicProvider(
     provider_name="state",
-    elements=["inActive","signedIn","signedIn","signedOut","signedOut","signedOut","signedOut"] # Smaller prob that invite not used
+    elements=["inActive","signedIn","cancelled","cancelled","signedOut","signedOut","signedOut","signedOut"] # Smaller prob that invite not used
 )
 
 # Register Providers
@@ -143,17 +143,17 @@ def createInvites(startDate,endDate,maxResidents):
                     createVisitation(userEmail,visEmail,visName,visId,inviteDate,visRelation,invites,fake,trays,reservations)
 
     #send generated invites and reservations to db
-    invitesCollection.delete_many({})
+    #invitesCollection.delete_many({})
     invitesCollection.insert_many(invites)
 
-    parkingReservationCollection.delete_many({})
+    #parkingReservationCollection.delete_many({})
     parkingReservationCollection.insert_many(reservations)
 
-    trayCollection.delete_many({})
+    #trayCollection.delete_many({})
     trayCollection.insert_many(trays)
 
     #create new group invites
-    groupInvitesCollection.delete_many({})
+    #groupInvitesCollection.delete_many({})
     invitesCollection.aggregate([
     {
         '$group': {
@@ -177,5 +177,11 @@ def createInvites(startDate,endDate,maxResidents):
         '$out': 'groupinvites'
     }
     ])
+
+def resetInviteHistory():
+    invitesCollection.delete_many({})
+    parkingReservationCollection.delete_many({})
+    trayCollection.delete_many({})
+    groupInvitesCollection.delete_many({})
 
 

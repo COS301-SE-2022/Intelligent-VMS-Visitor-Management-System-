@@ -8,7 +8,6 @@ import math
 
 from app.database import invitesCollection,groupInvitesCollection
 from app.holidaysSA import ourHolidays
-from app.fakeInviteGenerator import createInvites
 
 import json 
 import joblib
@@ -367,7 +366,6 @@ def predictOne(date):
 
   reg = joblib.load("VMS_visitor-reg-model.pkl")
 
-  #TODO (Larisa): retraining
   data = []
 
   mnDOW,mnWOY,mnMonth = calculateMeans()
@@ -424,7 +422,6 @@ def predictMany(startingDate,endingDate):
   startDate = datetime.strptime(startingDate, '%Y-%m-%d').date()
   endDate = datetime.strptime(endingDate, '%Y-%m-%d').date()
 
-  #TODO (Larisa): retraining
   data = []
 
   mnDOW,mnWOY,mnMonth = calculateMeans()
@@ -507,8 +504,6 @@ def train():
 
   #Create regressor
   reg = ensemble.GradientBoostingRegressor(**params)
-
-  createInvites(start_date,date(2022,12,31),30)
 
   data,output = generateTrainingData()
 

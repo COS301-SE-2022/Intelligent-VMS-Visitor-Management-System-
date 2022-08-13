@@ -1,5 +1,6 @@
 from app import app,APP_ROOT
 from flask import request
+from app.fakeInviteGenerator import createInvites,resetInviteHistory
 
 from app.model import predictMany,train,featureAnalysis
 
@@ -21,3 +22,13 @@ def fAnalysis():
 def training():
     return train()
 
+@app.route("/generateFakeInvites")
+def generate():
+    startDate = request.args.get('startDate')
+    endDate = request.args.get('endDate')
+    numRes = request.args.get('numResidents')
+    createInvites(startDate,endDate,numRes)
+
+@app.route("/resetInvites")
+def reset():
+    resetInviteHistory()
