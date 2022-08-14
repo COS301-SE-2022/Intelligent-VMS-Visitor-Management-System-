@@ -1,10 +1,10 @@
 import { motion } from "framer-motion";
 
-const InfoAlert = ({ 
-    trayNr, 
-    currentVisitData, 
-    showConditon, 
-    setShowCondition 
+const InfoAlert = ({
+    trayNr,
+    currentVisitData,
+    showConditon,
+    setShowCondition,
 }) => {
     const alertVariants = {
         hidden: { opacity: 1, y: -200 },
@@ -22,8 +22,8 @@ const InfoAlert = ({
             whileTap="click"
             transition={{ type: "linear" }}
             className="fixed top-3"
-            onClick={() => { 
-                setShowCondition(false); 
+            onClick={() => {
+                setShowCondition(false);
             }}
         >
             <div className="alert shadow-lg">
@@ -42,7 +42,8 @@ const InfoAlert = ({
                         ></path>
                     </svg>
                     <span>
-                        Tray number for {currentVisitData.visitorName} : {trayNr}{" "}
+                        Tray number for {currentVisitData.visitorName} :{" "}
+                        {trayNr}{" "}
                     </span>
                 </div>
             </div>

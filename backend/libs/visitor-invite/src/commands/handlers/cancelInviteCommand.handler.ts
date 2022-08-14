@@ -12,6 +12,6 @@ export class CancelInviteCommandHandler implements ICommandHandler {
 
     async execute(command: CancelInviteCommand): Promise<any> {
         const { inviteID } = command;
-        return await this.inviteModel.deleteOne({ inviteID: inviteID });
+        return await this.inviteModel.updateOne({ inviteID: inviteID }, [{$set: { inviteState: "cancelled"}}]);
     }
 }

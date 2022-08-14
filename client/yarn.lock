@@ -5754,6 +5754,11 @@ react-chartjs-2@^4.1.0:
   resolved "https://registry.yarnpkg.com/react-chartjs-2/-/react-chartjs-2-4.1.0.tgz#2a123df16d3a987c54eb4e810ed766d3c03adf8d"
   integrity sha512-AsUihxEp8Jm1oBhbEovE+w50m9PVNhz1sfwEIT4hZduRC0m14gHWHd0cUaxkFDb8HNkdMIGzsNlmVqKiOpU74g==
 
+react-custom-alert@^0.1.3:
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/react-custom-alert/-/react-custom-alert-0.1.3.tgz#bb7360e1856dccd29fb126c598ee9634de4cd7c6"
+  integrity sha512-9EDUtIknI8Rfojg2bbKtTEgxKu/Q86JT7NtiOU1jasHnA34d/q/9PLYvfv33Cc5MMJGVHUEZIg/oP3WeCEtZ3Q==
+
 react-dom@^17.0.2:
   version "17.0.2"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-17.0.2.tgz#ecffb6845e3ad8dbfcdc498f0d0a939736502c23"

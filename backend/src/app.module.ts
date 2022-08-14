@@ -9,7 +9,6 @@ import { join } from "path";
 import { DirectiveLocation, GraphQLDirective } from "graphql";
 
 import { DatabaseModule } from "@vms/database";
-import { VisitorModule } from "@vms/visitor";
 import { AuthModule } from "@vms/auth";
 import { UserModule } from "@vms/user";
 import { VisitorInviteModule } from "@vms/visitor-invite";
@@ -41,7 +40,6 @@ import { RestrictionsModule } from "@vms/restrictions";
             },
         }),
         DatabaseModule,
-        VisitorModule,
         UserModule,
         AuthModule,
         VisitorInviteModule,

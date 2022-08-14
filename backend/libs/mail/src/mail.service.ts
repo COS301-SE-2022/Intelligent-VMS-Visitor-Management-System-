@@ -19,7 +19,7 @@ export class MailService {
         });
     }
 
-    async sendInvite(to: string, from: string, inviteID: string, idDocType: string, reserveParking: boolean) {
+    async sendInvite(to: string, from: string, inviteID: string, idDocType: string, reserveParking: boolean, inviteDate: string) {
         // QRCode data to be encoded
         const qrData = JSON.stringify({ inviteID: inviteID });
 
@@ -37,7 +37,7 @@ export class MailService {
             }],
             html: `<h1>Hello Visitor!👋</h1>
                 <br />
-                <h3>You received an invite from ${from}</h3>
+                <h3>You received an invite from ${from} on ${inviteDate}</h3>
                 <br />
                 <p>Invite ID: ${inviteID}</p>
                 <img src="cid:firestorm19091@gmail.com" />
@@ -57,7 +57,21 @@ export class MailService {
             html: `<h1>Hello New User!👋</h1>
                 <br />
                 <h3>Thank you for choosing V Ʌ S</h3>
-                    <p>Please verify your account <a href="https://vms-client.vercel.app/verify?id=${verficationID}&email=${to}">here</a>.</p>
+                <p>Please verify your account <a href="https://vms-client.vercel.app/verify?id=${verficationID}&email=${to}">here</a>.</p>
+                `
+        });
+    }
+
+    async sendCancelNotice(to: string, name: string, inviteDate: string, userEmail: string) {
+        return this.transporter.sendMail({
+            from: '"VMS 👋" <firestorm19091@gmail.com>', // sender address
+            to: to, // list of receivers
+            subject: "Invite Cancelled", // Subject line
+            html: `
+                <h1>Hello ${name}👋</h1>
+                <br />
+                <h2>🙅Invite Cancel Notice</h2>
+                <p>It seems that ${userEmail} has cancelled your visit scheduled for ${inviteDate}.</p>
                 `
         });
     }
