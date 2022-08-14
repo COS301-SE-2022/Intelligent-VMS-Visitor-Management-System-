@@ -2,7 +2,7 @@ import { HiIdentification } from "react-icons/hi";
 import { MdPassword } from "react-icons/md";
 import { AiFillCar } from "react-icons/ai";
 import { BsFillCalendarEventFill, BsFillPersonCheckFill } from "react-icons/bs";
-import { IoFileTrayFull } from "react-icons/io5"
+import { IoFileTrayFull } from "react-icons/io5";
 
 const VisitInfoModal = ({ setShowInfo, visitModalData }) => {
     if (!visitModalData) {
@@ -10,9 +10,9 @@ const VisitInfoModal = ({ setShowInfo, visitModalData }) => {
     }
 
     return (
-        <div className="flex flex-col w-full">
-            <div className="grid grid-cols-3 justify-between items-center">
-                <div className="flex col-span-2 space-x-3">
+        <div className="flex w-full flex-col">
+            <div className="grid grid-cols-3 items-center justify-between">
+                <div className="col-span-2 flex space-x-3">
                     <div className="avatar placeholder">
                         <div className="w-16 rounded-full bg-neutral-focus text-neutral-content">
                             <span className="text-2xl capitalize">
@@ -29,13 +29,13 @@ const VisitInfoModal = ({ setShowInfo, visitModalData }) => {
                 </div>
                 <div className="space-y-3">
                     <div className="flex items-center space-x-3">
-                        <BsFillCalendarEventFill className="text-xl" />                    
+                        <BsFillCalendarEventFill className="text-xl" />
                         <p>{visitModalData.inviteDate}</p>
                     </div>
                     <div className="flex items-center space-x-3">
-                        <IoFileTrayFull className="text-xl" />                    
+                        <IoFileTrayFull className="text-xl" />
                         <p>7</p>
-                        <AiFillCar className="text-xl" />                    
+                        <AiFillCar className="text-xl" />
                         <p>13</p>
                     </div>
                 </div>
