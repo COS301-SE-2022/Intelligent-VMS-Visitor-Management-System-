@@ -1,4 +1,4 @@
-describe('Verify Page', () => {
+/*describe('Verify Page', () => {
     it('Visits the Kitchen Sink', () => {
         //Navigate to Home page
         describe('Navigate to Home page/confirm', () => {
@@ -36,4 +36,4 @@ describe('Verify Page', () => {
 
     })
 
-})
+})*/
