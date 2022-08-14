@@ -23,7 +23,7 @@ const SignOutPopUp = ({
             if (data) {
                 refetch();
                 setShowInfoAlert(true);
-                setSearch(false)
+                setSearch(false);
             }
         } else {
         }
@@ -46,7 +46,7 @@ const SignOutPopUp = ({
                 className="modal-button btn btn-primary mt-5 mb-5 w-5/6"
                 onClick={() => {
                     signOutMutation();
-                    if(currentButton){
+                    if (currentButton) {
                         currentButton.add("loading");
                     }
                     setShowSignOutModal(false);

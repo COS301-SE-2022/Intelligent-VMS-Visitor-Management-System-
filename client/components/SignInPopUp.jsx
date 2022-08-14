@@ -12,14 +12,16 @@ const SignInPopUp = ({
     currentButton,
     visitData,
     setShowSignInModal,
-    setSearch
+    setSearch,
 }) => {
     const [notes, setNotes] = useState("");
     const time = new Date();
     const [signInMutation, { data, loading, error }] = useMutation(
         gql`
             mutation {
-                signIn(inviteID: "${visitData.inviteID}", notes: "${notes}", time: "${time.toLocaleTimeString()}") 
+                signIn(inviteID: "${
+                    visitData.inviteID
+                }", notes: "${notes}", time: "${time.toLocaleTimeString()}") 
             }
     `,
         {
@@ -79,7 +81,7 @@ const SignInPopUp = ({
                 htmlFor="signIn-modal"
                 onClick={() => {
                     signInMutation();
-                    if(currentButton){
+                    if (currentButton) {
                         currentButton.add("loading");
                     }
                     setShowSignInModal(false);

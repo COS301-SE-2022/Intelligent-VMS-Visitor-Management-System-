@@ -79,7 +79,10 @@ const UploadPopUp = ({
                                     setText(event.target.files[0].name);
                                     setSignInButton(false);
                                 } else {
-                                    alert({ message: "Invalid file extension", type: "error" });
+                                    alert({
+                                        message: "Invalid file extension",
+                                        type: "error",
+                                    });
                                 }
                             }}
                         />
@@ -98,9 +101,9 @@ const UploadPopUp = ({
                             setFileAsString(evt.target.result);
                             setShowUploadPopUp(false);
                             bulkSignInMutation().then((res) => {
-                                alert({ 
-                                    message: `Invites created: ${res.data.bulkSignIn.createCount} \r Invites signed in: ${res.data.bulkSignIn.signInCount} `, 
-                                    type: "success"
+                                alert({
+                                    message: `Invites created: ${res.data.bulkSignIn.createCount} \r Invites signed in: ${res.data.bulkSignIn.signInCount} `,
+                                    type: "success",
                                 });
                                 refetch();
                             });
