@@ -24,7 +24,7 @@ const DownloadChart = ({
     };
 
     return (
-        <div className="card bg-base-300 p-3 lg:p-5 w-full">
+        <div className="card w-full bg-base-300 p-3 lg:p-5">
             <h2 className="card-title text-base-content">{title}</h2>
             <div className="h-full">
                 <Chart

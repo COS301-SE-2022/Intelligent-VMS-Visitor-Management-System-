@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { useState, useEffect, setState } from "react";
 import { gql, useApolloClient, useLazyQuery } from "@apollo/client";
 import { BiQrScan } from "react-icons/bi";
-import { BsBoxArrowInRight, BsInfoCircle} from "react-icons/bs";
+import { BsBoxArrowInRight, BsInfoCircle } from "react-icons/bs";
 import Layout from "../components/Layout";
 import QRScanner from "../components/QRScanner";
 import SignInPopUp from "../components/SignInPopUp";
@@ -15,18 +15,17 @@ import ErrorAlert from "../components/ErrorAlert";
 import SuccessAlert from "../components/SuccessAlert";
 
 const ReceptionistDashboard = () => {
-
     const client = useApolloClient();
 
-    const [searching, setSearch] = useState(false); 
+    const [searching, setSearch] = useState(false);
     const [searchName, setSearchName] = useState("");
 
-    const [currentButton, setCurrentButton] = useState(()=>{}); 
+    const [currentButton, setCurrentButton] = useState(() => {});
     const [currentParkingNumber, setCurrentParkingNumber] = useState(-1);
     const [visitorData, setVisitorData] = useState([]);
 
     const [trayNr, setTrayNr] = useState("");
-    
+
     const [showErrorAlert, setShowErrorAlert] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
@@ -38,7 +37,6 @@ const ReceptionistDashboard = () => {
     const [showSignInModal, setShowSignInModal] = useState(false);
     const [showSignOutModal, setShowSignOutModal] = useState(false);
     const [currentVisitData, setCurrentVisitData] = useState("");
-    
 
     const getFormattedDateString = (date) => {
         if (date instanceof Date) {
@@ -72,10 +70,9 @@ const ReceptionistDashboard = () => {
         }
     `,
         { fetchPolicy: "no-cache" }
-    );    
+    );
 
     const search = () => {
-        
         setSearch(true);
 
         client
@@ -97,7 +94,7 @@ const ReceptionistDashboard = () => {
             .then((res) => {
                 const visitors = res.data.getInvitesByNameForSearch.filter(
                     (invite) => {
-                        return (   
+                        return (
                             invite.inviteDate >= todayString &&
                             invite.inviteState !== "signedOut"
                         );
@@ -109,14 +106,12 @@ const ReceptionistDashboard = () => {
     };
 
     const resetDefaultResults = () => {
-
-        if ((!loading && !error)) {
+        if (!loading && !error) {
             const invites = data.getInvitesByDate.filter((invite) => {
                 return invite.inviteState !== "signedOut";
             });
             setVisitorData(invites);
             setSearch(false);
-
         } else if (error) {
             if (error.message === "Unauthorized") {
                 router.push("/expire");
@@ -134,12 +129,15 @@ const ReceptionistDashboard = () => {
     };
 
     useEffect(() => {
-
         invitesQuery();
         if (!loading && !error) {
             if (data) {
                 const invites = data.getInvitesByDate.filter((invite) => {
-                    return invite.inviteState !== "signedOut" && invite.inviteID;
+                    return (
+                        (invite.inviteState !== "signedOut" ||
+                            invite.inviteState !== "cancelled") &&
+                        invite.inviteID
+                    );
                 });
                 console.log(invites);
                 setVisitorData(invites);
@@ -163,26 +161,19 @@ const ReceptionistDashboard = () => {
 
     return (
         <Layout>
-
             <div className="input-group w-full p-3">
                 <input
                     type="text"
                     placeholder="Search.."
-                    className="input input-bordered input-sm md:input-md w-full"
+                    className="input input-bordered input-sm w-full md:input-md"
                     onChange={(evt) => {
                         setSearchName(evt.target.value);
-                        if (
-                            searching === true &&
-                            evt.target.value === ""
-                        ) {
+                        if (searching === true && evt.target.value === "") {
                             resetDefaultResults();
                         }
                     }}
                 />
-                <button
-                    onClick={search}
-                    className="btn btn-sm md:btn-md"
-                >
+                <button onClick={search} className="btn btn-sm md:btn-md">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="h-6 w-6"
@@ -198,29 +189,28 @@ const ReceptionistDashboard = () => {
                         />
                     </svg>
                 </button>
-            </div>       
+            </div>
 
             <div className="flow-root w-full pt-7">
-                
-                <div className="flex flex-wrap float-left">
+                <div className="float-left flex flex-wrap">
                     <h1 className="base-100 pl-3 text-xl font-bold md:text-3xl lg:text-4xl ">
-                    {searching ? "Search Results" : "Today's Invites"}
+                        {searching ? "Search Results" : "Today's Invites"}
                     </h1>
                     {searching ? (
                         <label
-                        className="btn btn-circle border-none bg-error btn-xs ml-2"
-                        onClick={() => resetDefaultResults()}
-                    >
-                        ✕
-                    </label>
-                    ):(<div></div>)}
-                    
+                            className="btn btn-circle btn-xs ml-2 border-none bg-error"
+                            onClick={() => resetDefaultResults()}
+                        >
+                            ✕
+                        </label>
+                    ) : (
+                        <div></div>
+                    )}
                 </div>
-                
-                    
+
                 <label
                     htmlFor="QRScan-modal"
-                    className="modal-button btn btn-primary gap-2 btn-sm mx-3 md:btn-md float-right"
+                    className="modal-button btn btn-primary btn-sm float-right mx-3 gap-2 md:btn-md"
                     onClick={() => setShowScanner(true)}
                 >
                     <BiQrScan />
@@ -229,15 +219,13 @@ const ReceptionistDashboard = () => {
 
                 <label
                     htmlFor="Upload-modal"
-                    className="modal-button btn btn-secondary gap-2 btn-sm md:btn-md float-right"
+                    className="modal-button btn btn-secondary btn-sm float-right gap-2 md:btn-md"
                     onClick={() => setShowUploadPopUp(true)}
                 >
-                    <BsBoxArrowInRight/>
+                    <BsBoxArrowInRight />
                     Bulk-SignIn
-                </label> 
-        
+                </label>
             </div>
-                
 
             <div className="flex h-full items-center justify-center overflow-x-auto p-3">
                 {loading ? (
@@ -258,55 +246,71 @@ const ReceptionistDashboard = () => {
                             <tbody>
                                 {visitorData.map((visit, idx) => {
                                     return (
-                                        <tr className="relative z-0 hover cursor-pointer" 
-                                            key={visit.inviteID} 
+                                        <tr
+                                            className="hover relative z-0 cursor-pointer"
+                                            key={visit.inviteID}
                                             onClick={() => {
-                                                setCurrentVisitData(visit)
+                                                setCurrentVisitData(visit);
                                                 setShowVisitorModal(true);
-                                            }} >
-
-                                            <th> 
-                                                <BsInfoCircle/>
+                                            }}
+                                        >
+                                            <th>
+                                                <BsInfoCircle />
                                             </th>
-                                            <td className="capitalize" >{visit.visitorName}</td>
+                                            <td className="capitalize">
+                                                {visit.visitorName}
+                                            </td>
                                             <td>{visit.idNumber}</td>
-                                            { !searching || visit.inviteDate=== todayString ? (
-                                                visit.inviteState === "inActive" ? (
+                                            {!searching ||
+                                            visit.inviteDate === todayString ? (
+                                                visit.inviteState ===
+                                                "inActive" ? (
                                                     <td key={visit.inviteID}>
                                                         <ReceptionistSignButton
                                                             key={visit.inviteID}
                                                             onClick={(e) => {
                                                                 e.stopPropagation();
 
-                                                                setCurrentVisitData(visit)
+                                                                setCurrentVisitData(
+                                                                    visit
+                                                                );
 
                                                                 setCurrentButton(
-                                                                    e.currentTarget.classList
+                                                                    e
+                                                                        .currentTarget
+                                                                        .classList
                                                                 );
-                                                                setShowSignInModal(true);    
+                                                                setShowSignInModal(
+                                                                    true
+                                                                );
                                                             }}
                                                             text="Sign In"
                                                             colour="bg-success"
                                                             htmlFor="signIn-modal"
-                                                        
                                                         />
                                                     </td>
                                                 ) : (
                                                     <td key={visit.inviteID}>
                                                         <ReceptionistSignButton
                                                             key={visit.inviteID}
-                                                            onClick={(e) => {  
+                                                            onClick={(e) => {
                                                                 e.stopPropagation();
 
-                                                                setCurrentVisitData(visit)
-                                                            
+                                                                setCurrentVisitData(
+                                                                    visit
+                                                                );
+
                                                                 setCurrentButton(
-                                                                    e.currentTarget.classList
-                                                                );    
+                                                                    e
+                                                                        .currentTarget
+                                                                        .classList
+                                                                );
                                                                 setShowVisitorModal(
                                                                     false
                                                                 );
-                                                                setShowSignOutModal(true)
+                                                                setShowSignOutModal(
+                                                                    true
+                                                                );
                                                             }}
                                                             text="Sign Out"
                                                             htmlFor="signOut-modal"
@@ -314,9 +318,9 @@ const ReceptionistDashboard = () => {
                                                         />
                                                     </td>
                                                 )
-                                            ):(<td>--</td>)
-                                            }
-                                                    
+                                            ) : (
+                                                <td>--</td>
+                                            )}
                                         </tr>
                                     );
                                 })}
@@ -330,10 +334,6 @@ const ReceptionistDashboard = () => {
                         )}
                     </table>
                 )}
-                <ErrorAlert
-                    message={errorMessage}
-                    showConditon={showErrorAlert}
-                />
                 <SuccessAlert
                     message={successMessage}
                     showConditon={showSuccessAlert}
@@ -345,15 +345,22 @@ const ReceptionistDashboard = () => {
                     trayNr={trayNr}
                 />
             </div>
-            
 
-            <input type="checkbox" id="signIn-modal" className="modal-toggle"onChange={() => {}} checked={showSignInModal ? true : false} />
+            <input
+                type="checkbox"
+                id="signIn-modal"
+                className="modal-toggle"
+                onChange={() => {}}
+                checked={showSignInModal ? true : false}
+            />
             <div className="fade modal cursor-pointer" id="signIn-modal">
                 <div className="modal-box">
                     <label
                         htmlFor="signIn-modal"
                         className="btn btn-circle btn-sm"
-                        onClick={() => {setShowSignInModal(false);}}
+                        onClick={() => {
+                            setShowSignInModal(false);
+                        }}
                     >
                         ✕
                     </label>
@@ -363,7 +370,7 @@ const ReceptionistDashboard = () => {
                         setShowInfoAlert={setShowInfoAlert}
                         refetch={invitesQuery}
                         todayString={todayString}
-                        currentButton = {currentButton}
+                        currentButton={currentButton}
                         setShowSignInModal={setShowSignInModal}
                         setSearch={setSearch}
                     />
@@ -376,13 +383,21 @@ const ReceptionistDashboard = () => {
                 className="modal-toggle"
             />
 
-            <input type="checkbox" id="signOut-modal" className="modal-toggle" onChange={() => {}} checked={showSignOutModal ? true : false} />
+            <input
+                type="checkbox"
+                id="signOut-modal"
+                className="modal-toggle"
+                onChange={() => {}}
+                checked={showSignOutModal ? true : false}
+            />
             <div className="fade modal cursor-pointer" id="signOut-modal">
                 <div className="modal-box">
                     <label
                         htmlFor="signOut-modal"
                         className="btn btn-circle btn-sm"
-                        onClick={() => {setShowSignOutModal(false);}}
+                        onClick={() => {
+                            setShowSignOutModal(false);
+                        }}
                     >
                         ✕
                     </label>
@@ -391,7 +406,7 @@ const ReceptionistDashboard = () => {
                         setShowInfoAlert={setShowInfoAlert}
                         setTrayNr={setTrayNr}
                         refetch={invitesQuery}
-                        currentButton = {currentButton}
+                        currentButton={currentButton}
                         setShowSignOutModal={setShowSignOutModal}
                         setSearch={setSearch}
                     />
@@ -410,7 +425,9 @@ const ReceptionistDashboard = () => {
                     <label
                         htmlFor="QRScan-modal"
                         className="btn btn-circle btn-sm absolute right-2 top-2 z-10"
-                        onClick={() => {setShowScanner(false);}}
+                        onClick={() => {
+                            setShowScanner(false);
+                        }}
                     >
                         ✕
                     </label>
@@ -428,20 +445,27 @@ const ReceptionistDashboard = () => {
                 </div>
             </div>
 
-            <input type="checkbox" id="VistorInfo-modal" className="modal-toggle" onChange={() => {}} checked={showVisitorModal ? true : false} />
-            <div className="fade modal modal-lg " id="VistorInfo-modal">
+            <input
+                type="checkbox"
+                id="VistorInfo-modal"
+                className="modal-toggle"
+                onChange={() => {}}
+                checked={showVisitorModal ? true : false}
+            />
+            <div className="fade modal-lg modal " id="VistorInfo-modal">
                 <div className="modal-box flex flex-wrap">
                     <label
                         htmlFor="VistorInfo-modal"
                         className="btn btn-circle btn-sm absolute right-2 top-2 z-10"
                         onClick={() => setShowVisitorModal(false)}
                     >
-                    ✕
+                        ✕
                     </label>
-                    <VisitInfoModal 
-                        setShowInfo={setShowVisitorModal} 
-                        visitModalData={currentVisitData} 
-                        parkingNumber={currentParkingNumber}/>
+                    <VisitInfoModal
+                        setShowInfo={setShowVisitorModal}
+                        visitModalData={currentVisitData}
+                        parkingNumber={currentParkingNumber}
+                    />
                 </div>
             </div>
 

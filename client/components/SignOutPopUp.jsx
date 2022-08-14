@@ -1,6 +1,7 @@
 import { gql, useMutation } from "@apollo/client";
 import React, { useEffect, useRef, useState, setState } from "react";
 import { ImExit } from "react-icons/im";
+import { alert } from "react-custom-alert";
 
 const SignOutPopUp = ({
     setTrayNr,
@@ -20,10 +21,9 @@ const SignOutPopUp = ({
     useEffect(() => {
         if (!loading && !error) {
             if (data) {
-                setTrayNr(data.signOut);
                 refetch();
                 setShowInfoAlert(true);
-                setSearch(false)
+                setSearch(false);
             }
         } else {
         }
@@ -46,7 +46,7 @@ const SignOutPopUp = ({
                 className="modal-button btn btn-primary mt-5 mb-5 w-5/6"
                 onClick={() => {
                     signOutMutation();
-                    if(currentButton){
+                    if (currentButton) {
                         currentButton.add("loading");
                     }
                     setShowSignOutModal(false);
