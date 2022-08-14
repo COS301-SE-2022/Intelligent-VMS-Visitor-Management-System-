@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 import { gql, useLazyQuery } from "@apollo/client";
 import { HiEmojiSad } from "react-icons/hi";
 
-
 const VisitorSuggestions = ({ date }) => {
 
     const [suggestionData, setSuggestionsData] = useState([]);
@@ -14,9 +13,8 @@ const VisitorSuggestions = ({ date }) => {
         gql`
         query {
             getSuggestions( date: "${date}" ) {
-                idNumber
-                visitorName
-                visitorEmail
+                email
+                name
             }
         }
     `,
@@ -25,6 +23,7 @@ const VisitorSuggestions = ({ date }) => {
 
     useEffect(() => {
         suggestionQuery();
+
         if (!loading && !error) {
             if (data) {
                 setSuggestionsData(data.getSuggestions);
@@ -45,28 +44,30 @@ const VisitorSuggestions = ({ date }) => {
                 progress
             </progress>
         ) : (
-            suggestionData > 0 ? (
-                <div className="bg-base-100">
+            suggestionData.length > 0 ? (
+                <div className="card bg-base-300 border border-base-100">
+                    <span className="card-title ml-3 mt-2">Suggestions</span>
                     {suggestionData.map((visitor, idx) => {
                         return (
-                            <div className="flex col-span-2 space-x-3">
-                                <div className="avatar placeholder">
-                                    <div className="bg-neutral-focus text-neutral-content rounded-full w-16">
-                                        <span className="text-2xl capitalize">{visitor.visitorName[0]}</span>
+                            <div className="bg-base-100 shadow-xl m-3 rounded-lg flex">
+                                <div className="avatar placeholder m-3">
+                                    <div className="bg-secondary text-neutral-content rounded-full p-4">
+                                        <span className="text-lg capitalize">{visitor.name[0]}</span>
                                     </div>
                                 </div>
                                 <div className="flex flex-col justify-center">
-                                    <h1 className="text-2xl font-bold capitalize">{visitor.visitorName}</h1>
-                                    <div className="text-md">{visitor.visitorEmail}</div>
+                                    <span className="text-sm font-bold capitalize">{visitor.name}</span>
+                                    <div className="text-xs">{visitor.email}</div>
                                 </div>
                             </div>
                         )
                     })}
+                    <button className="button text-xs m-2">Show More</button>
                 </div>
             ):(
-                <div class="flex w-full mt-3 ml-3">
-                    <span class="fill-current text-error w-5 align-middle h-full"><HiEmojiSad size="sm" color="bg-error"/></span>
-                    <span class="ml-1 text-error text-sm">No Suggestions</span>
+                <div className="flex w-full mt-3 ml-3">
+                    <span className="fill-current text-error w-5 align-middle h-full"><HiEmojiSad size="sm" color="bg-error"/></span>
+                    <span className="ml-1 text-error text-sm">No Suggestions</span>
                 </div>
             )
 

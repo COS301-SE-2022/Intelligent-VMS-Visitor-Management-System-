@@ -249,10 +249,10 @@ const CreateInvite = () => {
                                     Someone🔥
                                 </h1>
 
-                                <span className="text-sm mb-1 font-bold">
+                                <span className="text-md mb-1 font-bold">
                                     Invite Date:
                                 </span>
-                                
+
                                 <input
                                     type="date"
                                     name="visitDate"
@@ -269,9 +269,10 @@ const CreateInvite = () => {
 
 
                                 <VisitorSuggestions date={now}/>
+
                                 <br/>
 
-                                <span className="text-sm mb-1 font-bold">
+                                <span className="text-md mb-1 font-bold">
                                         Visitor Details:
                                 </span>
 
@@ -335,6 +336,8 @@ const CreateInvite = () => {
                                 <span className="text-error">
                                     {errors.name && touched.name && errors.name}
                                 </span>
+
+                                <br/>
 
                                 <motion.label className="label cursor-pointer">
                                     <motion.span

@@ -1,7 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document } from "mongoose";
 
-// what is with this parking document?
 export type ParkingDocument = Parking & Document;
 
 /*
