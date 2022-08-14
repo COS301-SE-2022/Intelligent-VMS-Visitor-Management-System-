@@ -86,7 +86,7 @@ const VisitorDashboard = () => {
         `,
         { fetchPolicy: "network-only" }
     );
-    
+
     const visitorsQuery = useQuery(
         gql`
             query {
@@ -208,7 +208,7 @@ const VisitorDashboard = () => {
     }, [numInvitesQuery, openInvites.length, maxNumInvites]);
 
     useEffect(() => {
-        if(!visitorsQuery.loading && !visitorsQuery.error) {
+        if (!visitorsQuery.loading && !visitorsQuery.error) {
             setVisitors(visitorsQuery.data.getVisitors);
         }
     }, [visitorsQuery]);
@@ -296,52 +296,34 @@ const VisitorDashboard = () => {
                     </div>
                 </div>
                 <div className="col-span-2">
-                    <div className="card h-full w-full bg-base-100 p-5 shadow">
-                        <h2 className="card-title font-normal">
-                            Popular Visitors
-                        </h2>
-                        <div className="card-body justify-center">
-                            {!visitorsQuery.loading && visitors.length > 0 &&
-                                visitors.map((visitor, idx) => {
-                                    return (
-                                        <div key={idx}>
-                                            <div className="flex items-center space-x-4">
-                                                <div className="avatar placeholder">
-                                                    <div className="w-12 rounded-full bg-neutral-focus text-neutral-content">
-                                                        <span className="text-xl capitalize">{visitor.visitorName[0]}</span>
-                                                    </div>
-                                                </div>
-                                                <div className="flex flex-col">
-                                                    <h3 className="text-lg text-secondary font-bold capitalize">{visitor.visitorName}</h3>
-                                                    <p className="text-neutral-content">{visitor._id}</p>
-                                                </div>
-                                            </div>
-                                            <div className="divider"></div>
-                                        </div>
-                                    );
-                                })
-                            }
-                        </div>
-                    </div>
-                </div>
-
-                <div className="col-span-2">
-                <h2 className="divider col-span-2 ml-2 mt-5 text-3xl font-bold">
-                        Favourite Visitors
-                </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {visitorsQuery.loading ?
-                            <div className="progress progress-primary w-56"></div>
-                            : visitors.length > 0 ?
-                            visitors.map((visitor, idx) => {
-                                return (
-                                    <VisitorCard key={idx} name={visitor.visitorName} email={visitor._id} numInvites={visitor.numInvites} />
-                                );
-                            }) : 
-                            <div className="ml-3 font-bold">
-                                Nothing to show...
+                    <div className="card h-full w-full bg-base-300 p-5 shadow">
+                        <div className="card-body grid grid-cols-2 gap-6 justify-center">
+                            <div className="col-span-1 space-y-5">
+                                <h2 className="card-title text-2xl">
+                                    Popular Visitors
+                                </h2>
+                                <div className="space-y-4">
+                                {visitorsQuery.loading ? (
+                                    <div className="progress progress-primary"></div>
+                                ) : visitors.length === 0 ? (
+                                    <p>Nothing to show...</p>
+                                ) : (
+                                    visitors.map((visitor, idx) => {
+                                        return (
+                                            <VisitorCard key={idx} name={visitor.visitorName} email={visitor._id} numInvites={visitor.numInvites}/>
+                                        );
+                                    })
+                                )}
+                                </div>
                             </div>
-                        }
+                            <div className="col-span-1 space-y-5">
+                                <h2 className="card-title text-2xl">
+                                    Favorite Visitors
+                                </h2>
+                                <div className="space-y-4">
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <h2 className="divider col-span-2 ml-2 text-3xl font-bold">
@@ -426,11 +408,11 @@ const VisitorDashboard = () => {
                         </table>
                     )}
                     <div className="grid grid-cols-1 gap-4">
-                        <div className="grid grid-cols-1 min-h-0">
+                        <div className="grid min-h-0 grid-cols-1">
                             <h2 className="divider col-span-2 ml-2 mt-5 text-3xl font-bold">
                                 Invite History
                             </h2>
-                            <table className="table-compact table w-full md:table-normal row-span-1">
+                            <table className="table-compact row-span-1 table w-full md:table-normal">
                                 <thead>
                                     <tr>
                                         <th></th>
@@ -441,59 +423,59 @@ const VisitorDashboard = () => {
                                     </tr>
                                 </thead>
                                 {historyInvites.length > 0 ? (
-                            <tbody>
-                                {historyInvites.map((visit, idx) => {
-                                    return (
-                                        <tr
-                                            onClick={() => {
-                                                setInviteModal({
-                                                    show: true,
-                                                    data: {
-                                                        name: visit.visitorName,
-                                                        id: visit.idNumber,
-                                                        doc: visit.idDocType,
-                                                        email: visit.visitorEmail,
-                                                    },
-                                                });
-                                            }}
-                                            className="hover cursor-pointer"
-                                            key={idx}
-                                        >
-                                            <th>{idx + 1}</th>
-                                            <td className="capitalize">
-                                                {visit.visitorName}
-                                            </td>
-                                            <td>{visit.idDocType}</td>
-                                            <td>{visit.inviteDate}</td>
-                                            <td>
-                                                {visit.inviteState ===
-                                                "inActive" ? (
-                                                    <div className="badge">
-                                                        In Active
-                                                    </div>
-                                                ) : visit.inviteState ===
-                                                  "signedIn" ? (
-                                                    <div className="badge badge-success">
-                                                        Signed In
-                                                    </div>
-                                                ) : (
-                                                    <div className="badge badge-error">
-                                                        Signed Out
-                                                    </div>
-                                                )}
-                                            </td>
+                                    <tbody>
+                                        {historyInvites.map((visit, idx) => {
+                                            return (
+                                                <tr
+                                                    onClick={() => {
+                                                        setInviteModal({
+                                                            show: true,
+                                                            data: {
+                                                                name: visit.visitorName,
+                                                                id: visit.idNumber,
+                                                                doc: visit.idDocType,
+                                                                email: visit.visitorEmail,
+                                                            },
+                                                        });
+                                                    }}
+                                                    className="hover cursor-pointer"
+                                                    key={idx}
+                                                >
+                                                    <th>{idx + 1}</th>
+                                                    <td className="capitalize">
+                                                        {visit.visitorName}
+                                                    </td>
+                                                    <td>{visit.idDocType}</td>
+                                                    <td>{visit.inviteDate}</td>
+                                                    <td>
+                                                        {visit.inviteState ===
+                                                        "inActive" ? (
+                                                            <div className="badge">
+                                                                In Active
+                                                            </div>
+                                                        ) : visit.inviteState ===
+                                                          "signedIn" ? (
+                                                            <div className="badge badge-success">
+                                                                Signed In
+                                                            </div>
+                                                        ) : (
+                                                            <div className="badge badge-error">
+                                                                Signed Out
+                                                            </div>
+                                                        )}
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
+                                    </tbody>
+                                ) : (
+                                    <tbody>
+                                        <tr>
+                                            <th>Nothing to show...</th>
                                         </tr>
-                                    );
-                                })}
-                            </tbody>
-                        ) : (
-                            <tbody>
-                                <tr>
-                                    <th>Nothing to show...</th>
-                                </tr>
-                            </tbody>
-                        )}
-                    </table>
+                                    </tbody>
+                                )}
+                            </table>
                         </div>
                     </div>
                 </div>
