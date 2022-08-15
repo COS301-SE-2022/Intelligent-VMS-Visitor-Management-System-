@@ -213,7 +213,7 @@ describe("AuthService", () => {
                 expect(true).toEqual(false);
             }
         })
-        it('should sign up receptionist', async () => {
+       // it('should sign up receptionist', async () => {
             // Arrange
             cacheMock.get.mockReturnValueOnce(Promise.resolve(undefined));
             const findOneMock = jest.spyOn(userService, 'findOne').mockReturnValueOnce(Promise.resolve(null))
@@ -225,7 +225,7 @@ describe("AuthService", () => {
             catch (e) {
                 // Assert
                 expect(true).toEqual(false);
-            }
+          //  }
         })
         it('should throw error when sign up fails', async () => {
             // Arrange
