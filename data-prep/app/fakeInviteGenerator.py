@@ -4,6 +4,7 @@ from faker import Faker
 from faker.providers import DynamicProvider
 from app.database import invitesCollection,groupInvitesCollection,parkingReservationCollection, trayCollection
 from app.holidaysSA import ourHolidays
+from datetime import datetime
 
 global fake
 global invites
@@ -87,6 +88,9 @@ def create_fake_tray(invite_id):
     }
 
 def createInvites(startDate,endDate,maxResidents):
+    startDate = datetime.strptime(startDate, '%Y-%m-%d').date()
+    endDate = datetime.strptime(endDate, '%Y-%m-%d').date()
+
     invites = []
     reservations = []
     for i in range(1,maxResidents):
@@ -171,7 +175,8 @@ def createInvites(startDate,endDate,maxResidents):
                         }, 1, 0
                     ]
                 }
-            }
+            },
+            'numParking': 0
         }
     }, {
         '$out': 'groupinvites'

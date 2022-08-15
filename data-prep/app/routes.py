@@ -27,8 +27,10 @@ def generate():
     startDate = request.args.get('startDate')
     endDate = request.args.get('endDate')
     numRes = request.args.get('numResidents')
-    createInvites(startDate,endDate,numRes)
+    createInvites(startDate,endDate,int(numRes))
+    return "finished"
 
-@app.route("/resetInvites")
+@app.route("/resetDB")
 def reset():
     resetInviteHistory()
+    return "finished"

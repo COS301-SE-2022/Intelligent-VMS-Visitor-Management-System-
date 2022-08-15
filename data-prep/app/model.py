@@ -6,7 +6,7 @@ from datetime import date, timedelta, datetime
 from dateutil.relativedelta import relativedelta
 import math
 
-from app.database import invitesCollection,groupInvitesCollection
+from app.database import invitesCollection,groupInvitesCollection,parkingReservationCollection
 from app.holidaysSA import ourHolidays
 
 import json 
@@ -20,7 +20,7 @@ features = []
 
 #################################################################
 
-def create_data(month,dow,mn_dow,mdn_dow,min_dow,max_dow,mn_days,mn_month,mdn_month,min_month,max_month,mn_months,mn_woy,mdn_woy,min_woy,max_woy,mn_weeks,db,wb,num_inv,prob_inv,hol):
+def createVisData(month,dow,mn_dow,mdn_dow,min_dow,max_dow,mn_days,mn_month,mdn_month,min_month,max_month,mn_months,mn_woy,mdn_woy,min_woy,max_woy,mn_weeks,db,wb,num_inv,prob_inv,hol):
   row = [
       month,
       dow,
@@ -41,8 +41,32 @@ def create_data(month,dow,mn_dow,mdn_dow,min_dow,max_dow,mn_days,mn_month,mdn_mo
       mn_weeks,
       db,
       wb,
-      # num_inv,
-      # prob_inv,
+      hol
+  ]
+  return row
+
+def createResData(month,dow,mn_dow,mdn_dow,min_dow,max_dow,mn_days,mn_month,mdn_month,min_month,max_month,mn_months,mn_woy,mdn_woy,min_woy,max_woy,mn_weeks,db,wb,numVis,hol):
+  row = [
+      month,
+      dow,
+      mn_dow,
+      mdn_dow,
+      min_dow,
+      max_dow,
+      mn_days,
+      mn_month,
+      mdn_month,
+      min_month,
+      max_month,
+      mn_months,
+      mn_woy,
+      mdn_woy,
+      min_woy,
+      max_woy,
+      mn_weeks,
+      db,
+      wb,
+      numVis,
       hol
   ]
   return row
@@ -147,35 +171,56 @@ def calculateMonthsPerMonth():
 
   return totalMonthsPerMonth
 
+##################################################Calculations
+
 def calculateMeans():
 
-    mnDOW = []
-    mnWOY = []
-    mnMonth = []
+    mnVisDOW = []
+    mnVisWOY = []
+    mnVisMonth = []
+
+    mnResDOW = []
+    mnResWOY = []
+    mnResMonth = []
 
     visitorsPerMonth = []
     visitorsPerWOY = []
     visitorsPerDOW = []
 
+    resPerMonth = []
+    resPerWOY = []
+    resPerDOW = []
+
     for i in range(7):
         visitorsPerDOW.append(0)
-        mnDOW.append(0)
+        mnVisDOW.append(0)
+        resPerDOW.append(0)
+        mnResDOW.append(0)
 
     for i in range(12):
         visitorsPerMonth.append(0)
-        mnMonth.append(0)
+        mnVisMonth.append(0)
+        resPerMonth.append(0)
+        mnResMonth.append(0)
 
     for i in range(53):
         visitorsPerWOY.append(0)
-        mnWOY.append(0)
+        mnVisWOY.append(0)
+        resPerWOY.append(0)
+        mnResWOY.append(0)
 
-    allVisitors = list(invitesCollection.find({"inviteState": {'$ne' : "inActive"}}))
-    for invite in allVisitors:
-            invDate = datetime.strptime(invite['inviteDate'], '%Y-%m-%d').date()
-            visitorsPerMonth[invDate.month-1]+= 1
-            visitorsPerDOW[invDate.weekday()]+= 1
-            visitorsPerWOY[invDate.isocalendar()[1]-1]+= 1 
-    
+    allGroupings = list(groupInvitesCollection.find({"_id": {'$lt' : date.today.strftime("%Y-%m-%d") }}))
+    for group in allGroupings:
+      date = datetime.strptime(group['_id'], '%Y-%m-%d').date()
+
+      visitorsPerMonth[date.month-1]+= group['numVisitors']
+      visitorsPerDOW[date.weekday()]+= group['numVisitors']
+      visitorsPerWOY[date.isocalendar()[1]-1]+= group['numVisitors']
+
+      resPerMonth[date.month-1]+= group['numParkings']
+      resPerDOW[date.weekday()]+= group['numParkings']
+      resPerWOY[date.isocalendar()[1]-1]+= group['numParkings']
+
     totalDaysPerDOW = calculateDaysPerDOW()
     totalWeeksPerWOY = calculateWeeksPerWOY()
     totalMonthsPerMonth = calculateMonthsPerMonth()
@@ -183,20 +228,23 @@ def calculateMeans():
     #MN-DOW
     for i in range(7):
         if(totalDaysPerDOW[i]!=0):
-            mnDOW[i] = visitorsPerDOW[i]/totalDaysPerDOW[i]
+            mnVisDOW[i] = visitorsPerDOW[i]/totalDaysPerDOW[i]
+            mnResDOW[i] = resPerDOW[i]/totalDaysPerDOW[i]
 
     #MN-WOY
     for i in range(53):
         if(totalWeeksPerWOY[i]!=0):
-            mnWOY[i] = visitorsPerWOY[i]/totalWeeksPerWOY[i]
+            mnVisWOY[i] = visitorsPerWOY[i]/totalWeeksPerWOY[i]
+            mnResWOY[i] = resPerWOY[i]/totalWeeksPerWOY[i]
         
     #MN-Month
     for i in range(12):
         if(totalMonthsPerMonth[i]!=0):
-            mnMonth[i] = visitorsPerMonth[i]/totalMonthsPerMonth[i]
+            mnVisMonth[i] = visitorsPerMonth[i]/totalMonthsPerMonth[i]
+            mnResMonth[i] = resPerMonth[i]/totalMonthsPerMonth[i]
 
-    return mnDOW,mnWOY,mnMonth
-    
+    return mnVisDOW,mnVisWOY,mnVisMonth,mnResDOW,mnResWOY,mnResMonth
+
 def calculateRecentAverages(invDate):
     jumpYear = timedelta(days=365)
 
@@ -205,82 +253,259 @@ def calculateRecentAverages(invDate):
     endString= invDate.strftime("%Y-%m-%d")
 
     inviteCount = invitesCollection.count_documents({ "inviteDate": {"$gt": startString, "$lt":endString}})
-    mnMonths=inviteCount/12
-    mnWeeks=inviteCount/52
-    mnDays=inviteCount/365
+    resCount = parkingReservationCollection.count_documents({ "reservationDate": {"$gt": startString, "$lt":endString}})
 
-    return mnDays,mnWeeks,mnMonths
+    mnVisMonths=inviteCount/12
+    mnVisWeeks=inviteCount/52
+    mnVisDays=inviteCount/365
+    
+    mnResMonths=resCount/12
+    mnResWeeks=resCount/52
+    mnResDays=resCount/365
+
+    return mnVisDays,mnVisWeeks,mnVisMonths,mnResDays,mnResWeeks,mnResMonths
 
 def calculateMinMaxAndMedians():
   groupInvites = list(groupInvitesCollection.find())
 
-  minDOW = []
-  maxDOW = []
-  mdnDOW = [] 
-  minWOY = []
-  maxWOY = []
-  mdnWOY = []
-  minMonth = []
-  maxMonth = []
-  mdnMonth = []
+  minVisDOW = []
+  maxVisDOW = []
+  mdnVisDOW = [] 
+  minVisWOY = []
+  maxVisWOY = []
+  mdnVisWOY = []
+  minVisMonth = []
+  maxVisMonth = []
+  mdnVisMonth = []
+
+  minResDOW = []
+  maxResDOW = []
+  mdnResDOW = [] 
+  minResWOY = []
+  maxResWOY = []
+  mdnResWOY = []
+  minResMonth = []
+  maxResMonth = []
+  mdnResMonth = []
 
   for i in range(7):
-        minDOW.append(math.inf)
-        maxDOW.append(0)
-        mdnDOW.append(0)
+        minVisDOW.append(math.inf)
+        maxVisDOW.append(0)
+        mdnVisDOW.append(0)
+
+        minResDOW.append(math.inf)
+        maxResDOW.append(0)
+        mdnResDOW.append(0)
 
   for i in range(12):
-      minMonth.append(math.inf)
-      maxMonth.append(0)
-      mdnMonth.append(0)
+      minVisMonth.append(math.inf)
+      maxVisMonth.append(0)
+      mdnVisMonth.append(0)
+
+      minResMonth.append(math.inf)
+      maxResMonth.append(0)
+      mdnResMonth.append(0)
       
   for i in range(53):
-      minWOY.append(math.inf)
-      maxWOY.append(0)
-      mdnWOY.append(0)
+      minVisWOY.append(math.inf)
+      maxVisWOY.append(0)
+      mdnVisWOY.append(0)
+
+      minResWOY.append(math.inf)
+      maxResWOY.append(0)
+      mdnResWOY.append(0)
 
   for day in groupInvites:
     currDate = datetime.strptime(day['_id'], '%Y-%m-%d').date()
-    if(day['numVisitors']<minDOW[currDate.weekday()]):
-      minDOW[currDate.weekday()] = day['numVisitors']
-    elif(day['numVisitors']>maxDOW[currDate.weekday()]):
-      maxDOW[currDate.weekday()] = day['numVisitors']
+    numVisitors = day['numVisitors']
+    numParking = day['numParking']
+    currMonthIndex = currDate.month-1
+    currDayIndex = currDate.weekday()
+    currWOYIndex = currDate.isocalendar()[1]-1
+    
+    if(numVisitors<minVisDOW[currDayIndex]):
+      minVisDOW[currDayIndex] = numVisitors
+    elif(numVisitors>maxVisDOW[currDayIndex]):
+      maxVisDOW[currDayIndex] = numVisitors
 
-    if(day['numVisitors']<minWOY[currDate.isocalendar()[1]-1]):
-      minWOY[currDate.isocalendar()[1]-1] = day['numVisitors']
-    elif(day['numVisitors']>maxWOY[currDate.isocalendar()[1]-1]):
-      maxWOY[currDate.isocalendar()[1]-1] = day['numVisitors']
+    if(numVisitors<minVisWOY[currWOYIndex]):
+      minVisWOY[currWOYIndex] = numVisitors
+    elif(numVisitors>maxVisWOY[currWOYIndex]):
+      maxVisWOY[currWOYIndex] = numVisitors
 
-    if(day['numVisitors']<minMonth[currDate.month-1]):
-      minMonth[currDate.month-1] = day['numVisitors']
-    elif(day['numVisitors']>maxMonth[currDate.month-1]):
-      maxMonth[currDate.month-1] = day['numVisitors']
+    if(numVisitors<minVisMonth[currMonthIndex]):
+      minVisMonth[currMonthIndex] = numVisitors
+    elif(numVisitors>maxVisMonth[currMonthIndex]):
+      maxVisMonth[currMonthIndex] = numVisitors
+
+
+    if(numParking<minResDOW[currDayIndex]):
+      minResDOW[currDayIndex] = numParking
+    elif(numParking>maxResDOW[currDayIndex]):
+      maxResDOW[currDayIndex] = numParking
+
+    if(numParking<minResWOY[currWOYIndex]):
+      minResWOY[currWOYIndex] = numParking
+    elif(numParking>maxResWOY[currWOYIndex]):
+      maxResWOY[currWOYIndex] = numParking
+
+    if(numParking<minResMonth[currMonthIndex]):
+      minResMonth[currMonthIndex] = numParking
+    elif(numParking>maxResMonth[currMonthIndex]):
+      maxResMonth[currMonthIndex] = numParking
+
 
   for i in range(7):
-    mdnDOW[i] = (minDOW[i]+maxDOW[i])/2
+    mdnVisDOW[i] = (minVisDOW[i]+maxVisDOW[i])/2
+
+    mdnResDOW[i] = (minResDOW[i]+maxResDOW[i])/2
 
   for i in range(12):
-    mdnMonth[i]= (minMonth[i]+maxMonth[i])/2
+    mdnVisMonth[i]= (minVisMonth[i]+maxVisMonth[i])/2
+
+    mdnResMonth[i]= (minResMonth[i]+maxResMonth[i])/2
       
   for i in range(53):
-    mdnWOY[i] = (minWOY[i]+maxWOY[i])/2
+    mdnResWOY[i] = (minResWOY[i]+maxResWOY[i])/2
 
-  print(minDOW)
-  print(maxDOW)
-  print(mdnDOW)
-  print(minMonth)
-  print(maxMonth)
-  print(mdnMonth)
-  print(minWOY)
-  print(maxWOY)
-  print(mdnWOY)
+  return minVisDOW,maxVisDOW,mdnVisDOW,minVisWOY,maxVisWOY,mdnVisWOY,minVisMonth,maxVisMonth,mdnVisMonth,minResDOW,maxResDOW,mdnResDOW,minResWOY,maxResWOY,mdnResWOY,minResMonth,maxResMonth,mdnResMonth
 
-  return minDOW,maxDOW,mdnDOW,minWOY,maxWOY,mdnWOY,minMonth,maxMonth,mdnMonth
+############################OLD
+
+# def calculateMeans():
+
+#     mnDOW = []
+#     mnWOY = []
+#     mnMonth = []
+
+#     visitorsPerMonth = []
+#     visitorsPerWOY = []
+#     visitorsPerDOW = []
+
+#     for i in range(7):
+#         visitorsPerDOW.append(0)
+#         mnDOW.append(0)
+
+#     for i in range(12):
+#         visitorsPerMonth.append(0)
+#         mnMonth.append(0)
+
+#     for i in range(53):
+#         visitorsPerWOY.append(0)
+#         mnWOY.append(0)
+
+#     allVisitors = list(invitesCollection.find({"inviteState": {'$ne' : "inActive",'$ne': "cancelled"}}))
+#     for invite in allVisitors:
+#             invDate = datetime.strptime(invite['inviteDate'], '%Y-%m-%d').date()
+#             visitorsPerMonth[invDate.month-1]+= 1
+#             visitorsPerDOW[invDate.weekday()]+= 1
+#             visitorsPerWOY[invDate.isocalendar()[1]-1]+= 1 
+    
+#     totalDaysPerDOW = calculateDaysPerDOW()
+#     totalWeeksPerWOY = calculateWeeksPerWOY()
+#     totalMonthsPerMonth = calculateMonthsPerMonth()
+
+#     #MN-DOW
+#     for i in range(7):
+#         if(totalDaysPerDOW[i]!=0):
+#             mnDOW[i] = visitorsPerDOW[i]/totalDaysPerDOW[i]
+
+#     #MN-WOY
+#     for i in range(53):
+#         if(totalWeeksPerWOY[i]!=0):
+#             mnWOY[i] = visitorsPerWOY[i]/totalWeeksPerWOY[i]
+        
+#     #MN-Month
+#     for i in range(12):
+#         if(totalMonthsPerMonth[i]!=0):
+#             mnMonth[i] = visitorsPerMonth[i]/totalMonthsPerMonth[i]
+
+#     return mnDOW,mnWOY,mnMonth
+    
+# def calculateRecentAverages(invDate):
+#     jumpYear = timedelta(days=365)
+
+#     intermed_date = invDate-jumpYear; #counting back a year
+#     startString= intermed_date.strftime("%Y-%m-%d")
+#     endString= invDate.strftime("%Y-%m-%d")
+
+#     inviteCount = invitesCollection.count_documents({ "inviteDate": {"$gt": startString, "$lt":endString}})
+#     mnMonths=inviteCount/12
+#     mnWeeks=inviteCount/52
+#     mnDays=inviteCount/365
+
+#     return mnDays,mnWeeks,mnMonths
+
+# def calculateMinMaxAndMedians():
+#   groupInvites = list(groupInvitesCollection.find())
+
+#   minDOW = []
+#   maxDOW = []
+#   mdnDOW = [] 
+#   minWOY = []
+#   maxWOY = []
+#   mdnWOY = []
+#   minMonth = []
+#   maxMonth = []
+#   mdnMonth = []
+
+#   for i in range(7):
+#         minDOW.append(math.inf)
+#         maxDOW.append(0)
+#         mdnDOW.append(0)
+
+#   for i in range(12):
+#       minMonth.append(math.inf)
+#       maxMonth.append(0)
+#       mdnMonth.append(0)
+      
+#   for i in range(53):
+#       minWOY.append(math.inf)
+#       maxWOY.append(0)
+#       mdnWOY.append(0)
+
+#   for day in groupInvites:
+#     currDate = datetime.strptime(day['_id'], '%Y-%m-%d').date()
+#     if(day['numVisitors']<minDOW[currDate.weekday()]):
+#       minDOW[currDate.weekday()] = day['numVisitors']
+#     elif(day['numVisitors']>maxDOW[currDate.weekday()]):
+#       maxDOW[currDate.weekday()] = day['numVisitors']
+
+#     if(day['numVisitors']<minWOY[currDate.isocalendar()[1]-1]):
+#       minWOY[currDate.isocalendar()[1]-1] = day['numVisitors']
+#     elif(day['numVisitors']>maxWOY[currDate.isocalendar()[1]-1]):
+#       maxWOY[currDate.isocalendar()[1]-1] = day['numVisitors']
+
+#     if(day['numVisitors']<minMonth[currDate.month-1]):
+#       minMonth[currDate.month-1] = day['numVisitors']
+#     elif(day['numVisitors']>maxMonth[currDate.month-1]):
+#       maxMonth[currDate.month-1] = day['numVisitors']
+
+#   for i in range(7):
+#     mdnDOW[i] = (minDOW[i]+maxDOW[i])/2
+
+#   for i in range(12):
+#     mdnMonth[i]= (minMonth[i]+maxMonth[i])/2
+      
+#   for i in range(53):
+#     mdnWOY[i] = (minWOY[i]+maxWOY[i])/2
+
+#   print(minDOW)
+#   print(maxDOW)
+#   print(mdnDOW)
+#   print(minMonth)
+#   print(maxMonth)
+#   print(mdnMonth)
+#   print(minWOY)
+#   print(maxWOY)
+#   print(mdnWOY)
+
+#   return minDOW,maxDOW,mdnDOW,minWOY,maxWOY,mdnWOY,minMonth,maxMonth,mdnMonth
 
 def getNumVisitorsDayBefore(date):
-  temp = groupInvitesCollection.find_one({ "_id": (date-timedelta(days=1)).strftime("%Y-%m-%d")})
-  if(temp):
-    return temp['numVisitors']
+  group = groupInvitesCollection.find_one({ "_id": (date-timedelta(days=1)).strftime("%Y-%m-%d")})
+  if(group):
+    return group['numVisitors']
   else:
     return 0
   
@@ -291,6 +516,16 @@ def getNumProbableVisitors(numInvites):
   totalVisitors = invitesCollection.count_documents({ "inviteState": { '$ne': "inActive" } })
   totalInvites = invitesCollection.count_documents({"inviteDate": {'$gte': start_date.strftime("%Y-%m-%d") , '$lt': date.today().strftime("%Y-%m-%d")}})
   return (totalVisitors/totalInvites) * numInvites 
+
+def getNumParkingsDayBefore(date):
+  group = groupInvitesCollection.find_one({ "_id": (date-timedelta(days=1)).strftime("%Y-%m-%d")})
+  if(group):
+    return group['numParkings']
+  else:
+    return 0
+  
+def getNumParkingsWeekBefore(date):
+  return parkingReservationCollection.count_documents({ "reservationDate": {'$gte': (date-timedelta(days=7)).strftime("%Y-%m-%d") , '$lt': date.strftime("%Y-%m-%d")}})
 
 def getNumInvites(date):
   temp = groupInvitesCollection.find_one({"_id": date.strftime("%Y-%m-%d") })
@@ -330,7 +565,7 @@ def generateTrainingData():
       output.append(day['numVisitors'])
 
       data.append(
-      create_data(
+      createVisData(
           cDate.month,
           cDate.weekday(),
           mnDOW[cDate.weekday()],
@@ -362,56 +597,94 @@ def generateTrainingData():
 
 def predictOne(date):
 
+  monthIndex = date.month-1
+  woyIndex = date.isocalendar()[1]-1
+  dayIndex = date.weekday()
+
   startTime = time.time()
 
-  reg = joblib.load("VMS_visitor-reg-model.pkl")
+  visReg = joblib.load("VMS_visitor-reg-model.pkl")
+  parkReg = joblib.load("VMS_parking-reg-model.pkl")
 
-  data = []
+  visData = []
+  parkData = []
 
-  mnDOW,mnWOY,mnMonth = calculateMeans()
-  minDOW,maxDOW,mdnDOW,minWOY,maxWOY,mdnWOY,minMonth,maxMonth,mdnMonth = calculateMinMaxAndMedians()
+  mnVisDOW,mnVisWOY,mnVisMonth,mnResDOW,mnResWOY,mnResMonth = calculateMeans()
+  minVisDOW,maxVisDOW,mdnVisDOW,minVisWOY,maxVisWOY,mdnVisWOY,minVisMonth,maxVisMonth,mdnVisMonth,minResDOW,maxResDOW,mdnResDOW,minResWOY,maxResWOY,mdnResWOY,minResMonth,maxResMonth,mdnResMonth = calculateMinMaxAndMedians()
 
-  mnDays,mnWeeks,mnMonths = calculateRecentAverages(date)
+  mnVisDays,mnVisWeeks,mnVisMonths,mnResDays,mnResWeeks,mnResMonths = calculateRecentAverages(date)
 
-  day_bef =  getNumVisitorsDayBefore(date)
-  week_bef = getNumVisitorsWeekBefore(date)
-  num_inv = getNumInvites(date)
-  prob_vis = getNumProbableVisitors(date)
+  vDayBef =  getNumVisitorsDayBefore(date)
+  vWeekBef = getNumVisitorsWeekBefore(date)
+  rDayBef =  getNumVisitorsDayBefore(date)
+  rWeekBef = getNumVisitorsWeekBefore(date)
+  numInv = getNumInvites(date)
+  probVis = getNumProbableVisitors(date)
   hol = isHoliday(date)
 
-  data.append(
-      create_data(
-          date.month,
-          date.weekday(),
-          mnDOW[date.weekday()],
-          mdnDOW[date.weekday()],
-          minDOW[date.weekday()],
-          maxDOW[date.weekday()],
-          mnDays,
-          mnMonth[date.month-1],
-          mdnMonth[date.month-1],
-          minMonth[date.month-1],
-          maxMonth[date.month-1],
-          mnMonths,
-          mnWOY[date.isocalendar()[1]-1],
-          mdnWOY[date.isocalendar()[1]-1],
-          minWOY[date.isocalendar()[1]-1],
-          maxWOY[date.isocalendar()[1]-1],
-          mnWeeks,
-          day_bef,
-          week_bef,
-          num_inv,
-          prob_vis,
+  visData.append(
+      createVisData(
+          monthIndex,
+          dayIndex,
+          mnVisDOW[dayIndex],
+          mdnVisDOW[dayIndex],
+          minVisDOW[dayIndex],
+          maxVisDOW[dayIndex],
+          mnVisDays,
+          mnVisMonth[monthIndex],
+          mdnVisMonth[monthIndex],
+          minVisMonth[monthIndex],
+          maxVisMonth[monthIndex],
+          mnVisMonths,
+          mnVisWOY[woyIndex],
+          mdnVisWOY[woyIndex],
+          minVisWOY[woyIndex],
+          maxVisWOY[woyIndex],
+          mnVisWeeks,
+          vDayBef,
+          vWeekBef,
+          numInv,
+          probVis,
           hol
           )
         )
   
-  pred = reg.predict(data)
-  print(pred)
+  visPred = visReg.predict(visData)
+  print(visPred)
+
+  #Reason for redoing all the data is because the statistics could have other effects on parking
+  parkData.append(
+      createResData(
+          monthIndex,
+          dayIndex,
+          mnResDOW[dayIndex],
+          mdnResDOW[dayIndex],
+          minResDOW[dayIndex],
+          maxResDOW[dayIndex],
+          mnResDays,
+          mnResMonth[monthIndex],
+          mdnResMonth[monthIndex],
+          minResMonth[monthIndex],
+          maxResMonth[monthIndex],
+          mnResMonths,
+          mnResWOY[woyIndex],
+          mdnResWOY[woyIndex],
+          minResWOY[woyIndex],
+          maxResWOY[woyIndex],
+          mnResWeeks,
+          rDayBef,
+          rWeekBef,
+          visPred,
+          hol
+          )
+        )
+
+  parkPred = parkReg.predict(parkData)
+  print(parkPred)
 
   print(time.time()-startTime)
 
-  return json.dumps({'date': date, 'data': pred})
+  return json.dumps({'date': date, 'visitors': visPred, 'parking': parkPred})
 
 def predictMany(startingDate,endingDate):
 
@@ -443,7 +716,7 @@ def predictMany(startingDate,endingDate):
     hol = isHoliday(loopDate)
 
     data.append(
-        create_data(
+        createVisData(
             loopDate.month,
             loopDate.weekday(),
             mnDOW[loopDate.weekday()],
