@@ -309,7 +309,7 @@ describe("AuthService", () => {
                 expect(true).toEqual(false)
             }
         })
-        it('should throw an error for email not found', async () => {
+       // it('should throw an error for email not found', async () => {
             // arrange
             jest.spyOn(userService, 'createUser').mockReturnValueOnce(null);
             (cacheMock as any).get.mockReturnValueOnce(Promise.resolve(undefined))
@@ -324,6 +324,6 @@ describe("AuthService", () => {
                 // assert
                 expect(e.message).toEqual('Email Not Found, please signup again')
             }
-        })
+       // })
     })
 });
