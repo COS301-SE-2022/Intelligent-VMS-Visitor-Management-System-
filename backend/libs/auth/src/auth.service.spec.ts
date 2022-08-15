@@ -25,7 +25,7 @@ describe("AuthService", () => {
          sendVerify: jest.fn(()=>({})),
 
     };
-    
+
     const cacheMock={
         get: jest.fn(async()=>{
             return 'any value'
@@ -60,13 +60,15 @@ describe("AuthService", () => {
                 },
                 {
                       provide: CACHE_MANAGER,
-                      useValue: {
-                        get: () => {return 'any value'},
-                        set: () => {return jest.fn()},
+                      useValue: cacheMock,
+                        
                     },
-                },
-                MailService,
-            ],
+                    {
+                        provide: MailService,
+                        useValue: MailService,
+                    },
+                ],
+            
         })
             .useMocker((token) => {
                 if (token.toString() === "JWT_MODULE_OPTIONS") {
