@@ -11,8 +11,8 @@ import { CACHE_MANAGER } from "@nestjs/common";
 import { LoginFailed } from "./errors/loginFailed.error";
 import * as bcrypt from "bcrypt";
 import { User, UserDocument } from "@vms/user/schema/user.schema";
-import {GetUserQuery} from "@vms/user/queries/impl/getUser.query";
-import {MailService} from "@vms/mail";
+import { GetUserQuery } from "@vms/user/queries/impl/getUser.query";
+import { MailService } from "@vms/mail";
 
 describe("AuthService", () => {
     let service: AuthService;
@@ -21,17 +21,13 @@ describe("AuthService", () => {
     let queryBus: QueryBus;
     let mockUserModel: Model<UserDocument>;
     let cache: Cache;
-    let MailService={
-         sendVerify: jest.fn(()=>({})),
-
+    let mailService = {
+        sendVerify: jest.fn(() => ({})),
     };
-
-    const cacheMock={
-        get: jest.fn(async()=>{
-            return 'any value'
-        }),
-        set: jest.fn(()=>{return jest.fn()}),
-        del: jest.fn(()=>{return jest.fn()}),
+    const cacheMock = {
+        get: jest.fn(async () => { return 'any value' }),
+        set: jest.fn(() => { return jest.fn() }),
+        del: jest.fn(() => { return jest.fn() }),
     };
 
     const queryBusMock = {
@@ -45,30 +41,30 @@ describe("AuthService", () => {
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
-            providers: [AuthService, 
-                JwtService, 
-                UserService, 
+            providers: [AuthService,
+                JwtService,
+                UserService,
                 ConfigService,
                 CommandBus,
                 {
-                  provide: QueryBus,
-                  useValue: queryBusMock
+                    provide: QueryBus,
+                    useValue: queryBusMock
                 },
                 {
                     provide: getModelToken(User.name),
                     useValue: Model,
                 },
                 {
-                      provide: CACHE_MANAGER,
-                      useValue: cacheMock,
-                        
-                    },
-                    {
-                        provide: MailService,
-                        useValue: MailService,
-                    },
-                ],
-            
+                    provide: CACHE_MANAGER,
+                    useValue: cacheMock,
+
+                },
+                {
+                    provide: MailService,
+                    useValue: mailService,
+
+                },
+            ],
         })
             .useMocker((token) => {
                 if (token.toString() === "JWT_MODULE_OPTIONS") {
