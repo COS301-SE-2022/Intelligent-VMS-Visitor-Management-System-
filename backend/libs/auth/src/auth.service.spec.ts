@@ -21,6 +21,10 @@ describe("AuthService", () => {
     let queryBus: QueryBus;
     let mockUserModel: Model<UserDocument>;
     let cache: Cache;
+    let MailService={
+         sendVerify: jest.fn(()=>({})),
+
+    };
 
     const queryBusMock = {
         execute: jest.fn((query) => {
