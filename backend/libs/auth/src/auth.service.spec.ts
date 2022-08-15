@@ -29,7 +29,8 @@ describe("AuthService", () => {
         get: jest.fn(async()=>{
             return 'any value'
         }),
-    }
+        set: jest.fn(()=>{return jest.fn()}),
+    };
 
     const queryBusMock = {
         execute: jest.fn((query) => {
