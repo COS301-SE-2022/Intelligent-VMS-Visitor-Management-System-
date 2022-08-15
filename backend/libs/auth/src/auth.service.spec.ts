@@ -25,11 +25,13 @@ describe("AuthService", () => {
          sendVerify: jest.fn(()=>({})),
 
     };
+    
     const cacheMock={
         get: jest.fn(async()=>{
             return 'any value'
         }),
         set: jest.fn(()=>{return jest.fn()}),
+        del: jest.fn(()=>{return jest.fn()}),
     };
 
     const queryBusMock = {
