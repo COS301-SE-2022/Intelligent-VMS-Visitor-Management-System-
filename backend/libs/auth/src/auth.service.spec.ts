@@ -95,7 +95,7 @@ describe("AuthService", () => {
     describe("Login", () => {
         it("should return an access token on valid user data", async () => {
             jest.spyOn(userService, "findOne").mockImplementation(async (email: string) => {
-                if(email === "admin@mail.com") {
+                if (email === "admin@mail.com") {
                     return {
                         email: "admin@mail.com",
                         password: "password"
@@ -103,7 +103,7 @@ describe("AuthService", () => {
                 } else {
                     return undefined;
                 }
-            }); 
+            });
 
             jest.spyOn(service, "validateUser").mockImplementation(
                 async (email: string, password: string) => {
@@ -111,7 +111,7 @@ describe("AuthService", () => {
                 },
             );
 
-            const payload = await service.login({email: "admin@mail.com", password: "password"});
+            const payload = await service.login({ email: "admin@mail.com", password: "password" });
             expect(payload).toHaveProperty("access_token");
         });
     });
@@ -121,9 +121,9 @@ describe("AuthService", () => {
         it("should return a user object on valid user data", async () => {
             const bcryptCompare = jest.fn().mockResolvedValue(true);
             (bcrypt.compare as jest.Mock) = bcryptCompare;
-            
+
             jest.spyOn(userService, "findOne").mockImplementation(async (email: string) => {
-                if(email === "admin@mail.com") {
+                if (email === "admin@mail.com") {
                     return {
                         email: "admin@mail.com",
                         password: "password",
@@ -148,9 +148,9 @@ describe("AuthService", () => {
         it("should throw an exception on invalid user email", async () => {
             const bcryptCompare = jest.fn().mockResolvedValue(true);
             (bcrypt.compare as jest.Mock) = bcryptCompare;
-            
+
             jest.spyOn(userService, "findOne").mockImplementation(async (email: string) => {
-                if(email === "admin@mail.com") {
+                if (email === "admin@mail.com") {
                     return {
                         email: "admin@mail.com",
                         password: "password",
@@ -163,7 +163,7 @@ describe("AuthService", () => {
 
             try {
                 await service.validateUser("error@mail.com", "password");
-            } catch(err) {
+            } catch (err) {
                 expect(err).toBeDefined();
                 expect(err.message).toEqual("User not found");
             }
@@ -172,9 +172,9 @@ describe("AuthService", () => {
         it("should throw an exception on invalid user password", async () => {
             const bcryptCompare = jest.fn().mockResolvedValue(false);
             (bcrypt.compare as jest.Mock) = bcryptCompare;
-            
+
             jest.spyOn(userService, "findOne").mockImplementation(async (email: string) => {
-                if(email === "admin@mail.com") {
+                if (email === "admin@mail.com") {
                     return {
                         email: "admin@mail.com",
                         password: "password",
@@ -187,7 +187,7 @@ describe("AuthService", () => {
 
             try {
                 await service.validateUser("admin@mail.com", "password");
-            } catch(err) {
+            } catch (err) {
                 expect(err).toBeDefined();
                 expect(err.message).toEqual("Incorrect Password");
             }
@@ -225,7 +225,7 @@ describe("AuthService", () => {
             catch (e) {
                 // Assert
                 expect(true).toEqual(false);
-           }
+            }
         })
         it('should throw error when sign up fails', async () => {
             // Arrange
