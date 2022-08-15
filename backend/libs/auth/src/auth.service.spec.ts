@@ -194,4 +194,136 @@ describe("AuthService", () => {
         });
 
     });
+
+    describe('sign up', () => {
+        beforeEach(() => {
+            jest.restoreAllMocks();
+        })
+        it('should sign up resident', async () => {
+            // Arrange
+            cacheMock.get.mockReturnValueOnce(Promise.resolve(undefined));
+            const findOneMock = jest.spyOn(userService, 'findOne').mockReturnValueOnce(Promise.resolve(null))
+            // Act
+            try {
+                const response = await service.signup({ email: 'mail', password: 'password', type: 'resident', idNumber: 2323 })
+                expect(response).toEqual({})
+            }
+            catch (e) {
+                // Assert
+                expect(true).toEqual(false);
+            }
+        })
+        it('should sign up receptionist', async () => {
+            // Arrange
+            cacheMock.get.mockReturnValueOnce(Promise.resolve(undefined));
+            const findOneMock = jest.spyOn(userService, 'findOne').mockReturnValueOnce(Promise.resolve(null))
+            // Act
+            try {
+                const response = await service.signup({ email: 'mail', password: 'password', type: 'receptionist', idNumber: 2323 })
+                expect(response).toEqual({})
+            }
+            catch (e) {
+                // Assert
+                expect(true).toEqual(false);
+            }
+        })
+        it('should throw error when sign up fails', async () => {
+            // Arrange
+            cacheMock.get.mockReturnValueOnce(Promise.resolve(undefined));
+            const findOneMock = jest.spyOn(userService, 'findOne').mockReturnValueOnce(Promise.resolve(null))
+            // Act
+            try {
+                const response = await service.signup({ email: 'mail', password: 'password', type: 'other', idNumber: 2323 })
+                expect(response).toEqual({})
+            }
+            catch (e) {
+                // Assert
+                expect(e.message).toEqual('Invalid User Type Provided');
+            }
+        })
+        it('should throw error when user exists', async () => {
+            // Arrange
+            const findOneMock = jest.spyOn(userService, 'findOne').mockReturnValueOnce(Promise.resolve('emailUser'))
+            // Act
+            try {
+                const response = await service.signup({ email: 'mail' })
+            }
+            catch (e) {
+                // Assert
+                expect(e.message).toEqual('User already exists');
+            }
+        })
+        it('should throw error when user is already signed up', async () => {
+            // Arrange
+            const findOneMock = jest.spyOn(userService, 'findOne').mockReturnValueOnce(null)
+            // Act
+            try {
+                const response = await service.signup({ email: 'mail' })
+            }
+            catch (e) {
+                // Assert
+                expect(e.message).toEqual('User is already signed up');
+            }
+        })
+    })
+
+    describe('verifyNewAccount()', () => {
+        it('should throw error on invalid verification ID', async () => {
+            // arrange
+
+            try {
+                // act
+                const response = await service.verifyNewAccount('asdadsasd', 'email@mail.com');
+            }
+            catch (e) {
+                // assert
+                expect(e.message).toEqual('Invalid verification ID')
+            }
+
+        })
+        it('should throw an error when inavlid ID given', async () => {
+            // arrange
+
+            try {
+                // act
+                const response = await service.verifyNewAccount('b3eFcCe3-4CDa-CEB1-F0Df-daBEBE298a47', 'email@mail.com');
+            }
+            catch (e) {
+                // assert
+                expect(e.message).toEqual('Invalid Verification ID given')
+            }
+        })
+        it('should verify account', async () => {
+            // arrange
+            jest.spyOn(userService, 'createUser').mockReturnValueOnce(null);
+            (cacheMock as any).get.mockReturnValueOnce(Promise.resolve({ verifyID: 'b3eFcCe3-4CDa-CEB1-F0Df-daBEBE298a47' }))
+            try {
+                // act
+                const response = await service.verifyNewAccount('b3eFcCe3-4CDa-CEB1-F0Df-daBEBE298a47', 'email@mail.com');
+
+                // assert
+                expect(response).toEqual(true)
+            }
+            catch (e) {
+                // assert
+                expect(true).toEqual(false)
+            }
+        })
+        it('should throw an error for email not found', async () => {
+            // arrange
+            jest.spyOn(userService, 'createUser').mockReturnValueOnce(null);
+            (cacheMock as any).get.mockReturnValueOnce(Promise.resolve(undefined))
+            try {
+                // act
+                const response = await service.verifyNewAccount('b3eFcCe3-4CDa-CEB1-F0Df-daBEBE298a47', 'email@mail.com');
+
+                // assert
+                expect(response).toEqual(true)
+            }
+            catch (e) {
+                // assert
+                expect(e.message).toEqual('Email Not Found, please signup again')
+            }
+        })
+    })
 });
