@@ -206,10 +206,11 @@ describe("AuthService", () => {
             // Act
             try {
                 const response = await service.signup({ email: 'mail', password: 'password', type: 'resident', idNumber: 2323 })
-                expect(response).toEqual({})
+                expect(response).toEqual(true)
             }
             catch (e) {
                 // Assert
+                console.log('we got an error: ', e)
                 expect(true).toEqual(false);
             }
         })
@@ -220,7 +221,7 @@ describe("AuthService", () => {
             // Act
             try {
                 const response = await service.signup({ email: 'mail', password: 'password', type: 'receptionist', idNumber: 2323 })
-                expect(response).toEqual({})
+                expect(response).toEqual(true)
             }
             catch (e) {
                 // Assert
