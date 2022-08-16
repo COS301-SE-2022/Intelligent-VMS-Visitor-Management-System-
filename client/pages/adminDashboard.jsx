@@ -103,6 +103,12 @@ const AdminDashboard = () => {
         }
     `);
 
+    const numParkingSpotsAvailableQuery = useQuery(gql`
+         query {
+            getTotalAvailableParking
+        }
+    `);
+
     const numInviteInDateRangeQuery = useQuery(
         gql`
         query {
@@ -125,11 +131,7 @@ const AdminDashboard = () => {
         }
     `);
 
-    const numParkingSpotsAvailableQuery = useQuery(gql`
-        query {
-            getTotalAvailableParking
-        }
-    `);
+  
 
     const predictedInvitesQuery = useQuery(gql`
         query {
@@ -146,6 +148,15 @@ const AdminDashboard = () => {
           setNumInvitesPerResident(numInvites: ${numInvitesPerResident}) {
             value
           }
+        }
+    `);
+
+    const [setNumParkingSpotsAvailableMutation] =
+        useMutation(gql`
+        mutation {
+            setNumParkingSpotsAvailable(numAvailableParking: ${numParkingSpotsAvailable}) {
+                value
+            }
         }
     `);
 
