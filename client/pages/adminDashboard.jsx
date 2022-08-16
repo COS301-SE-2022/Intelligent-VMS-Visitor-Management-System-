@@ -150,15 +150,16 @@ const AdminDashboard = () => {
           }
         }
     `);
+//        const [setNumParkingSpotsAvailableMutation, { data, loading, error }] =
+//        useMutation(gql`
+//        mutation {
+//         setNumParkingSpotsAvailable(numInvites: ${numInvitesPerResident}) {
+//            value
+//          }
+//        }
+//    `);
 
-    const [setNumParkingSpotsAvailableMutation] =
-        useMutation(gql`
-        mutation {
-            setNumParkingSpotsAvailable(numAvailableParking: ${numParkingSpotsAvailable}) {
-                value
-            }
-        }
-    `);
+    
 
     const cancelRestrictions = () => {
         setNumInvitesPerResident(initialNumInvitesPerResident);

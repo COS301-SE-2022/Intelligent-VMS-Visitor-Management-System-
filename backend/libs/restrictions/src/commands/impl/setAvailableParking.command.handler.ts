@@ -1,4 +1,4 @@
-export class SetAvailableParkingCommand {
-    constructor(public readonly numAvailableParking: number) {
-    }
-}
+// export class SetAvailableParkingCommand {
+//     constructor(public readonly numAvailableParking: number) {
+//     }
+// }

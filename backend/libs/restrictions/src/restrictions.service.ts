@@ -3,6 +3,7 @@ import { QueryBus, CommandBus } from "@nestjs/cqrs";
 
 import { SetNumInvitesCommand } from "./commands/impl/setNumInvites.command";
 import { GetNumInvitesQuery } from './queries/impl/getNumInvites.query';
+//import { SetAvailableParkingCommand } from './commands/impl/setAvailableParking.command.handler';
 
 @Injectable()
 export class RestrictionsService {
@@ -17,4 +18,5 @@ export class RestrictionsService {
     async getNumInvitesPerResident() {
         return await this.queryBus.execute(new GetNumInvitesQuery());
     }
+
 }
