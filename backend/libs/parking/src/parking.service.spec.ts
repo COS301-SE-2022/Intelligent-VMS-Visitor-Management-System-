@@ -30,6 +30,9 @@ import { GetReservationsByDateQueryHandler } from './queries/handlers/getReserva
 import { GetFreeParkingQuery } from './queries/impl/getFreeParking.query';
 import { GetReservationsInRangeQuery } from './queries/impl/getReservationsInRange.query';
 import { getAvailableParkingQuery } from './queries/impl/getAvailableParking.query';
+import { getDisabledParkingQuery } from './queries/impl/getDisabledParking.query';
+import { getTotalParkingQuery } from './queries/impl/getTotalParking.query';
+
 import { CACHE_MANAGER } from '@nestjs/common';
 
 describe('ParkingService', () => {
@@ -378,6 +381,16 @@ describe('ParkingService', () => {
           }
       });
   });
+
+  describe("adjustParking", () => {
+    it("should disable 3 arrays", async () => {
+    
+    });
+
+    it("should throw an exception if an invalid parking number is given", async () => {
+      
+    });
+});
 
   describe("addParking", () => {
     it("should return a new parking space", async () => {

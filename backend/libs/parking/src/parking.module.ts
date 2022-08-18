@@ -13,6 +13,7 @@ import { RemoveParkingCommandHandler } from "./commands/handlers/removeParkingCo
 import { FreeParkingCommandHandler } from "./commands/handlers/freeParkingCommand.handler";
 import { AssignParkingCommandHandler } from "./commands/handlers/assignParkingCommand.handler";
 import { getTotalAvailableParkingQueryHandler } from './queries/handlers/getTotalAvailableParkingQuery.handler';
+import { getTotalParkingQueryHandler } from './queries/handlers/getTotalParkingQuery.handler';
 import { GetFreeParkingQueryHandler } from './queries/handlers/getFreeParkingQuery.handler';
 import { CreateNParkingSpotsCommandHandler } from './commands/handlers/createNParkingSpots.handler';
 import { GetReservationsQueryHandler } from './queries/handlers/getReservationsQuery.handler';
@@ -23,6 +24,7 @@ import { GetNumberOfReservationsQueryHandler } from "./queries/handlers/getNumbe
 
 import { VisitorInviteModule} from '@vms/visitor-invite';
 import { getAvailableParkingQueryHandler } from './queries/handlers/getAvailableParkingQuery.handler';
+import { getDisabledParkingQueryHandler } from './queries/handlers/getDisabledParkingQuery.handler';
 
 @Module({
   imports: [
@@ -47,7 +49,9 @@ import { getAvailableParkingQueryHandler } from './queries/handlers/getAvailable
     GetNumberOfReservationsQueryHandler,
     RemoveParkingCommandHandler,
     getTotalAvailableParkingQueryHandler,
+    getTotalParkingQueryHandler,
     getAvailableParkingQueryHandler,
+    getDisabledParkingQueryHandler,
     GetFreeParkingQueryHandler,
     CreateNParkingSpotsCommandHandler,
     GetReservationsQueryHandler,

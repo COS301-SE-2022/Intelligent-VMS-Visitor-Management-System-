@@ -107,6 +107,7 @@ type Query {
   getPredictedInviteData(startDate: String!, endDate: String!): [PredictedInviteData!]!
   helloParking: String!
   getTotalAvailableParking: Float!
+  getDisabledParking: [Parking!]!
   getFreeParking: [Parking!]!
   getReservations: ParkingReservation!
   getInviteReservation(invitationID: String!): ParkingReservation!
@@ -133,6 +134,7 @@ type Mutation {
   reserveParking(invitationID: String!): ParkingReservation!
   unreservedParking(invitationID: String!): Boolean!
   freeParking(parkingNumber: Float!): Parking!
+  disableParkingSpace(parkingNumber: Float!): Parking!
   createNParkingSpots(N: Float!): Boolean!
   setNumInvitesPerResident(numInvites: Float!): Restriction!
   signOut(inviteID: String!): Float!
