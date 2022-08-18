@@ -14,6 +14,6 @@ export class getDisabledParkingQueryHandler implements IQueryHandler {
 
   //db stuff for getting disabled parking
   async execute(query: getDisabledParkingQuery):Promise<ParkingModule[]> {
-    return this.parkingModel.find({enabled: true});
+    return this.parkingModel.find({enabled: false});
   }
 }

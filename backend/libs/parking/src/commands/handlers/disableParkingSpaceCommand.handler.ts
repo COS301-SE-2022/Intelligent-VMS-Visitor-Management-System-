@@ -6,7 +6,7 @@ import { DisableParkingSpaceCommand } from "../impl/disableParkingSpace.command"
 
 
 @CommandHandler(DisableParkingSpaceCommand)
-export class EnableParkingCommandHandler implements ICommandHandler<DisableParkingSpaceCommand> {
+export class DisableParkingSpaceCommandHandler implements ICommandHandler<DisableParkingSpaceCommand> {
   constructor(
       @InjectModel(Parking.name) private parkingModel: Model<ParkingDocument>,
   ) {}

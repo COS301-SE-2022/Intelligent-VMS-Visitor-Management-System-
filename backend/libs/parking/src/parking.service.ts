@@ -70,7 +70,7 @@ export class ParkingService {
     */
     async freeParking(parkingNumber: number) {
         //Validate input
-        const spaces = await this.getTotalAvailableParking();
+        const spaces = await this.getTotalParking();
 
         if (parkingNumber < 0 || parkingNumber > spaces)
             throw new InvalidCommand(
@@ -85,6 +85,18 @@ export class ParkingService {
         if (parking) return parking;
         else throw new ExternalError("Error outside the parking.service");
     }
+
+        /*
+    Adjusts the parking spots in the database
+
+    Throws: 
+    ExternalError
+    InvalidCommand
+
+    Returns: the free'd up parking
+
+    Status: Done
+    */
 
     async adjustParking(numDisiredParkingTotal: number) {
         //Validate input
@@ -112,6 +124,7 @@ export class ParkingService {
          
         } else if (difference<0) {//------------------------------------increase available parking 
             if (numDisiredParkingTotal>spaces) { //Increase overall total spaces
+                console.log("here");
                 let totalToCreate=numDisiredParkingTotal-spaces;
                 for (let index = 0; index < listOfDisabled.length; index++) {//re-enable all disabled parking
                              let enableIndex = listOfDisabled[index].parkingNumber;
@@ -127,6 +140,7 @@ export class ParkingService {
             }
            
         }
+        return true;
 
     }
 
@@ -301,7 +315,7 @@ export class ParkingService {
                 `Invitation with ID ${invitationID} not found`,
             );
 
-        const spaces = await this.getTotalAvailableParking();
+        const spaces = await this.getTotalParking();
 
         if (parkingNumber < 0 || parkingNumber > spaces)
             throw new InvalidCommand(
@@ -420,7 +434,7 @@ export class ParkingService {
     */
     async enableParkingSpace(parkingNumber: number) {
         //Validate input
-        const spaces = await this.getTotalAvailableParking();
+        const spaces = await this.getTotalParking();
 
         if (parkingNumber < 0 || parkingNumber > spaces)
             throw new InvalidCommand(
@@ -449,7 +463,7 @@ export class ParkingService {
     */
     async disableParkingSpace(parkingNumber: number) {
         //Validate input
-        const spaces = await this.getTotalAvailableParking();
+        const spaces = await this.getTotalParking();
 
         if (parkingNumber < 0 || parkingNumber > spaces)
             throw new InvalidCommand(
@@ -528,7 +542,7 @@ export class ParkingService {
         parkingNumber: number,
         ){
             //Validate input
-            const spaces = await this.getTotalAvailableParking();
+            const spaces = await this.getTotalParking();
 
         if (parkingNumber < 0 || parkingNumber > spaces)
             throw new InvalidQuery(
@@ -600,7 +614,18 @@ export class ParkingService {
             else
                 throw new ExternalError("Error outside the parking.service");
         }
-
+        async getTotalParking(
+            ){
+                const amount = this.queryBus.execute(
+                    new getTotalParkingQuery()
+                )
+        
+                if(amount)
+                    return amount;
+                else
+                    throw new ExternalError("Error outside the parking.service");
+            }
+        
     /*
     */
     async getAvailableParking(
