@@ -386,16 +386,6 @@ describe('ParkingService', () => {
       });
   });
 
-  describe("adjustParking", () => {
-    it("should disable 3 arrays", async () => {
-    
-    });
-
-    it("should throw an exception if an invalid parking number is given", async () => {
-      
-    });
-});
-
   describe("addParking", () => {
     it("should return a new parking space", async () => {
         let parking;
