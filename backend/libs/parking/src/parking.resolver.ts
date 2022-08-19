@@ -119,9 +119,9 @@ export class ParkingResolver {
 
     @Mutation((returns) => {return Boolean}, { name: "adjustParking" })
     async adjustParking(
-        @Args("parkingNumber") parkingNumber: number,
+        @Args("numDisiredParkingTotal") numDisiredParkingTotal: number,
     ) {
-        return this.parkingService.adjustParking(parkingNumber);
+        return this.parkingService.adjustParking(numDisiredParkingTotal);
     }
     @Mutation((returns) => {return Parking}, { name: "disableParkingSpace" })
     async disableParkingSpace(

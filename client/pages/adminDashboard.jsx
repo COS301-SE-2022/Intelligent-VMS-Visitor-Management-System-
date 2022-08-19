@@ -166,14 +166,12 @@ const AdminDashboard = () => {
           }
         }
     `);
-//        const [setNumParkingSpotsAvailableMutation, { data, loading, error }] =
-//        useMutation(gql`
-//        mutation {
-//         setNumParkingSpotsAvailable(numInvites: ${numInvitesPerResident}) {
-//            value
-//          }
-//        }
-//    `);
+       const [adjustParkingMutation, { }] =
+       useMutation(gql`
+       mutation {
+        adjustParking(numDisiredParkingTotal: ${numParkingSpotsAvailable}) 
+       }
+   `);
 
     
 
@@ -191,6 +189,7 @@ const AdminDashboard = () => {
 
         if (numParkingSpotsAvailable !== initialNumParkingSpots) {
             setInitialNumParkingSpots(numParkingSpotsAvailable);
+            adjustParkingMutation();
         }
 
         setRestrictionsChanged(false);
@@ -528,8 +527,8 @@ const AdminDashboard = () => {
                                 <div className="card-actions flex items-center justify-start">
                                     <div className="flex items-center space-x-3">
                                         <button className="btn btn-circle" onClick={() => {
-                                                    setNumParkingSpotsAvailable(numParkingSpotsAvailable +1);
-                                                    setRestrictionsChanged(true);
+                                                     setNumParkingSpotsAvailable(numParkingSpotsAvailable +1);
+                                                     setRestrictionsChanged(true);
                                                 }}>
                                             <AiOutlinePlus className="text-xl md:text-2xl lg:text-3xl"/>
                                         </button>
@@ -540,8 +539,11 @@ const AdminDashboard = () => {
                                             {numParkingSpotsAvailable}
                                         </p>
                                         <button className="btn btn-circle" onClick={() => {
-                                                    numParkingSpotsAvailable >0 &&setNumParkingSpotsAvailable(numParkingSpotsAvailable -1);
-                                                    setRestrictionsChanged(true);
+                                            if ( numParkingSpotsAvailable >0) {
+                                                setNumParkingSpotsAvailable(numParkingSpotsAvailable -1);
+                                            }
+                                                    
+                                                     setRestrictionsChanged(true);
                                                 }}>
                                             <AiOutlineMinus className="text-xl md:text-2xl lg:text-3xl"/>
                                         </button>

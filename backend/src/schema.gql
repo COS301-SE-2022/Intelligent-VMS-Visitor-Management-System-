@@ -128,7 +128,7 @@ type Mutation {
   unreservedParking(invitationID: String!): Boolean!
   freeParking(parkingNumber: Float!): Parking!
   createNParkingSpots(N: Float!): Boolean!
-  adjustParking(parkingNumber: Float!): Boolean!
+  adjustParking(numDisiredParkingTotal: Float!): Boolean!
   disableParkingSpace(parkingNumber: Float!): Parking!
   setNumInvitesPerResident(numInvites: Float!): Restriction!
   signOut(inviteID: String!): Float!
