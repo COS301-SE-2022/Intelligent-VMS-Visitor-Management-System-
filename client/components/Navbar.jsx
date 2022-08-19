@@ -44,16 +44,18 @@ const Navbar = () => {
                     </a>
                 </Link>
             </div>
-            <div className="navbar-end text-xs text-neutral-content md:text-sm space-x-5">
+            <div className="navbar-end space-x-5 text-xs text-neutral-content md:text-sm">
                 <div>
                     <ThemeSelector />
                 </div>
                 {token && (
                     <Link href="/visitorDashboard">
                         <a>
-                            <div className="avatar placeholder bg-primary rounded-full">
-                                <div className="text-primary-content w-10">
-                                    <span className="text-xl">{token ? token.name[0] : ""}</span>
+                            <div className="avatar placeholder rounded-full bg-primary">
+                                <div className="w-10 text-primary-content">
+                                    <span className="text-xl">
+                                        {token ? token.name[0] : ""}
+                                    </span>
                                 </div>
                             </div>
                         </a>

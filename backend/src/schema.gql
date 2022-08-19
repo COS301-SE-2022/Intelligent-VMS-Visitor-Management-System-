@@ -4,12 +4,6 @@
 
 directive @upper on FIELD_DEFINITION
 
-type Visitor {
-  id: Float!
-  name: String!
-  password: String!
-}
-
 type User {
   email: String!
   permission: Int!
@@ -69,15 +63,15 @@ type PredictedInviteData {
   data: Float!
 }
 
+type Visitor {
+  _id: String!
+  visitorName: String!
+  numInvites: Float!
+}
+
 type BSIdata {
   signInCount: Int!
   createCount: Int!
-}
-
-input VisitorInputType {
-  id: Float!
-  name: String!
-  password: String!
 }
 
 input UserInputType {
@@ -86,8 +80,6 @@ input UserInputType {
 }
 
 type Query {
-  hello: String!
-  visitors: [Visitor!]!
   helloUser: String!
   searchUser(searchQuery: String!): [SearchUser!]!
   getUnauthorizedUsers: [User!]!
@@ -105,6 +97,7 @@ type Query {
   getInvitesByDate(date: String!): [Invite!]!
   getNumberOfOpenInvites(email: String!): Float!
   getPredictedInviteData(startDate: String!, endDate: String!): [PredictedInviteData!]!
+  getVisitors(email: String!): [Visitor!]!
   helloParking: String!
   getTotalAvailableParking: Float!
   getDisabledParking: [Parking!]!
@@ -121,7 +114,6 @@ type Query {
 }
 
 type Mutation {
-  createVisitor(input: VisitorInputType!): Visitor!
   login(email: String!, password: String!): LoginUser!
   signup(email: String!, password: String!, type: String!, IDDocType: String!, idNumber: String!, name: String!): Boolean!
   verify(verifyID: String!, email: String!): Boolean!

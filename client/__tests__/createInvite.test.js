@@ -30,6 +30,14 @@ describe("CreateInvite", () => {
             "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJhZG1pbkBtYWlsLmNvbSIsIm5hbWUiOiJhZG1pbiIsImlhdCI6MTUxNjIzOTAyMiwicGVybWlzc2lvbiI6MH0.DJkzWVCzuQH43IPtFIOChY4VURwQ1b_HSqDUiN9wJuY"
         );
     });
+    const useRouter = jest.spyOn(require("next/router"), "useRouter");
+    const router = {
+        push: jest.fn().mockImplementation(() => Promise.resolve(true)),
+        prefetch: () => new Promise((resolve) => resolve),
+        query: {name: "", email: "", idNumber: "", idDocType: ""}
+    };
+    useRouter.mockReturnValue(router);
+
     it("renders a heading", () => {
         render(
             <MockedProvider>
@@ -194,13 +202,6 @@ describe("CreateInvite", () => {
             );
         });
 
-        const useRouter = jest.spyOn(require("next/router"), "useRouter");
-        const router = {
-            push: jest.fn().mockImplementation(() => Promise.resolve(true)),
-            prefetch: () => new Promise((resolve) => resolve),
-        };
-        useRouter.mockReturnValue(router);
-
         render(
             <MockedProvider mocks={unAuthInvitesMock} addTypename={false}>
                 <CreateInvite />
@@ -222,13 +223,6 @@ describe("CreateInvite", () => {
                 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJhZG1pbkBtYWlsLmNvbSIsIm5hbWUiOiJhZG1pbiIsImlhdCI6MTUxNjIzOTAyMiwicGVybWlzc2lvbiI6MH0.DJkzWVCzuQH43IPtFIOChY4VURwQ1b_HSqDUiN9wJuY"
             );
         });
-
-        const useRouter = jest.spyOn(require("next/router"), "useRouter");
-        const router = {
-            push: jest.fn().mockImplementation(() => Promise.resolve(true)),
-            prefetch: () => new Promise((resolve) => resolve),
-        };
-        useRouter.mockReturnValue(router);
 
         render(
             <MockedProvider mocks={inviteUnauthMock} addTypename={false}>
@@ -313,13 +307,6 @@ describe("CreateInvite", () => {
                 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJhZG1pbkBtYWlsLmNvbSIsIm5hbWUiOiJhZG1pbiIsImlhdCI6MTUxNjIzOTAyMiwicGVybWlzc2lvbiI6MH0.DJkzWVCzuQH43IPtFIOChY4VURwQ1b_HSqDUiN9wJuY"
             );
         });
-
-        const useRouter = jest.spyOn(require("next/router"), "useRouter");
-        const router = {
-            push: jest.fn().mockImplementation(() => Promise.resolve(true)),
-            prefetch: () => new Promise((resolve) => resolve),
-        };
-        useRouter.mockReturnValue(router);
 
         render(
             <MockedProvider mocks={inviteDataMock} addTypename={false}>

@@ -1,17 +1,11 @@
 import { useEffect } from "react";
 
-import { AiOutlineFormatPainter } from "react-icons/ai";
+import { BsPalette2 } from "react-icons/bs";
 
 import useTheme from "../store/themeStore";
 
 const ThemeSelector = () => {
-    const themes = [
-        "dark",
-        "business",
-        "winter",
-        "autumn",
-        "random",
-    ];
+    const themes = ["dark", "business", "winter", "autumn", "random"];
 
     const theme = useTheme((state) => state.theme);
     const setTheme = useTheme((state) => state.setTheme);
@@ -23,7 +17,7 @@ const ThemeSelector = () => {
     return (
         <div className="dropdown-end dropdown">
             <label tabIndex="0" className="btn m-1 text-xl">
-                <AiOutlineFormatPainter />
+                <BsPalette2 />
             </label>
             <ul
                 tabIndex="0"

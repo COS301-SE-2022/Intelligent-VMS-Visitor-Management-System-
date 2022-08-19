@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useState, useEffect } from "react";
 import { gql, useQuery, useApolloClient } from "@apollo/client";
 import { useRouter } from "next/router";
@@ -6,9 +7,11 @@ import { BiMailSend } from "react-icons/bi";
 import { AiFillAlert } from "react-icons/ai";
 
 import Layout from "../components/Layout";
-import ErrorAlert from "../components/ErrorAlert";
+import AlertGroup from "../components/AlertGroup";
+import Alert from "../components/Alert";
 import DownloadChart from "../components/DownloadChart";
 import LineChart from "../components/LineChart";
+import VisitorCard from "../components/VisitorCard";
 
 import useDateRange from "../hooks/useDateRange.hook";
 
@@ -29,6 +32,10 @@ const getFormattedDateString = (date) => {
 const VisitorDashboard = () => {
     const token = useAuth((state) => state.decodedToken)();
     const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [inviteModal, setInviteModal] = useState({
+        show: false,
+        data: undefined,
+    });
     const [errorMessage, setErrorMessage] = useState("");
     const [maxNumInvites, setMaxNumInvites] = useState(0);
     const [totalNumberInvites, setTotalNumberInvites] = useState(0);
@@ -38,6 +45,7 @@ const VisitorDashboard = () => {
     const [visitorData, setVisitorData] = useState({ data: [], labels: [] });
     const [historyInvites, setHistoryInvites] = useState([]);
     const [invites, setInvites] = useState([]);
+    const [visitors, setVisitors] = useState([]);
     const now = getFormattedDateString(new Date());
 
     const [
@@ -79,6 +87,18 @@ const VisitorDashboard = () => {
         { fetchPolicy: "network-only" }
     );
 
+    const visitorsQuery = useQuery(
+        gql`
+            query {
+              getVisitors(email: "${token.email}") {
+                _id,
+                visitorName,
+                numInvites
+              }
+            }
+        `
+    );
+
     const client = useApolloClient();
     const cancelInvite = (inviteID) => {
         client
@@ -95,18 +115,20 @@ const VisitorDashboard = () => {
                 });
 
                 const newOpen = openInvites.filter((invite) => {
-                    return invite.inviteID !== inviteID && invite.inviteDate >= now;
+                    return (
+                        invite.inviteID !== inviteID && invite.inviteDate >= now
+                    );
                 });
 
                 setOpenInvites(newOpen);
                 setInvites(otherInviteData);
-                
+
                 otherInviteData.forEach((invite) => {
-                    invite.inviteDate >= now && 
-                    dateMap.set(
-                        invite.inviteDate,
-                        dateMap.get(invite.inviteDate) + 1
-                    );
+                    invite.inviteDate >= now &&
+                        dateMap.set(
+                            invite.inviteDate,
+                            dateMap.get(invite.inviteDate) + 1
+                        );
                 });
                 setDateMap(new Map(dateMap));
 
@@ -117,7 +139,7 @@ const VisitorDashboard = () => {
             })
             .catch((err) => {
                 setShowErrorAlert(true);
-                setErrorMessage(err.message);
+                setErrorMessage(err);
             });
     };
 
@@ -129,30 +151,36 @@ const VisitorDashboard = () => {
             const tempInvites = [];
             const tempHistoryInvites = [];
             invites.forEach((invite) => {
-                if(invite.inviteDate >= now) {
+                if (invite.inviteDate >= now) {
                     dateMap.set(
                         invite.inviteDate,
                         dateMap.get(invite.inviteDate) + 1
                     );
-                } 
+                }
 
-                if(invite.inviteDate < now || invite.inviteState === "signedOut" || invite.inviteState === "signedIn") {
+                if (
+                    invite.inviteDate < now ||
+                    invite.inviteState === "signedOut" ||
+                    invite.inviteState === "signedIn"
+                ) {
                     tempHistoryInvites.push(invite);
                 }
 
-                if (invite.inviteState === "inActive" && invite.inviteDate >= now) {
+                if (
+                    invite.inviteState === "inActive" &&
+                    invite.inviteDate >= now
+                ) {
                     tempInvites.push(invite);
                 }
             });
 
-            tempHistoryInvites.sort((lhs,rhs) => {
-                return new Date(lhs.inviteDate) - new Date(rhs.inviteDate);
+            tempHistoryInvites.sort((lhs, rhs) => {
+                return new Date(rhs.inviteDate) - new Date(lhs.inviteDate);
             });
 
             setOpenInvites(tempInvites);
             setDateMap(new Map(dateMap));
             setHistoryInvites(tempHistoryInvites);
-
 
             setVisitorData({
                 data: Array.from(dateMap.values()),
@@ -180,6 +208,12 @@ const VisitorDashboard = () => {
     }, [numInvitesQuery, openInvites.length, maxNumInvites]);
 
     useEffect(() => {
+        if (!visitorsQuery.loading && !visitorsQuery.error) {
+            setVisitors(visitorsQuery.data.getVisitors);
+        }
+    }, [visitorsQuery]);
+
+    useEffect(() => {
         const todayInviteData = invites.filter((invite) => {
             return invite.inviteDate === now;
         });
@@ -188,14 +222,21 @@ const VisitorDashboard = () => {
 
     return (
         <Layout>
+            <AlertGroup>
+                <Alert
+                    message={errorMessage}
+                    showAlert={showErrorAlert}
+                    error
+                />
+            </AlertGroup>
             <div className="p-3">
-                <h1 className="mt-5 mb-5 flex items-center text-left text-xl md:text-2xl lg:text-4xl font-bold">
+                <h1 className="mt-5 mb-5 flex items-center text-left text-xl font-bold md:text-2xl lg:text-4xl">
                     <span>Welcome back,</span>
                     <span className="ml-3 text-secondary">{token.name}</span>
                 </h1>
                 <p>You have {todayInvites} visitors expected today.</p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 md:grid-rows-1 gap-4 mb-10">
+            <div className="mb-10 grid grid-cols-1 gap-4 md:grid-cols-2 md:grid-rows-1">
                 <DownloadChart
                     title={"User Invites For The Week"}
                     filename={token.name + "-weekly.png"}
@@ -205,9 +246,11 @@ const VisitorDashboard = () => {
                     datalabels={["Visitors"]}
                 />
                 <div className="flex flex-col gap-5">
-                    <div className="card w-full h-full bg-base-200 p-5 shadow">
+                    <div className="card h-full w-full bg-base-200 p-5 shadow">
                         <h2 className="card-title font-normal">
-                            <span className="text-2xl text-primary"><BiMailSend /></span>
+                            <span className="text-2xl text-primary">
+                                <BiMailSend />
+                            </span>
                             Total Number Of Invites Sent
                         </h2>
                         <div className="card-body justify-center">
@@ -218,9 +261,11 @@ const VisitorDashboard = () => {
                         </div>
                         <div className="card-actions"></div>
                     </div>
-                    <div className="card w-full h-full bg-base-200 p-5 shadow">
+                    <div className="card h-full w-full bg-base-200 p-5 shadow">
                         <h2 className="card-title font-normal">
-                            <span className="text-2xl text-primary"><AiFillAlert /></span>
+                            <span className="text-2xl text-primary">
+                                <AiFillAlert />
+                            </span>
                             Maximum Invites Allowed
                         </h2>
                         <div className="card-body justify-center">
@@ -228,7 +273,9 @@ const VisitorDashboard = () => {
                                 <div className="flex items-center justify-center">
                                     <div
                                         className="radial-progress text-base-content"
-                                        style={{ "--value": Number(percentage) }}
+                                        style={{
+                                            "--value": Number(percentage),
+                                        }}
                                     >
                                         {percentage}%
                                     </div>
@@ -248,18 +295,51 @@ const VisitorDashboard = () => {
                         <div className="card-actions"></div>
                     </div>
                 </div>
-                <h2 className="text-3xl font-bold ml-2 divider col-span-2">Open Invites</h2>
-                <div className="col-span-1 md:col-span-2 space-y-4 overflow-x-auto">
+                <div className="col-span-2">
+                    <div className="card h-full w-full bg-base-300 p-5 shadow">
+                        <div className="card-body grid grid-cols-2 gap-6 justify-center">
+                            <div className="col-span-1 space-y-5">
+                                <h2 className="card-title text-2xl">
+                                    Popular Visitors
+                                </h2>
+                                <div className="space-y-4">
+                                {visitorsQuery.loading ? (
+                                    <div className="progress progress-primary"></div>
+                                ) : visitors.length === 0 ? (
+                                    <p>Nothing to show...</p>
+                                ) : (
+                                    visitors.map((visitor, idx) => {
+                                        return (
+                                            <VisitorCard key={idx} name={visitor.visitorName} email={visitor._id} numInvites={visitor.numInvites}/>
+                                        );
+                                    })
+                                )}
+                                </div>
+                            </div>
+                            <div className="col-span-1 space-y-5">
+                                <h2 className="card-title text-2xl">
+                                    Favorite Visitors
+                                </h2>
+                                <div className="space-y-4">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <h2 className="divider col-span-2 ml-2 text-3xl font-bold">
+                    Open Invites
+                </h2>
+                <div className="col-span-1 space-y-4 overflow-x-auto md:col-span-2">
                     {loading ? (
                         <progress className="progress progress-primary w-56">
                             progress
                         </progress>
                     ) : (
-                        <table className="mb-3 table table-compact md:table-normal w-full">
+                        <table className="table-compact mb-3 table w-full md:table-normal">
                             <thead>
                                 <tr>
                                     <th></th>
-                                    <th className="capitalize">Name</th>
+                                    <th>Name</th>
                                     <th>ID Document Type</th>
                                     <th>ID Number</th>
                                     <th>Date</th>
@@ -272,7 +352,9 @@ const VisitorDashboard = () => {
                                         return (
                                             <tr className="hover" key={idx}>
                                                 <th>{idx + 1}</th>
-                                                <td>{visit.visitorName}</td>
+                                                <td className="capitalize">
+                                                    {visit.visitorName}
+                                                </td>
                                                 <td>{visit.idDocType}</td>
                                                 <td>{visit.idNumber}</td>
                                                 <td>{visit.inviteDate}</td>
@@ -282,8 +364,14 @@ const VisitorDashboard = () => {
                                                         aria-label="cancel"
                                                         className="btn btn-primary btn-square"
                                                         onClick={(e) => {
-                                                            if(!e.currentTarget.classList.contains("loading")) {
-                                                                e.currentTarget.classList.add("loading");
+                                                            if (
+                                                                !e.currentTarget.classList.contains(
+                                                                    "loading"
+                                                                )
+                                                            ) {
+                                                                e.currentTarget.classList.add(
+                                                                    "loading"
+                                                                );
                                                             }
                                                             cancelInvite(
                                                                 visit.inviteID
@@ -319,46 +407,126 @@ const VisitorDashboard = () => {
                             )}
                         </table>
                     )}
-                    <h2 className="text-3xl font-bold ml-2 divider col-span-2 mt-5">Invite History</h2>
-                    <table className="table table-compact md:table-normal w-full">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>Name</th>
-                                    <th>ID Document Type</th>
-                                    <th>ID Number</th>
-                                    <th>Date</th>
-                                    <th>Invite State</th>
-                                </tr>
-                            </thead>
-                            {historyInvites.length > 0 ? (
-                                <tbody>
-                                    {historyInvites.map((visit, idx) => {
-                                        return (
-                                            <tr className="hover" key={idx}>
-                                                <th>{idx + 1}</th>
-                                                <td className="capitalize">{visit.visitorName}</td>
-                                                <td>{visit.idDocType}</td>
-                                                <td>{visit.idNumber}</td>
-                                                <td>{visit.inviteDate}</td>
-                                                <td>{visit.inviteState}</td>
-                                            </tr>
-                                        );
-                                    })}
-                                </tbody>
-                            ) : (
-                                <tbody>
+                    <div className="grid grid-cols-1 gap-4">
+                        <div className="grid min-h-0 grid-cols-1">
+                            <h2 className="divider col-span-2 ml-2 mt-5 text-3xl font-bold">
+                                Invite History
+                            </h2>
+                            <table className="table-compact row-span-1 table w-full md:table-normal">
+                                <thead>
                                     <tr>
-                                        <th>Nothing to show...</th>
+                                        <th></th>
+                                        <th>Name</th>
+                                        <th>ID Document Type</th>
+                                        <th>Date</th>
+                                        <th>Invite State</th>
                                     </tr>
-                                </tbody>
-                            )}
-                    </table>
+                                </thead>
+                                {historyInvites.length > 0 ? (
+                                    <tbody>
+                                        {historyInvites.map((visit, idx) => {
+                                            return (
+                                                <tr
+                                                    onClick={() => {
+                                                        setInviteModal({
+                                                            show: true,
+                                                            data: {
+                                                                name: visit.visitorName,
+                                                                id: visit.idNumber,
+                                                                doc: visit.idDocType,
+                                                                email: visit.visitorEmail,
+                                                            },
+                                                        });
+                                                    }}
+                                                    className="hover cursor-pointer"
+                                                    key={idx}
+                                                >
+                                                    <th>{idx + 1}</th>
+                                                    <td className="capitalize">
+                                                        {visit.visitorName}
+                                                    </td>
+                                                    <td>{visit.idDocType}</td>
+                                                    <td>{visit.inviteDate}</td>
+                                                    <td>
+                                                        {visit.inviteState ===
+                                                        "inActive" ? (
+                                                            <div className="badge">
+                                                                In Active
+                                                            </div>
+                                                        ) : visit.inviteState ===
+                                                          "signedIn" ? (
+                                                            <div className="badge badge-success">
+                                                                Signed In
+                                                            </div>
+                                                        ) : (
+                                                            <div className="badge badge-error">
+                                                                Signed Out
+                                                            </div>
+                                                        )}
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
+                                    </tbody>
+                                ) : (
+                                    <tbody>
+                                        <tr>
+                                            <th>Nothing to show...</th>
+                                        </tr>
+                                    </tbody>
+                                )}
+                            </table>
+                        </div>
+                    </div>
                 </div>
-                <ErrorAlert
-                    message={errorMessage}
-                    showConditon={showErrorAlert}
-                />
+            </div>
+            <input
+                type="checkbox"
+                id="invite-modal"
+                className="modal-toggle"
+                checked={inviteModal.show ? true : false}
+            />
+            <div className="modal">
+                {inviteModal.data && (
+                    <div className="modal-box relative">
+                        <label
+                            onClick={() =>
+                                setInviteModal({ ...inviteModal, show: false })
+                            }
+                            htmlFor="invite-modal"
+                            className="btn btn-circle btn-sm absolute right-2 top-2"
+                        >
+                            ✕
+                        </label>
+                        <h3 className="text-lg font-bold">
+                            Would you like to invite{" "}
+                            <span className="capitalize text-secondary">
+                                {inviteModal && inviteModal.data.name}
+                            </span>{" "}
+                            again?
+                        </h3>
+                        <p className="py-4">
+                            You will be redirected to the create invite page to
+                            specify details for the invitation.
+                        </p>
+                        <div className="modal-action">
+                            <Link
+                                href={
+                                    "/createInvite?name=" +
+                                    inviteModal.data.name +
+                                    "&idNumber=" +
+                                    inviteModal.data.id +
+                                    "&idDocType=" +
+                                    inviteModal.data.doc +
+                                    "&email=" +
+                                    inviteModal.data.email
+                                }
+                            >
+                                <a className="btn btn-primary">Yes</a>
+                            </Link>
+                        </div>
+                    </div>
+                )}
             </div>
         </Layout>
     );

@@ -9,6 +9,9 @@ import useAuth from "../store/authStore.js";
 import Layout from "../components/Layout";
 import ErrorAlert from "../components/ErrorAlert";
 
+import AlertGroup from "../components/AlertGroup";
+import Alert from "../components/Alert";
+
 const getFormattedDateString = (date) => {
     if (date instanceof Date) {
         const month = date.getMonth() + 1;
@@ -24,6 +27,7 @@ const getFormattedDateString = (date) => {
 const CreateInvite = () => {
     // Get Instance of NextJS router to redirect to different pages
     const router = useRouter();
+    const { name, email, idNumber, idDocType } = router.query;
 
     // Get Apollo client from provider
     const client = useApolloClient();
@@ -90,6 +94,8 @@ const CreateInvite = () => {
             if (numInvitesQuery.error.message === "Unauthorized") {
                 router.push("/expire");
             }
+            setErrorMessage(numInvitesQuery.error.message);
+            setShowErrorAlert(true);
         }
 
         if (
@@ -108,10 +114,15 @@ const CreateInvite = () => {
                 setLimitReached(false);
                 setShowErrorAlert(false);
             }
-        } else if(!numInvitesOfResidentQuery.loading && numInvitesOfResidentQuery.error){
-            if(numInvitesOfResidentQuery.error.message === "Unauthorized") {
+        } else if (
+            !numInvitesOfResidentQuery.loading &&
+            numInvitesOfResidentQuery.error
+        ) {
+            if (numInvitesOfResidentQuery.error.message === "Unauthorized") {
                 router.push("/expire");
             }
+            setErrorMessage(numInvitesOfResidentQuery.error.message);
+            setShowErrorAlert(true);
         }
 
         if (
@@ -125,7 +136,7 @@ const CreateInvite = () => {
             !isParkingAvailableQuery.loading &&
             isParkingAvailableQuery.error
         ) {
-            if(isParkingAvailableQuery.error.message === "Unauthorized") {
+            if (isParkingAvailableQuery.error.message === "Unauthorized") {
                 router.push("/expire");
             }
             setErrorMessage(isParkingAvailableQuery.error.message);
@@ -137,18 +148,25 @@ const CreateInvite = () => {
         numInvitesAllowed,
         limitReached,
         isParkingAvailableQuery,
-        setNow
+        setNow,
     ]);
 
     return (
         <Layout>
+            <AlertGroup>
+                <Alert
+                    message={errorMessage}
+                    showAlert={showErrorAlert}
+                    error
+                />
+            </AlertGroup>
             <div className="relative flex h-full min-h-[80vh] w-full flex-col items-center justify-center overflow-hidden pb-3">
                 <Formik
                     initialValues={{
-                        email: "",
-                        idDoc: "RSA-ID",
-                        name: "",
-                        idValue: "",
+                        email: !email ? "" : email,
+                        idDoc: !idDocType ? "RSA-ID" : idDocType,
+                        name: !name ? "" : name,
+                        idValue: !idNumber ? "" : idNumber,
                         visitDate: now,
                         reserveParking: false,
                     }}
@@ -351,9 +369,7 @@ const CreateInvite = () => {
                                     <motion.input
                                         className="disabled toggle"
                                         disabled={
-                                             isParkingAvailable
-                                                ? false
-                                                : true
+                                            isParkingAvailable ? false : true
                                         }
                                         name="reserveParking"
                                         type="checkbox"
@@ -361,11 +377,11 @@ const CreateInvite = () => {
                                         onBlur={handleBlur}
                                         value={values.reserveParking}
                                     />
-                                    { !isParkingAvailable && 
-                                    <span className="text-error">
-                                        Parking Full 
-                                    </span>
-                                    }
+                                    {!isParkingAvailable && (
+                                        <span className="text-error">
+                                            Parking Full
+                                        </span>
+                                    )}
                                 </motion.label>
 
                                 <button
@@ -379,11 +395,6 @@ const CreateInvite = () => {
                         );
                     }}
                 </Formik>
-
-                <ErrorAlert
-                    message={errorMessage}
-                    showConditon={showErrorAlert}
-                />
             </div>
         </Layout>
     );

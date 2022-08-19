@@ -10,7 +10,7 @@ const Layout = ({ children }) => {
     };
 
     return (
-        <div className="container mx-auto flex min-h-screen flex-col items-center font-main md:py-2">
+        <div className="container relative mx-auto flex min-h-screen flex-col items-center font-main md:py-2">
             <Navbar />
 
             <AnimatePresence exitBeforeEnter>
