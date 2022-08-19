@@ -90,10 +90,7 @@ export class ParkingService {
     Adjusts the parking spots in the database
 
     Throws: 
-    ExternalError
-    InvalidCommand
-
-    Returns: the free'd up parking
+    Returns: a bool for now
 
     Status: Done
     */

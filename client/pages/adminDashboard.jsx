@@ -422,7 +422,6 @@ const AdminDashboard = () => {
                             </div>
                         </div>
                     </div>
-   {/* **************************************************************************************************** */}
                     <h1 className="flex flex-col items-center justify-center space-x-3 text-2xl font-bold lg:flex-row">
                         <span className="mr-3 text-xl text-primary md:text-3xl">
                             <MdBlock />
@@ -453,12 +452,6 @@ const AdminDashboard = () => {
                             )}
                         </div>
                     </h1>
-
-                    {/* **************************************************************************************************** */}
-
-
-
-
 
 
 
@@ -513,7 +506,6 @@ const AdminDashboard = () => {
                                 </div>
                             </div>
                         </div>
-                    {/* **************************************************************************************************** */}
 
                         <div className="card bg-base-200">
                             <div className="card-body">
@@ -555,8 +547,6 @@ const AdminDashboard = () => {
                             </div>
                         </div>
                     </div>
-                    {/* **************************************************************************************************** */}
-
                 </div>
             </div>
 
@@ -580,10 +570,6 @@ const AdminDashboard = () => {
                     </div>
                 </div>
             </div>
-
-
-              {/* **************************************************************************************************** */}
-
             <input
                 type="checkbox"
                 id="visitor-modal"
