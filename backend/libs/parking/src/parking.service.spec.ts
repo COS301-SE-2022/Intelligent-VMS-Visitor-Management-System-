@@ -16,6 +16,7 @@ import { GetInviteQuery } from '@vms/visitor-invite/queries/impl/getInvite.query
 import { Invite } from '@vms/visitor-invite/schema/invite.schema';
 import { GetInviteReservationQuery } from './queries/impl/getInviteReservation.query';
 import { ParkingReservation } from './models/reservation.model';
+
 import { GetParkingReservationsQuery } from './queries/impl/getParkingReservations.query';
 import { AddParkingCommand } from './commands/impl/addParking.command';
 import { CreateNParkingSpotsCommand } from './commands/impl/createNParkingSpots.command';
@@ -42,6 +43,9 @@ describe('ParkingService', () => {
   const queryBusMock = {
       execute: jest.fn((query: IQuery) => {
             if(query instanceof getTotalAvailableParkingQuery) {
+                return 8;
+            } else
+            if(query instanceof getTotalParkingQuery) {
                 return 8;
             } else
             if(query instanceof getAvailableParkingQuery) {
