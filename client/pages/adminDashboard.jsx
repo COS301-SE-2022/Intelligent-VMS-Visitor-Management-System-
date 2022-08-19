@@ -190,6 +190,9 @@ const AdminDashboard = () => {
         if (numParkingSpotsAvailable !== initialNumParkingSpots) {
             setInitialNumParkingSpots(numParkingSpotsAvailable);
             adjustParkingMutation();
+            setNumParkingSpotsAvailableToday(
+                numParkingSpotsAvailable - parkingDateMap.get(parkingStartDate)
+            );
         }
 
         setRestrictionsChanged(false);
