@@ -5,6 +5,7 @@ import {
     PointElement,
     LineElement,
     Title,
+    Filler,
     Tooltip,
     Legend,
 } from "chart.js";
@@ -17,6 +18,7 @@ ChartJS.register(
     PointElement,
     LineElement,
     Title,
+    Filler,
     Tooltip,
     Legend
 );
@@ -24,6 +26,18 @@ ChartJS.register(
 const LineChart = ({ chartRef, labelvals, datavals, datalabels }) => {
     const options = {
         responsive: true,
+        scales: {
+            x: {
+                grid: {
+                    display: false,
+                },
+            },
+            y: {
+                grid: {
+                    display: false,
+                },
+            },
+        },
         plugins: {
             legend: {
                 position: "top",
@@ -31,17 +45,28 @@ const LineChart = ({ chartRef, labelvals, datavals, datalabels }) => {
         },
     };
 
-    const colours = ["white","gray"];
+    const style = getComputedStyle(document.body);
+    const primary = style.getPropertyValue("--p");
+    const primaryContent = style.getPropertyValue("--pf");
+    const secondary = style.getPropertyValue("--s");
+    const secondaryContent = style.getPropertyValue("--sf");
+    const tertiary = style.getPropertyValue("--a");
+    const tertiaryContent = style.getPropertyValue("--af");
+
+    const colours = [primary, secondary, tertiary];
+    const coloursBorders = [primaryContent, secondaryContent, tertiaryContent];
 
     const labels = labelvals;
 
-    const datasets = datavals.map((dataSet,idx) => {
+    const datasets = datavals.map((dataSet, idx) => {
         return {
-            label: `${datalabels ? datalabels[idx] : "Data Set " + (idx+1)}`,
-            lineTension: 0.2,
+            label: `${datalabels ? datalabels[idx] : "Data Set " + (idx + 1)}`,
+            lineTension: 0.5,
             data: dataSet,
-            borderColor: colours[idx],
-            backgroundColor: colours[idx],
+            borderColor: `hsl(${colours[idx]})`,
+            backgroundColor: `hsl(${
+                coloursBorders[idx % coloursBorders.length]
+            })`,
             borderWidth: 2,
         };
     });

@@ -14,6 +14,7 @@ import { CurrentUser } from "@vms/auth/decorators/CurrentUserDecorator.decorator
 import { RolesGuard } from "@vms/user/guards/roles.guard";
 import { Roles } from "@vms/user/decorators/roles.decorator";
 import { PredictedInviteData } from "./models/predictedInviteData.model";
+import { Visitor } from "./models/visitor.model";
 
 @UseGuards(GqlAuthGuard)
 @Resolver((of) => {return Invite})
@@ -159,6 +160,13 @@ export class VisitorInviteResolver {
     @Query((returns) => {return [PredictedInviteData]})
     async getPredictedInviteData(@Args("startDate") startDate: string, @Args("endDate") endDate: string) {
         return await this.visitorInviteService.getPredictedInviteData(startDate, endDate);
+    }
+
+    // Get Visitors for user
+    @UseGuards(GqlAuthGuard)
+    @Query((returns) => {return [Visitor]}, { name: "getVisitors" })
+    async getVisitors(@Args("email") email: string) {
+        return await this.visitorInviteService.getVisitors(email);
     }
 
 }
