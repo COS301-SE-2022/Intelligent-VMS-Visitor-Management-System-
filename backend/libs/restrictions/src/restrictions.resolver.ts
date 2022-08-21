@@ -28,9 +28,9 @@ export class RestrictionResolver {
     }
 
     @UseGuards(GqlAuthGuard)
-    @Query((returns) => {return Restriction}, { name: "getNumInvitesPerResident"})
+    @Query((returns) => {return Restriction}, { name: "getCurfewTime"})
     async getCurfewTime() {
-        return this.restrictionsService.getNumInvitesPerResident();
+        return this.restrictionsService.getCurfewTime();
     }
 
     @UseGuards(GqlAuthGuard, RolesGuard)
