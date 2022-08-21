@@ -16,7 +16,7 @@ import { GetNumInvitesQueryHandler } from "./queries/handlers/getNumInvitesQuery
         CqrsModule,
         MongooseModule.forFeature([{ name: Restriction.name, schema: RestrictionSchema }]),
     ],
-  providers: [RestrictionsService, RestrictionResolver, SetNumInvitesCommandHandler, GetNumInvitesQueryHandler],
+  providers: [RestrictionsService, RestrictionResolver, SetNumInvitesCommandHandler, GetNumInvitesQueryHandler, SetCurfewTimeHandler, GetCurfewTimeHandler],
   exports: [RestrictionsService],
 })
 export class RestrictionsModule {}
