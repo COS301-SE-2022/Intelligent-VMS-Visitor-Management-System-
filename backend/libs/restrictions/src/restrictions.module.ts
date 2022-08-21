@@ -9,6 +9,8 @@ import { RestrictionsService } from './restrictions.service';
 import { RestrictionResolver } from './restrictions.resolver';
 import { SetNumInvitesCommandHandler } from "./commands/handlers/setNumInvitesCommand.handler";
 import { GetNumInvitesQueryHandler } from "./queries/handlers/getNumInvitesQuery.handler";
+import { SetCurfewTimeHandler } from "./commands/handlers/setCurfewTime.handler";
+import { GetCurfewTimeQueryHandler } from "./queries/handlers/getCurfewTimeQuery.handler";
 
 @Module({
     imports: [
@@ -16,7 +18,7 @@ import { GetNumInvitesQueryHandler } from "./queries/handlers/getNumInvitesQuery
         CqrsModule,
         MongooseModule.forFeature([{ name: Restriction.name, schema: RestrictionSchema }]),
     ],
-  providers: [RestrictionsService, RestrictionResolver, SetNumInvitesCommandHandler, GetNumInvitesQueryHandler, SetCurfewTimeHandler, GetCurfewTimeHandler],
+  providers: [RestrictionsService, RestrictionResolver, SetNumInvitesCommandHandler, GetNumInvitesQueryHandler, SetCurfewTimeHandler, GetCurfewTimeQueryHandler],
   exports: [RestrictionsService],
 })
 export class RestrictionsModule {}
