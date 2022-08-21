@@ -27,4 +27,17 @@ export class RestrictionResolver {
         return this.restrictionsService.setNumInvitesPerResident(numInvites);
     }
 
+    @UseGuards(GqlAuthGuard)
+    @Query((returns) => {return Restriction}, { name: "getNumInvitesPerResident"})
+    async getCurfewTime() {
+        return this.restrictionsService.getNumInvitesPerResident();
+    }
+
+    @UseGuards(GqlAuthGuard, RolesGuard)
+    @Roles("admin")
+    @Mutation((returns) => {return Restriction}, { name: "setCurfewTime"})
+    async setCurfewTime(@Args("curfewTime") curfewTime: number) {
+        return this.restrictionsService.setCurfewTime(curfewTime);
+    }
+
 }
