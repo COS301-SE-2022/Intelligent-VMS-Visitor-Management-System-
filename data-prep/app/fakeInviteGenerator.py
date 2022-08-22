@@ -175,11 +175,23 @@ def createInvites(startDate,endDate,maxResidents):
                         }, 1, 0
                     ]
                 }
-            },
-            'numParking': 0
+            }
         }
     }, {
         '$out': 'groupinvites'
+    }
+    ])
+
+    parkingReservationCollection.aggregate([
+    {
+        '$group': {
+            '_id': '$reservationDate', 
+            'numParkings': {
+                '$sum': 1
+            }
+        }
+    }, {
+        '$out': 'groupparkingreservations'
     }
     ])
 

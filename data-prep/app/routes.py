@@ -2,7 +2,7 @@ from app import app,APP_ROOT
 from flask import request
 from app.fakeInviteGenerator import createInvites,resetInviteHistory
 
-from app.model import predictMany,train,featureAnalysis
+from app.model import predictMany,train,visitorFeatureAnalysis,parkingFeatureAnalysis
 
 @app.route("/")
 def home():
@@ -14,9 +14,13 @@ def predict():
     endDate = request.args.get('endDate')
     return predictMany(startDate,endDate)
 
-@app.route("/featureAnalysis")
-def fAnalysis():
-    return featureAnalysis()
+@app.route("/visitorFeatureAnalysis")
+def vFeatureAnalysis():
+    return visitorFeatureAnalysis()
+
+@app.route("/parkingFeatureAnalysis")
+def pFeatureAnalysis():
+    return parkingFeatureAnalysis()
 
 @app.route("/train")
 def training():

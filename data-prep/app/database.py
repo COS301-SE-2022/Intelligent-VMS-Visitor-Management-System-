@@ -9,5 +9,6 @@ db = client["vms"]
  
 invitesCollection = db["invites"]
 groupInvitesCollection = db["groupinvites"]
+groupParkingReservationsCollection = db["groupParkingReservations"]
 parkingReservationCollection = db["parkingreservations"]
 trayCollection = db["trays"]
