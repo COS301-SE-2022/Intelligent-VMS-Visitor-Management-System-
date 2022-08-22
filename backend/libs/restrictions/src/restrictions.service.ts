@@ -21,8 +21,8 @@ export class RestrictionsService {
     }
 
     // Set the number of invites a resident may have sent/open at once
-    async setCurfewTime(numInvites: number) {
-        return this.commandBus.execute(new SetCurfewTimeCommand(numInvites));
+    async setCurfewTime(curfewTime: number) {
+        return this.commandBus.execute(new SetCurfewTimeCommand(curfewTime));
     }
 
     // Set the number of invites a resident may have sent/open at once
