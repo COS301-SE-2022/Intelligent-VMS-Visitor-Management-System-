@@ -579,7 +579,7 @@ const AdminDashboard = () => {
                             <label className="text-xs font-semibold inline-block py-1 px-2 uppercase rounded uppercase last:mr-0 mr-1">Curfew time</label>
                             <input type="number" id="curfewTimeInput"  placeholder="0000"
                             onChange={(e) => {
-                                setCurfewTime(e.currentTarget.value);
+                                setCurfewTime(e.target.value);
                             }}/>
                         </div>
                     </div>
