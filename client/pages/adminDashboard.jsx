@@ -189,7 +189,7 @@ const AdminDashboard = () => {
     const cancelRestrictions = () => {
         setNumInvitesPerResident(initialNumInvitesPerResident);
         setNumParkingSpotsAvailable(initialNumParkingSpots);
-        
+        setInitialCurfewTime(initialCurfewTime);
         setRestrictionsChanged(false);
     };
 
@@ -201,6 +201,11 @@ const AdminDashboard = () => {
 
         if (numParkingSpotsAvailable !== initialNumParkingSpots) {
             setInitialNumParkingSpots(numParkingSpotsAvailable);
+        }
+
+        if(curfewTime !== initialCurfewTime){
+            setInitialCurfewTime(curfewTime);
+            setCurfewTimeMutation();
         }
 
         setRestrictionsChanged(false);
