@@ -322,7 +322,7 @@ const AdminDashboard = () => {
         setParkingVals,
         setNumParkingSpotsAvailable,
         numInvitesPerResidentQuery,
-        CurfewTimeQuery
+        CurfewTimeQuery,
     ]);
 
     useEffect(() => {
