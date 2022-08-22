@@ -107,6 +107,7 @@ type Query {
   isParkingAvailable(startDate: String!): Boolean!
   getNumberOfReservations(startDate: String!): Float!
   getNumInvitesPerResident: Restriction!
+  getCurfewTime: Restriction!
   helloResident: String!
   helloReceptionist: String!
 }
@@ -127,6 +128,7 @@ type Mutation {
   freeParking(parkingNumber: Float!): Parking!
   createNParkingSpots(N: Float!): Boolean!
   setNumInvitesPerResident(numInvites: Float!): Restriction!
+  setCurfewTime(curfewTime: Float!): Restriction!
   signOut(inviteID: String!): Float!
   signIn(inviteID: String!, notes: String!, time: String!): Float!
   bulkSignIn(file: String!, userEmail: String!): BSIdata!
