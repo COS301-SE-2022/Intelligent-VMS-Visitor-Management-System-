@@ -573,6 +573,13 @@ const AdminDashboard = () => {
                             </div>
                         </div>
                     </div>
+                    <div>
+                        <div>
+                            {/* qwertyuiop */}
+                            <label for="curfewTimeInput" class="">Curfew time</label>
+                            <input type="number" id="curfewTimeInput" class="" placeholder="" required/>
+                        </div>
+                    </div>
                 </div>
             </div>
 
