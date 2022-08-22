@@ -20,12 +20,12 @@ export class RestrictionsService {
         return await this.queryBus.execute(new GetNumInvitesQuery());
     }
 
-    // Set the number of invites a resident may have sent/open at once
+    // Set the curfew
     async setCurfewTime(curfewTime: number) {
         return this.commandBus.execute(new SetCurfewTimeCommand(curfewTime));
     }
 
-    // Set the number of invites a resident may have sent/open at once
+    // Get the curfew
     async getCurfewTime() {
         return await this.queryBus.execute(new GetCurfewTimeQuery());
     }
