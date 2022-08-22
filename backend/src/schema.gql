@@ -107,6 +107,7 @@ type Query {
   isParkingAvailable(startDate: String!): Boolean!
   getNumberOfReservations(startDate: String!): Float!
   getNumInvitesPerResident: Restriction!
+  getCurfewTime: Restriction!
   helloResident: String!
   helloReceptionist: String!
 }
