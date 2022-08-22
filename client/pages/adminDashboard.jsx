@@ -303,6 +303,18 @@ const AdminDashboard = () => {
             setInitialNumInvitesPerResident(numInvitesPerResident);
         } else if (numInvitesPerResident.error) {
         }
+        
+        //Curfew time
+        if (
+            !CurfewTimeQuery.loading &&
+            !CurfewTimeQuery.error
+        ) {
+            setNumInvitesPerResident(
+                CurfewTimeQuery.data.getCurfewTime.value
+            );
+            setInitialNumInvitesPerResident(curfewTime);
+        } else if (curfewTime.error) {
+        }
     }, [
         numInvitesQuery,
         numInviteInDateRangeQuery,
