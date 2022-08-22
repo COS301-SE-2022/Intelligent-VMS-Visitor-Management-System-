@@ -79,6 +79,9 @@ const AdminDashboard = () => {
     const [initialNumInvitesPerResident, setInitialNumInvitesPerResident] =
         useState(1);
 
+        const [initialCurfewTime, setInitialCurfewTime] =
+        useState(1);
+
     const [initialNumParkingSpots, setInitialNumParkingSpots] = useState(0);
 
     const [numParkingSpotsAvailableToday, setNumParkingSpotsAvailableToday] =
@@ -110,8 +113,17 @@ const AdminDashboard = () => {
         }
     `);
 
+    const CurfewTimeQuery = useQuery(gql`
+        query {
+            getCurfewTime {
+                value
+            }
+        }
+    `);
+
     // Number of invites per resident state
     const [numInvitesPerResident, setNumInvitesPerResident] = useState(1);
+    const [curfewTime, setCurfewTime] = useState(1);
 
     const numInvitesQuery = useQuery(gql`
         query {
@@ -165,9 +177,19 @@ const AdminDashboard = () => {
         }
     `);
 
+    const [setCurfewTimeMutation, { data1, loading1, error1 }] =
+        useMutation(gql`
+        mutation {
+          setCurfewTime(curfewTime: ${curfewTime}) {
+            value
+          }
+        }
+    `);
+
     const cancelRestrictions = () => {
         setNumInvitesPerResident(initialNumInvitesPerResident);
         setNumParkingSpotsAvailable(initialNumParkingSpots);
+        
         setRestrictionsChanged(false);
     };
 
