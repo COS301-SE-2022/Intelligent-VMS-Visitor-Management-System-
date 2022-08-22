@@ -169,5 +169,12 @@ export class VisitorInviteResolver {
         return await this.visitorInviteService.getVisitors(email);
     }
 
+    // Get Visitors suggestions for user
+    @UseGuards(GqlAuthGuard)
+    @Query((returns) => {return [Visitor]}, { name: "getSuggestions" })
+    async getSuggestions(@Args("date") date: string, @Args("userEmail") userEmail: string) {
+        return await this.visitorInviteService.getSuggestions(date,userEmail);
+    }
+
 }
 

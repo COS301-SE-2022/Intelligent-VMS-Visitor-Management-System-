@@ -3,16 +3,22 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { gql, useLazyQuery } from "@apollo/client";
 import { HiEmojiSad } from "react-icons/hi";
+import useAuth from "../store/authStore.js";
 
 const VisitorSuggestions = ({ date }) => {
 
     const [suggestionData, setSuggestionsData] = useState([]);
 
+    // Get Data From JWT Token
+    const jwtTokenData = useAuth((state) => {
+        return state.decodedToken;
+    })();
+
     const router = useRouter();
     const [suggestionQuery, { loading, error, data }] = useLazyQuery(
         gql`
         query {
-            getSuggestions( date: "${date}" ) {
+            getSuggestions( date: "${date}", userEmail: "${jwtTokenData.email}" ) {
                 email
                 name
             }
@@ -60,7 +66,7 @@ const VisitorSuggestions = ({ date }) => {
                                     <div className="text-xs">{visitor.email}</div>
                                 </div>
                             </div>
-                        )
+                        )  
                     })}
                     <button className="button text-xs m-2">Show More</button>
                 </div>

@@ -295,6 +295,22 @@ export class VisitorInviteService {
 
     }
 
+    async getSuggestions(date: string, userEmail: string){
+        let visitors = await this.queryBus.execute(new GetVisitorsQuery(userEmail));
+        let output = [];
+        let i = 0;
+
+        const pYes = 0;
+        const pNo = 0;
+
+        for(let visitor in visitors){
+        if(pYes > pNo)
+            output[i] = visitor;
+            i++;
+            
+        }
+    }
+
     /* CRON JOBS */
     @Cron("50 23 * * *")
     async groupInvites() {
