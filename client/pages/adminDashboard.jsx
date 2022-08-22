@@ -79,8 +79,7 @@ const AdminDashboard = () => {
     const [initialNumInvitesPerResident, setInitialNumInvitesPerResident] =
         useState(1);
 
-        const [initialCurfewTime, setInitialCurfewTime] =
-        useState(1);
+    const [initialCurfewTime, setInitialCurfewTime] = useState(1);
 
     const [initialNumParkingSpots, setInitialNumParkingSpots] = useState(0);
 
