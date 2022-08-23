@@ -308,10 +308,10 @@ const AdminDashboard = () => {
             !CurfewTimeQuery.loading &&
             !CurfewTimeQuery.error
         ) {
-            setNumInvitesPerResident(
+            setCurfewTime(
                 CurfewTimeQuery.data.getCurfewTime.value
             );
-            setInitialNumInvitesPerResident(curfewTime);
+            setInitialCurfewTime(curfewTime);
         } else if (curfewTime.error) {
         }
     }, [
@@ -592,7 +592,10 @@ const AdminDashboard = () => {
                             <input type="number" id="curfewTimeInput"  placeholder="0000"
                             onChange={(e) => {
                                 setCurfewTime(e.target.value);
-                            }}/>
+                                setRestrictionsChanged(true);
+                                //alert(e.target.value);
+                            }}
+                            />
                         </div>
                     </div>
                 </div>
