@@ -202,7 +202,7 @@ const AdminDashboard = () => {
             setInitialNumParkingSpots(numParkingSpotsAvailable);
         }
 
-        if(curfewTime !== initialCurfewTime){
+        if (curfewTime !== initialCurfewTime) {
             setInitialCurfewTime(curfewTime);
             setCurfewTimeMutation();
         }
@@ -302,7 +302,7 @@ const AdminDashboard = () => {
             setInitialNumInvitesPerResident(numInvitesPerResident);
         } else if (numInvitesPerResident.error) {
         }
-        
+
         //Curfew time
         if (
             !CurfewTimeQuery.loading &&
@@ -518,7 +518,7 @@ const AdminDashboard = () => {
                                                 numInvitesPerResident > 1 &&
                                                     setNumInvitesPerResident(
                                                         numInvitesPerResident -
-                                                            1
+                                                        1
                                                     );
                                                 setRestrictionsChanged(true);
                                             }}
@@ -549,7 +549,7 @@ const AdminDashboard = () => {
                                                 onClick={() => {
                                                     setNumParkingSpotsAvailable(
                                                         numParkingSpotsAvailable +
-                                                            1
+                                                        1
                                                     );
                                                     setRestrictionsChanged(
                                                         true
@@ -571,7 +571,7 @@ const AdminDashboard = () => {
                                                         0 &&
                                                         setNumParkingSpotsAvailable(
                                                             numParkingSpotsAvailable -
-                                                                1
+                                                            1
                                                         );
                                                     setRestrictionsChanged(
                                                         true
@@ -586,16 +586,29 @@ const AdminDashboard = () => {
                         </div>
                     </div>
                     <div>
-                        <div>
+                        <div className="flex flex-col items-center justify-center space-x-3 text-2xl font-bold lg:flex-row">
                             {/* qwertyuiop */}
-                            <label className="text-xs font-semibold inline-block py-1 px-2 uppercase rounded uppercase last:mr-0 mr-1">Curfew time</label>
-                            <input type="number" id="curfewTimeInput"  placeholder="0000"
-                            onChange={(e) => {
-                                setCurfewTime(e.target.value);
-                                setRestrictionsChanged(true);
-                                //alert(e.target.value);
-                            }}
-                            />
+                            <div className="grid grid-cols-1 gap-1">
+                                <h3 className="font-semibold inline-block py-1 px-2 uppercase rounded uppercase last:mr-0 mr-1">Curfew time</h3>
+                                <div className="grid grid-cols-3 column-gap: 50px">
+                                    <input type="number" id="curfewTimeInput" placeholder="00"
+                                        onChange={(e) => {
+                                            setCurfewTime(e.target.value);
+                                            setRestrictionsChanged(true);
+                                            //console.log(e.target.value);
+                                            //alert(e.target.value);
+                                        }}
+                                    />
+                                    {/* <h1>:</h1> 
+                                     <input type="number" id="curfewTimeInput" placeholder="00"
+                                        onChange={(e) => {
+                                            setCurfewTime(e.target.value);
+                                            setRestrictionsChanged(true);
+                                            //alert(e.target.value);
+                                        }}
+                                    /> */}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
