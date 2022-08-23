@@ -18,6 +18,7 @@ export class ReserveParkingCommandHandler implements ICommandHandler<ReservePark
     parkingReservation.invitationID = invitationID;
     parkingReservation.parkingNumber = parkingNumber;
     parkingReservation.reservationDate = reservationDate;
+    parkingReservation.activated = false;
 
     return await this.parkingReservationModel.create(parkingReservation);
 

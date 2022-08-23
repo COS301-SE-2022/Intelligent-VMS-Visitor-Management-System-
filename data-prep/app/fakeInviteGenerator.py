@@ -2,9 +2,10 @@ import uuid
 import random
 from faker import Faker
 from faker.providers import DynamicProvider
+from datetime import datetime
+
 from app.database import invitesCollection,groupInvitesCollection,parkingReservationCollection, trayCollection
 from app.holidaysSA import ourHolidays
-from datetime import datetime
 
 global fake
 global invites
@@ -51,7 +52,7 @@ def createVisitation(resident_email,visitor_email,visitor_name,id_num,invite_dat
   invite_id = str(uuid.uuid1())
   req_parking = fake.boolean()
   if(req_parking):
-    reservations.append(create_fake_parkingReservation(invite_id,invite_date))
+    reservations.append(create_fake_parkingReservation(invite_id,invite_date,fake))
   invite_state = fake.state()
   if(invite_state != "inActive"):
     trays.append(create_fake_tray(invite_id))
@@ -72,11 +73,12 @@ def create_fake_invite(invite_id,invite_state,req_parking,resident_email,visitor
       "notes": fake.notes()
   }
 
-def create_fake_parkingReservation(invite_id,resDate):
+def create_fake_parkingReservation(invite_id,resDate,fake):
     return {
         "invitationID": invite_id,
         "parkingNumber": random.randint(0,35),
-        "reservationDate": resDate.strftime("%Y-%m-%d")
+        "reservationDate": resDate.strftime("%Y-%m-%d"),
+        "activated": fake.boolean()
     }
 
 def create_fake_tray(invite_id):
@@ -93,6 +95,8 @@ def createInvites(startDate,endDate,maxResidents):
 
     invites = []
     reservations = []
+
+    createVisitation(fake.email(),fake.email(),fake.name(),fake.msisdn(),startDate,fake.relation(),invites,fake,trays,reservations)
     for i in range(1,maxResidents):
         userEmail = fake.email()
         for i in range(1,45):
@@ -169,8 +173,13 @@ def createInvites(startDate,endDate,maxResidents):
                 '$sum': {
                     '$cond': [
                         {
-                            '$eq': [
-                                '$inviteState', 'signedOut'
+                            '$and' : [ 
+                                {'$ne': [
+                                '$inviteState', 'inActive'
+                                ]},
+                                {'$ne': [
+                                '$inviteState', 'cancelled'
+                                ]}
                             ]
                         }, 1, 0
                     ]
@@ -187,7 +196,16 @@ def createInvites(startDate,endDate,maxResidents):
         '$group': {
             '_id': '$reservationDate', 
             'numParkings': {
-                '$sum': 1
+                '$sum': {
+                    '$cond': [
+                        {
+                            '$eq': [
+                                '$activated', True
+                            ]
+
+                        }, 1, 0
+                    ]
+                }
             }
         }
     }, {
