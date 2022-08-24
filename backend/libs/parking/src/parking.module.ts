@@ -30,6 +30,9 @@ import { getDisabledParkingQueryHandler } from './queries/handlers/getDisabledPa
 
 import { VisitorInviteModule} from '@vms/visitor-invite';
 
+import { getAvailableParkingQueryHandler } from './queries/handlers/getAvailableParkingQuery.handler';
+import { ActivateReservationCommandHandler } from './commands/handlers/activateReservationCommand.handler';
+
 
 @Module({
   imports: [
@@ -51,6 +54,7 @@ import { VisitorInviteModule} from '@vms/visitor-invite';
     AssignParkingCommandHandler,
     UnreserveParkingCommandHandler,
     AddParkingCommandHandler,
+    ActivateReservationCommandHandler,
     GetNumberOfReservationsQueryHandler,
     RemoveParkingCommandHandler,
     getTotalAvailableParkingQueryHandler,

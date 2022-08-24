@@ -27,6 +27,7 @@ import { GetParkingQuery } from "./queries/impl/getParking.query";
 import { GetReservationsByDateQuery } from "./queries/impl/getReservationsByDate.query";
 import { InvalidCommand } from "./errors/invalidCommand.error";
 import { GetNumberOfReservationsQuery } from "./queries/impl/getNumberOfReservations.query";
+import { ActivateReservationCommand } from "./commands/impl/activateReservation.command";
 
 @Injectable()
 export class ParkingService {
@@ -179,6 +180,12 @@ export class ParkingService {
                 reservation.parkingNumber,
             ),
         );
+
+        await this.commandBus.execute(
+            new ActivateReservationCommand(
+                reservation._id
+            )
+        )
 
         if (parking) return parking;
         else throw new ExternalError("Error outside the parking.service");
