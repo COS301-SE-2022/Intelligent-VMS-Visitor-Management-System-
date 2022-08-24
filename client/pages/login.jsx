@@ -3,13 +3,13 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Formik } from "formik";
 import { gql, useMutation } from "@apollo/client";
+import { alert } from "react-custom-alert";
 
 import { AiOutlineKey, AiFillLock } from "react-icons/ai";
 
 import useAuth from "../store/authStore";
 
 import Layout from "../components/Layout";
-import ErrorAlert from "../components/ErrorAlert";
 
 const Login = () => {
     const login = useAuth((state) => {
@@ -74,7 +74,7 @@ const Login = () => {
 
     return (
         <Layout>
-            <div className="relative flex h-full min-h-[80vh] w-full flex-col items-center justify-center overflow-hidden">
+            <div className="relative flex h-full min-h-[80vh] w-full flex-col items-center justify-center overflow-hidden pb-3">
                 <Formik
                     initialValues={{ email: "", password: "" }}
                     validate={(values) => {
@@ -119,21 +119,20 @@ const Login = () => {
 
                                 // Add token to store
                                 login(token);
-                                
+
                                 const permission = decodedToken().permission;
 
-                                if(permission === 2) {
+                                if (permission === 2) {
                                     router.push("/createInvite");
-                                } else if(permission === 1) {
+                                } else if (permission === 1) {
                                     router.push("/receptionistDashboard");
-                                } else if(permission === 0) {
-                                    router.push("/adminDashboard");     
+                                } else if (permission === 0) {
+                                    router.push("/adminDashboard");
                                 }
                             })
                             .catch((err) => {
-                                setShowErrorAlert(true);
                                 setSubmitting(false);
-                                setErrorMessage(err.message);
+                                alert({ message: err.message, type: "error" });
                             });
                     }}
                 >
@@ -217,11 +216,6 @@ const Login = () => {
                         );
                     }}
                 </Formik>
-
-                <ErrorAlert
-                    message={errorMessage}
-                    showConditon={showErrorAlert}
-                />
             </div>
         </Layout>
     );

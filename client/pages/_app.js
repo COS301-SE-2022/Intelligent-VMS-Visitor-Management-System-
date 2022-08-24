@@ -2,22 +2,32 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
+import { AlertContainer } from "react-custom-alert";
 
 import Layout from "../components/Layout";
 
 import useAuth from "../store/authStore";
 
 import "../styles/globals.css";
+import "react-custom-alert/dist/index.css";
 
 function MyApp({ Component, pageProps }) {
     const router = useRouter();
 
+    const alertStyle = {
+        boxShadow: "none",
+        background: "hsl(var(--nc))",
+        color: "white",
+    };
+
     const access_token = useAuth((state) => {
         return state.access_token;
     });
+
     const permission = useAuth((state) => {
         return state.permission;
     })();
+
     const client = new ApolloClient({
         uri: process.env.BACKEND_GRAPHQL_URL,
         cache: new InMemoryCache(),
@@ -73,6 +83,7 @@ function MyApp({ Component, pageProps }) {
                 />
             </Head>
             <Component {...pageProps} />
+            <AlertContainer floatingTime={5000} alertStyle={alertStyle} />
         </ApolloProvider>
     );
 }

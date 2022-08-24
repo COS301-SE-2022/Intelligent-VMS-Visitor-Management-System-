@@ -14,7 +14,7 @@ const QRScanner = ({
     setSearch,
     todayString,
     setErrorMessage,
-    setShowErrorAlert
+    setShowErrorAlert,
 }) => {
     //ApolloClient
     const client = useApolloClient();
@@ -47,39 +47,33 @@ const QRScanner = ({
             `,
             })
             .then((res) => {
-
                 var invites = res.data.getInvitesByIDForSearch;
 
                 //TODO (Larisa): this might be affected by the invite extension
-                if(invites.inviteDate !== todayString){
+                if (invites.inviteDate !== todayString) {
                     setErrorMessage("Invite is not scheduled for today.");
-                    setShowErrorAlert(true);       
+                    setShowErrorAlert(true);
                 } else {
-
-                    if(invites.inviteState === "signedOut"){
+                    if (invites.inviteState === "signedOut") {
                         setErrorMessage("Invite already signed out!");
                         setShowErrorAlert(true);
                     } else {
-
                         setShowScanner(false);
-                        setCurrentVisitData(res.data.getInvitesByIDForSearch)
-                        
+                        setCurrentVisitData(res.data.getInvitesByIDForSearch);
+
                         //creating an array of 1 element to send to VisitorData
                         const visitor = [];
                         visitor.push(res.data.getInvitesByIDForSearch);
                         setVisitorData(visitor);
 
-                        console.log(invites.inviteState)
-                        if(invites.inviteState === "inActive"){         
+                        console.log(invites.inviteState);
+                        if (invites.inviteState === "inActive") {
                             setShowSignInModal(true);
-                        } else if(invites.inviteState === "signedIn"){
+                        } else if (invites.inviteState === "signedIn") {
                             setShowSignOutModal(true);
                         }
-
                     }
-                
                 }
-                
             })
             .catch((err) => {
                 console.log(err);
@@ -121,7 +115,7 @@ const QRScanner = ({
                                     }
                                 } catch (error) {
                                     setErrorMessage("Invalid QR Code");
-                                    setShowErrorAlert(true);  
+                                    setShowErrorAlert(true);
                                 }
                             } else if (error) {
                                 if (error.name === "NotFoundError") {
@@ -138,10 +132,9 @@ const QRScanner = ({
                     </p>
                 </div>
             )}
-
-      <div class="flex mt-3 justify-center">
-        <span class="fill-current text-error w-6 h-full align-middle fill-bg-error"><TiWarning size="lg" color="bg-error"/></span>
-        <p class="ml-2 font-bold text-error">Ensure that QR Code is visible</p>
+      <div className="flex mt-3 justify-center">
+        <span className="fill-current text-error w-6 h-full align-middle fill-bg-error"><TiWarning size="lg" color="bg-error"/></span>
+        <p className="ml-2 font-bold text-error">Ensure that QR Code is visible</p>
       </div>
         </div>
     );

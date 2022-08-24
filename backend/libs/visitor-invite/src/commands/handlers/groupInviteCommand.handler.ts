@@ -12,6 +12,6 @@ export class CreateGroupInviteCommandHandler implements ICommandHandler {
 
     async execute(command: CreateGroupInviteCommand): Promise<any> {
         const { date, numInvites, numVisitors } = command;
-        return this.inviteModel.create({date: date, numInvites: numInvites, numVisitors: numVisitors});
+        return this.inviteModel.create({_id: date, numInvites: numInvites, numVisitors: numVisitors});
     }
 }

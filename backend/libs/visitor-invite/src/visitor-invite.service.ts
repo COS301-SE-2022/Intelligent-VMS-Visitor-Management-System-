@@ -17,6 +17,7 @@ import { GetInvitesByNameQuery } from "./queries/impl/getInvitesByName.query";
 import { GetInvitesInRangeByEmailQuery } from "./queries/impl/getInvitesInRangeByEmail.query";
 import { GetTotalNumberOfInvitesVisitorQuery } from "./queries/impl/getTotalNumberOfInvitesVisitor.query";
 import { GetNumberOfOpenInvitesQuery } from "./queries/impl/getNumberOfOpenInvites.query";
+import { GetVisitorsQuery } from "./queries/impl/getVisitors.query";
 
 import { GetInvitesByDateQuery } from "./queries/impl/getInvitesByDate.query";
 
@@ -101,7 +102,7 @@ export class VisitorInviteService {
             await this.parkingService.reserveParking(inviteID);
         }
 
-        const info = await this.mailService.sendInvite(visitorEmail, userEmail, inviteID, idDocType, requiresParking);
+        const info = await this.mailService.sendInvite(visitorEmail, userEmail, inviteID, idDocType, requiresParking, inviteDate);
         return info.messageId;
     }
 
@@ -170,11 +171,12 @@ export class VisitorInviteService {
 
         // Check if it exists
         if(inviteToDelete) {
-
-            // TODO: Might need to change this to allow admin/receptionist to revoke invites
-            // Check that the invite belongs to the user that is issuing the request
             if(inviteToDelete.userEmail === email) {
                 await this.parkingService.unreserveParking(inviteID);
+                this.mailService.sendCancelNotice(inviteToDelete.visitorEmail,
+                                                  inviteToDelete.visitorName,
+                                                  inviteToDelete.inviteDate,
+                                                  inviteToDelete.userEmail);
                 return await this.commandBus.execute(new CancelInviteCommand(inviteID));
             } else {
                 throw new InviteNotFound(`Invite was not issued by: ${email}`);
@@ -267,6 +269,11 @@ export class VisitorInviteService {
         return await this.queryBus.execute(new GetTotalNumberOfInvitesVisitorQuery(email));
     }
 
+    // Get Visitors for User
+    async getVisitors(email: string) {
+        return await this.queryBus.execute(new GetVisitorsQuery(email));
+    }
+
     // Get predicted number of invites in range
     async getPredictedInviteData(startDate: string, endDate: string) {
         const cachedPredictedInvites = await this.cacheManager.get("PREDICTIONS");
@@ -289,44 +296,6 @@ export class VisitorInviteService {
     }
 
     /* CRON JOBS */
-    @Cron("55 23 * * *")
-    async sendInvite() {
-        // Generate inviteID
-        const inviteID = randomUUID();
-
-        // Get current date & time
-        const now = new Date();
-        const year = now.getFullYear();
-        let month = "" + (now.getMonth() + 1);
-        let day = "" + now.getDate();
-            
-        if (month.length < 2) {
-            month = '0' + month;
-        }
-        if (day.length < 2) {
-            day = '0' + day;
-        } 
-
-        const formatDate = [year, month, day].join('-');
-
-        // Entry in db
-        for(let i = 0; i < 10; i++) {
-            await this.commandBus.execute(
-                new CreateInviteCommand(
-                    "admin@mail.com",
-                    "visitor@mail.com",
-                    "Jim",
-                    "RSA-ID",
-                    "0109195283010",
-                    formatDate,
-                    inviteID,
-                ),
-            );
-        }
-
-        await this.parkingService.reserveParking(inviteID);
-    }
-
     @Cron("50 23 * * *")
     async groupInvites() {
         // Get current date & time

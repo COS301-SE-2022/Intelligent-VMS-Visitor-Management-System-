@@ -13,8 +13,13 @@ import useAuth from "../store/authStore";
 
 import { AiOutlinePlus, AiOutlineMinus, AiOutlineCar } from "react-icons/ai";
 import { BiBuildingHouse, BiMailSend } from "react-icons/bi";
-import { FaSearch } from "react-icons/fa";
-import { MdBlock, MdDataSaverOn, MdDataSaverOff } from "react-icons/md";
+import { FaSearch, FaParking } from "react-icons/fa";
+import {
+    MdBlock,
+    MdDataSaverOn,
+    MdDataSaverOff,
+    MdOutlineCancel,
+} from "react-icons/md";
 
 // Returns string in format yyyy-mm-dd given Date Object
 const getFormattedDateString = (date) => {
@@ -37,17 +42,27 @@ const AdminDashboard = () => {
     const [numInvitesSent, setNumInvitesSent] = useState(0);
 
     // Visitor invite data object for chart
-    const [visitorVals, setVisitorVals] = useState({ data: [], labels: [], label: "Invites" });
+    const [visitorVals, setVisitorVals] = useState({
+        data: [],
+        labels: [],
+        label: "Invites",
+    });
 
     // Parking data object for chart
-    const [parkingVals, setParkingVals] = useState({ data: [], labels: [], label: "Parking" });
+    const [parkingVals, setParkingVals] = useState({
+        data: [],
+        labels: [],
+        label: "Parking",
+    });
 
     // Predicted Visitor Values
     const [predictedVisitorVals, setPredictedVisitorVals] = useState([]);
 
     // Date Range Hook
-    const [startDate, endDate, inviteDateMap, setDateMap] =
-        useDateRange(getFormattedDateString(new Date(Date.now())), 7);
+    const [startDate, endDate, inviteDateMap, setDateMap] = useDateRange(
+        getFormattedDateString(new Date(Date.now())),
+        7
+    );
 
     // Parking Date Range Hook
     const [
@@ -66,7 +81,8 @@ const AdminDashboard = () => {
 
     const [initialNumParkingSpots, setInitialNumParkingSpots] = useState(0);
 
-    const [numParkingSpotsAvailableToday, setNumParkingSpotsAvailableToday] = useState(0);
+    const [numParkingSpotsAvailableToday, setNumParkingSpotsAvailableToday] =
+        useState(0);
 
     // State to track whether the restrictions have changed
     const [restrictionsChanged, setRestrictionsChanged] = useState(false);
@@ -199,7 +215,7 @@ const AdminDashboard = () => {
             setVisitorVals({
                 data: Array.from(inviteDateMap.values()),
                 labels: Array.from(inviteDateMap.keys()),
-                label: "Invites"
+                label: "Invites",
             });
 
             setTodayInvites(inviteDateMap.get(startDate));
@@ -230,7 +246,6 @@ const AdminDashboard = () => {
                 data: Array.from(parkingDateMap.values()),
                 label: "Parking",
             });
-
         } else if (numParkingInDateRangeQuery.error) {
             console.error(numParkingInDateRangeQuery.error);
         }
@@ -240,10 +255,13 @@ const AdminDashboard = () => {
             !numParkingSpotsAvailableQuery.loading &&
             !numParkingSpotsAvailableQuery.error
         ) {
-            const numParkingspots = numParkingSpotsAvailableQuery.data.getTotalAvailableParking;
+            const numParkingspots =
+                numParkingSpotsAvailableQuery.data.getTotalAvailableParking;
             setNumParkingSpotsAvailable(numParkingspots);
             setInitialNumParkingSpots(numParkingspots);
-            setNumParkingSpotsAvailableToday(numParkingSpotsAvailable - parkingDateMap.get(parkingStartDate));
+            setNumParkingSpotsAvailableToday(
+                numParkingSpotsAvailable - parkingDateMap.get(parkingStartDate)
+            );
         } else if (numParkingSpotsAvailableQuery.error) {
             setNumParkingSpotsAvailable("Error");
         }
@@ -258,7 +276,6 @@ const AdminDashboard = () => {
             setInitialNumInvitesPerResident(numInvitesPerResident);
         } else if (numInvitesPerResident.error) {
         }
-
     }, [
         numInvitesQuery,
         numInviteInDateRangeQuery,
@@ -270,13 +287,16 @@ const AdminDashboard = () => {
     ]);
 
     useEffect(() => {
-        if(!predictedInvitesQuery.loading && !predictedInvitesQuery.error) {
-            const predictedData = predictedInvitesQuery.data.getPredictedInviteData.map((invite) => {
-                return invite.data;
-            });
+        if (!predictedInvitesQuery.loading && !predictedInvitesQuery.error) {
+            const predictedData =
+                predictedInvitesQuery.data.getPredictedInviteData.map(
+                    (invite) => {
+                        return invite.data;
+                    }
+                );
             setPredictedVisitorVals(predictedData);
         }
-    }, [predictedInvitesQuery])
+    }, [predictedInvitesQuery]);
 
     return (
         <Layout>
@@ -284,14 +304,15 @@ const AdminDashboard = () => {
                 <div className="flex flex-col items-center justify-between md:flex-row">
                     <div className="flex-col">
                         <h1 className="mt-4 mb-4 text-3xl font-bold">
-                            <span className="text-primary">Hi</span>{" "}
+                            <span className="">Hi</span>{" "}
                             <span className="text-secondary">
                                 {decodedToken.name}
                             </span>
-                            <span>
-                                👋
-                            </span>
+                            <span>👋</span>
                         </h1>
+                        <p className="text-slate-500">
+                            View and Manage System State
+                        </p>
                     </div>
 
                     <div>
@@ -320,19 +341,19 @@ const AdminDashboard = () => {
                             description="Total Number Of Invites For Today"
                             Icon={BiBuildingHouse}
                             dataval={todayInvites}
-                            unit="Total"
+                            unit="Today"
                         />
                         <AdminCard
                             description="Total Number Of Invites Sent"
                             Icon={BiMailSend}
                             dataval={numInvitesSent}
-                            unit="Total"
+                            unit="Today"
                         />
                         <AdminCard
                             description="Number Of Parking Spots Available"
                             Icon={AiOutlineCar}
                             dataval={numParkingSpotsAvailableToday}
-                            unit="Total"
+                            unit="Today"
                         />
                     </div>
 
@@ -342,17 +363,50 @@ const AdminDashboard = () => {
                             filename="visitor-forecast.png"
                             Chart={LineChart}
                             labelvals={visitorVals.labels}
-                            datavals={[visitorVals.data, predictedVisitorVals]}
-                            datalabels={[visitorVals.label, "Predicted Visitors"]}
+                            datavals={[
+                                visitorVals.data,
+                                predictedVisitorVals,
+                                parkingVals.data,
+                            ]}
+                            datalabels={[
+                                visitorVals.label,
+                                "Predicted Visitors",
+                                parkingVals.label,
+                            ]}
                         />
-                        <DownloadChart
-                            title={"Parking Forecast For The Week"}
-                            filename="parking-forecast.png"
-                            Chart={LineChart}
-                            labelvals={parkingVals.labels}
-                            datavals={[parkingVals.data]}
-                            datalabels={[parkingVals.label]}
-                        />
+                        <div className="stats stats-vertical bg-base-200 shadow">
+                            <div className="stat">
+                                <div className="stat-figure">
+                                    <MdOutlineCancel className="text-2xl md:text-4xl" />
+                                </div>
+                                <div className="stat-title">Cancellations</div>
+                                <div className="stat-value">31K</div>
+                                <div className="stat-desc">
+                                    Jan 1st - Feb 1st
+                                </div>
+                            </div>
+                            <div className="stat">
+                                <div className="stat-figure">
+                                    <FaParking className="text-2xl md:text-3xl" />
+                                </div>
+                                <div className="stat-title">
+                                    Number of Parking Reservations
+                                </div>
+                                <div className="stat-value">31K</div>
+                                <div className="stat-desc">
+                                    Jan 1st - Feb 1st
+                                </div>
+                            </div>
+                            <div className="stat">
+                                <div className="stat-title">
+                                    Number of Residents
+                                </div>
+                                <div className="stat-value">31K</div>
+                                <div className="stat-desc">
+                                    Jan 1st - Feb 1st
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <h1 className="flex flex-col items-center justify-center space-x-3 text-2xl font-bold lg:flex-row">
@@ -362,7 +416,7 @@ const AdminDashboard = () => {
                         System Restrictions
                         <div className="flex items-center">
                             {restrictionsChanged && (
-                                <div className="space-x-1 flex">
+                                <div className="flex space-x-1">
                                     <button
                                         onClick={saveRestrictions}
                                         className="btn btn-primary btn-sm space-x-3 lg:btn-md"
@@ -412,7 +466,10 @@ const AdminDashboard = () => {
                                         >
                                             <AiOutlinePlus className="text-xl md:text-2xl lg:text-3xl" />
                                         </button>
-                                        <p id="numInvitesPerResident" className="text-4xl font-bold text-secondary">
+                                        <p
+                                            id="numInvitesPerResident"
+                                            className="text-4xl font-bold text-secondary"
+                                        >
                                             {numInvitesPerResident}
                                         </p>
                                         <button
@@ -462,7 +519,10 @@ const AdminDashboard = () => {
                                                 className="text-xl md:text-2xl lg:text-3xl"
                                             />
                                         </button>
-                                        <p id="numParkingSpotsAvailable" className="text-4xl font-bold text-secondary">
+                                        <p
+                                            id="numParkingSpotsAvailable"
+                                            className="text-4xl font-bold text-secondary"
+                                        >
                                             {numParkingSpotsAvailable}
                                         </p>
                                         <button className="btn btn-circle">

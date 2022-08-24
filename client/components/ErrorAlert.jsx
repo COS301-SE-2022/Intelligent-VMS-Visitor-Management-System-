@@ -1,23 +1,8 @@
 import { motion } from "framer-motion";
 
 const ErrorAlert = ({ message, showConditon }) => {
-    const alertVariants = {
-        hidden: { opacity: 1, y: -200 },
-        enter: { opacity: 1, y: 0 },
-        exit: { opacity: 0, x: -100 },
-        click: { scale: 0.9 },
-    };
-
     return (
-        <motion.div
-            variants={alertVariants}
-            initial="hidden"
-            animate={showConditon && "enter"}
-            exit="exit"
-            whileTap="click"
-            transition={{ type: "linear" }}
-            className="fixed top-3"
-        >
+        <div className="w-30 fixed top-10">
             <div className="alert alert-error shadow-lg">
                 <div>
                     <svg
@@ -36,7 +21,7 @@ const ErrorAlert = ({ message, showConditon }) => {
                     <span>Error! {message}</span>
                 </div>
             </div>
-        </motion.div>
+        </div>
     );
 };
 
