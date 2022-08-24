@@ -24,10 +24,13 @@ export class ParkingResolver {
     async getTotalAvailableParking() {
         return this.parkingService.getTotalAvailableParking(); 
     }
+    @Query((returns) => {return [Parking]}, { name: "getDisabledParking" })
+    async getDisabledParking() {
+        return this.parkingService.getDisabledParking(); 
+    }
 
     @Query((returns) => {return [Parking]}, { name: "getFreeParking" })
-    async getFreeParking(
-    ) {
+    async getFreeParking() {
         return this.parkingService.getFreeParking();
     }
 
@@ -63,6 +66,11 @@ export class ParkingResolver {
         return this.parkingService.getNumberOfReservations(startDate)
     }
 
+    @Query((returns) => { return Number }, { name: "getTotalParking"})
+    async getTotalParking() {
+        return this.parkingService.getTotalParking()
+    }
+
     //MUTATIONS
     @Mutation((returns) => {return Parking}, { name: "assignParking" })
     async assignParking(
@@ -86,6 +94,8 @@ export class ParkingResolver {
         return this.parkingService.reserveParking(invitationID);
     }
 
+  
+
     @Mutation((returns) => {return Boolean}, { name: "unreservedParking" })
     async unreserveParking(
         @Args("invitationID") invitationID: string,
@@ -107,4 +117,16 @@ export class ParkingResolver {
         return this.parkingService.createNParkingSpots(N);
     }
 
+    @Mutation((returns) => {return Boolean}, { name: "adjustParking" })
+    async adjustParking(
+        @Args("numDisiredParkingTotal") numDisiredParkingTotal: number,
+    ) {
+        return this.parkingService.adjustParking(numDisiredParkingTotal);
+    }
+    @Mutation((returns) => {return Parking}, { name: "disableParkingSpace" })
+    async disableParkingSpace(
+        @Args("parkingNumber") parkingNumber: number,
+    ) {
+        return this.parkingService.disableParkingSpace(parkingNumber);
+    }
 }

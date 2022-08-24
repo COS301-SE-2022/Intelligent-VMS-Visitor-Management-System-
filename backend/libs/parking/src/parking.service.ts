@@ -9,7 +9,9 @@ import { UnreserveParkingCommand } from './commands/impl/unreserveParking.comman
 import { CreateNParkingSpotsCommand } from './commands/impl/createNParkingSpots.command';
 import { AddParkingCommand } from './commands/impl/addParking.command';
 import { getAvailableParkingQuery } from "./queries/impl/getAvailableParking.query";
+import { getDisabledParkingQuery  } from "./queries/impl/getDisabledParking.query"
 import { getTotalAvailableParkingQuery } from './queries/impl/getTotalAvailableParking.query';
+import { getTotalParkingQuery } from "./queries/impl/getTotalParking.query";
 import { GetFreeParkingQuery } from './queries/impl/getFreeParking.query';
 import { GetInviteReservationQuery } from './queries/impl/getInviteReservation.query';
 import { GetReservationsQuery } from './queries/impl/getReservations.query';
@@ -68,7 +70,7 @@ export class ParkingService {
     */
     async freeParking(parkingNumber: number) {
         //Validate input
-        const spaces = await this.getTotalAvailableParking();
+        const spaces = await this.getTotalParking();
 
         if (parkingNumber < 0 || parkingNumber > spaces)
             throw new InvalidCommand(
@@ -82,6 +84,61 @@ export class ParkingService {
 
         if (parking) return parking;
         else throw new ExternalError("Error outside the parking.service");
+    }
+
+        /*
+    Adjusts the parking spots in the database
+
+    Throws: 
+    Returns: a bool for now
+
+    Status: Done
+    */
+
+    async adjustParking(numDisiredParkingTotal: number) {
+        //Validate input
+        const spaces = await this.queryBus.execute(
+            new getTotalParkingQuery(),
+        );
+        const spacesEnabled = await this.queryBus.execute(
+            new getTotalAvailableParkingQuery(),
+        );
+        const listOfDisabled = await this.queryBus.execute(
+            new getDisabledParkingQuery(),
+        );
+        const listOfAvailable=await this.queryBus.execute(
+            new getAvailableParkingQuery(),
+        );
+        //let spacesDisabled=spaces-spacesEnabled;
+        let difference=spacesEnabled-numDisiredParkingTotal;
+
+        if (difference>0) {//------------------------------------------ decrease available parking
+            for (let index = 0; index < listOfAvailable.length&&index<difference; index++) {
+               
+                let disableIndex = listOfAvailable[index].parkingNumber;
+                this.disableParkingSpace(disableIndex);
+            }
+         
+        } else if (difference<0) {//------------------------------------increase available parking 
+            if (numDisiredParkingTotal>spaces) { //Increase overall total spaces
+                console.log("here");
+                let totalToCreate=numDisiredParkingTotal-spaces;
+                for (let index = 0; index < listOfDisabled.length; index++) {//re-enable all disabled parking
+                             let enableIndex = listOfDisabled[index].parkingNumber;
+                             this.enableParkingSpace(enableIndex);
+                }
+                this.createNParkingSpots(totalToCreate);
+            } else { //overall total stays the same
+                let totalToEnable=difference*=-1;
+                for (let index = 0; index < listOfDisabled.length&&index<totalToEnable; index++) {//re-enable all disabled parking
+                    let enableIndex = listOfDisabled[index].parkingNumber;
+                    this.enableParkingSpace(enableIndex);
+                }
+            }
+           
+        }
+        return true;
+
     }
 
     /*
@@ -255,7 +312,7 @@ export class ParkingService {
                 `Invitation with ID ${invitationID} not found`,
             );
 
-        const spaces = await this.getTotalAvailableParking();
+        const spaces = await this.getTotalParking();
 
         if (parkingNumber < 0 || parkingNumber > spaces)
             throw new InvalidCommand(
@@ -374,7 +431,7 @@ export class ParkingService {
     */
     async enableParkingSpace(parkingNumber: number) {
         //Validate input
-        const spaces = await this.getTotalAvailableParking();
+        const spaces = await this.getTotalParking();
 
         if (parkingNumber < 0 || parkingNumber > spaces)
             throw new InvalidCommand(
@@ -403,7 +460,7 @@ export class ParkingService {
     */
     async disableParkingSpace(parkingNumber: number) {
         //Validate input
-        const spaces = await this.getTotalAvailableParking();
+        const spaces = await this.getTotalParking();
 
         if (parkingNumber < 0 || parkingNumber > spaces)
             throw new InvalidCommand(
@@ -482,7 +539,7 @@ export class ParkingService {
         parkingNumber: number,
         ){
             //Validate input
-            const spaces = await this.getTotalAvailableParking();
+            const spaces = await this.getTotalParking();
 
         if (parkingNumber < 0 || parkingNumber > spaces)
             throw new InvalidQuery(
@@ -554,7 +611,18 @@ export class ParkingService {
             else
                 throw new ExternalError("Error outside the parking.service");
         }
-
+        async getTotalParking(
+            ){
+                const amount = this.queryBus.execute(
+                    new getTotalParkingQuery()
+                )
+        
+                if(amount)
+                    return amount;
+                else
+                    throw new ExternalError("Error outside the parking.service");
+            }
+        
     /*
     */
     async getAvailableParking(
@@ -568,6 +636,20 @@ export class ParkingService {
             else
                 throw new ExternalError("Error outside the parking.service");
         }
+
+    async getDisabledParking(
+        ){
+            const parking = this.queryBus.execute(
+                new getDisabledParkingQuery()
+            )
+    
+            if(parking)
+                return parking;
+            else
+                throw new ExternalError("Error outside the parking.service");
+        }
+
+  
 
      /*
     Get the reservations within the range

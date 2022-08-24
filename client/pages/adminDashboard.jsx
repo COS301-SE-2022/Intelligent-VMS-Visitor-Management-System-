@@ -119,6 +119,12 @@ const AdminDashboard = () => {
         }
     `);
 
+    const numParkingSpotsAvailableQuery = useQuery(gql`
+         query {
+            getTotalAvailableParking
+        }
+    `);
+
     const numInviteInDateRangeQuery = useQuery(
         gql`
         query {
@@ -141,11 +147,7 @@ const AdminDashboard = () => {
         }
     `);
 
-    const numParkingSpotsAvailableQuery = useQuery(gql`
-        query {
-            getTotalAvailableParking
-        }
-    `);
+  
 
     const predictedInvitesQuery = useQuery(gql`
         query {
@@ -164,6 +166,14 @@ const AdminDashboard = () => {
           }
         }
     `);
+       const [adjustParkingMutation, { }] =
+       useMutation(gql`
+       mutation {
+        adjustParking(numDisiredParkingTotal: ${numParkingSpotsAvailable}) 
+       }
+   `);
+
+    
 
     const cancelRestrictions = () => {
         setNumInvitesPerResident(initialNumInvitesPerResident);
@@ -179,6 +189,10 @@ const AdminDashboard = () => {
 
         if (numParkingSpotsAvailable !== initialNumParkingSpots) {
             setInitialNumParkingSpots(numParkingSpotsAvailable);
+            adjustParkingMutation();
+            setNumParkingSpotsAvailableToday(
+                numParkingSpotsAvailable - parkingDateMap.get(parkingStartDate)
+            );
         }
 
         setRestrictionsChanged(false);
@@ -408,7 +422,6 @@ const AdminDashboard = () => {
                             </div>
                         </div>
                     </div>
-
                     <h1 className="flex flex-col items-center justify-center space-x-3 text-2xl font-bold lg:flex-row">
                         <span className="mr-3 text-xl text-primary md:text-3xl">
                             <MdBlock />
@@ -439,6 +452,9 @@ const AdminDashboard = () => {
                             )}
                         </div>
                     </h1>
+
+
+
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                         <div className="card bg-base-200">
                             <div className="card-body">
@@ -505,19 +521,11 @@ const AdminDashboard = () => {
                                 </p>
                                 <div className="card-actions flex items-center justify-start">
                                     <div className="flex items-center space-x-3">
-                                        <button className="btn btn-circle">
-                                            <AiOutlinePlus
-                                                onClick={() => {
-                                                    setNumParkingSpotsAvailable(
-                                                        numParkingSpotsAvailable +
-                                                            1
-                                                    );
-                                                    setRestrictionsChanged(
-                                                        true
-                                                    );
-                                                }}
-                                                className="text-xl md:text-2xl lg:text-3xl"
-                                            />
+                                        <button className="btn btn-circle" onClick={() => {
+                                                     setNumParkingSpotsAvailable(numParkingSpotsAvailable +1);
+                                                     setRestrictionsChanged(true);
+                                                }}>
+                                            <AiOutlinePlus className="text-xl md:text-2xl lg:text-3xl"/>
                                         </button>
                                         <p
                                             id="numParkingSpotsAvailable"
@@ -525,21 +533,14 @@ const AdminDashboard = () => {
                                         >
                                             {numParkingSpotsAvailable}
                                         </p>
-                                        <button className="btn btn-circle">
-                                            <AiOutlineMinus
-                                                onClick={() => {
-                                                    numParkingSpotsAvailable >
-                                                        0 &&
-                                                        setNumParkingSpotsAvailable(
-                                                            numParkingSpotsAvailable -
-                                                                1
-                                                        );
-                                                    setRestrictionsChanged(
-                                                        true
-                                                    );
-                                                }}
-                                                className="text-xl md:text-2xl lg:text-3xl"
-                                            />
+                                        <button className="btn btn-circle" onClick={() => {
+                                            if ( numParkingSpotsAvailable >0) {
+                                                setNumParkingSpotsAvailable(numParkingSpotsAvailable -1);
+                                            }
+                                                    
+                                                     setRestrictionsChanged(true);
+                                                }}>
+                                            <AiOutlineMinus className="text-xl md:text-2xl lg:text-3xl"/>
                                         </button>
                                     </div>
                                 </div>
@@ -569,7 +570,6 @@ const AdminDashboard = () => {
                     </div>
                 </div>
             </div>
-
             <input
                 type="checkbox"
                 id="visitor-modal"
