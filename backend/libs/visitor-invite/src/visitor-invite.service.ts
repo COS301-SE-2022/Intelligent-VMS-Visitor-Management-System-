@@ -35,6 +35,8 @@ import { RestrictionsService } from "@vms/restrictions";
 import { ParkingService } from "@vms/parking";
 import { CreateGroupInviteCommand } from "./commands/impl/createGroupInvite.command";
 import { firstValueFrom } from "rxjs";
+import { GetVisitorVisitsQuery } from "./queries/impl/getVisitorVisits.query";
+import { Visitor } from "./models/visitor.model";
 
 @Injectable()
 export class VisitorInviteService {
@@ -295,20 +297,91 @@ export class VisitorInviteService {
 
     }
 
+    getMonthsBetweenDates(startDate, endDate) {
+        return (
+          endDate.getMonth() - startDate.getMonth() + 12 * (endDate.getFullYear() - startDate.getFullYear())
+        );
+      }
+
+    getDaysBetweenDates(startDate, endDate) {
+        return (
+          (endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24)
+        );
+      }
+    
+      getWeekdayBetweenDates(startDate, endDate, weekday) {
+
+        // let count = 0;
+        // let loopDate = startDate;
+        // while(loopDate <= endDate){
+
+        //     if(loopDate.getDay() == weekday)
+        //         count++
+
+        //     loopDate = new Date(loopDate.getDate() + 1)
+        // }
+
+        return 125;
+      }
+
     async getSuggestions(date: string, userEmail: string){
-        let visitors = await this.queryBus.execute(new GetVisitorsQuery(userEmail));
+        let visitors:Visitor[] = JSON.parse(JSON.stringify(await this.queryBus.execute(new GetVisitorVisitsQuery(userEmail))));
+        let predDate = new Date(date);
         let output = [];
-        let i = 0;
 
-        const pYes = 0;
-        const pNo = 0;
+        let pYes = 0;
+        let pNo = 0;
+        const today = new Date();
 
-        for(let visitor in visitors){
-        if(pYes > pNo)
-            output[i] = visitor;
-            i++;
+        // console.log(JSON.stringify(await this.queryBus.execute(new GetVisitorVisitsQuery(userEmail))))
+
+        for(let i=0 ; i<visitors.length; i++){
+
+            let dowCount = 0;
+            let monthCount = 0;
+
+            // console.log(JSON.stringify(visitors[i]))
+        
+            let visitData = JSON.parse(JSON.stringify(visitors[i].visits))
+            let firstInviteDate = new Date(visitors[i].visits[0]);
+
+            for(let j=0 ; j<visitData.length; j++)
+            {
+                let currDate = new Date(visitData[j])
+                if(currDate.getMonth() == predDate.getMonth())
+                    monthCount++;
+                if(currDate.getDay() == predDate.getDay())
+                    dowCount++;
+
+                if(currDate<firstInviteDate)
+                firstInviteDate = currDate;
+            }
+
+            let monthTotal = this.getMonthsBetweenDates(firstInviteDate,today);
+            let dayTotal = this.getDaysBetweenDates(firstInviteDate,today);
+            let dowTotal = this.getWeekdayBetweenDates(firstInviteDate,today,predDate.getDay())
+
+            console.log("monthC "+monthCount) 
+            console.log("monthTotal "+monthTotal)
+            console.log("dowC "+dowCount)
+            console.log("dayTotal "+dayTotal)
+
+            let pYes = monthCount/monthTotal * dowCount/dowTotal * visitors[i].numInvites/dayTotal
+            let pNo = (monthTotal-monthCount)/monthTotal * (dowTotal-dowCount)/dowTotal * (dayTotal-visitors[i].numInvites)/dayTotal
+            console.log("pYes "+ pYes)
+            console.log("pNo "+pNo)
+
+            if(pYes >= pNo){
+                let suggestion = new Visitor()
+                suggestion.visitorName = visitors[i].visitorName;
+                suggestion._id = visitors[i]._id;
+                output.push(suggestion);
+                console.log(output);
+            }
             
         }
+        console.log(output);
+        return output
     }
 
     /* CRON JOBS */

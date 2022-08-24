@@ -19,8 +19,8 @@ const VisitorSuggestions = ({ date }) => {
         gql`
         query {
             getSuggestions( date: "${date}", userEmail: "${jwtTokenData.email}" ) {
-                email
-                name
+                _id
+                visitorName
             }
         }
     `,

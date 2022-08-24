@@ -30,6 +30,7 @@ import { GetTotalNumberOfInvitesOfResidentQueryHandler } from "./queries/handler
 import { GetTotalNumberOfInvitesVisitorQueryHandler } from "./queries/handlers/getTotalNumberOfInvitesVisitor.handler";
 import { GetNumberOfOpenInvitesQueryHandler } from "./queries/handlers/getNumberOfOpenInvites.handler";
 import { GetVisitorsQueryHandler } from "./queries/handlers/getVisitors.handler";
+import { GetVisitorVisitsQueryHandler } from "./queries/handlers/getVisitorVisits.handler";
 
 @Module({
     imports: [
@@ -65,6 +66,7 @@ import { GetVisitorsQueryHandler } from "./queries/handlers/getVisitors.handler"
         CreateGroupInviteCommandHandler,
         GetNumberOfOpenInvitesQueryHandler,
         GetVisitorsQueryHandler,
+        GetVisitorVisitsQueryHandler,
         getNumberOfVisitors,
     ],
     exports: [VisitorInviteService],

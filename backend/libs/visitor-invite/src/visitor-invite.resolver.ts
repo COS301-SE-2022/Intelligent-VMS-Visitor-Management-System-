@@ -16,7 +16,7 @@ import { Roles } from "@vms/user/decorators/roles.decorator";
 import { PredictedInviteData } from "./models/predictedInviteData.model";
 import { Visitor } from "./models/visitor.model";
 
-@UseGuards(GqlAuthGuard)
+//@UseGuards(GqlAuthGuard)
 @Resolver((of) => {return Invite})
 export class VisitorInviteResolver {
     constructor(
@@ -170,7 +170,7 @@ export class VisitorInviteResolver {
     }
 
     // Get Visitors suggestions for user
-    @UseGuards(GqlAuthGuard)
+    //@UseGuards(GqlAuthGuard)
     @Query((returns) => {return [Visitor]}, { name: "getSuggestions" })
     async getSuggestions(@Args("date") date: string, @Args("userEmail") userEmail: string) {
         return await this.visitorInviteService.getSuggestions(date,userEmail);

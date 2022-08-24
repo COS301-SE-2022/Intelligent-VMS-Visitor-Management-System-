@@ -9,5 +9,8 @@ export class Visitor {
     visitorName: string;
 
     @Field((type) => {return Number})
-    numInvites: number;
+    numInvites?: number;
+
+    @Field((type) => {return [String]})
+    visits?: string[];
 }
