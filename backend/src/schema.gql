@@ -35,6 +35,7 @@ type ParkingReservation {
   invitationID: String!
   parkingNumber: String!
   reservationDate: String!
+  activated: Boolean!
 }
 
 type Invite {
