@@ -427,7 +427,7 @@ def getNumParkingsWeekBefore(date):
 def getNumInvites(date):
   temp = groupInvitesCollection.find_one({"_id": date.strftime("%Y-%m-%d") })
   if(temp):
-    return temp['numVisitors']
+    return temp['numInvites']
   else:
     return 0
 
@@ -448,52 +448,6 @@ def generateTrainingData():
 
   groupInvites = list(groupInvitesCollection.find())
   groupReservations = list(groupParkingReservationsCollection.find())
-
-  for day in groupReservations:
-      cDate = datetime.strptime(day['_id'], '%Y-%m-%d').date()
-
-      monthIndex = cDate.month-1
-      woyIndex = cDate.isocalendar()[1]-1
-      dayIndex = cDate.weekday()
-
-      mnResDays,mnResWeeks,mnResMonths = calculateRecentReservationAverages(cDate)
-
-      rDayBef =  getNumVisitorsDayBefore(cDate)
-      rWeekBef = getNumVisitorsWeekBefore(cDate)
-      hol = isHoliday(cDate)
-      numVis = getNumVisitors(cDate)
-
-      resOutput.append(day['numParkings'])
-
-      print(numVis)
-      print("vs")
-      print(day['numParkings'])
-
-      resData.append(
-        createResData(
-            monthIndex,
-            dayIndex,
-            mnResDOW[dayIndex],
-            mdnResDOW[dayIndex],
-            minResDOW[dayIndex],
-            maxResDOW[dayIndex],
-            mnResDays,
-            mnResMonth[monthIndex],
-            mdnResMonth[monthIndex],
-            minResMonth[monthIndex],
-            maxResMonth[monthIndex],
-            mnResMonths,
-            mnResWOY[woyIndex],
-            mdnResWOY[woyIndex],
-            minResWOY[woyIndex],
-            maxResWOY[woyIndex],
-            mnResWeeks,
-            rDayBef,
-            rWeekBef,
-            numVis,
-            hol
-            )
-          )
 
   for day in groupInvites:
       cDate = datetime.strptime(day['_id'], '%Y-%m-%d').date()
@@ -535,6 +489,48 @@ def generateTrainingData():
           hol
           )
         )
+
+  for day in groupReservations:
+      cDate = datetime.strptime(day['_id'], '%Y-%m-%d').date()
+
+      monthIndex = cDate.month-1
+      woyIndex = cDate.isocalendar()[1]-1
+      dayIndex = cDate.weekday()
+
+      mnResDays,mnResWeeks,mnResMonths = calculateRecentReservationAverages(cDate)
+
+      rDayBef =  getNumVisitorsDayBefore(cDate)
+      rWeekBef = getNumVisitorsWeekBefore(cDate)
+      hol = isHoliday(cDate)
+      numVis = getNumVisitors(cDate)
+
+      resOutput.append(day['numParkings'])
+
+      resData.append(
+        createResData(
+            monthIndex,
+            dayIndex,
+            mnResDOW[dayIndex],
+            mdnResDOW[dayIndex],
+            minResDOW[dayIndex],
+            maxResDOW[dayIndex],
+            mnResDays,
+            mnResMonth[monthIndex],
+            mdnResMonth[monthIndex],
+            minResMonth[monthIndex],
+            maxResMonth[monthIndex],
+            mnResMonths,
+            mnResWOY[woyIndex],
+            mdnResWOY[woyIndex],
+            minResWOY[woyIndex],
+            maxResWOY[woyIndex],
+            mnResWeeks,
+            rDayBef,
+            rWeekBef,
+            numVis,
+            hol
+            )
+          )
 
   return visData,resData,visOutput,resOutput
 
