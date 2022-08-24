@@ -309,19 +309,9 @@ export class VisitorInviteService {
         );
       }
     
-      getWeekdayBetweenDates(startDate, endDate, weekday) {
+      getWeekdayBetweenDates(startDate, endDate) {
 
-        // let count = 0;
-        // let loopDate = startDate;
-        // while(loopDate <= endDate){
-
-        //     if(loopDate.getDay() == weekday)
-        //         count++
-
-        //     loopDate = new Date(loopDate.getDate() + 1)
-        // }
-
-        return 125;
+        return (4*(endDate.getMonth() - startDate.getMonth()) + 52 * (endDate.getFullYear() - startDate.getFullYear()));
       }
 
     async getSuggestions(date: string, userEmail: string){
@@ -359,19 +349,20 @@ export class VisitorInviteService {
 
             let monthTotal = this.getMonthsBetweenDates(firstInviteDate,today);
             let dayTotal = this.getDaysBetweenDates(firstInviteDate,today);
-            let dowTotal = this.getWeekdayBetweenDates(firstInviteDate,today,predDate.getDay())
+            let dowTotal = this.getWeekdayBetweenDates(firstInviteDate,today);
 
             console.log("monthC "+monthCount) 
             console.log("monthTotal "+monthTotal)
             console.log("dowC "+dowCount)
             console.log("dayTotal "+dayTotal)
+            console.log("dowTotal "+dowTotal)
 
             let pYes = monthCount/monthTotal * dowCount/dowTotal * visitors[i].numInvites/dayTotal
             let pNo = (monthTotal-monthCount)/monthTotal * (dowTotal-dowCount)/dowTotal * (dayTotal-visitors[i].numInvites)/dayTotal
             console.log("pYes "+ pYes)
             console.log("pNo "+pNo)
 
-            if(pYes >= pNo){
+            if(pYes >= 0.0008){
                 let suggestion = new Visitor()
                 suggestion.visitorName = visitors[i].visitorName;
                 suggestion._id = visitors[i]._id;

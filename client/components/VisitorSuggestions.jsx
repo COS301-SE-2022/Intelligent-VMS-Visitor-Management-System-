@@ -18,7 +18,7 @@ const VisitorSuggestions = ({ date }) => {
     const [suggestionQuery, { loading, error, data }] = useLazyQuery(
         gql`
         query {
-            getSuggestions( date: "${date}", userEmail: "${jwtTokenData.email}" ) {
+            getSuggestions( date: "${date}", userEmail: "colemancarlos@example.net" ) {
                 _id
                 visitorName
             }
@@ -55,15 +55,18 @@ const VisitorSuggestions = ({ date }) => {
                     <span className="card-title ml-3 mt-2">Suggestions</span>
                     {suggestionData.map((visitor, idx) => {
                         return (
-                            <div className="bg-base-100 shadow-xl m-3 rounded-lg flex">
+                            <div className="bg-base-100 shadow-xl my-2 mx-3 rounded-lg flex">
+                                
                                 <div className="avatar placeholder m-3">
-                                    <div className="bg-secondary text-neutral-content rounded-full p-4">
-                                        <span className="text-lg capitalize">{visitor.name[0]}</span>
-                                    </div>
+                                <div className="w-10 rounded-full bg-secondary text-neutral-content">
+                                    <span className="text-lg capitalize">
+                                        {visitor.visitorName[0]}
+                                    </span>
+                                </div>
                                 </div>
                                 <div className="flex flex-col justify-center">
-                                    <span className="text-sm font-bold capitalize">{visitor.name}</span>
-                                    <div className="text-xs">{visitor.email}</div>
+                                    <span className="text-sm font-bold capitalize">{visitor.visitorName}</span>
+                                    <div className="text-xs">{visitor._id}</div>
                                 </div>
                             </div>
                         )  
