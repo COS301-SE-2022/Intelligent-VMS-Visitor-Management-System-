@@ -44,8 +44,6 @@ export class SignInService {
                     }
 
                     const tray = await this.generateTray(invitationID,true,true);
-
-                    //const tray = await this.receptionistService.getTrayByInviteID(invitationID);
   
                     return tray.trayID;
 

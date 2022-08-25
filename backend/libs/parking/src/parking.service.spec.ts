@@ -16,6 +16,7 @@ import { GetInviteQuery } from '@vms/visitor-invite/queries/impl/getInvite.query
 import { Invite } from '@vms/visitor-invite/schema/invite.schema';
 import { GetInviteReservationQuery } from './queries/impl/getInviteReservation.query';
 import { ParkingReservation } from './models/reservation.model';
+
 import { GetParkingReservationsQuery } from './queries/impl/getParkingReservations.query';
 import { AddParkingCommand } from './commands/impl/addParking.command';
 import { CreateNParkingSpotsCommand } from './commands/impl/createNParkingSpots.command';
@@ -30,6 +31,9 @@ import { GetReservationsByDateQueryHandler } from './queries/handlers/getReserva
 import { GetFreeParkingQuery } from './queries/impl/getFreeParking.query';
 import { GetReservationsInRangeQuery } from './queries/impl/getReservationsInRange.query';
 import { getAvailableParkingQuery } from './queries/impl/getAvailableParking.query';
+import { getDisabledParkingQuery } from './queries/impl/getDisabledParking.query';
+import { getTotalParkingQuery } from './queries/impl/getTotalParking.query';
+
 import { CACHE_MANAGER } from '@nestjs/common';
 
 describe('ParkingService', () => {
@@ -39,6 +43,9 @@ describe('ParkingService', () => {
   const queryBusMock = {
       execute: jest.fn((query: IQuery) => {
             if(query instanceof getTotalAvailableParkingQuery) {
+                return 8;
+            } else
+            if(query instanceof getTotalParkingQuery) {
                 return 8;
             } else
             if(query instanceof getAvailableParkingQuery) {
