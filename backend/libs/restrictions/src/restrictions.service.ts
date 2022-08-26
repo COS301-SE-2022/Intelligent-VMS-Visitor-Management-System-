@@ -30,9 +30,12 @@ export class RestrictionsService {
     async getCurfewTime() {
         return await this.queryBus.execute(new GetCurfewTimeQuery());
     }
-    
+
     @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
     async extendCurfews() {
 
+         // fetch curfew
+         const curfew = await this.getCurfewTime(); // this is where we will get the time when this method is fully implemented
+         console.log('curfew is: ', curfew); // here we just checking what is in the db 
     }
 }
