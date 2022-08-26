@@ -37,5 +37,11 @@ export class RestrictionsService {
          // fetch curfew
          const curfew = await this.getCurfewTime(); // this is where we will get the time when this method is fully implemented
          console.log('curfew is: ', curfew); // here we just checking what is in the db 
+         const _curfewTime = '2022-08-25T20:21:25.034Z'; // this should be the value we receive above 
+        const _signInDate = '2022-08-25T20:21:25.034Z'; // date person signed in regardless of curfew
+        const curfewDate: any = new Date(_curfewTime);
+        const signInDate: any = new Date(_signInDate);
+        const now: any = new Date();
+        console.log('time: ', now)
     }
 }
