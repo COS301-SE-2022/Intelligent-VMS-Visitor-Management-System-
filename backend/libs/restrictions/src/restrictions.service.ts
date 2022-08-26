@@ -30,4 +30,9 @@ export class RestrictionsService {
     async getCurfewTime() {
         return await this.queryBus.execute(new GetCurfewTimeQuery());
     }
+    
+    @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+    async extendCurfews() {
+
+    }
 }
