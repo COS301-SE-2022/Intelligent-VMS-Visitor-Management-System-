@@ -35,7 +35,7 @@ export class RestrictionsService {
     async extendCurfews() {
         // fetch curfew
         const curfew = await this.getCurfewTime(); // this is where we will get the time when this method is fully implemented
-        console.log('curfew is: ', curfew); // you can remove this,  here we just checking what is in the db 
+        console.log('curfew is: ', curfew); // here we are just checking what is in the db 
 
 
         const _curfewTime = '2022-08-25T20:21:25.034Z'; // this should be the value we receive above 
