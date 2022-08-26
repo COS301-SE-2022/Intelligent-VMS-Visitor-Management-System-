@@ -52,6 +52,9 @@ export class RestrictionsService {
         if (signInDiffDays >= 3) {
             return;  // we don't extend curfew beyond 3 days 
         }
+        if (curfewDiffTime >= 24) {
+            
+        }
 
     }
 }
