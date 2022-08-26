@@ -53,6 +53,7 @@ export class RestrictionsService {
             return;  // we don't extend curfew beyond 3 days 
         }
         if (curfewDiffTime >= 24) {
+                await this.setCurfewTime(24); // add 24 hours to the curfew
             
         }
 
