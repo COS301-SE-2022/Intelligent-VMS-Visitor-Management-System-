@@ -60,6 +60,7 @@ export class RestrictionsService {
         if (curfewDiffTime >= 24) {
             await this.setCurfewTime(24); // add 24 hours to the curfew
         }
+        
         console.log(curfewDiffHours + " hours");
         console.log(curfewDiffDays + " days");
     }
