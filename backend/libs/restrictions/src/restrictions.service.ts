@@ -37,7 +37,6 @@ export class RestrictionsService {
         const curfew = await this.getCurfewTime(); // this is where we will get the time when this method is fully implemented
         console.log('curfew is: ', curfew); // here we are just checking what is in the db 
 
-
         const _curfewTime = '2022-08-25T20:21:25.034Z'; // this should be the value we receive above 
         const _signInDate = '2022-08-25T20:21:25.034Z'; // date person signed in regardless of curfew
         const curfewDate: any = new Date(_curfewTime);
@@ -60,7 +59,7 @@ export class RestrictionsService {
         if (curfewDiffTime >= 24) {
             await this.setCurfewTime(24); // add 24 hours to the curfew
         }
-        
+
         console.log(curfewDiffHours + " hours");
         console.log(curfewDiffDays + " days");
     }
