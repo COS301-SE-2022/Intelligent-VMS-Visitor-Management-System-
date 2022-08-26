@@ -57,6 +57,7 @@ export class RestrictionsService {
             
         }
         console.log(curfewDiffHours + " hours");
+        console.log(curfewDiffDays + " days");
 
     }
 }
