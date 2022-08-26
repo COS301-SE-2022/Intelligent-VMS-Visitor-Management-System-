@@ -43,5 +43,8 @@ export class RestrictionsService {
         const signInDate: any = new Date(_signInDate);
         const now: any = new Date();
         console.log('time: ', now)
+        const signInDiffTime = Math.abs((now - signInDate));
+        const signInDiffHours = Math.ceil(signInDiffTime / (1000 * 60 * 60)) - 1;
+        const signInDiffDays = Math.ceil(signInDiffTime / (1000 * 60 * 60 * 24)) - 1;
     }
 }
