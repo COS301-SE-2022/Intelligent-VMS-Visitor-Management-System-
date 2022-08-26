@@ -46,5 +46,9 @@ export class RestrictionsService {
         const signInDiffTime = Math.abs((now - signInDate));
         const signInDiffHours = Math.ceil(signInDiffTime / (1000 * 60 * 60)) - 1;
         const signInDiffDays = Math.ceil(signInDiffTime / (1000 * 60 * 60 * 24)) - 1;
+        const curfewDiffTime = Math.abs((now - curfewDate));
+        const curfewDiffHours = Math.ceil(curfewDiffTime / (1000 * 60 * 60)) - 1;
+        const curfewDiffDays = Math.ceil(curfewDiffTime / (1000 * 60 * 60 * 24)) - 1;
+
     }
 }
