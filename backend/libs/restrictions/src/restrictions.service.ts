@@ -49,6 +49,9 @@ export class RestrictionsService {
         const curfewDiffTime = Math.abs((now - curfewDate));
         const curfewDiffHours = Math.ceil(curfewDiffTime / (1000 * 60 * 60)) - 1;
         const curfewDiffDays = Math.ceil(curfewDiffTime / (1000 * 60 * 60 * 24)) - 1;
+        if (signInDiffDays >= 3) {
+            return;  // we don't extend curfew beyond 3 days 
+        }
 
     }
 }
