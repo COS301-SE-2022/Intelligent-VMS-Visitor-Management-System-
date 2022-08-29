@@ -1,5 +1,6 @@
 import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
+import { Cron } from "@nestjs/schedule";
 import { AssignParkingCommand } from './commands/impl/assignParking.command';
 import { FreeParkingCommand } from './commands/impl/freeParking.command';
 import { ReserveParkingCommand } from './commands/impl/reserveParking.command';
@@ -27,6 +28,7 @@ import { GetParkingQuery } from "./queries/impl/getParking.query";
 import { GetReservationsByDateQuery } from "./queries/impl/getReservationsByDate.query";
 import { InvalidCommand } from "./errors/invalidCommand.error";
 import { GetNumberOfReservationsQuery } from "./queries/impl/getNumberOfReservations.query";
+import { GroupParkingCommand } from "./commands/impl/groupParking.command";
 import { ActivateReservationCommand } from "./commands/impl/activateReservation.command";
 
 @Injectable()
@@ -773,5 +775,24 @@ export class ParkingService {
         );
 
         return numReservationsForDay < numAvailableParkingForDay;
+    }
+
+    @Cron("50 23 * * *")
+    async groupParking() {
+        const now = new Date();
+        const year = now.getFullYear();
+        let month = "" + (now.getMonth() + 1);
+        let day = "" + now.getDate();
+            
+        if (month.length < 2) {
+            month = '0' + month;
+        }
+        if (day.length < 2) {
+            day = '0' + day;
+        } 
+
+        const formatDate = [year, month, day].join('-');
+        
+        await this.commandBus.execute(new GroupParkingCommand(formatDate));
     }
 }

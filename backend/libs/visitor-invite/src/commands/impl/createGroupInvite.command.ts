@@ -1,7 +1,7 @@
 export class CreateGroupInviteCommand {
     constructor(
-        public readonly date,
-        public readonly numInvites,
-        public readonly numVisitors
+        public readonly date: string,
+        public readonly numInvites: number,
+        public readonly numVisitors: number
     ) {}
 }

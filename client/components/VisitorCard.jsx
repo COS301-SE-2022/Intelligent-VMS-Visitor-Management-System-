@@ -1,9 +1,41 @@
-import Link from "next/link";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+import { gql, useLazyQuery } from "@apollo/client";
 
 const VisitorCard = ({ name, email, numInvites }) => {
+    const router = useRouter();
+
+    const [getInviteDateQuery, { data, loading, error }] = useLazyQuery(gql`
+        query {
+          getMostUsedInviteData(email: "${email}") {
+            idNumber,
+            visitorName,
+            idDocType,
+            visitorEmail
+          }
+        }
+    `);
+
+    useEffect(() => {
+        if (!loading && !error) {
+            if (data) {
+                const { idNumber, visitorName, idDocType, visitorEmail } =
+                    data.getMostUsedInviteData;
+                router.push(
+                    `/createInvite?name=${visitorName}&email=${visitorEmail}&idNumber=${idNumber}&idDocType=${idDocType}`
+                );
+            }
+        } else if (error) {
+        }
+    }, [data, loading, error]);
+
     return (
-        <div>
-            <div className="flex items-center justify-between shadow rounded-lg p-3 bg-base-200">
+        <div className={`cursor-pointer`}>
+            <div
+                className={`
+                    flex items-center justify-between 
+                    rounded-xl bg-base-100 p-3`}
+            >
                 <div className="flex items-center space-x-4">
                     <div className="avatar placeholder">
                         <div className="w-12 rounded-full bg-neutral-focus text-neutral-content">
@@ -16,17 +48,20 @@ const VisitorCard = ({ name, email, numInvites }) => {
                         <h3 className="text-lg font-bold capitalize text-secondary">
                             {name}
                         </h3>
-                        <p className="text-sm text-neutral-content">
+                        <p className="text-xs text-neutral-content lg:text-sm">
                             {email}
                         </p>
                     </div>
                 </div>
-                <div className="stats text-2xl">
-                    <div className="stat">
-                        <div className="stat-value">{numInvites}</div>
-                        <div className="stat-desc">Total Invites</div>
-                    </div>
-                </div>
+                <button
+                    onClick={(e) => {
+                        e.currentTarget.classList.add("loading");
+                        getInviteDateQuery();
+                    }}
+                    className="btn btn-primary btn-xs md:btn-sm"
+                >
+                    Invite
+                </button>
             </div>
         </div>
     );

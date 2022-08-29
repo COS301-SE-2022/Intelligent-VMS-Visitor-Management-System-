@@ -7,6 +7,8 @@ import { getTotalAvailableParkingQuery } from './queries/impl/getTotalAvailableP
 import {FreeParkingCommand} from './commands/impl/freeParking.command';
 import {AssignParkingCommand} from './commands/impl/assignParking.command';
 import {ReserveParkingCommand} from './commands/impl/reserveParking.command';
+
+import { UserService } from '@vms/user';
 import { VisitorInviteService } from '@vms/visitor-invite';
 import { MailService } from '@vms/mail/mail.service';
 import { RestrictionsService } from "@vms/restrictions";
@@ -313,6 +315,7 @@ describe('ParkingService', () => {
             VisitorInviteService,
             MailService,
             RestrictionsService,
+            UserService,
             ConfigService,
             {
                 provide: CACHE_MANAGER,

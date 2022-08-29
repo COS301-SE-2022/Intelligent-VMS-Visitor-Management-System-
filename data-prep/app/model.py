@@ -335,30 +335,7 @@ def calculateMinMaxAndMedians():
       mdnResWOY.append(0)
 
   for day in groupInvites:
-
-    currDate = datetime.strptime(day['_id'], '%Y-%m-%d').date()
-    numVisitors = day['numVisitors']
-    currMonthIndex = currDate.month-1
-    currDayIndex = currDate.weekday()
-    currWOYIndex = currDate.isocalendar()[1]-1
-    
-    if(numVisitors<minVisDOW[currDayIndex]):
-      minVisDOW[currDayIndex] = numVisitors
-    elif(numVisitors>maxVisDOW[currDayIndex]):
-      maxVisDOW[currDayIndex] = numVisitors
-
-    if(numVisitors<minVisWOY[currWOYIndex]):
-      minVisWOY[currWOYIndex] = numVisitors
-    elif(numVisitors>maxVisWOY[currWOYIndex]):
-      maxVisWOY[currWOYIndex] = numVisitors
-
-    if(numVisitors<minVisMonth[currMonthIndex]):
-      minVisMonth[currMonthIndex] = numVisitors
-    elif(numVisitors>maxVisMonth[currMonthIndex]):
-      maxVisMonth[currMonthIndex] = numVisitors
-
-  for day in groupReservations:
-
+    print(day)
     currDate = datetime.strptime(day['_id'], '%Y-%m-%d').date()
     numParking = day['numParkings']
     currMonthIndex = currDate.month-1

@@ -4,8 +4,11 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { CqrsModule } from "@nestjs/cqrs";
 import { ParkingResolver } from "./parking.resolver";
 import { AuthModule } from "@vms/auth";
+
 import { Parking, ParkingSchema } from "./schema/parking.schema";
 import { ParkingReservation, ParkingReservationSchema } from "./schema/reservation.schema";
+import { GroupParking, GroupParkingSchema } from "./schema/groupParking.schema";
+
 
 import { ReserveParkingCommandHandler } from "./commands/handlers/reserveParkingCommand.handler";
 import { UnreserveParkingCommandHandler } from "./commands/handlers/unreserveParkingCommand.handler";
@@ -13,6 +16,7 @@ import { AddParkingCommandHandler } from "./commands/handlers/addParkingCommand.
 import { RemoveParkingCommandHandler } from "./commands/handlers/removeParkingCommand.handler";
 import { FreeParkingCommandHandler } from "./commands/handlers/freeParkingCommand.handler";
 import { AssignParkingCommandHandler } from "./commands/handlers/assignParkingCommand.handler";
+import { GroupParkingCommandHandler } from './commands/handlers/groupParkingCommand.handler';
 import { DisableParkingSpaceCommandHandler } from './commands/handlers/disableParkingSpaceCommand.handler';
 import { EnableParkingCommandSpaceHandler } from './commands/handlers/enableParkingSpaceCommand.handler';
 
@@ -44,6 +48,9 @@ import { ActivateReservationCommandHandler } from './commands/handlers/activateR
     MongooseModule.forFeature([
       { name: ParkingReservation.name, schema: ParkingReservationSchema },
     ]),
+    MongooseModule.forFeature([
+      { name: GroupParking.name, schema: GroupParkingSchema },
+    ]),
   ],
   providers: [
     ParkingService,
@@ -64,6 +71,7 @@ import { ActivateReservationCommandHandler } from './commands/handlers/activateR
     EnableParkingCommandSpaceHandler,
     GetFreeParkingQueryHandler,
     CreateNParkingSpotsCommandHandler,
+    GroupParkingCommandHandler,
     GetReservationsQueryHandler,
     GetInviteReservationQueryHandler,
     GetParkingReservationsQueryHandler,

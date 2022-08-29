@@ -10,6 +10,8 @@ import { UserResolver } from "./user.resolver";
 import { GetUserQueryHandler } from "./queries/handlers/getUser.handler";
 import { SearchUserQueryHandler } from "./queries/handlers/searchUser.handler";
 import { GetUnAuthUsersQueryHandler } from "./queries/handlers/getUnAuthUsers.handler";
+import { GetUsersByTypeQueryHandler } from "./queries/handlers/getUsersByType.handler";
+
 import { CreateUserCommandHandler } from "./commands/handlers/createUser.handler";
 import { DeleteUserCommandHandler } from "./commands/handlers/deleteUser.handler";
 import { AuthorizeUserCommandHandler } from "./commands/handlers/authorizeUser.handler";
@@ -28,6 +30,7 @@ import { DeauthorizeUserAccountCommandHandler } from "./commands/handlers/deauth
         CreateUserCommandHandler, 
         DeleteUserCommandHandler,
         SearchUserQueryHandler,
+        GetUsersByTypeQueryHandler,
         GetUnAuthUsersQueryHandler,
         AuthorizeUserCommandHandler,
         DeauthorizeUserAccountCommandHandler

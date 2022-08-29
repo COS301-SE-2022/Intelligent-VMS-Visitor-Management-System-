@@ -46,6 +46,7 @@ const useAuth = create(
                                 { content: "Create Invite", path: "/createInvite" },
                                 { content: "Your Dashboard", path: "/visitorDashboard"},
                                 { content: "Admin Dashboard", path: "/adminDashboard"},
+                                { content: "Reporting", path: "/reporting"},
                                 { content: "Manage Users", path: "/authorizeUser"},
                                 { content: "Logout", path: "/", onClick: () => get().logout() }
                             ]; 
@@ -79,22 +80,6 @@ const useAuth = create(
                     ];
                 }
 
-            },
-            numParkingSpots: 22,
-            updateParkingSpots: (newVal) => {
-				set((state) => ({
-					numParkingSpots: newVal
-				}));
-            },
-            incParkingSpots: () => {
-                set((state) => ({
-                    numParkingSpots: get().numParkingSpots+1
-                }));
-            },
-            decParkingSpots: () => {
-                set((state) => ({
-                    numParkingSpots: get().numParkingSpots-1
-                }));
             },
             verified: false,
             setVerify: () => {

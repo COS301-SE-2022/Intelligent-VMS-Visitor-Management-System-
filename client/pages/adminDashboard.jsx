@@ -13,7 +13,7 @@ import useAuth from "../store/authStore";
 
 import { AiOutlinePlus, AiOutlineMinus, AiOutlineCar } from "react-icons/ai";
 import { BiBuildingHouse, BiMailSend } from "react-icons/bi";
-import { FaSearch, FaParking } from "react-icons/fa";
+import { FaSearch, FaCarSide, FaPeopleArrows } from "react-icons/fa";
 import {
     MdBlock,
     MdDataSaverOn,
@@ -95,6 +95,13 @@ const AdminDashboard = () => {
     // Search visitor name state
     const [name, setName] = useState("");
 
+    // Average values for week
+    const [avgVisitors, setAvgVisitors] = useState(0);
+    const [avgParking, setAvgParking] = useState(0);
+
+    // Cancellations for the week
+    const [numCancel, setNumCancel] = useState(0);
+
     const now = getFormattedDateString(new Date());
 
     const [numParkingSpotsAvailable, setNumParkingSpotsAvailable] = useState(0);
@@ -144,6 +151,7 @@ const AdminDashboard = () => {
                 dateEnd: "${endDate}"
             ) {
                 inviteDate
+                inviteState
             }
         }
     `,
@@ -242,14 +250,20 @@ const AdminDashboard = () => {
             !numInviteInDateRangeQuery.error
         ) {
             const invites = numInviteInDateRangeQuery.data.getNumInvitesPerDate;
+            let numCancelled = 0;
             invites.forEach((invite) => {
-                if (!isNaN(inviteDateMap.get(invite.inviteDate))) {
+                if (invite.inviteState === "cancelled") {
+                    numCancelled++;
+                } else if (!isNaN(inviteDateMap.get(invite.inviteDate))) {
                     inviteDateMap.set(
                         invite.inviteDate,
                         inviteDateMap.get(invite.inviteDate) + 1
                     );
                 }
             });
+
+            setNumCancel(numCancelled);
+            setAvgVisitors(invites.length / 7);
 
             setDateMap(new Map(inviteDateMap));
             setVisitorVals({
@@ -279,6 +293,8 @@ const AdminDashboard = () => {
                     );
                 }
             });
+
+            setAvgParking(parkingNumbers.length / 7);
 
             setParkingDateMap(new Map(parkingDateMap));
             setParkingVals({
@@ -433,30 +449,37 @@ const AdminDashboard = () => {
                                     <MdOutlineCancel className="text-2xl md:text-4xl" />
                                 </div>
                                 <div className="stat-title">Cancellations</div>
-                                <div className="stat-value">31K</div>
+                                <div className="stat-value">{numCancel}</div>
                                 <div className="stat-desc">
-                                    Jan 1st - Feb 1st
+                                    For week {startDate} - {endDate}
                                 </div>
                             </div>
                             <div className="stat">
                                 <div className="stat-figure">
-                                    <FaParking className="text-2xl md:text-3xl" />
+                                    <FaPeopleArrows className="text-2xl md:text-3xl" />
                                 </div>
                                 <div className="stat-title">
-                                    Number of Parking Reservations
+                                    Average Visitors per day
                                 </div>
-                                <div className="stat-value">31K</div>
+                                <div className="stat-value">
+                                    {Math.ceil(avgVisitors)}
+                                </div>
                                 <div className="stat-desc">
-                                    Jan 1st - Feb 1st
+                                    For week {startDate} - {endDate}
                                 </div>
                             </div>
                             <div className="stat">
-                                <div className="stat-title">
-                                    Number of Residents
+                                <div className="stat-figure">
+                                    <FaCarSide className="text-2xl md:text-3xl" />
                                 </div>
-                                <div className="stat-value">31K</div>
+                                <div className="stat-title">
+                                    Average Parking per day
+                                </div>
+                                <div className="stat-value">
+                                    {Math.ceil(avgParking)}
+                                </div>
                                 <div className="stat-desc">
-                                    Jan 1st - Feb 1st
+                                    For week {startDate} - {endDate}
                                 </div>
                             </div>
                         </div>
