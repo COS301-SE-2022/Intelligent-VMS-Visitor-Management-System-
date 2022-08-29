@@ -240,6 +240,7 @@ def calculateMinMaxAndMedians():
       mdnWOY.append(0)
 
   for day in groupInvites:
+    print(day)
     currDate = datetime.strptime(day['_id'], '%Y-%m-%d').date()
     if(day['numVisitors']<minDOW[currDate.weekday()]):
       minDOW[currDate.weekday()] = day['numVisitors']
