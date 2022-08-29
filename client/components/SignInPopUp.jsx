@@ -13,6 +13,7 @@ const SignInPopUp = ({
     visitData,
     setShowSignInModal,
     setSearch,
+    trayNr,
 }) => {
     const [notes, setNotes] = useState("");
     const time = new Date();
@@ -47,7 +48,10 @@ const SignInPopUp = ({
         if (!loading && !error) {
             if (data) {
                 refetch();
-                setShowInfoAlert(true);
+                alert({
+                    message: `Tray Number For ${visitData.visitorName}: ${data.signIn}`,
+                    type: "info",
+                });
                 setSearch(false);
             }
         } else {

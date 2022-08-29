@@ -34,7 +34,7 @@ describe("CreateInvite", () => {
     const router = {
         push: jest.fn().mockImplementation(() => Promise.resolve(true)),
         prefetch: () => new Promise((resolve) => resolve),
-        query: {name: "", email: "", idNumber: "", idDocType: ""}
+        query: { name: "", email: "", idNumber: "", idDocType: "" },
     };
     useRouter.mockReturnValue(router);
 

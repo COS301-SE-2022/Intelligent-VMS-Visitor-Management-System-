@@ -4,6 +4,7 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { CqrsModule } from "@nestjs/cqrs";
 import { HttpModule } from "@nestjs/axios";
 
+import { UserModule } from "@vms/user";
 import { AuthModule } from "@vms/auth";
 import { ParkingModule } from "@vms/parking";
 import { MailModule } from "@vms/mail";
@@ -31,6 +32,8 @@ import { GetTotalNumberOfInvitesVisitorQueryHandler } from "./queries/handlers/g
 import { GetNumberOfOpenInvitesQueryHandler } from "./queries/handlers/getNumberOfOpenInvites.handler";
 import { GetVisitorsQueryHandler } from "./queries/handlers/getVisitors.handler";
 import { GetVisitorVisitsQueryHandler } from "./queries/handlers/getVisitorVisits.handler";
+import { GetMostUsedInviteDataQueryHandler } from "./queries/handlers/getMostUsedInviteData.handler";
+import { GetInvitesForUsersQueryHandler } from "./queries/handlers/getInvitesForUsers.handler";
 
 @Module({
     imports: [
@@ -39,6 +42,7 @@ import { GetVisitorVisitsQueryHandler } from "./queries/handlers/getVisitorVisit
         HttpModule.register({
             maxRedirects: 5,
         }),
+        UserModule,
         AuthModule,
         forwardRef(() => {return ParkingModule}),
         MailModule,
@@ -65,7 +69,9 @@ import { GetVisitorVisitsQueryHandler } from "./queries/handlers/getVisitorVisit
         GetTotalNumberOfInvitesVisitorQueryHandler,
         CreateGroupInviteCommandHandler,
         GetNumberOfOpenInvitesQueryHandler,
+        GetInvitesForUsersQueryHandler,
         GetVisitorsQueryHandler,
+        GetMostUsedInviteDataQueryHandler,
         GetVisitorVisitsQueryHandler,
         getNumberOfVisitors,
     ],

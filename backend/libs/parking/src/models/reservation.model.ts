@@ -10,5 +10,8 @@ export class ParkingReservation {
 
     @Field((type) => {return String})
     reservationDate: string;
+
+    @Field((type) => {return Boolean})
+    activated: boolean;
 }
 

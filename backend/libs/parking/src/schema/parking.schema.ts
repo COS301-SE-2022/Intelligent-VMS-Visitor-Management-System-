@@ -3,15 +3,6 @@ import { Document } from "mongoose";
 
 export type ParkingDocument = Parking & Document;
 
-/*
-export interface ParkingDocument extends Document {
-    readonly reservationEmail: string;
-    readonly reservationDate: Date;
-    readonly visitorEmail: string;
-    readonly parkingID: string;
-  }
-
-*/
 @Schema()
 export class Parking {
 

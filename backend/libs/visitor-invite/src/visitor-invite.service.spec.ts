@@ -9,7 +9,8 @@ import { GetNumberVisitorQuery } from "./queries/impl/getNumberOfVisitors.query"
 import { GetInvitesInRangeQuery } from "./queries/impl/getInvitesInRange.query";
 import {GetNumberOfInvitesOfResidentQuery} from "./queries/impl/getNumberOfInvitesOfResident.query";
 
-import {MailService} from "@vms/mail";
+import { UserService } from "@vms/user"; 
+import { MailService } from "@vms/mail";
 import { ParkingService } from "@vms/parking/parking.service";
 import { RestrictionsService } from "@vms/restrictions/restrictions.service";
 
@@ -85,6 +86,7 @@ describe("VisitorInviteService", () => {
                 ConfigService,
                 MailService,
                 RestrictionsService,
+                UserService,
                 CommandBus, 
                 {
                     provide: QueryBus, useValue: queryBusMock

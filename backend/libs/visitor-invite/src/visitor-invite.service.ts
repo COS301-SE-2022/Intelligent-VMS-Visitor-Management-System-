@@ -26,6 +26,7 @@ import { GetInvitesByNameForSearchQuery } from "./queries/impl/getInviteByNameFo
 import { InviteNotFound } from "./errors/inviteNotFound.error";
 import { DateFormatError } from "./errors/dateFormat.error";
 import { InviteLimitReachedError } from "./errors/inviteLimitReached.error";
+import { NoInvites } from "./errors/noInvites.error";
 
 import { ReserveParkingCommand } from "@vms/parking/commands/impl/reserveParking.command";
 import { getTotalAvailableParkingQuery } from '@vms/parking/queries/impl/getTotalAvailableParking.query';
@@ -35,6 +36,10 @@ import { RestrictionsService } from "@vms/restrictions";
 import { ParkingService } from "@vms/parking";
 import { CreateGroupInviteCommand } from "./commands/impl/createGroupInvite.command";
 import { firstValueFrom } from "rxjs";
+import { GetMostUsedInviteDataQuery } from "./queries/impl/getMostUsedInviteData.query";
+import { InviteSuggestion } from "./models/inviteSuggestion.model";
+import { UserService } from "@vms/user";
+import { GetInvitesForUsersQuery } from "./queries/impl/getInvitesForUsers.query";
 import { GetVisitorVisitsQuery } from "./queries/impl/getVisitorVisits.query";
 import { Visitor } from "./models/visitor.model";
 
@@ -46,6 +51,7 @@ export class VisitorInviteService {
                 private readonly configService: ConfigService,
                 private readonly mailService: MailService,
                 private readonly restrictionsService: RestrictionsService,
+                private readonly userService: UserService,
                 @Inject(CACHE_MANAGER) private cacheManager: Cache,
                 @Inject(forwardRef(() => {return ParkingService}))
                 private readonly parkingService: ParkingService,
@@ -276,6 +282,41 @@ export class VisitorInviteService {
         return await this.queryBus.execute(new GetVisitorsQuery(email));
     }
 
+    // Get Most used document for a specific visitor
+    async getMostUsedInviteData(email: string) {
+        const data = await this.queryBus.execute(new GetMostUsedInviteDataQuery(email));
+            
+        if(data.length > 0) {
+            const suggestedInvite = data[0];
+            const inviteSuggestion = new InviteSuggestion();
+            inviteSuggestion.visitorEmail = suggestedInvite.visitorEmail;
+            inviteSuggestion.visitorName = suggestedInvite.visitorName;
+            inviteSuggestion.idNumber = suggestedInvite.idNumber;
+            inviteSuggestion.idDocType = suggestedInvite._id;
+            return inviteSuggestion;
+        } else {
+            throw new NoInvites("No Invites to make suggestion");
+        }
+
+    }
+
+    // Get Invites for user type
+    async getInvitesForUserType(permission: number) {
+        const users = await this.userService.getUsersByType(permission);
+        if(users.length > 0) {
+            const userEmails = users.map((user) => {
+                return user.email;
+            });
+
+            const res =  await this.queryBus.execute(new GetInvitesForUsersQuery(userEmails));
+            console.log(res);
+
+            return res;
+        } 
+
+        return [];
+    }
+
     // Get predicted number of invites in range
     async getPredictedInviteData(startDate: string, endDate: string) {
         const cachedPredictedInvites = await this.cacheManager.get("PREDICTIONS");
@@ -405,6 +446,45 @@ export class VisitorInviteService {
 
         // Register for the day
         await this.commandBus.execute(new CreateGroupInviteCommand(formatDate, numInvites, numVisitors));
+    }
+
+    /* CRON JOBS */
+    @Cron("50 23 * * *")
+    async cachePredictedVisitors() {
+        const now = new Date();
+        const startYear = now.getFullYear() - 1;
+        let startMonth = "" + (now.getMonth() + 1);
+        let startDay = "" + now.getDate();
+            
+        if (startMonth.length < 2) {
+            startMonth = '0' + startMonth;
+        }
+        if (startDay.length < 2) {
+            startDay = '0' + startDay;
+        } 
+        
+        const startDate = [startYear, startMonth, startDay].join("-");
+
+        const endYear = now.getFullYear() - 1;
+        let endMonth = "" + (now.getMonth() + 1);
+        let endDay = "" + now.getDate();
+            
+        if (endMonth.length < 2) {
+            endMonth = '0' + endMonth;
+        }
+        if (endDay.length < 2) {
+            endDay = '0' + endDay;
+        } 
+
+        const endDate = [endYear, endMonth, endDay].join("-");
+
+        const baseURL = this.configService.get<string>("AI_API_CONNECTION");
+        const data = await firstValueFrom(this.httpService.get(`${baseURL}/predict?startDate=${startDate}&endDate=${endDate}`)); 
+        if(data.data.length === 1) {
+            return [];
+        }
+        await this.cacheManager.set("PREDICTIONS", data.data, { ttl: 900000 });
+        return data.data;
     }
 
 }

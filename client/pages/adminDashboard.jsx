@@ -13,7 +13,7 @@ import useAuth from "../store/authStore";
 
 import { AiOutlinePlus, AiOutlineMinus, AiOutlineCar } from "react-icons/ai";
 import { BiBuildingHouse, BiMailSend } from "react-icons/bi";
-import { FaSearch, FaParking } from "react-icons/fa";
+import { FaSearch, FaCarSide, FaPeopleArrows } from "react-icons/fa";
 import {
     MdBlock,
     MdDataSaverOn,
@@ -79,6 +79,8 @@ const AdminDashboard = () => {
     const [initialNumInvitesPerResident, setInitialNumInvitesPerResident] =
         useState(1);
 
+    const [initialCurfewTime, setInitialCurfewTime] = useState(1);
+
     const [initialNumParkingSpots, setInitialNumParkingSpots] = useState(0);
 
     const [numParkingSpotsAvailableToday, setNumParkingSpotsAvailableToday] =
@@ -92,6 +94,13 @@ const AdminDashboard = () => {
 
     // Search visitor name state
     const [name, setName] = useState("");
+
+    // Average values for week
+    const [avgVisitors, setAvgVisitors] = useState(0);
+    const [avgParking, setAvgParking] = useState(0);
+
+    // Cancellations for the week
+    const [numCancel, setNumCancel] = useState(0);
 
     const now = getFormattedDateString(new Date());
 
@@ -110,12 +119,27 @@ const AdminDashboard = () => {
         }
     `);
 
+    const CurfewTimeQuery = useQuery(gql`
+        query {
+            getCurfewTime {
+                value
+            }
+        }
+    `);
+
     // Number of invites per resident state
     const [numInvitesPerResident, setNumInvitesPerResident] = useState(1);
+    const [curfewTime, setCurfewTime] = useState(1);
 
     const numInvitesQuery = useQuery(gql`
         query {
             getTotalNumberOfVisitors
+        }
+    `);
+
+    const numParkingSpotsAvailableQuery = useQuery(gql`
+         query {
+            getTotalAvailableParking
         }
     `);
 
@@ -127,6 +151,7 @@ const AdminDashboard = () => {
                 dateEnd: "${endDate}"
             ) {
                 inviteDate
+                inviteState
             }
         }
     `,
@@ -141,11 +166,7 @@ const AdminDashboard = () => {
         }
     `);
 
-    const numParkingSpotsAvailableQuery = useQuery(gql`
-        query {
-            getTotalAvailableParking
-        }
-    `);
+  
 
     const predictedInvitesQuery = useQuery(gql`
         query {
@@ -164,10 +185,28 @@ const AdminDashboard = () => {
           }
         }
     `);
+       const [adjustParkingMutation, { }] =
+       useMutation(gql`
+       mutation {
+        adjustParking(numDisiredParkingTotal: ${numParkingSpotsAvailable}) 
+       }
+   `);
+
+    
+
+    const [setCurfewTimeMutation, { data1, loading1, error1 }] =
+        useMutation(gql`
+        mutation {
+          setCurfewTime(curfewTime: ${curfewTime}) {
+            value
+          }
+        }
+    `);
 
     const cancelRestrictions = () => {
         setNumInvitesPerResident(initialNumInvitesPerResident);
         setNumParkingSpotsAvailable(initialNumParkingSpots);
+        setInitialCurfewTime(initialCurfewTime);
         setRestrictionsChanged(false);
     };
 
@@ -179,6 +218,15 @@ const AdminDashboard = () => {
 
         if (numParkingSpotsAvailable !== initialNumParkingSpots) {
             setInitialNumParkingSpots(numParkingSpotsAvailable);
+            adjustParkingMutation();
+            setNumParkingSpotsAvailableToday(
+                numParkingSpotsAvailable - parkingDateMap.get(parkingStartDate)
+            );
+        }
+
+        if (curfewTime !== initialCurfewTime) {
+            setInitialCurfewTime(curfewTime);
+            setCurfewTimeMutation();
         }
 
         setRestrictionsChanged(false);
@@ -202,14 +250,20 @@ const AdminDashboard = () => {
             !numInviteInDateRangeQuery.error
         ) {
             const invites = numInviteInDateRangeQuery.data.getNumInvitesPerDate;
+            let numCancelled = 0;
             invites.forEach((invite) => {
-                if (!isNaN(inviteDateMap.get(invite.inviteDate))) {
+                if (invite.inviteState === "cancelled") {
+                    numCancelled++;
+                } else if (!isNaN(inviteDateMap.get(invite.inviteDate))) {
                     inviteDateMap.set(
                         invite.inviteDate,
                         inviteDateMap.get(invite.inviteDate) + 1
                     );
                 }
             });
+
+            setNumCancel(numCancelled);
+            setAvgVisitors(invites.length / 7);
 
             setDateMap(new Map(inviteDateMap));
             setVisitorVals({
@@ -239,6 +293,8 @@ const AdminDashboard = () => {
                     );
                 }
             });
+
+            setAvgParking(parkingNumbers.length / 7);
 
             setParkingDateMap(new Map(parkingDateMap));
             setParkingVals({
@@ -276,6 +332,18 @@ const AdminDashboard = () => {
             setInitialNumInvitesPerResident(numInvitesPerResident);
         } else if (numInvitesPerResident.error) {
         }
+
+        //Curfew time
+        if (
+            !CurfewTimeQuery.loading &&
+            !CurfewTimeQuery.error
+        ) {
+            setCurfewTime(
+                CurfewTimeQuery.data.getCurfewTime.value
+            );
+            setInitialCurfewTime(curfewTime);
+        } else if (curfewTime.error) {
+        }
     }, [
         numInvitesQuery,
         numInviteInDateRangeQuery,
@@ -284,6 +352,7 @@ const AdminDashboard = () => {
         setParkingVals,
         setNumParkingSpotsAvailable,
         numInvitesPerResidentQuery,
+        CurfewTimeQuery,
     ]);
 
     useEffect(() => {
@@ -380,35 +449,41 @@ const AdminDashboard = () => {
                                     <MdOutlineCancel className="text-2xl md:text-4xl" />
                                 </div>
                                 <div className="stat-title">Cancellations</div>
-                                <div className="stat-value">31K</div>
+                                <div className="stat-value">{numCancel}</div>
                                 <div className="stat-desc">
-                                    Jan 1st - Feb 1st
+                                    For week {startDate} - {endDate}
                                 </div>
                             </div>
                             <div className="stat">
                                 <div className="stat-figure">
-                                    <FaParking className="text-2xl md:text-3xl" />
+                                    <FaPeopleArrows className="text-2xl md:text-3xl" />
                                 </div>
                                 <div className="stat-title">
-                                    Number of Parking Reservations
+                                    Average Visitors per day
                                 </div>
-                                <div className="stat-value">31K</div>
+                                <div className="stat-value">
+                                    {Math.ceil(avgVisitors)}
+                                </div>
                                 <div className="stat-desc">
-                                    Jan 1st - Feb 1st
+                                    For week {startDate} - {endDate}
                                 </div>
                             </div>
                             <div className="stat">
-                                <div className="stat-title">
-                                    Number of Residents
+                                <div className="stat-figure">
+                                    <FaCarSide className="text-2xl md:text-3xl" />
                                 </div>
-                                <div className="stat-value">31K</div>
+                                <div className="stat-title">
+                                    Average Parking per day
+                                </div>
+                                <div className="stat-value">
+                                    {Math.ceil(avgParking)}
+                                </div>
                                 <div className="stat-desc">
-                                    Jan 1st - Feb 1st
+                                    For week {startDate} - {endDate}
                                 </div>
                             </div>
                         </div>
                     </div>
-
                     <h1 className="flex flex-col items-center justify-center space-x-3 text-2xl font-bold lg:flex-row">
                         <span className="mr-3 text-xl text-primary md:text-3xl">
                             <MdBlock />
@@ -439,6 +514,9 @@ const AdminDashboard = () => {
                             )}
                         </div>
                     </h1>
+
+
+
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                         <div className="card bg-base-200">
                             <div className="card-body">
@@ -479,7 +557,7 @@ const AdminDashboard = () => {
                                                 numInvitesPerResident > 1 &&
                                                     setNumInvitesPerResident(
                                                         numInvitesPerResident -
-                                                            1
+                                                        1
                                                     );
                                                 setRestrictionsChanged(true);
                                             }}
@@ -505,19 +583,13 @@ const AdminDashboard = () => {
                                 </p>
                                 <div className="card-actions flex items-center justify-start">
                                     <div className="flex items-center space-x-3">
-                                        <button className="btn btn-circle">
-                                            <AiOutlinePlus
-                                                onClick={() => {
-                                                    setNumParkingSpotsAvailable(
-                                                        numParkingSpotsAvailable +
-                                                            1
-                                                    );
-                                                    setRestrictionsChanged(
-                                                        true
-                                                    );
-                                                }}
-                                                className="text-xl md:text-2xl lg:text-3xl"
-                                            />
+
+                                        <button className="btn btn-circle" onClick={() => {
+                                                     setNumParkingSpotsAvailable(numParkingSpotsAvailable +1);
+                                                     setRestrictionsChanged(true);
+                                                }}>
+                                            <AiOutlinePlus className="text-xl md:text-2xl lg:text-3xl"/>
+
                                         </button>
                                         <p
                                             id="numParkingSpotsAvailable"
@@ -525,23 +597,44 @@ const AdminDashboard = () => {
                                         >
                                             {numParkingSpotsAvailable}
                                         </p>
-                                        <button className="btn btn-circle">
-                                            <AiOutlineMinus
-                                                onClick={() => {
-                                                    numParkingSpotsAvailable >
-                                                        0 &&
-                                                        setNumParkingSpotsAvailable(
-                                                            numParkingSpotsAvailable -
-                                                                1
-                                                        );
-                                                    setRestrictionsChanged(
-                                                        true
-                                                    );
-                                                }}
-                                                className="text-xl md:text-2xl lg:text-3xl"
-                                            />
+
+                                        <button className="btn btn-circle" onClick={() => {
+                                            if ( numParkingSpotsAvailable >0) {
+                                                setNumParkingSpotsAvailable(numParkingSpotsAvailable -1);
+                                            }
+                                                    
+                                                     setRestrictionsChanged(true);
+                                                }}>
+                                            <AiOutlineMinus className="text-xl md:text-2xl lg:text-3xl"/>
+
                                         </button>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div className="flex flex-col items-center justify-center space-x-3 text-2xl font-bold lg:flex-row">
+                            {/* qwertyuiop */}
+                            <div className="grid grid-cols-1 gap-1">
+                                <h3 className="font-semibold inline-block py-1 px-2 uppercase rounded uppercase last:mr-0 mr-1">Curfew time</h3>
+                                <div className="grid grid-cols-3 column-gap: 50px">
+                                    <input type="number" id="curfewTimeInput" placeholder="00"
+                                        onChange={(e) => {
+                                            setCurfewTime(e.target.value);
+                                            setRestrictionsChanged(true);
+                                            //console.log(e.target.value);
+                                            //alert(e.target.value);
+                                        }}
+                                    />
+                                    {/* <h1>:</h1> 
+                                     <input type="number" id="curfewTimeInput" placeholder="00"
+                                        onChange={(e) => {
+                                            setCurfewTime(e.target.value);
+                                            setRestrictionsChanged(true);
+                                            //alert(e.target.value);
+                                        }}
+                                    /> */}
                                 </div>
                             </div>
                         </div>
@@ -569,7 +662,6 @@ const AdminDashboard = () => {
                     </div>
                 </div>
             </div>
-
             <input
                 type="checkbox"
                 id="visitor-modal"

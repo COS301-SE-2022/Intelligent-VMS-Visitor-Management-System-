@@ -15,6 +15,8 @@ import { RolesGuard } from "@vms/user/guards/roles.guard";
 import { Roles } from "@vms/user/decorators/roles.decorator";
 import { PredictedInviteData } from "./models/predictedInviteData.model";
 import { Visitor } from "./models/visitor.model";
+import { InviteSuggestion } from "./models/inviteSuggestion.model";
+import { GroupInvite } from "./models/groupInvite.model";
 
 //@UseGuards(GqlAuthGuard)
 @Resolver((of) => {return Invite})
@@ -167,6 +169,21 @@ export class VisitorInviteResolver {
     @Query((returns) => {return [Visitor]}, { name: "getVisitors" })
     async getVisitors(@Args("email") email: string) {
         return await this.visitorInviteService.getVisitors(email);
+    }
+
+    // Get Most used documents for a specific visitor
+    @UseGuards(GqlAuthGuard)
+    @Query((returns) => {return InviteSuggestion}, { name: "getMostUsedInviteData"})
+    async getMostUsedInviteData(@Args("email") email: string) {
+        return await this.visitorInviteService.getMostUsedInviteData(email);
+    }
+
+    // Get invites for user type
+    @UseGuards(GqlAuthGuard, RolesGuard)
+    @Roles("admin")
+    @Query((returns) => { return [GroupInvite] }, { name: "getInvitesForUserType" })
+    async getInvitesForUserType(@Args("permission") permission: number) {
+        return await this.visitorInviteService.getInvitesForUserType(permission);
     }
 
     // Get Visitors suggestions for user
