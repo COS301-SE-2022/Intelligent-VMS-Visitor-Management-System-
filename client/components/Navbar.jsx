@@ -51,7 +51,16 @@ const Navbar = () => {
                 {token && (
                     <Link href="/visitorDashboard">
                         <a>
-                            <div className="avatar placeholder rounded-full bg-primary">
+                            <div
+                                className={
+                                    "avatar placeholder rounded-full " +
+                                    (token.permission === 0
+                                        ? "bg-primary"
+                                        : token.permission === 1
+                                        ? "bg-secondary"
+                                        : "bg-accent")
+                                }
+                            >
                                 <div className="w-10 text-primary-content">
                                     <span className="text-xl">
                                         {token ? token.name[0] : ""}

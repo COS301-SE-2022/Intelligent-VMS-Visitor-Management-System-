@@ -3,19 +3,11 @@ import React, { useEffect, useRef, useState, setState } from "react";
 import useAuth from "../store/authStore.js";
 import { alert } from "react-custom-alert";
 
-const UploadPopUp = ({
-    setShowErrorAlert,
-    setShowSuccessAlert,
-    setErrorMessage,
-    setSuccessMessage,
-    setShowUploadPopUp,
-    refetch,
-}) => {
+const UploadPopUp = ({ setShowUploadPopUp, refetch }) => {
     const [file, setFile] = useState(null);
     const [fileAsString, setFileAsString] = useState("");
     const [text, setText] = useState("Upload a csv file");
     const [signInButton, setSignInButton] = useState(true);
-    const [showSuccess, setShowSuccess] = useState(false);
 
     // Get Data From JWT Token
     const jwtTokenData = useAuth((state) => {
