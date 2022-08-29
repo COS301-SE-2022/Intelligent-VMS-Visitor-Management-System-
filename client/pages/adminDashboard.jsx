@@ -79,6 +79,8 @@ const AdminDashboard = () => {
     const [initialNumInvitesPerResident, setInitialNumInvitesPerResident] =
         useState(1);
 
+    const [initialCurfewTime, setInitialCurfewTime] = useState(1);
+
     const [initialNumParkingSpots, setInitialNumParkingSpots] = useState(0);
 
     const [numParkingSpotsAvailableToday, setNumParkingSpotsAvailableToday] =
@@ -117,12 +119,27 @@ const AdminDashboard = () => {
         }
     `);
 
+    const CurfewTimeQuery = useQuery(gql`
+        query {
+            getCurfewTime {
+                value
+            }
+        }
+    `);
+
     // Number of invites per resident state
     const [numInvitesPerResident, setNumInvitesPerResident] = useState(1);
+    const [curfewTime, setCurfewTime] = useState(1);
 
     const numInvitesQuery = useQuery(gql`
         query {
             getTotalNumberOfVisitors
+        }
+    `);
+
+    const numParkingSpotsAvailableQuery = useQuery(gql`
+         query {
+            getTotalAvailableParking
         }
     `);
 
@@ -149,11 +166,7 @@ const AdminDashboard = () => {
         }
     `);
 
-    const numParkingSpotsAvailableQuery = useQuery(gql`
-        query {
-            getTotalAvailableParking
-        }
-    `);
+  
 
     const predictedInvitesQuery = useQuery(gql`
         query {
@@ -172,10 +185,28 @@ const AdminDashboard = () => {
           }
         }
     `);
+       const [adjustParkingMutation, { }] =
+       useMutation(gql`
+       mutation {
+        adjustParking(numDisiredParkingTotal: ${numParkingSpotsAvailable}) 
+       }
+   `);
+
+    
+
+    const [setCurfewTimeMutation, { data1, loading1, error1 }] =
+        useMutation(gql`
+        mutation {
+          setCurfewTime(curfewTime: ${curfewTime}) {
+            value
+          }
+        }
+    `);
 
     const cancelRestrictions = () => {
         setNumInvitesPerResident(initialNumInvitesPerResident);
         setNumParkingSpotsAvailable(initialNumParkingSpots);
+        setInitialCurfewTime(initialCurfewTime);
         setRestrictionsChanged(false);
     };
 
@@ -187,6 +218,15 @@ const AdminDashboard = () => {
 
         if (numParkingSpotsAvailable !== initialNumParkingSpots) {
             setInitialNumParkingSpots(numParkingSpotsAvailable);
+            adjustParkingMutation();
+            setNumParkingSpotsAvailableToday(
+                numParkingSpotsAvailable - parkingDateMap.get(parkingStartDate)
+            );
+        }
+
+        if (curfewTime !== initialCurfewTime) {
+            setInitialCurfewTime(curfewTime);
+            setCurfewTimeMutation();
         }
 
         setRestrictionsChanged(false);
@@ -292,6 +332,18 @@ const AdminDashboard = () => {
             setInitialNumInvitesPerResident(numInvitesPerResident);
         } else if (numInvitesPerResident.error) {
         }
+
+        //Curfew time
+        if (
+            !CurfewTimeQuery.loading &&
+            !CurfewTimeQuery.error
+        ) {
+            setCurfewTime(
+                CurfewTimeQuery.data.getCurfewTime.value
+            );
+            setInitialCurfewTime(curfewTime);
+        } else if (curfewTime.error) {
+        }
     }, [
         numInvitesQuery,
         numInviteInDateRangeQuery,
@@ -300,6 +352,7 @@ const AdminDashboard = () => {
         setParkingVals,
         setNumParkingSpotsAvailable,
         numInvitesPerResidentQuery,
+        CurfewTimeQuery,
     ]);
 
     useEffect(() => {
@@ -431,7 +484,6 @@ const AdminDashboard = () => {
                             </div>
                         </div>
                     </div>
-
                     <h1 className="flex flex-col items-center justify-center space-x-3 text-2xl font-bold lg:flex-row">
                         <span className="mr-3 text-xl text-primary md:text-3xl">
                             <MdBlock />
@@ -462,6 +514,9 @@ const AdminDashboard = () => {
                             )}
                         </div>
                     </h1>
+
+
+
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                         <div className="card bg-base-200">
                             <div className="card-body">
@@ -502,7 +557,7 @@ const AdminDashboard = () => {
                                                 numInvitesPerResident > 1 &&
                                                     setNumInvitesPerResident(
                                                         numInvitesPerResident -
-                                                            1
+                                                        1
                                                     );
                                                 setRestrictionsChanged(true);
                                             }}
@@ -528,19 +583,13 @@ const AdminDashboard = () => {
                                 </p>
                                 <div className="card-actions flex items-center justify-start">
                                     <div className="flex items-center space-x-3">
-                                        <button className="btn btn-circle">
-                                            <AiOutlinePlus
-                                                onClick={() => {
-                                                    setNumParkingSpotsAvailable(
-                                                        numParkingSpotsAvailable +
-                                                            1
-                                                    );
-                                                    setRestrictionsChanged(
-                                                        true
-                                                    );
-                                                }}
-                                                className="text-xl md:text-2xl lg:text-3xl"
-                                            />
+
+                                        <button className="btn btn-circle" onClick={() => {
+                                                     setNumParkingSpotsAvailable(numParkingSpotsAvailable +1);
+                                                     setRestrictionsChanged(true);
+                                                }}>
+                                            <AiOutlinePlus className="text-xl md:text-2xl lg:text-3xl"/>
+
                                         </button>
                                         <p
                                             id="numParkingSpotsAvailable"
@@ -548,23 +597,44 @@ const AdminDashboard = () => {
                                         >
                                             {numParkingSpotsAvailable}
                                         </p>
-                                        <button className="btn btn-circle">
-                                            <AiOutlineMinus
-                                                onClick={() => {
-                                                    numParkingSpotsAvailable >
-                                                        0 &&
-                                                        setNumParkingSpotsAvailable(
-                                                            numParkingSpotsAvailable -
-                                                                1
-                                                        );
-                                                    setRestrictionsChanged(
-                                                        true
-                                                    );
-                                                }}
-                                                className="text-xl md:text-2xl lg:text-3xl"
-                                            />
+
+                                        <button className="btn btn-circle" onClick={() => {
+                                            if ( numParkingSpotsAvailable >0) {
+                                                setNumParkingSpotsAvailable(numParkingSpotsAvailable -1);
+                                            }
+                                                    
+                                                     setRestrictionsChanged(true);
+                                                }}>
+                                            <AiOutlineMinus className="text-xl md:text-2xl lg:text-3xl"/>
+
                                         </button>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div className="flex flex-col items-center justify-center space-x-3 text-2xl font-bold lg:flex-row">
+                            {/* qwertyuiop */}
+                            <div className="grid grid-cols-1 gap-1">
+                                <h3 className="font-semibold inline-block py-1 px-2 uppercase rounded uppercase last:mr-0 mr-1">Curfew time</h3>
+                                <div className="grid grid-cols-3 column-gap: 50px">
+                                    <input type="number" id="curfewTimeInput" placeholder="00"
+                                        onChange={(e) => {
+                                            setCurfewTime(e.target.value);
+                                            setRestrictionsChanged(true);
+                                            //console.log(e.target.value);
+                                            //alert(e.target.value);
+                                        }}
+                                    />
+                                    {/* <h1>:</h1> 
+                                     <input type="number" id="curfewTimeInput" placeholder="00"
+                                        onChange={(e) => {
+                                            setCurfewTime(e.target.value);
+                                            setRestrictionsChanged(true);
+                                            //alert(e.target.value);
+                                        }}
+                                    /> */}
                                 </div>
                             </div>
                         </div>
@@ -592,7 +662,6 @@ const AdminDashboard = () => {
                     </div>
                 </div>
             </div>
-
             <input
                 type="checkbox"
                 id="visitor-modal"
