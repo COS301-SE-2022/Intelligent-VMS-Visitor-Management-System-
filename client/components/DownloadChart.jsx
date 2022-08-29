@@ -10,6 +10,8 @@ const DownloadChart = ({
     datalabels,
     setStart,
     setRange,
+    startDate,
+    range,
 }) => {
     const chartRef = useRef(null);
     const downloadLinkRef = useRef(null);
@@ -24,8 +26,8 @@ const DownloadChart = ({
     };
 
     return (
-        <div className="card w-full bg-base-300 p-3 lg:p-5">
-            <h2 className="card-title text-base-content">{title}</h2>
+        <div className="card w-full bg-base-300 p-3 lg:p-4">
+            {title && <h2 className="card-title text-base-content">{title}</h2>}
             <div className="h-full">
                 <Chart
                     chartRef={chartRef}
@@ -35,14 +37,16 @@ const DownloadChart = ({
                 />
             </div>
             <div className="card-actions mt-1 items-center overflow-visible">
-                <a
-                    ref={downloadLinkRef}
-                    onClick={downloadGraph}
-                    download={filename}
-                    className={`btn btn-primary ${loading && "loading"}`}
-                >
-                    <FiDownload className="text-xl text-primary-content" />
-                </a>
+                {filename && (
+                    <a
+                        ref={downloadLinkRef}
+                        onClick={downloadGraph}
+                        download={filename}
+                        className={`btn btn-primary ${loading && "loading"}`}
+                    >
+                        <FiDownload className="text-xl text-primary-content" />
+                    </a>
+                )}
 
                 <div>
                     {setStart && (
@@ -69,8 +73,8 @@ const DownloadChart = ({
                         }}
                         className="select select-primary w-full max-w-xs"
                     >
-                        <option selected>30-day</option>
                         <option>7-day</option>
+                        <option>30-day</option>
                     </select>
                 )}
             </div>
