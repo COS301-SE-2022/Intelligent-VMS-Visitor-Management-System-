@@ -37,6 +37,13 @@ type ParkingReservation {
   reservationDate: String!
 }
 
+type InviteSuggestion {
+  visitorEmail: String!
+  visitorName: String!
+  idDocType: String!
+  idNumber: String!
+}
+
 type Invite {
   userEmail: String!
   visitorEmail: String!
@@ -69,6 +76,13 @@ type Visitor {
   numInvites: Float!
 }
 
+type GroupInvite {
+  _id: String
+  numInvites: Float
+  numVisitors: Float
+  firstDate: String
+}
+
 type BSIdata {
   signInCount: Int!
   createCount: Int!
@@ -83,6 +97,7 @@ type Query {
   helloUser: String!
   searchUser(searchQuery: String!): [SearchUser!]!
   getUnauthorizedUsers: [User!]!
+  getUsersByType(permission: Float!): [SearchUser!]!
   helloInvite: String!
   getInvites: [Invite!]!
   getInvitesWithEmail(email: String!): [Invite!]!
@@ -98,6 +113,8 @@ type Query {
   getNumberOfOpenInvites(email: String!): Float!
   getPredictedInviteData(startDate: String!, endDate: String!): [PredictedInviteData!]!
   getVisitors(email: String!): [Visitor!]!
+  getMostUsedInviteData(email: String!): InviteSuggestion!
+  getInvitesForUserType(permission: Float!): [GroupInvite!]!
   helloParking: String!
   getTotalAvailableParking: Float!
   getFreeParking: [Parking!]!
