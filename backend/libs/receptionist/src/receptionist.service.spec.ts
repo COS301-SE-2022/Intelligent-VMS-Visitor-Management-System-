@@ -2,6 +2,7 @@ import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ConfigService } from "@nestjs/config";
 import { HttpModule } from '@nestjs/axios';
 import { Test, TestingModule } from '@nestjs/testing';
+import { UserService } from "@vms/user";
 import { MailService } from '@vms/mail';
 import { ParkingService } from '@vms/parking';
 import { VisitorInviteService } from '@vms/visitor-invite';
@@ -46,6 +47,7 @@ describe('ReceptionistService', () => {
         ParkingService,
         MailService,
         ConfigService,
+        UserService,
         RestrictionsService,
         {
             provide: CACHE_MANAGER,

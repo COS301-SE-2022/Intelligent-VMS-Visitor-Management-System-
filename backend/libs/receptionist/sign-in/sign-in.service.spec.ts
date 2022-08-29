@@ -14,6 +14,7 @@ import { generateTrayCommand } from '@vms/receptionist/commands/impl/Tray/genera
 import { getTrayFromInviteQuery } from '@vms/receptionist/queries/impl/getTrayFromInvite.query';
 import { getTrayListQuery } from '@vms/receptionist/queries/impl/getTrayList.query';
 import { Tray } from '@vms/receptionist/schema/tray.schema';
+import { UserService } from "@vms/user";
 import { VisitorInviteService } from '@vms/visitor-invite';
 import { Invite } from '@vms/visitor-invite/models/invite.model';
 import { GetInviteQuery } from '@vms/visitor-invite/queries/impl/getInvite.query';
@@ -178,6 +179,7 @@ describe('SignInService', () => {
         ReceptionistService,
         ParkingService,
         MailService,
+        UserService,
         ConfigService,
         RestrictionsService,
         {
