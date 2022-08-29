@@ -13,4 +13,7 @@ export class Visitor {
 
     @Field((type) => {return [String]})
     visits?: string[];
+
+    @Field((type) => {return Number})
+    prob?: Number;
 }

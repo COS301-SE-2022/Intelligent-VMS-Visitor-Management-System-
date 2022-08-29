@@ -311,7 +311,7 @@ export class VisitorInviteService {
     
       getWeekdayBetweenDates(startDate, endDate) {
 
-        return (4*(endDate.getMonth() - startDate.getMonth()) + 52 * (endDate.getFullYear() - startDate.getFullYear()));
+        return (4 * (endDate.getMonth() - startDate.getMonth()) + 52 * (endDate.getFullYear() - startDate.getFullYear()));
       }
 
     async getSuggestions(date: string, userEmail: string){
@@ -323,14 +323,10 @@ export class VisitorInviteService {
         let pNo = 0;
         const today = new Date();
 
-        // console.log(JSON.stringify(await this.queryBus.execute(new GetVisitorVisitsQuery(userEmail))))
-
         for(let i=0 ; i<visitors.length; i++){
 
             let dowCount = 0;
             let monthCount = 0;
-
-            // console.log(JSON.stringify(visitors[i]))
         
             let visitData = JSON.parse(JSON.stringify(visitors[i].visits))
             let firstInviteDate = new Date(visitors[i].visits[0]);
@@ -351,26 +347,26 @@ export class VisitorInviteService {
             let dayTotal = this.getDaysBetweenDates(firstInviteDate,today);
             let dowTotal = this.getWeekdayBetweenDates(firstInviteDate,today);
 
-            console.log("monthC "+monthCount) 
-            console.log("monthTotal "+monthTotal)
-            console.log("dowC "+dowCount)
-            console.log("dayTotal "+dayTotal)
-            console.log("dowTotal "+dowTotal)
+            // console.log("monthC "+monthCount) 
+            // console.log("monthTotal "+monthTotal)
+            // console.log("dowC "+dowCount)
+            // console.log("dayTotal "+dayTotal)
+            // console.log("dowTotal "+dowTotal)
 
             let pYes = monthCount/monthTotal * dowCount/dowTotal * visitors[i].numInvites/dayTotal
-            let pNo = (monthTotal-monthCount)/monthTotal * (dowTotal-dowCount)/dowTotal * (dayTotal-visitors[i].numInvites)/dayTotal
-            console.log("pYes "+ pYes)
-            console.log("pNo "+pNo)
+            //let pNo = (monthTotal-monthCount)/monthTotal * (dowTotal-dowCount)/dowTotal * (dayTotal-visitors[i].numInvites)/dayTotal
 
-            if(pYes >= 0.0008){
+            if(pYes >= 0.00025){
                 let suggestion = new Visitor()
                 suggestion.visitorName = visitors[i].visitorName;
                 suggestion._id = visitors[i]._id;
+                suggestion.prob = pYes;
                 output.push(suggestion);
                 console.log(output);
             }
             
         }
+        output.sort(function(a, b){return b.prob - a.prob});
         console.log(output);
         return output
     }
