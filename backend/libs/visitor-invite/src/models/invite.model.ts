@@ -26,7 +26,6 @@ export class Invite {
     @Field((type) => {return Boolean})
     requiresParking: boolean;
 
-    //Graphql doesnt like enums
     @Field((type) => {return String})
     inviteState: string
 
