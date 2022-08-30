@@ -40,8 +40,8 @@ const AdminDashboard = () => {
 
     // Number of invites sent state
     const [numInvitesSent, setNumInvitesSent] = useState(0);
-    const [hoursMenu, setHours] = useState(0);
-    const [minutesMenu, setMinutes] = useState(0);
+    const [hoursMenu, setHours] = useState(77);
+    const [minutesMenu, setMinutes] = useState(77);
 
     // Visitor invite data object for chart
     const [visitorVals, setVisitorVals] = useState({
@@ -225,9 +225,16 @@ const AdminDashboard = () => {
                 numParkingSpotsAvailable - parkingDateMap.get(parkingStartDate)
             );
         }
+        
         let temp=hoursMenu+minutesMenu;
-        alert(temp);
-        setCurfewTime(temp);
+        if (minutesMenu=="00") {
+            temp = temp + "0";
+        }
+        //alert(temp);
+        if(temp!=="7777"){
+           setCurfewTime(temp); 
+        }
+        
         if (curfewTime !== initialCurfewTime) {
             
             alert(temp);
@@ -655,7 +662,7 @@ const AdminDashboard = () => {
                             <select name="minutes" id="minutes" onChange={(e) => {
                                                      setMinutes(e.target.value);
                                                 }}>
-                                <option value="0">00</option>
+                                <option value="00">00</option>
                                 <option value="1">01</option>
                                 <option value="2">02</option>
                                 <option value="3">03</option>
