@@ -168,7 +168,7 @@ const AdminDashboard = () => {
         }
     `);
 
-  
+
 
     const predictedInvitesQuery = useQuery(gql`
         query {
@@ -187,16 +187,17 @@ const AdminDashboard = () => {
           }
         }
     `);
-       const [adjustParkingMutation, { }] =
-       useMutation(gql`
+    const [adjustParkingMutation, { }] =
+        useMutation(gql`
        mutation {
         adjustParking(numDisiredParkingTotal: ${numParkingSpotsAvailable}) 
        }
    `);
 
-    
+
 
     const [setCurfewTimeMutation, { data1, loading1, error1 }] =
+        //alert("HOS");
         useMutation(gql`
         mutation {
           setCurfewTime(curfewTime: ${curfewTime}) {
@@ -225,25 +226,32 @@ const AdminDashboard = () => {
                 numParkingSpotsAvailable - parkingDateMap.get(parkingStartDate)
             );
         }
-        
-        let temp=hoursMenu+minutesMenu;
-        if (minutesMenu=="00") {
+
+        // if (hoursMenu=="77") {
+        //     setHours("00");
+        // }
+        // if (minutesMenu=="77") {
+        //     setMinutes("00");
+        // }
+
+        let temp = hoursMenu + minutesMenu;
+        if (minutesMenu == "00") {
             temp = temp + "0";
         }
         //alert(temp);
-        if(temp!=="7777"){
-           setCurfewTime(temp); 
-        }
-        
-        if (curfewTime !== initialCurfewTime) {
-            
+        let numTemp = parseInt(temp);
+        setCurfewTime(numTemp);
+        if (numTemp !== "7777") {
             alert(temp);
-            // setCurfewTime(temp);
-            // setInitialCurfewTime(curfewTime);
-            
-
-            //setCurfewTimeMutation();
+            setInitialCurfewTime(curfewTime);
+            setCurfewTimeMutation();
         }
+
+        // if (curfewTime !== initialCurfewTime) {
+        //     //alert(temp);
+        //     setInitialCurfewTime(curfewTime);
+        //     setCurfewTimeMutation();
+        // }
 
         setRestrictionsChanged(false);
     };
@@ -601,10 +609,10 @@ const AdminDashboard = () => {
                                     <div className="flex items-center space-x-3">
 
                                         <button className="btn btn-circle" onClick={() => {
-                                                     setNumParkingSpotsAvailable(numParkingSpotsAvailable +1);
-                                                     setRestrictionsChanged(true);
-                                                }}>
-                                            <AiOutlinePlus className="text-xl md:text-2xl lg:text-3xl"/>
+                                            setNumParkingSpotsAvailable(numParkingSpotsAvailable + 1);
+                                            setRestrictionsChanged(true);
+                                        }}>
+                                            <AiOutlinePlus className="text-xl md:text-2xl lg:text-3xl" />
 
                                         </button>
                                         <p
@@ -615,24 +623,25 @@ const AdminDashboard = () => {
                                         </p>
 
                                         <button className="btn btn-circle" onClick={() => {
-                                            if ( numParkingSpotsAvailable >0) {
-                                                setNumParkingSpotsAvailable(numParkingSpotsAvailable -1);
+                                            if (numParkingSpotsAvailable > 0) {
+                                                setNumParkingSpotsAvailable(numParkingSpotsAvailable - 1);
                                             }
-                                                    
-                                                     setRestrictionsChanged(true);
-                                                }}>
-                                            <AiOutlineMinus className="text-xl md:text-2xl lg:text-3xl"/>
+
+                                            setRestrictionsChanged(true);
+                                        }}>
+                                            <AiOutlineMinus className="text-xl md:text-2xl lg:text-3xl" />
 
                                         </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div className="flex items-center justify-between">
-                            <select name="hours" id="hours" onChange={(e) => {
-                                                     setHours(e.target.value);
-                                                     setRestrictionsChanged(true);
-                                                }}>
+                        <div className="flex items-center justify-center">
+                            <h1>Curfew:</h1>
+                            <select className="mx-5" name="hours" id="hours" onChange={(e) => {
+                                setHours(e.target.value);
+                                setRestrictionsChanged(true);
+                            }}>
                                 <option value="0">00</option>
                                 <option value="1">01</option>
                                 <option value="2">02</option>
@@ -658,10 +667,10 @@ const AdminDashboard = () => {
                                 <option value="22">22</option>
                                 <option value="23">23</option>
                             </select>
-                            <h1>:</h1>
-                            <select name="minutes" id="minutes" onChange={(e) => {
-                                                     setMinutes(e.target.value);
-                                                }}>
+                            <h1>    :    </h1>
+                            <select className="mx-5" name="minutes" id="minutes" onChange={(e) => {
+                                setMinutes(e.target.value);
+                            }}>
                                 <option value="00">00</option>
                                 <option value="1">01</option>
                                 <option value="2">02</option>
@@ -723,8 +732,6 @@ const AdminDashboard = () => {
                                 <option value="58">58</option>
                                 <option value="59">59</option>
                             </select>
-                            
-
                         </div>
                     </div>
                     {/* <div>
