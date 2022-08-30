@@ -285,8 +285,12 @@ const CreateInvite = () => {
                                     value={values.visitDate}
                                 />
 
-
-                                <VisitorSuggestions date={now}/>
+                                {!name && !email && !idNumber && !idDocType ? (
+                                    <VisitorSuggestions date={now}/>
+                                ):(
+                                    <div></div>
+                                )}
+                                
 
                                 <br/>
 

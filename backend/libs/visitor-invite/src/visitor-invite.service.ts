@@ -401,6 +401,8 @@ export class VisitorInviteService {
                 let suggestion = new Visitor()
                 suggestion.visitorName = visitors[i].visitorName;
                 suggestion._id = visitors[i]._id;
+                suggestion.idNumber = visitors[i].idNumber;
+                suggestion.idDocType = visitors[i].idDocType;
                 suggestion.prob = pYes;
                 output.push(suggestion);
                 console.log(output);

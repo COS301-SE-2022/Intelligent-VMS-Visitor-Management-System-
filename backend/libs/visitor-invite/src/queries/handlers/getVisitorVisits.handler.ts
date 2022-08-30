@@ -24,6 +24,12 @@ export class GetVisitorVisitsQueryHandler implements IQueryHandler {
                 'visitorName': {
                     '$first': '$visitorName'
                 }, 
+                'idNumber': {
+                  '$last': '$idNumber'
+                }, 
+                'idDocType': {
+                  '$last': '$idDocType'
+                }, 
                 'numInvites': {
                 '$count': {}
                 },
