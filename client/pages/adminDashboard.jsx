@@ -40,6 +40,8 @@ const AdminDashboard = () => {
 
     // Number of invites sent state
     const [numInvitesSent, setNumInvitesSent] = useState(0);
+    const [hoursMenu, setHours] = useState(0);
+    const [minutesMenu, setMinutes] = useState(0);
 
     // Visitor invite data object for chart
     const [visitorVals, setVisitorVals] = useState({
