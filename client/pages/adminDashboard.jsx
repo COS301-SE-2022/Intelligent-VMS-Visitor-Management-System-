@@ -615,7 +615,9 @@ const AdminDashboard = () => {
                             </div>
                         </div>
                         <div className="flex items-center justify-between">
-                            <select name="hours" id="hours">
+                            <select name="hours" id="hours" onChange={(e) => {
+                                                     setHours(e.target.value);
+                                                }}>
                                 <option value="00">00</option>
                                 <option value="01">01</option>
                                 <option value="02">02</option>
