@@ -639,6 +639,7 @@ const AdminDashboard = () => {
                                 <option value="22">22</option>
                                 <option value="23">23</option>
                             </select>
+                            <h1>:</h1>
                             <select name="minutes" id="minutes">
                                 <option value="00">00</option>
                                 <option value="01">01</option>
@@ -705,9 +706,8 @@ const AdminDashboard = () => {
 
                         </div>
                     </div>
-                    <div>
+                    {/* <div>
                         <div className="flex flex-col items-center justify-center space-x-3 text-2xl font-bold lg:flex-row">
-                            {/* qwertyuiop */}
                             <div className="grid grid-cols-1 gap-1">
                                 <h3 className="font-semibold inline-block py-1 px-2 uppercase rounded uppercase last:mr-0 mr-1">Curfew time</h3>
                                 <div className="grid grid-cols-3 column-gap: 50px">
@@ -715,22 +715,22 @@ const AdminDashboard = () => {
                                         onChange={(e) => {
                                             setCurfewTime(e.target.value);
                                             setRestrictionsChanged(true);
-                                            //console.log(e.target.value);
-                                            //alert(e.target.value);
+                                            console.log(e.target.value);
+                                            alert(e.target.value);
                                         }}
                                     />
-                                    {/* <h1>:</h1> 
+                                    <h1>:</h1> 
                                      <input type="number" id="curfewTimeInput" placeholder="00"
                                         onChange={(e) => {
                                             setCurfewTime(e.target.value);
                                             setRestrictionsChanged(true);
                                             //alert(e.target.value);
                                         }}
-                                    /> */}
+                                    />
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
 
