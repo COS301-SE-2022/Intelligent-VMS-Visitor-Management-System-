@@ -225,10 +225,17 @@ const AdminDashboard = () => {
                 numParkingSpotsAvailable - parkingDateMap.get(parkingStartDate)
             );
         }
-
+        let temp=hoursMenu+minutesMenu;
+        alert(temp);
+        setCurfewTime(temp);
         if (curfewTime !== initialCurfewTime) {
-            setInitialCurfewTime(curfewTime);
-            setCurfewTimeMutation();
+            
+            alert(temp);
+            // setCurfewTime(temp);
+            // setInitialCurfewTime(curfewTime);
+            
+
+            //setCurfewTimeMutation();
         }
 
         setRestrictionsChanged(false);
@@ -617,17 +624,18 @@ const AdminDashboard = () => {
                         <div className="flex items-center justify-between">
                             <select name="hours" id="hours" onChange={(e) => {
                                                      setHours(e.target.value);
+                                                     setRestrictionsChanged(true);
                                                 }}>
-                                <option value="00">00</option>
-                                <option value="01">01</option>
-                                <option value="02">02</option>
-                                <option value="03">03</option>
-                                <option value="04">04</option>
-                                <option value="05">05</option>
-                                <option value="06">06</option>
-                                <option value="07">07</option>
-                                <option value="08">08</option>
-                                <option value="09">09</option>
+                                <option value="0">00</option>
+                                <option value="1">01</option>
+                                <option value="2">02</option>
+                                <option value="3">03</option>
+                                <option value="4">04</option>
+                                <option value="5">05</option>
+                                <option value="6">06</option>
+                                <option value="7">07</option>
+                                <option value="8">08</option>
+                                <option value="9">09</option>
                                 <option value="10">10</option>
                                 <option value="11">11</option>
                                 <option value="12">12</option>
@@ -644,17 +652,19 @@ const AdminDashboard = () => {
                                 <option value="23">23</option>
                             </select>
                             <h1>:</h1>
-                            <select name="minutes" id="minutes">
-                                <option value="00">00</option>
-                                <option value="01">01</option>
-                                <option value="02">02</option>
-                                <option value="03">03</option>
-                                <option value="04">04</option>
-                                <option value="05">05</option>
-                                <option value="06">06</option>
-                                <option value="07">07</option>
-                                <option value="08">08</option>
-                                <option value="09">09</option>
+                            <select name="minutes" id="minutes" onChange={(e) => {
+                                                     setMinutes(e.target.value);
+                                                }}>
+                                <option value="0">00</option>
+                                <option value="1">01</option>
+                                <option value="2">02</option>
+                                <option value="3">03</option>
+                                <option value="4">04</option>
+                                <option value="5">05</option>
+                                <option value="6">06</option>
+                                <option value="7">07</option>
+                                <option value="8">08</option>
+                                <option value="9">09</option>
                                 <option value="10">10</option>
                                 <option value="11">11</option>
                                 <option value="12">12</option>
