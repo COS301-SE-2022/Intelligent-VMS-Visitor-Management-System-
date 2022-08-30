@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useState, useEffect, useRef } from "react";
-import { gql, useQuery, useMutation } from "@apollo/client";
+import { gql, useQuery, useMutation, useApolloClient } from "@apollo/client";
 
 import Layout from "../components/Layout";
 import AdminCard from "../components/AdminCard";
@@ -40,6 +40,7 @@ const AdminDashboard = () => {
 
     // Number of invites sent state
     const [numInvitesSent, setNumInvitesSent] = useState(0);
+
     const [hoursMenu, setHours] = useState(77);
     const [minutesMenu, setMinutes] = useState(77);
 
@@ -168,6 +169,10 @@ const AdminDashboard = () => {
         }
     `);
 
+    let tempHours = 0;
+    let tempMinutes = 0;
+
+
 
 
     const predictedInvitesQuery = useQuery(gql`
@@ -194,17 +199,20 @@ const AdminDashboard = () => {
        }
    `);
 
+    const client = useApolloClient();
+    function curfewMutationFunc(CURFEW) {
 
-
-    const [setCurfewTimeMutation, { data1, loading1, error1 }] =
-        //alert("HOS");
-        useMutation(gql`
+        client.mutate({
+            mutation: gql`
         mutation {
-          setCurfewTime(curfewTime: ${curfewTime}) {
+          setCurfewTime(curfewTime: ${CURFEW}) {
             value
           }
         }
-    `);
+    `});
+    }
+
+
 
     const cancelRestrictions = () => {
         setNumInvitesPerResident(initialNumInvitesPerResident);
@@ -214,6 +222,16 @@ const AdminDashboard = () => {
     };
 
     const saveRestrictions = () => {
+        let temp = hoursMenu + minutesMenu;
+
+        if (minutesMenu == "00") {
+            temp = temp + "0";
+        }
+        //alert(temp);
+        let numTemp = parseInt(temp);
+        setCurfewTime(numTemp);
+
+
         if (numInvitesPerResident !== initialNumInvitesPerResident) {
             setInitialNumInvitesPerResident(numInvitesPerResident);
             setNumInvitesPerResidentMutation();
@@ -234,24 +252,12 @@ const AdminDashboard = () => {
         //     setMinutes("00");
         // }
 
-        let temp = hoursMenu + minutesMenu;
-        if (minutesMenu == "00") {
-            temp = temp + "0";
-        }
-        //alert(temp);
-        let numTemp = parseInt(temp);
-        setCurfewTime(numTemp);
-        if (numTemp !== "7777") {
-            alert(temp);
-            setInitialCurfewTime(curfewTime);
-            setCurfewTimeMutation();
-        }
 
-        // if (curfewTime !== initialCurfewTime) {
-        //     //alert(temp);
-        //     setInitialCurfewTime(curfewTime);
-        //     setCurfewTimeMutation();
-        // }
+
+        if (numTemp !== "7777") {
+            setInitialCurfewTime(curfewTime);
+            curfewMutationFunc(numTemp);
+        }
 
         setRestrictionsChanged(false);
     };
@@ -357,17 +363,7 @@ const AdminDashboard = () => {
         } else if (numInvitesPerResident.error) {
         }
 
-        //Curfew time
-        if (
-            !CurfewTimeQuery.loading &&
-            !CurfewTimeQuery.error
-        ) {
-            setCurfewTime(
-                CurfewTimeQuery.data.getCurfewTime.value
-            );
-            setInitialCurfewTime(curfewTime);
-        } else if (curfewTime.error) {
-        }
+
     }, [
         numInvitesQuery,
         numInviteInDateRangeQuery,
@@ -636,129 +632,125 @@ const AdminDashboard = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="flex items-center justify-center">
-                            <h1>Curfew:</h1>
-                            <select className="mx-5" name="hours" id="hours" onChange={(e) => {
-                                setHours(e.target.value);
-                                setRestrictionsChanged(true);
-                            }}>
-                                <option value="0">00</option>
-                                <option value="1">01</option>
-                                <option value="2">02</option>
-                                <option value="3">03</option>
-                                <option value="4">04</option>
-                                <option value="5">05</option>
-                                <option value="6">06</option>
-                                <option value="7">07</option>
-                                <option value="8">08</option>
-                                <option value="9">09</option>
-                                <option value="10">10</option>
-                                <option value="11">11</option>
-                                <option value="12">12</option>
-                                <option value="13">13</option>
-                                <option value="14">14</option>
-                                <option value="15">15</option>
-                                <option value="16">16</option>
-                                <option value="17">17</option>
-                                <option value="18">18</option>
-                                <option value="19">19</option>
-                                <option value="20">20</option>
-                                <option value="21">21</option>
-                                <option value="22">22</option>
-                                <option value="23">23</option>
-                            </select>
-                            <h1>    :    </h1>
-                            <select className="mx-5" name="minutes" id="minutes" onChange={(e) => {
-                                setMinutes(e.target.value);
-                            }}>
-                                <option value="00">00</option>
-                                <option value="1">01</option>
-                                <option value="2">02</option>
-                                <option value="3">03</option>
-                                <option value="4">04</option>
-                                <option value="5">05</option>
-                                <option value="6">06</option>
-                                <option value="7">07</option>
-                                <option value="8">08</option>
-                                <option value="9">09</option>
-                                <option value="10">10</option>
-                                <option value="11">11</option>
-                                <option value="12">12</option>
-                                <option value="13">13</option>
-                                <option value="14">14</option>
-                                <option value="15">15</option>
-                                <option value="16">16</option>
-                                <option value="17">17</option>
-                                <option value="18">18</option>
-                                <option value="19">19</option>
-                                <option value="20">20</option>
-                                <option value="21">21</option>
-                                <option value="22">22</option>
-                                <option value="23">23</option>
-                                <option value="24">24</option>
-                                <option value="25">25</option>
-                                <option value="26">26</option>
-                                <option value="27">27</option>
-                                <option value="28">28</option>
-                                <option value="29">29</option>
-                                <option value="30">30</option>
-                                <option value="31">31</option>
-                                <option value="32">32</option>
-                                <option value="33">33</option>
-                                <option value="34">34</option>
-                                <option value="35">35</option>
-                                <option value="36">36</option>
-                                <option value="37">37</option>
-                                <option value="38">38</option>
-                                <option value="39">39</option>
-                                <option value="40">40</option>
-                                <option value="41">41</option>
-                                <option value="42">42</option>
-                                <option value="43">43</option>
-                                <option value="44">44</option>
-                                <option value="45">45</option>
-                                <option value="46">46</option>
-                                <option value="47">47</option>
-                                <option value="48">48</option>
-                                <option value="49">49</option>
-                                <option value="50">50</option>
-                                <option value="51">51</option>
-                                <option value="52">52</option>
-                                <option value="53">53</option>
-                                <option value="54">54</option>
-                                <option value="55">55</option>
-                                <option value="56">56</option>
-                                <option value="57">57</option>
-                                <option value="58">58</option>
-                                <option value="59">59</option>
-                            </select>
-                        </div>
-                    </div>
-                    {/* <div>
-                        <div className="flex flex-col items-center justify-center space-x-3 text-2xl font-bold lg:flex-row">
-                            <div className="grid grid-cols-1 gap-1">
-                                <h3 className="font-semibold inline-block py-1 px-2 uppercase rounded uppercase last:mr-0 mr-1">Curfew time</h3>
-                                <div className="grid grid-cols-3 column-gap: 50px">
-                                    <input type="number" id="curfewTimeInput" placeholder="00"
-                                        onChange={(e) => {
-                                            setCurfewTime(e.target.value);
+
+                        <div className="card bg-base-200">
+                            <div className="card-body">
+                                <h2 className="card-title">
+                                    Parking Spots Available{" "}
+                                    <div className="badge badge-secondary">
+                                        Visitor
+                                    </div>
+                                </h2>
+                                <p>
+                                    Curfew time of visitors
+                                </p>
+
+                                <div className="card-actions flex items-center justify-start">
+                                    <div className="flex items-center justify-center">
+
+                                        <select className="select select-bordered select-secondary mx-5" name="hours" id="hours" onChange={(e) => {
+                                            tempHours = e.target.value;
+                                            setHours(e.target.value);
                                             setRestrictionsChanged(true);
-                                            console.log(e.target.value);
-                                            alert(e.target.value);
-                                        }}
-                                    />
-                                    <h1>:</h1> 
-                                     <input type="number" id="curfewTimeInput" placeholder="00"
-                                        onChange={(e) => {
-                                            setCurfewTime(e.target.value);
+                                        }}>
+                                            <option value="0">00</option>
+                                            <option value="1">01</option>
+                                            <option value="2">02</option>
+                                            <option value="3">03</option>
+                                            <option value="4">04</option>
+                                            <option value="5">05</option>
+                                            <option value="6">06</option>
+                                            <option value="7">07</option>
+                                            <option value="8">08</option>
+                                            <option value="9">09</option>
+                                            <option value="10">10</option>
+                                            <option value="11">11</option>
+                                            <option value="12">12</option>
+                                            <option value="13">13</option>
+                                            <option value="14">14</option>
+                                            <option value="15">15</option>
+                                            <option value="16">16</option>
+                                            <option value="17">17</option>
+                                            <option value="18">18</option>
+                                            <option value="19">19</option>
+                                            <option value="20">20</option>
+                                            <option value="21">21</option>
+                                            <option value="22">22</option>
+                                            <option value="23">23</option>
+                                        </select>
+                                        <h1>    :    </h1>
+                                        <select className="select select-bordered select-secondary mx-5" name="minutes" id="minutes" onChange={(e) => {
+                                            tempHours = e.target.value;
+                                            setMinutes(e.target.value);
                                             setRestrictionsChanged(true);
-                                            //alert(e.target.value);
-                                        }}
-                                    />
+                                        }}>
+                                            <option value="00">00</option>
+                                            <option value="1">01</option>
+                                            <option value="2">02</option>
+                                            <option value="3">03</option>
+                                            <option value="4">04</option>
+                                            <option value="5">05</option>
+                                            <option value="6">06</option>
+                                            <option value="7">07</option>
+                                            <option value="8">08</option>
+                                            <option value="9">09</option>
+                                            <option value="10">10</option>
+                                            <option value="11">11</option>
+                                            <option value="12">12</option>
+                                            <option value="13">13</option>
+                                            <option value="14">14</option>
+                                            <option value="15">15</option>
+                                            <option value="16">16</option>
+                                            <option value="17">17</option>
+                                            <option value="18">18</option>
+                                            <option value="19">19</option>
+                                            <option value="20">20</option>
+                                            <option value="21">21</option>
+                                            <option value="22">22</option>
+                                            <option value="23">23</option>
+                                            <option value="24">24</option>
+                                            <option value="25">25</option>
+                                            <option value="26">26</option>
+                                            <option value="27">27</option>
+                                            <option value="28">28</option>
+                                            <option value="29">29</option>
+                                            <option value="30">30</option>
+                                            <option value="31">31</option>
+                                            <option value="32">32</option>
+                                            <option value="33">33</option>
+                                            <option value="34">34</option>
+                                            <option value="35">35</option>
+                                            <option value="36">36</option>
+                                            <option value="37">37</option>
+                                            <option value="38">38</option>
+                                            <option value="39">39</option>
+                                            <option value="40">40</option>
+                                            <option value="41">41</option>
+                                            <option value="42">42</option>
+                                            <option value="43">43</option>
+                                            <option value="44">44</option>
+                                            <option value="45">45</option>
+                                            <option value="46">46</option>
+                                            <option value="47">47</option>
+                                            <option value="48">48</option>
+                                            <option value="49">49</option>
+                                            <option value="50">50</option>
+                                            <option value="51">51</option>
+                                            <option value="52">52</option>
+                                            <option value="53">53</option>
+                                            <option value="54">54</option>
+                                            <option value="55">55</option>
+                                            <option value="56">56</option>
+                                            <option value="57">57</option>
+                                            <option value="58">58</option>
+                                            <option value="59">59</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div> */}
+
+                    </div>
                 </div>
             </div>
 
