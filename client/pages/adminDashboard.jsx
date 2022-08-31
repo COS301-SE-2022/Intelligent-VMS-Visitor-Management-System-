@@ -233,12 +233,7 @@ const AdminDashboard = () => {
             );
         }
 
-        // if (hoursMenu=="77") {
-        //     setHours("00");
-        // }
-        // if (minutesMenu=="77") {
-        //     setMinutes("00");
-        // }
+
         if (minutesMenu == "1") {
             minutesMenu = "0" + minutesMenu;
         } else if (minutesMenu == "2") {
@@ -266,7 +261,7 @@ const AdminDashboard = () => {
         }
 
         let temp = hoursMenu + minutesMenu;
-        //alert(temp);
+        
         let numTemp = parseInt(temp);
         setCurfewTime(numTemp);
 
@@ -276,7 +271,9 @@ const AdminDashboard = () => {
             curfewMutationFunc(numTemp);
         }
 
-        //populateCurfew();
+        setDefaultHours(hoursMenu);
+        setDefaultMins(minutesMenu);
+        
 
         setRestrictionsChanged(false);
     };
@@ -419,12 +416,9 @@ const AdminDashboard = () => {
                 if (tempCurfew.length == 3) {
                     tempCurfew = "0" + tempCurfew;
                 }
-                //alert(tempCurfew);
                 tempH = tempCurfew.substring(0, 2);
                 tempM = tempCurfew.substring(2, 4);
             }
-
-            //alert("Hours: " + tempH + "Minutes: " + tempM);
             setDefaultHours(tempH);
             setDefaultMins(tempM);
         }
@@ -705,7 +699,7 @@ const AdminDashboard = () => {
                                             <option value="2">02</option>
                                             <option value="3">03</option>
                                             <option value="4">04</option>
-                                            <option value="5">05</option>
+                                            <option value="5" >05</option>
                                             <option value="6">06</option>
                                             <option value="7">07</option>
                                             <option value="8">08</option>
