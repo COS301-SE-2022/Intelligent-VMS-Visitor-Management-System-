@@ -276,7 +276,7 @@ const AdminDashboard = () => {
             curfewMutationFunc(numTemp);
         }
 
-        populateCurfew();
+        //populateCurfew();
 
         setRestrictionsChanged(false);
     };
@@ -696,7 +696,7 @@ const AdminDashboard = () => {
                                     <div className="flex items-center justify-center">
 
                                         <select className="select select-bordered select-secondary mx-5" name="hours" id="hours" onChange={(e) => {
-                                            tempHours = e.target.value;
+                                            
                                             setHours(e.target.value);
                                             setRestrictionsChanged(true);
                                         }}>
@@ -727,7 +727,7 @@ const AdminDashboard = () => {
                                         </select>
                                         <h1>    :    </h1>
                                         <select className="select select-bordered select-secondary mx-5" name="minutes" id="minutes" onChange={(e) => {
-                                            tempHours = e.target.value;
+                                            
                                             setMinutes(e.target.value);
                                             setRestrictionsChanged(true);
                                         }}>
