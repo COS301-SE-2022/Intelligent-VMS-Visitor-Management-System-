@@ -172,12 +172,6 @@ const AdminDashboard = () => {
         }
     `);
 
-    let tempHours = 0;
-    let tempMinutes = 0;
-
-
-
-
     const predictedInvitesQuery = useQuery(gql`
         query {
           getPredictedInviteData(startDate: "${startDate}", endDate: "${endDate}") {
@@ -281,7 +275,7 @@ const AdminDashboard = () => {
             setInitialCurfewTime(curfewTime);
             curfewMutationFunc(numTemp);
         }
-        
+
         populateCurfew();
 
         setRestrictionsChanged(false);
