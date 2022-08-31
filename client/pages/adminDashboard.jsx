@@ -242,12 +242,33 @@ const AdminDashboard = () => {
         // if (minutesMenu=="77") {
         //     setMinutes("00");
         // }
+        if(minutesMenu == "1"){
+            minutesMenu = "0" + minutesMenu;
+        }else if(minutesMenu == "2"){
+            minutesMenu = "0" + minutesMenu;
+        }else if(minutesMenu == "3"){
+            minutesMenu = "0" + minutesMenu;
+        }else if(minutesMenu == "4"){
+            minutesMenu = "0" + minutesMenu;
+        }else if(minutesMenu == "5"){
+            minutesMenu = "0" + minutesMenu;
+        }else if(minutesMenu == "6"){
+            minutesMenu = "0" + minutesMenu;
+        }else if(minutesMenu == "7"){
+            minutesMenu = "0" + minutesMenu;
+        }else if(minutesMenu == "8"){
+            minutesMenu = "0" + minutesMenu;
+        }else if(minutesMenu == "9"){
+            minutesMenu = "0" + minutesMenu;
+        }
+
+
         let temp = hoursMenu + minutesMenu;
 
         if (minutesMenu == "00") {
             temp = temp + "0";
         }
-        //alert(temp);
+        alert(temp);
         let numTemp = parseInt(temp);
         setCurfewTime(numTemp);
 
