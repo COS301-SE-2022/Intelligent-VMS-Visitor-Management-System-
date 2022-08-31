@@ -222,16 +222,7 @@ const AdminDashboard = () => {
     };
 
     const saveRestrictions = () => {
-        let temp = hoursMenu + minutesMenu;
-
-        if (minutesMenu == "00") {
-            temp = temp + "0";
-        }
-        //alert(temp);
-        let numTemp = parseInt(temp);
-        setCurfewTime(numTemp);
-
-
+        
         if (numInvitesPerResident !== initialNumInvitesPerResident) {
             setInitialNumInvitesPerResident(numInvitesPerResident);
             setNumInvitesPerResidentMutation();
@@ -251,7 +242,14 @@ const AdminDashboard = () => {
         // if (minutesMenu=="77") {
         //     setMinutes("00");
         // }
+        let temp = hoursMenu + minutesMenu;
 
+        if (minutesMenu == "00") {
+            temp = temp + "0";
+        }
+        //alert(temp);
+        let numTemp = parseInt(temp);
+        setCurfewTime(numTemp);
 
 
         if (numTemp !== "7777") {
