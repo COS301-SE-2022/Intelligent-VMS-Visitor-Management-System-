@@ -225,7 +225,7 @@ const AdminDashboard = () => {
     };
 
     const saveRestrictions = () => {
-        
+
         if (numInvitesPerResident !== initialNumInvitesPerResident) {
             setInitialNumInvitesPerResident(numInvitesPerResident);
             setNumInvitesPerResidentMutation();
@@ -245,30 +245,36 @@ const AdminDashboard = () => {
         // if (minutesMenu=="77") {
         //     setMinutes("00");
         // }
-        if(minutesMenu == "1"){
+        if (minutesMenu == "1") {
             minutesMenu = "0" + minutesMenu;
-        }else if(minutesMenu == "2"){
+        } else if (minutesMenu == "2") {
             minutesMenu = "0" + minutesMenu;
-        }else if(minutesMenu == "3"){
+        } else if (minutesMenu == "3") {
             minutesMenu = "0" + minutesMenu;
-        }else if(minutesMenu == "4"){
+        } else if (minutesMenu == "4") {
             minutesMenu = "0" + minutesMenu;
-        }else if(minutesMenu == "5"){
+        } else if (minutesMenu == "5") {
             minutesMenu = "0" + minutesMenu;
-        }else if(minutesMenu == "6"){
+        } else if (minutesMenu == "6") {
             minutesMenu = "0" + minutesMenu;
-        }else if(minutesMenu == "7"){
+        } else if (minutesMenu == "7") {
             minutesMenu = "0" + minutesMenu;
-        }else if(minutesMenu == "8"){
+        } else if (minutesMenu == "8") {
             minutesMenu = "0" + minutesMenu;
-        }else if(minutesMenu == "9"){
+        } else if (minutesMenu == "9") {
+            minutesMenu = "0" + minutesMenu;
+        } else if (minutesMenu == "0") {
             minutesMenu = "0" + minutesMenu;
         }
 
+        if (hoursMenu == "0") {
+            hoursMenu = "0" + hoursMenu;
+        }
 
         let temp = hoursMenu + minutesMenu;
 
-        //alert(temp);
+
+        alert(temp);
         let numTemp = parseInt(temp);
         setCurfewTime(numTemp);
 
@@ -391,7 +397,7 @@ const AdminDashboard = () => {
         setParkingVals,
         setNumParkingSpotsAvailable,
         numInvitesPerResidentQuery,
-        
+
     ]);
 
     useEffect(() => {
@@ -411,15 +417,23 @@ const AdminDashboard = () => {
             const curfew = CurfewTimeQuery.data.getCurfewTime.value;
             let tempH;
             let tempM;
-            let tempCurfew = String(curfew);
-            if(tempCurfew.length == 3){
-                tempCurfew = "0" + tempCurfew;
+            if (curfew == "0") {
+                tempH = "00";
+                tempM = "00";
+            } else {
+                let tempCurfew = String(curfew);
+                if (tempCurfew.length == 3) {
+                    tempCurfew = "0" + tempCurfew;
+                }
+                //alert(tempCurfew);
+                tempH = tempCurfew.substring(0, 2);
+                tempM = tempCurfew.substring(2, 4);
             }
-            alert(tempCurfew);
-            tempH = tempCurfew.substring(0,2);
-            tempM = tempCurfew.substring(2,4);
-            //alert(tempM);
-            
+
+            alert("Hours: " + tempH + "Minutes: " + tempM);
+            setDefaultHours(tempH);
+            setDefaultMins(tempM);
+
         }
     }, [CurfewTimeQuery]);
 
@@ -672,13 +686,13 @@ const AdminDashboard = () => {
                         <div className="card bg-base-200">
                             <div className="card-body">
                                 <h2 className="card-title">
-                                    Parking Spots Available{" "}
+                                    Curfew Time{" "}
                                     <div className="badge badge-secondary">
                                         Visitor
                                     </div>
                                 </h2>
                                 <p>
-                                    Curfew time of visitors
+                                    Current curfew: {defaultHours}:{defaultMins}
                                 </p>
 
                                 <div className="card-actions flex items-center justify-start">
