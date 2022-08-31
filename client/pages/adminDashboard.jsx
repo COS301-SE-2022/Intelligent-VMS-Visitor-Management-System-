@@ -41,8 +41,8 @@ const AdminDashboard = () => {
     // Number of invites sent state
     const [numInvitesSent, setNumInvitesSent] = useState(0);
 
-    const [hoursMenu, setHours] = useState(77);
-    const [minutesMenu, setMinutes] = useState(77);
+    const [hoursMenu, setHours] = useState(0);
+    const [minutesMenu, setMinutes] = useState(0);
 
     // Visitor invite data object for chart
     const [visitorVals, setVisitorVals] = useState({
@@ -133,6 +133,9 @@ const AdminDashboard = () => {
     // Number of invites per resident state
     const [numInvitesPerResident, setNumInvitesPerResident] = useState(1);
     const [curfewTime, setCurfewTime] = useState(1);
+
+    const [defaultHours, setDefaultHours] = useState(0);
+    const [defaultMins, setDefaultMins] = useState(0);
 
     const numInvitesQuery = useQuery(gql`
         query {
@@ -265,7 +268,7 @@ const AdminDashboard = () => {
 
         let temp = hoursMenu + minutesMenu;
 
-        alert(temp);
+        //alert(temp);
         let numTemp = parseInt(temp);
         setCurfewTime(numTemp);
 
@@ -388,7 +391,7 @@ const AdminDashboard = () => {
         setParkingVals,
         setNumParkingSpotsAvailable,
         numInvitesPerResidentQuery,
-        CurfewTimeQuery,
+        
     ]);
 
     useEffect(() => {
@@ -402,6 +405,23 @@ const AdminDashboard = () => {
             setPredictedVisitorVals(predictedData);
         }
     }, [predictedInvitesQuery]);
+
+    useEffect(() => {
+        if (!CurfewTimeQuery.loading && !CurfewTimeQuery.error) {
+            const curfew = CurfewTimeQuery.data.getCurfewTime.value;
+            let tempH;
+            let tempM;
+            let tempCurfew = String(curfew);
+            if(tempCurfew.length == 3){
+                tempCurfew = "0" + tempCurfew;
+            }
+            alert(tempCurfew);
+            tempH = tempCurfew.substring(0,2);
+            tempM = tempCurfew.substring(2,4);
+            //alert(tempM);
+            
+        }
+    }, [CurfewTimeQuery]);
 
     return (
         <Layout>
