@@ -272,9 +272,7 @@ const AdminDashboard = () => {
         }
 
         let temp = hoursMenu + minutesMenu;
-
-
-        alert(temp);
+        //alert(temp);
         let numTemp = parseInt(temp);
         setCurfewTime(numTemp);
 
@@ -283,6 +281,8 @@ const AdminDashboard = () => {
             setInitialCurfewTime(curfewTime);
             curfewMutationFunc(numTemp);
         }
+        
+        populateCurfew();
 
         setRestrictionsChanged(false);
     };
@@ -412,7 +412,7 @@ const AdminDashboard = () => {
         }
     }, [predictedInvitesQuery]);
 
-    useEffect(() => {
+    function populateCurfew(){
         if (!CurfewTimeQuery.loading && !CurfewTimeQuery.error) {
             const curfew = CurfewTimeQuery.data.getCurfewTime.value;
             let tempH;
@@ -430,11 +430,14 @@ const AdminDashboard = () => {
                 tempM = tempCurfew.substring(2, 4);
             }
 
-            alert("Hours: " + tempH + "Minutes: " + tempM);
+            //alert("Hours: " + tempH + "Minutes: " + tempM);
             setDefaultHours(tempH);
             setDefaultMins(tempM);
-
         }
+    }
+
+    useEffect(() => {
+        populateCurfew();
     }, [CurfewTimeQuery]);
 
     return (
