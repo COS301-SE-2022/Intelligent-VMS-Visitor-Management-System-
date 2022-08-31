@@ -265,9 +265,6 @@ const AdminDashboard = () => {
 
         let temp = hoursMenu + minutesMenu;
 
-        if (minutesMenu == "00") {
-            temp = temp + "0";
-        }
         alert(temp);
         let numTemp = parseInt(temp);
         setCurfewTime(numTemp);
