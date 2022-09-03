@@ -2,10 +2,10 @@
 
  @ObjectType()
  export class BSIdata {
-     @Field((type) => Int)
+     @Field((type) => {return Int})
      signInCount: number;
 
-     @Field((type) => Int)
+     @Field((type) => {return Int})
      createCount: number;
  }
 

@@ -16,8 +16,8 @@ import { ReceptionistService } from '@vms/receptionist';
 describe('SignOutService', () => {
   let service: SignOutService;
   let inviteService: VisitorInviteService;
-  let receptionistService = {
-    getTrayByInviteID: jest.fn(()=> ({}))
+  const receptionistService = {
+    getTrayByInviteID: jest.fn(()=> {return {}})
 
   };
   /*eslint-disable*/

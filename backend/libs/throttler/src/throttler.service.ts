@@ -14,6 +14,6 @@ export class RateLimitStorageService implements RateLimitStorage {
     }
 
     async addRecord(key: string, ttl: number) : Promise<void> {
-
+        return;
     }
 }

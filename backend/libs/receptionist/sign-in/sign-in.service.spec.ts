@@ -86,16 +86,16 @@ describe('SignInService', () => {
         if(query.inviteID === "cb7c7938-1c41-427d-833e-2c6b77e0e26b") {
           const invite = new Invite();
           invite.inviteID = "cb7c7938-1c41-427d-833e-2c6b77e0e26b";
-          const formatYmd = (today: Date) => today.toISOString().slice(0, 10);
-          let todayString = formatYmd(new Date());
+          const formatYmd = (today: Date) => {return today.toISOString().slice(0, 10)};
+          const todayString = formatYmd(new Date());
           invite.inviteDate = todayString;
           invite.requiresParking = true;
           return invite;
         } else if(query.inviteID === "f11ae766-ce23-4f27-b428-83cff1afbf04") {
           const invite = new Invite();
           invite.inviteID = "f11ae766-ce23-4f27-b428-83cff1afbf04";
-          const formatYmd = (today: Date) => today.toISOString().slice(0, 10);
-          let todayString = formatYmd(new Date());
+          const formatYmd = (today: Date) => {return today.toISOString().slice(0, 10)};
+          const todayString = formatYmd(new Date());
           invite.inviteDate = todayString;
           invite.requiresParking = false;
           return invite;

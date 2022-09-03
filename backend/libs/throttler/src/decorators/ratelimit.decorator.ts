@@ -21,4 +21,4 @@ export const RateLimit = (limit = 20, ttl = 60): MethodDecorator & ClassDecorato
   };
 };
 
-export const InjectThrottlerOptions = () => Inject(getOptionsToken());
+export const InjectThrottlerOptions = () => {return Inject(getOptionsToken())};

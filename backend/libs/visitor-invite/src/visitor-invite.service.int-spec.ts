@@ -14,13 +14,13 @@ describe('VisitorInviteService Int', () => {
   let mongod: MongoMemoryServer;
 
   beforeEach(async () => {
-    let mongod = await MongoMemoryServer.create();
+    const mongod = await MongoMemoryServer.create();
     const module = await Test.createTestingModule({
       imports: [
         MongooseModule.forRootAsync({
-          useFactory: async () => ({
+          useFactory: async () => {return {
             uri: mongod.getUri(),
-          }),
+          }},
         }),
       ],
       providers:[
