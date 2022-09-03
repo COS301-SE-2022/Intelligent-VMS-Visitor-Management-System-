@@ -31,4 +31,4 @@ export class generateTrayCommandHandler implements ICommandHandler {
 }
 
 const trayIDGenerator = () => //returns a random integer from 0 to 100:
-Math.floor(Math.random()*101);
+{return Math.floor(Math.random()*101)};

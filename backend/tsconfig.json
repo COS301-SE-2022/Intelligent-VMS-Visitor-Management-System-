@@ -83,6 +83,12 @@
       ],
       "@vms/restrictions/*": [
         "libs/restrictions/src/*"
+      ],
+      "@vms/throttler": [
+        "libs/throttler/src"
+      ],
+      "@vms/throttler/*": [
+        "libs/throttler/src/*"
       ]
     }
   }

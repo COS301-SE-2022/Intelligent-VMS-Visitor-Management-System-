@@ -24,10 +24,10 @@ const getFormattedDateString = (date) => {
     }
 };
 
-const CreateInvite = () => {
+const CreateInvite = ({ name, email, idNumber, idDocType }) => {
     // Get Instance of NextJS router to redirect to different pages
     const router = useRouter();
-    const { name, email, idNumber, idDocType } = router.query;
+    //let { name, email, idNumber, idDocType } = router.query;
 
     // Get Apollo client from provider
     const client = useApolloClient();
@@ -143,7 +143,6 @@ const CreateInvite = () => {
             setShowErrorAlert(true);
         }
     }, [
-        router,
         numInvitesQuery,
         numInvitesOfResidentQuery,
         numInvitesAllowed,
@@ -166,7 +165,7 @@ const CreateInvite = () => {
                     initialValues={{
                         email: !email ? "" : email,
                         idDoc: !idDocType ? "RSA-ID" : idDocType,
-                        name: name === undefined ? "" : name,
+                        name: !name ? "" : name,
                         idValue: !idNumber ? "" : idNumber,
                         visitDate: now,
                         reserveParking: false,
@@ -401,6 +400,7 @@ const CreateInvite = () => {
     );
 };
 
+/*
 export async function getStaticProps(context) {
     return {
         props: {
@@ -408,5 +408,18 @@ export async function getStaticProps(context) {
         },
     };
 }
+*/
+
+CreateInvite.getInitialProps = async ({ query }) => {
+    const { name, email, idNumber, idDocType } = query;
+
+    return {
+        name: name ? name : "",
+        email: email ? email : "",
+        idNumber: idNumber ? idNumber : "",
+        idDocType:  idDocType ? idDocType : "",
+        protected: true
+    }
+};
 
 export default CreateInvite;
