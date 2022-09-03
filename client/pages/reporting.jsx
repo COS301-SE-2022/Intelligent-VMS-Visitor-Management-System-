@@ -62,7 +62,7 @@ const Reporting = () => {
 
     const predictedInvitesQuery = useQuery(gql`
         query {
-          getPredictedInviteData(startDate: "${startDate}", endDate: "${endDate}") {
+          getPredictedInviteData(startDate: "${getFormattedDateString(startDate)}", endDate: "${getFormattedDateString(endDate)}") {
             date
             data
           }
@@ -262,6 +262,7 @@ const Reporting = () => {
                             ]}
                             setStart={setStartDate}
                             setRange={setRange}
+                            queryLoading={loading}
                         />
                     </div>
                 </div>
