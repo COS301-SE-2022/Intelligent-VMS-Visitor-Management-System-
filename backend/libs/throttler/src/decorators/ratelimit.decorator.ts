@@ -1,4 +1,5 @@
 import { Inject } from '@nestjs/common';
+import { getOptionsToken, getStorageToken } from '../providers/ratelimit.provider';
 
 const setThrottlerMetadata = (target: any, limit: number, ttl: number): void => {
   Reflect.defineMetadata("THROTTLER:TTL", ttl, target);
@@ -22,3 +23,5 @@ export const RateLimit = (limit = 20, ttl = 60): MethodDecorator & ClassDecorato
 };
 
 export const InjectThrottlerOptions = () => {return Inject(getOptionsToken())};
+
+export const InjectThrottlerStorage = () => {return Inject(getStorageToken())};

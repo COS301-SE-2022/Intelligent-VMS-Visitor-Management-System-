@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { ThrottlerService } from './throttler.service';
+import { RateLimitStorageService } from './throttler.service';
 
 @Module({
-  providers: [ThrottlerService],
-  exports: [ThrottlerService],
+  providers: [RateLimitStorageService],
+  exports: [RateLimitStorageService],
 })
 export class ThrottlerModule {}
