@@ -125,6 +125,7 @@
       ".dto.ts",
       ".error.ts",
       ".decorator.ts",
+      ".provider.ts",
       "index.ts",
       ".int-spec.ts"
     ],
