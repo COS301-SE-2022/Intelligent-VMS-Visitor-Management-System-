@@ -143,6 +143,7 @@ const CreateInvite = () => {
             setShowErrorAlert(true);
         }
     }, [
+        router,
         numInvitesQuery,
         numInvitesOfResidentQuery,
         numInvitesAllowed,
@@ -165,7 +166,7 @@ const CreateInvite = () => {
                     initialValues={{
                         email: !email ? "" : email,
                         idDoc: !idDocType ? "RSA-ID" : idDocType,
-                        name: !name ? "" : name,
+                        name: name === undefined ? "" : name,
                         idValue: !idNumber ? "" : idNumber,
                         visitDate: now,
                         reserveParking: false,
