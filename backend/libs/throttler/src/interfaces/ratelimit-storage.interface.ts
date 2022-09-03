@@ -19,4 +19,4 @@ export interface RateLimitStorage {
   addRecord(key: string, ttl: number): Promise<void>;
 }
 
-export const ThrottlerStorage = Symbol('ThrottlerStorage');
+export const RateLimitStorage = Symbol('RateLimitStorage');

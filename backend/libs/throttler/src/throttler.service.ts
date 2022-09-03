@@ -12,4 +12,8 @@ export class RateLimitStorageService implements RateLimitStorage {
     async getRecord(key: string): Promise<number[]> {
         return this.storage[key] || [];
     }
+
+    async addRecord(key: string, ttl: number) : Promise<void> {
+
+    }
 }

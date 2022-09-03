@@ -16,8 +16,8 @@ export function createThrottlerProviders(options: RateLimitModuleOptions): Provi
 
 export const ThrottlerStorageProvider = {
   provide: RateLimitStorage,
-  useFactory: (options: ThrottlerModuleOptions) => {
-    return options.storage ? options.storage : new ThrottlerStorageService();
+  useFactory: (options: RateLimitModuleOptions) => {
+    return options.storage ? options.storage : new RateLimitStorageService();
   },
   inject: [OPTIONS_TOKEN],
 };

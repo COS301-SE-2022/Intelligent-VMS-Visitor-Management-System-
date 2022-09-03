@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ThrottlerService } from './throttler.service';
+import { RateLimitStorageService } from './throttler.service';
 
 describe('ThrottlerService', () => {
-  let service: ThrottlerService;
+  let service: RateLimitStorageService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [ThrottlerService],
+      providers: [RateLimitStorageService],
     }).compile();
 
-    service = module.get<ThrottlerService>(ThrottlerService);
+    service = module.get<RateLimitStorageService>(RateLimitStorageService);
   });
 
   it('should be defined', () => {
