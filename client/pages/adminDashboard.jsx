@@ -172,7 +172,8 @@ const AdminDashboard = () => {
         query {
           getPredictedInviteData(startDate: "${startDate}", endDate: "${endDate}") {
             date
-            data
+            parking,
+            visitors
           }
         }
     `);
@@ -357,12 +358,14 @@ const AdminDashboard = () => {
 
     useEffect(() => {
         if (!predictedInvitesQuery.loading && !predictedInvitesQuery.error) {
+            console.log(predictedInvitesQuery.data.getPredictedInviteData);
             const predictedData =
                 predictedInvitesQuery.data.getPredictedInviteData.map(
                     (invite) => {
-                        return invite.data;
+                        return invite.visitors;
                     }
                 );
+
             setPredictedVisitorVals(predictedData);
         }
     }, [predictedInvitesQuery]);
