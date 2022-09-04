@@ -57,6 +57,7 @@ const AdminDashboard = () => {
 
     // Predicted Visitor Values
     const [predictedVisitorVals, setPredictedVisitorVals] = useState([]);
+    const [predictedParkingVals, setPredictedParkingVals] = useState([]);
 
     // Date Range Hook
     const [startDate, endDate, inviteDateMap, setDateMap] = useDateRange(
@@ -358,15 +359,17 @@ const AdminDashboard = () => {
 
     useEffect(() => {
         if (!predictedInvitesQuery.loading && !predictedInvitesQuery.error) {
-            console.log(predictedInvitesQuery.data.getPredictedInviteData);
-            const predictedData =
-                predictedInvitesQuery.data.getPredictedInviteData.map(
-                    (invite) => {
-                        return invite.visitors;
-                    }
-                );
+            const predictedVisitors = [];
+            const predictedParking = [];
+            predictedInvitesQuery.data.getPredictedInviteData.forEach(
+                (invite) => {
+                    predictedVisitors.push(invite.visitors);
+                    predictedParking.push(invite.parking);
+                }
+            );
 
-            setPredictedVisitorVals(predictedData);
+            setPredictedVisitorVals(predictedVisitors);
+            setPredictedParkingVals(predictedParking);
         }
     }, [predictedInvitesQuery]);
 
@@ -439,11 +442,13 @@ const AdminDashboard = () => {
                                 visitorVals.data,
                                 predictedVisitorVals,
                                 parkingVals.data,
+                                predictedParkingVals
                             ]}
                             datalabels={[
                                 visitorVals.label,
                                 "Predicted Visitors",
                                 parkingVals.label,
+                                "Predicted Parking"
                             ]}
                         />
                         <div className="stats stats-vertical bg-base-200 shadow">
@@ -476,7 +481,7 @@ const AdminDashboard = () => {
                                     <FaCarSide className="text-2xl md:text-3xl" />
                                 </div>
                                 <div className="stat-title">
-                                    Average Parking per day
+                                    Average Parking Reservations per day
                                 </div>
                                 <div className="stat-value">
                                     {Math.ceil(avgParking)}
@@ -618,7 +623,6 @@ const AdminDashboard = () => {
                     </div>
                     <div>
                         <div className="flex flex-col items-center justify-center space-x-3 text-2xl font-bold lg:flex-row">
-                            {/* qwertyuiop */}
                             <div className="grid grid-cols-1 gap-1">
                                 <h3 className="font-semibold inline-block py-1 px-2 uppercase rounded uppercase last:mr-0 mr-1">Curfew time</h3>
                                 <div className="grid grid-cols-3 column-gap: 50px">
