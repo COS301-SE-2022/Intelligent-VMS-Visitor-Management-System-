@@ -68,7 +68,8 @@ type SearchInvite {
 
 type PredictedInviteData {
   date: String!
-  data: Float!
+  visitors: Float!
+  parking: Float!
 }
 
 type Visitor {

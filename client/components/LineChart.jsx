@@ -53,9 +53,10 @@ const LineChart = ({ chartRef, labelvals, datavals, datalabels }) => {
         const secondaryContent = style.getPropertyValue("--sf");
         const tertiary = style.getPropertyValue("--a");
         const tertiaryContent = style.getPropertyValue("--af");
+        const fourth = style.getPropertyValue("--su");
 
-        const colours = [primary, secondary, tertiary];
-        const coloursBorders = [primaryContent, secondaryContent, tertiaryContent];
+        const colours = [primary, secondary, tertiary, fourth];
+        const coloursBorders = [primaryContent, secondaryContent, tertiaryContent, fourth];
 
         const labels = labelvals;
 
