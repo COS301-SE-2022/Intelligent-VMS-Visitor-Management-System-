@@ -164,10 +164,10 @@ const CreateInvite = ({ name, email, idNumber, idDocType }) => {
             <div className="relative flex h-full min-h-[80vh] w-full flex-col items-center justify-center overflow-hidden pb-3">
                 <Formik
                     initialValues={{
-                        email: !visitorData.email ? "" : visitorData.email,
-                        idDoc: !visitorData.idDocType ? "RSA-ID" : visitorData.idDocType,
+                        email: !email ? "" : email,
+                        idDoc: !idDocType ? "RSA-ID" : idDocType,
                         name: !name ? "" : name,
-                        idValue: !visitorData.idNumber ? "" : visitorData.idNumber,
+                        idValue: !idNumber ? "" : idNumber,
                         visitDate: now,
                         reserveParking: false,
                     }}
