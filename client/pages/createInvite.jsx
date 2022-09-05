@@ -50,6 +50,15 @@ const CreateInvite = ({ name, email, idNumber, idDocType }) => {
 
     const [now, setNow] = useState(getFormattedDateString(new Date()));
 
+    const [visitorData, setVisitorData] = useState({
+        name: name,
+        email: email,
+        idNumber: idNumber,
+        idDocType: idDocType
+    });
+
+    const [name, setName] = useState(name);
+
     // Get Data From JWT Token
     const jwtTokenData = useAuth((state) => {
         return state.decodedToken;
@@ -164,10 +173,10 @@ const CreateInvite = ({ name, email, idNumber, idDocType }) => {
             <div className="relative flex h-full min-h-[80vh] w-full flex-col items-center justify-center overflow-hidden pb-3">
                 <Formik
                     initialValues={{
-                        email: !email ? "" : email,
-                        idDoc: !idDocType ? "RSA-ID" : idDocType,
+                        email: !visitorData.email ? "" : visitorData.email,
+                        idDoc: !visitorData.idDocType ? "RSA-ID" : visitorData.idDocType,
                         name: !name ? "" : name,
-                        idValue: !idNumber ? "" : idNumber,
+                        idValue: !visitorData.idNumber ? "" : visitorData.idNumber,
                         visitDate: now,
                         reserveParking: false,
                     }}
@@ -285,8 +294,8 @@ const CreateInvite = ({ name, email, idNumber, idDocType }) => {
                                     value={values.visitDate}
                                 />
 
-                                {!name && !email && !idNumber && !idDocType ? (
-                                    <VisitorSuggestions date={now}/>
+                                {!values.name.length > 0 && !email && !idNumber && !idDocType ? (
+                                    <VisitorSuggestions date={now} />
                                 ):(
                                     <div></div>
                                 )}
@@ -433,7 +442,7 @@ export async function getStaticProps(context) {
 
 CreateInvite.getInitialProps = async ({ query }) => {
     const { name, email, idNumber, idDocType } = query;
-
+    
     return {
         name: name ? name : "",
         email: email ? email : "",
