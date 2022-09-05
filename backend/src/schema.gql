@@ -45,6 +45,16 @@ type InviteSuggestion {
   idNumber: String!
 }
 
+type Visitor {
+  _id: String!
+  visitorName: String!
+  idNumber: String!
+  idDocType: String!
+  numInvites: Float!
+  visits: [String!]!
+  prob: Float!
+}
+
 type Invite {
   userEmail: String!
   visitorEmail: String!
@@ -70,12 +80,6 @@ type PredictedInviteData {
   date: String!
   visitors: Float!
   parking: Float!
-}
-
-type Visitor {
-  _id: String!
-  visitorName: String!
-  numInvites: Float!
 }
 
 type GroupInvite {
@@ -117,6 +121,7 @@ type Query {
   getVisitors(email: String!): [Visitor!]!
   getMostUsedInviteData(email: String!): InviteSuggestion!
   getInvitesForUserType(permission: Float!): [GroupInvite!]!
+  getSuggestions(date: String!, userEmail: String!): [Visitor!]!
   helloParking: String!
   getTotalAvailableParking: Float!
   getDisabledParking: [Parking!]!

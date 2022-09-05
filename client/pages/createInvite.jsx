@@ -8,6 +8,7 @@ import useAuth from "../store/authStore.js";
 
 import Layout from "../components/Layout";
 import ErrorAlert from "../components/ErrorAlert";
+import VisitorSuggestions from "../components/VisitorSuggestions.jsx";
 
 import AlertGroup from "../components/AlertGroup";
 import Alert from "../components/Alert";
@@ -256,7 +257,7 @@ const CreateInvite = ({ name, email, idNumber, idDocType }) => {
                         return (
                             <form
                                 onSubmit={handleSubmit}
-                                className="md:p-26 prose form-control mt-3 space-y-4 rounded-none bg-base-300 p-14 md:rounded-xl"
+                                className="md:p-26 prose form-control mt-3 space-y-3 rounded-none bg-base-300 p-14 md:rounded-xl"
                             >
                                 <h1>
                                     Let&apos;s{" "}
@@ -265,6 +266,38 @@ const CreateInvite = ({ name, email, idNumber, idDocType }) => {
                                     </span>{" "}
                                     Someone🔥
                                 </h1>
+
+                                <span className="text-md mb-1 font-bold">
+                                    Invite Date:
+                                </span>
+
+                                <input
+                                    type="date"
+                                    name="visitDate"
+                                    placeholder="Visit Date"
+                                    className="input input-bordered w-full"
+                                    min={getFormattedDateString(new Date())}
+                                    onChange={(e) => {
+                                        handleChange(e);
+                                        setNow(e.currentTarget.value);
+                                    }}
+                                    onBlur={handleBlur}
+                                    value={values.visitDate}
+                                />
+
+                                {!name && !email && !idNumber && !idDocType ? (
+                                    <VisitorSuggestions date={now}/>
+                                ):(
+                                    <div></div>
+                                )}
+                                
+
+                                <br/>
+
+                                <span className="text-md mb-1 font-bold">
+                                        Visitor Details:
+                                </span>
+
                                 <input
                                     type="email"
                                     name="email"
@@ -326,19 +359,7 @@ const CreateInvite = ({ name, email, idNumber, idDocType }) => {
                                     {errors.name && touched.name && errors.name}
                                 </span>
 
-                                <input
-                                    type="date"
-                                    name="visitDate"
-                                    placeholder="Visit Date"
-                                    className="input input-bordered w-full"
-                                    min={getFormattedDateString(new Date())}
-                                    onChange={(e) => {
-                                        handleChange(e);
-                                        setNow(e.currentTarget.value);
-                                    }}
-                                    onBlur={handleBlur}
-                                    value={values.visitDate}
-                                />
+                                <br/>
 
                                 <motion.label className="label cursor-pointer">
                                     <motion.span

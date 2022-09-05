@@ -18,7 +18,7 @@ import { Visitor } from "./models/visitor.model";
 import { InviteSuggestion } from "./models/inviteSuggestion.model";
 import { GroupInvite } from "./models/groupInvite.model";
 
-@UseGuards(GqlAuthGuard)
+//@UseGuards(GqlAuthGuard)
 @Resolver((of) => {return Invite})
 export class VisitorInviteResolver {
     constructor(
@@ -184,6 +184,13 @@ export class VisitorInviteResolver {
     @Query((returns) => { return [GroupInvite] }, { name: "getInvitesForUserType" })
     async getInvitesForUserType(@Args("permission") permission: number) {
         return await this.visitorInviteService.getInvitesForUserType(permission);
+    }
+
+    // Get Visitors suggestions for user
+    //@UseGuards(GqlAuthGuard)
+    @Query((returns) => {return [Visitor]}, { name: "getSuggestions" })
+    async getSuggestions(@Args("date") date: string, @Args("userEmail") userEmail: string) {
+        return await this.visitorInviteService.getSuggestions(date,userEmail);
     }
 
 }
