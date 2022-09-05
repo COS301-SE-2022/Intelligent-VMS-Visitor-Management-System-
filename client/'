@@ -2,13 +2,11 @@ import React from 'react';
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { gql, useLazyQuery } from "@apollo/client";
-import { useFormikContext } from "formik";
 import { HiEmojiSad } from "react-icons/hi";
 import useAuth from "../store/authStore.js";
 
-const VisitorSuggestions = ({ date, setName, setFieldValue }) => {
+const VisitorSuggestions = ({ date }) => {
 
-    const formikProps = useFormikContext();
     const [suggestionData, setSuggestionsData] = useState([]);
     const [show, setShow] = useState(3);
 
@@ -58,14 +56,15 @@ const VisitorSuggestions = ({ date, setName, setFieldValue }) => {
                 <div className="card bg-base-300 border border-base-100">
                     <span className="card-title ml-3 mt-2">Suggestions</span>
                     {suggestionData.map((visitor, idx) => {
-                        if(idx < show){
+
+                        if( idx < show){
                             return (
-                                <button onClick={() => { 
-                                    formikProps.setFieldValue('name', visitor.visitorName); 
-                                    formikProps.setFieldValue('email', visitor._id); 
-                                    formikProps.setFieldValue('idValue', visitor.idNumber); 
-                                    formikProps.setFieldValue('idDocType', visitor.idDocType); 
-                                }} key={idx}>
+                                <Link className="" onClick={ () => {
+                                    router.push(
+                                        `/createInvite?name=${visitor.visitorName}&email=${visitor._id}&idNumber=${visitor.idNumber}&idDocType=${visitor.idDocType}`
+                                    );
+                                } }>
+                                    
                                     <div className="bg-base-100 shadow-xl my-2 mx-3 rounded-lg flex">
                                     <div className="avatar placeholder m-3">
                                     <div className="w-10 rounded-full bg-secondary text-neutral-content">
@@ -79,7 +78,8 @@ const VisitorSuggestions = ({ date, setName, setFieldValue }) => {
                                         <div className="text-xs">{visitor._id}</div>
                                     </div>
                                     </div>
-                                </button>
+
+                                </ Link>
                             )  
                         }
                         

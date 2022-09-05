@@ -18,7 +18,7 @@ import { Visitor } from "./models/visitor.model";
 import { InviteSuggestion } from "./models/inviteSuggestion.model";
 import { GroupInvite } from "./models/groupInvite.model";
 
-//@UseGuards(GqlAuthGuard)
+@UseGuards(GqlAuthGuard)
 @Resolver((of) => {return Invite})
 export class VisitorInviteResolver {
     constructor(
