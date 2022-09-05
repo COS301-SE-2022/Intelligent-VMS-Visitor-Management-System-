@@ -50,15 +50,6 @@ const CreateInvite = ({ name, email, idNumber, idDocType }) => {
 
     const [now, setNow] = useState(getFormattedDateString(new Date()));
 
-    const [visitorData, setVisitorData] = useState({
-        name: name,
-        email: email,
-        idNumber: idNumber,
-        idDocType: idDocType
-    });
-
-    const [name, setName] = useState(name);
-
     // Get Data From JWT Token
     const jwtTokenData = useAuth((state) => {
         return state.decodedToken;
