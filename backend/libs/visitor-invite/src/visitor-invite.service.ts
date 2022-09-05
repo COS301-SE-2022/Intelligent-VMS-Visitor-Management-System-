@@ -40,6 +40,8 @@ import { GetMostUsedInviteDataQuery } from "./queries/impl/getMostUsedInviteData
 import { InviteSuggestion } from "./models/inviteSuggestion.model";
 import { UserService } from "@vms/user";
 import { GetInvitesForUsersQuery } from "./queries/impl/getInvitesForUsers.query";
+import { GetVisitorVisitsQuery } from "./queries/impl/getVisitorVisits.query";
+import { Visitor } from "./models/visitor.model";
 
 @Injectable()
 export class VisitorInviteService {
@@ -320,7 +322,7 @@ export class VisitorInviteService {
         const cachedPredictedInvites = await this.cacheManager.get("PREDICTIONS");
 
         if(cachedPredictedInvites) {
-            console.log("HIT!");
+            console.log(cachedPredictedInvites);
             return cachedPredictedInvites;
         } else {
             console.log("MISS");
@@ -334,6 +336,82 @@ export class VisitorInviteService {
             return data.data;
         }
 
+    }
+
+    getMonthsBetweenDates(startDate, endDate) {
+        return (
+          endDate.getMonth() - startDate.getMonth() + 12 * (endDate.getFullYear() - startDate.getFullYear())
+        );
+      }
+
+    getDaysBetweenDates(startDate, endDate) {
+        return (
+          (endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24)
+        );
+      }
+    
+      getWeekdayBetweenDates(startDate, endDate) {
+
+        return (4 * (endDate.getMonth() - startDate.getMonth()) + 52 * (endDate.getFullYear() - startDate.getFullYear()));
+      }
+
+    async getSuggestions(date: string, userEmail: string){
+        let visitors:Visitor[] = JSON.parse(JSON.stringify(await this.queryBus.execute(new GetVisitorVisitsQuery(userEmail))));
+        let predDate = new Date(date);
+        let output = [];
+
+        let pYes = 0;
+        let pNo = 0;
+        const today = new Date();
+
+        for(let i=0 ; i<visitors.length; i++){
+
+            let dowCount = 0;
+            let monthCount = 0;
+        
+            let visitData = JSON.parse(JSON.stringify(visitors[i].visits))
+            let firstInviteDate = new Date(visitors[i].visits[0]);
+
+            for(let j=0 ; j<visitData.length; j++)
+            {
+                let currDate = new Date(visitData[j])
+                if(currDate.getMonth() == predDate.getMonth())
+                    monthCount++;
+                if(currDate.getDay() == predDate.getDay())
+                    dowCount++;
+
+                if(currDate<firstInviteDate)
+                firstInviteDate = currDate;
+            }
+
+            let monthTotal = this.getMonthsBetweenDates(firstInviteDate,today);
+            let dayTotal = this.getDaysBetweenDates(firstInviteDate,today);
+            let dowTotal = this.getWeekdayBetweenDates(firstInviteDate,today);
+
+            // console.log("monthC "+monthCount) 
+            // console.log("monthTotal "+monthTotal)
+            // console.log("dowC "+dowCount)
+            // console.log("dayTotal "+dayTotal)
+            // console.log("dowTotal "+dowTotal)
+
+            let pYes = monthCount/monthTotal * dowCount/dowTotal * visitors[i].numInvites/dayTotal
+            //let pNo = (monthTotal-monthCount)/monthTotal * (dowTotal-dowCount)/dowTotal * (dayTotal-visitors[i].numInvites)/dayTotal
+
+            if(pYes >= 0.00025){
+                let suggestion = new Visitor()
+                suggestion.visitorName = visitors[i].visitorName;
+                suggestion._id = visitors[i]._id;
+                suggestion.idNumber = visitors[i].idNumber;
+                suggestion.idDocType = visitors[i].idDocType;
+                suggestion.prob = pYes;
+                output.push(suggestion);
+                console.log(output);
+            }
+            
+        }
+        output.sort(function(a, b){return b.prob - a.prob});
+        console.log(output);
+        return output
     }
 
     /* CRON JOBS */

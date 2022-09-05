@@ -31,6 +31,7 @@ import { GetTotalNumberOfInvitesOfResidentQueryHandler } from "./queries/handler
 import { GetTotalNumberOfInvitesVisitorQueryHandler } from "./queries/handlers/getTotalNumberOfInvitesVisitor.handler";
 import { GetNumberOfOpenInvitesQueryHandler } from "./queries/handlers/getNumberOfOpenInvites.handler";
 import { GetVisitorsQueryHandler } from "./queries/handlers/getVisitors.handler";
+import { GetVisitorVisitsQueryHandler } from "./queries/handlers/getVisitorVisits.handler";
 import { GetMostUsedInviteDataQueryHandler } from "./queries/handlers/getMostUsedInviteData.handler";
 import { GetInvitesForUsersQueryHandler } from "./queries/handlers/getInvitesForUsers.handler";
 
@@ -71,6 +72,7 @@ import { GetInvitesForUsersQueryHandler } from "./queries/handlers/getInvitesFor
         GetInvitesForUsersQueryHandler,
         GetVisitorsQueryHandler,
         GetMostUsedInviteDataQueryHandler,
+        GetVisitorVisitsQueryHandler,
         getNumberOfVisitors,
     ],
     exports: [VisitorInviteService],

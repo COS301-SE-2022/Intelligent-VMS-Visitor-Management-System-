@@ -10,6 +10,7 @@ const DownloadChart = ({
     datalabels,
     setStart,
     setRange,
+    queryLoading,
     startDate,
     range,
 }) => {
@@ -77,6 +78,11 @@ const DownloadChart = ({
                         <option>30-day</option>
                     </select>
                 )}
+                {queryLoading && 
+                    <progress className="progress progress-primary">
+                        Showing
+                    </progress>
+                }
             </div>
         </div>
     );

@@ -60,6 +60,7 @@ const AdminDashboard = () => {
 
     // Predicted Visitor Values
     const [predictedVisitorVals, setPredictedVisitorVals] = useState([]);
+    const [predictedParkingVals, setPredictedParkingVals] = useState([]);
 
     // Date Range Hook
     const [startDate, endDate, inviteDateMap, setDateMap] = useDateRange(
@@ -176,7 +177,8 @@ const AdminDashboard = () => {
         query {
           getPredictedInviteData(startDate: "${startDate}", endDate: "${endDate}") {
             date
-            data
+            parking,
+            visitors
           }
         }
     `);
@@ -393,13 +395,17 @@ const AdminDashboard = () => {
 
     useEffect(() => {
         if (!predictedInvitesQuery.loading && !predictedInvitesQuery.error) {
-            const predictedData =
-                predictedInvitesQuery.data.getPredictedInviteData.map(
-                    (invite) => {
-                        return invite.data;
-                    }
-                );
-            setPredictedVisitorVals(predictedData);
+            const predictedVisitors = [];
+            const predictedParking = [];
+            predictedInvitesQuery.data.getPredictedInviteData.forEach(
+                (invite) => {
+                    predictedVisitors.push(invite.visitors);
+                    predictedParking.push(invite.parking);
+                }
+            );
+
+            setPredictedVisitorVals(predictedVisitors);
+            setPredictedParkingVals(predictedParking);
         }
     }, [predictedInvitesQuery]);
 
@@ -497,11 +503,13 @@ const AdminDashboard = () => {
                                 visitorVals.data,
                                 predictedVisitorVals,
                                 parkingVals.data,
+                                predictedParkingVals
                             ]}
                             datalabels={[
                                 visitorVals.label,
                                 "Predicted Visitors",
                                 parkingVals.label,
+                                "Predicted Parking"
                             ]}
                         />
                         <div className="stats stats-vertical bg-base-200 shadow">
@@ -534,7 +542,7 @@ const AdminDashboard = () => {
                                     <FaCarSide className="text-2xl md:text-3xl" />
                                 </div>
                                 <div className="stat-title">
-                                    Average Parking per day
+                                    Average Parking Reservations per day
                                 </div>
                                 <div className="stat-value">
                                     {Math.ceil(avgParking)}
@@ -692,6 +700,7 @@ const AdminDashboard = () => {
                                         <select className="select select-bordered select-secondary mx-5" name="hours" id="hours" onChange={(e) => {
                                             
                                             setHours(e.target.value);
+
                                             setRestrictionsChanged(true);
                                         }}>
                                             <option value="0">00</option>

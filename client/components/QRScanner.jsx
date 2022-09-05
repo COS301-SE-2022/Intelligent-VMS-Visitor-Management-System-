@@ -137,7 +137,7 @@ const QRScanner = ({
                     <TiWarning size="lg" color="bg-error" />
                 </span>
                 <p className="ml-2 font-bold text-error">
-                    Ensure that QR Code is visible
+                    Ensure that the QR Code is visible
                 </p>
             </div>
         </div>

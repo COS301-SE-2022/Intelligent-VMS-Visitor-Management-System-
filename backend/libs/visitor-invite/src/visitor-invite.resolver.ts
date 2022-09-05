@@ -118,7 +118,7 @@ export class VisitorInviteResolver {
     // Get the invites associated with given name for receptionist search
     @UseGuards(GqlAuthGuard, RolesGuard)
     @Roles("receptionist")
-    @Query((returns) => [Invite], { name: "getInvitesByNameForSearch"})
+    @Query((returns) => {return [Invite]}, { name: "getInvitesByNameForSearch"})
     async getInvitesByNameForReceptionistSearch(@Args("name") name: string) {
         return await this.visitorInviteService.getInvitesByNameForSearch(name);
     }
@@ -126,7 +126,7 @@ export class VisitorInviteResolver {
     // Get the invites associated with given ID for receptionist search
     @UseGuards(GqlAuthGuard, RolesGuard)
     @Roles("receptionist")
-    @Query((returns) => Invite, { name: "getInvitesByIDForSearch"})
+    @Query((returns) => {return Invite}, { name: "getInvitesByIDForSearch"})
     async getInvitesByIDForReceptionistSearch(@Args("inviteID") inviteID: string) {
         return await this.visitorInviteService.getInvite(inviteID);
     }
@@ -143,7 +143,7 @@ export class VisitorInviteResolver {
     //Get all invites in the database
     @UseGuards(GqlAuthGuard, RolesGuard)
     @Roles("receptionist", "admin")
-    @Query((returns) => [Invite], { name: "getInvitesByDate" })
+    @Query((returns) => {return [Invite]}, { name: "getInvitesByDate" })
     async getAllInvites(@Args("date") date: string) {
         return this.visitorInviteService.getInvitesByDate(date)
     }
@@ -184,6 +184,13 @@ export class VisitorInviteResolver {
     @Query((returns) => { return [GroupInvite] }, { name: "getInvitesForUserType" })
     async getInvitesForUserType(@Args("permission") permission: number) {
         return await this.visitorInviteService.getInvitesForUserType(permission);
+    }
+
+    // Get Visitors suggestions for user
+    //@UseGuards(GqlAuthGuard)
+    @Query((returns) => {return [Visitor]}, { name: "getSuggestions" })
+    async getSuggestions(@Args("date") date: string, @Args("userEmail") userEmail: string) {
+        return await this.visitorInviteService.getSuggestions(date,userEmail);
     }
 
 }

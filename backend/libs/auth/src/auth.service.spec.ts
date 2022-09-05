@@ -21,8 +21,8 @@ describe("AuthService", () => {
     let queryBus: QueryBus;
     let mockUserModel: Model<UserDocument>;
     let cache: Cache;
-    let mailService = {
-        sendVerify: jest.fn(() => ({})),
+    const mailService = {
+        sendVerify: jest.fn(() => {return {}}),
     };
     const cacheMock = {
         get: jest.fn(async () => { return 'any value' }),
