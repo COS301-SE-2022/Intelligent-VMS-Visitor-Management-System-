@@ -34,6 +34,7 @@ import { GetVisitorsQueryHandler } from "./queries/handlers/getVisitors.handler"
 import { GetVisitorVisitsQueryHandler } from "./queries/handlers/getVisitorVisits.handler";
 import { GetMostUsedInviteDataQueryHandler } from "./queries/handlers/getMostUsedInviteData.handler";
 import { GetInvitesForUsersQueryHandler } from "./queries/handlers/getInvitesForUsers.handler";
+import { ExtendInviteCommandHandler } from "./commands/handlers/extendInviteCommand.handler";
 
 @Module({
     imports: [
@@ -46,7 +47,7 @@ import { GetInvitesForUsersQueryHandler } from "./queries/handlers/getInvitesFor
         AuthModule,
         forwardRef(() => {return ParkingModule}),
         MailModule,
-        RestrictionsModule,
+        forwardRef(() => {return RestrictionsModule}),
         MongooseModule.forFeature([
             { name: Invite.name, schema: InviteSchema },
             { name: GroupInvite.name, schema: GroupInviteSchema },
@@ -57,6 +58,7 @@ import { GetInvitesForUsersQueryHandler } from "./queries/handlers/getInvitesFor
         VisitorInviteResolver,
         CreateInviteCommandHandler,
         CancelInviteCommandHandler,
+        ExtendInviteCommandHandler,
         GetInvitesQueryHandler,
         GetInviteQueryHandler,
         GetInvitesByDateQueryHandler,

@@ -1,9 +1,10 @@
-import { forwardRef, Inject, Injectable, CACHE_MANAGER } from "@nestjs/common";
+import { forwardRef, Inject, Injectable, CACHE_MANAGER, OnModuleInit } from "@nestjs/common";
 import { Cache } from 'cache-manager';
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import { HttpService } from "@nestjs/axios";
 import { ConfigService } from "@nestjs/config";
-import { Cron } from '@nestjs/schedule';
+import { Cron,SchedulerRegistry  } from '@nestjs/schedule';
+import { CronJob } from "cron";
 import { randomUUID } from "crypto";
 
 import { CreateInviteCommand } from "./commands/impl/createInvite.command";
@@ -42,20 +43,54 @@ import { UserService } from "@vms/user";
 import { GetInvitesForUsersQuery } from "./queries/impl/getInvitesForUsers.query";
 import { GetVisitorVisitsQuery } from "./queries/impl/getVisitorVisits.query";
 import { Visitor } from "./models/visitor.model";
+import { ExtendInvitesCommand } from "./commands/impl/extendInvite.command";
 
 @Injectable()
-export class VisitorInviteService {
+export class VisitorInviteService implements OnModuleInit {
+    private curfewHour: number;
+    private curfewMinute: number;
+
     constructor(private readonly commandBus: CommandBus, 
                 private readonly queryBus: QueryBus, 
                 private readonly httpService: HttpService,
                 private readonly configService: ConfigService,
                 private readonly mailService: MailService,
+                @Inject(forwardRef(() => {return RestrictionsService}))
                 private readonly restrictionsService: RestrictionsService,
                 private readonly userService: UserService,
                 @Inject(CACHE_MANAGER) private cacheManager: Cache,
                 @Inject(forwardRef(() => {return ParkingService}))
                 private readonly parkingService: ParkingService,
-               ) {}
+                private schedulerRegistry: SchedulerRegistry
+               ) { 
+               
+
+               }
+    onModuleInit() {
+        console.log("here");
+        this.restrictionsService.getCurfewTime().then(
+            (value) => {
+                this.setCurfewDetails(value);
+
+                console.log("created for "+this.curfewMinute.toString()+" "+this.curfewHour.toString() );
+                const job = new CronJob(`${this.curfewMinute.toString()} ${this.curfewHour.toString()} * * *`, async() => {
+                    // await this.commandBus.execute(new ExtendInvitesCommand());  
+                    console.log("HHHHHHHHHHHHHHHHHHHHHHHHHHhhhHHHHHHHHHHHHHHHHHHHHHHHHH")
+                })
+                
+                this.schedulerRegistry.addCronJob("extendInvites", job);
+                job.start();
+            }
+        )   
+    }
+
+     /*
+        Update/synchronise curfew details
+    */
+    async setCurfewDetails( curfewTime:number ){
+        this.curfewMinute = Number(curfewTime.toString().slice(curfewTime.toString().length-2,curfewTime.toString().length));
+        this.curfewHour = Number(curfewTime.toString().slice(0,-2));
+    }
 
     /*
         Create an invitation for a visitor
@@ -360,8 +395,6 @@ export class VisitorInviteService {
         let predDate = new Date(date);
         let output = [];
 
-        let pYes = 0;
-        let pNo = 0;
         const today = new Date();
 
         for(let i=0 ; i<visitors.length; i++){
@@ -388,12 +421,6 @@ export class VisitorInviteService {
             let dayTotal = this.getDaysBetweenDates(firstInviteDate,today);
             let dowTotal = this.getWeekdayBetweenDates(firstInviteDate,today);
 
-            // console.log("monthC "+monthCount) 
-            // console.log("monthTotal "+monthTotal)
-            // console.log("dowC "+dowCount)
-            // console.log("dayTotal "+dayTotal)
-            // console.log("dowTotal "+dowTotal)
-
             let pYes = monthCount/monthTotal * dowCount/dowTotal * visitors[i].numInvites/dayTotal
             //let pNo = (monthTotal-monthCount)/monthTotal * (dowTotal-dowCount)/dowTotal * (dayTotal-visitors[i].numInvites)/dayTotal
 
@@ -414,6 +441,7 @@ export class VisitorInviteService {
         return output
     }
 
+    //TODO do the same for parking
     /* CRON JOBS */
     @Cron("50 23 * * *")
     async groupInvites() {
@@ -488,5 +516,11 @@ export class VisitorInviteService {
         await this.cacheManager.set("PREDICTIONS", data.data, { ttl: 900000 });
         return data.data;
     }
+
+    // /* CRON JOBS */
+    // @Cron(`0 18 * * *`)
+    // async extendInvites() {
+    //     console.log("job");
+    // }
 
 }
