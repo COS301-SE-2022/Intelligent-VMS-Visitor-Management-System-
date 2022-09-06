@@ -29,143 +29,140 @@ describe('SignInService', () => {
 
   const commandBusMock = {
     execute: jest.fn((command) => {
-      if(command instanceof generateTrayCommand) {
-        if(command.inviteID==="hello"){
-          const generateTray= new Tray();
-          generateTray.trayID=0;
-          generateTray.inviteID="someArbitraryString";
-          generateTray.containsResidentID=true;
-          generateTray.containsVisitorID=true;
+      if (command instanceof generateTrayCommand) {
+        if (command.inviteID === "hello") {
+          const generateTray = new Tray();
+          generateTray.trayID = 0;
+          generateTray.inviteID = "someArbitraryString";
+          generateTray.containsResidentID = true;
+          generateTray.containsVisitorID = true;
           return generateTray;
-        } else if(command.inviteID==="cb7c7938-1c41-427d-833e-2c6b77e0e26b"){
-          const generateTray= new Tray();
-          generateTray.trayID=0;
-          generateTray.inviteID="cb7c7938-1c41-427d-833e-2c6b77e0e26b";
-          generateTray.containsResidentID=true;
-          generateTray.containsVisitorID=true;
+        } else if (command.inviteID === "cb7c7938-1c41-427d-833e-2c6b77e0e26b") {
+          const generateTray = new Tray();
+          generateTray.trayID = 0;
+          generateTray.inviteID = "cb7c7938-1c41-427d-833e-2c6b77e0e26b";
+          generateTray.containsResidentID = true;
+          generateTray.containsVisitorID = true;
           return generateTray;
-        } else if(command.inviteID==="f11ae766-ce23-4f27-b428-83cff1afbf04"){
-          const generateTray= new Tray();
-          generateTray.trayID=0;
-          generateTray.inviteID="cf11ae766-ce23-4f27-b428-83cff1afbf04";
-          generateTray.containsResidentID=true;
-          generateTray.containsVisitorID=true;
+        } else if (command.inviteID === "f11ae766-ce23-4f27-b428-83cff1afbf04") {
+          const generateTray = new Tray();
+          generateTray.trayID = 0;
+          generateTray.inviteID = "cf11ae766-ce23-4f27-b428-83cff1afbf04";
+          generateTray.containsResidentID = true;
+          generateTray.containsVisitorID = true;
           return generateTray;
-        }else 
+        } else
+          return null;
+      } else if (command instanceof AssignParkingCommand) {
+        const parking = new Parking();
+        parking.parkingNumber = 0;
+        parking.visitorEmail = "larisabotha@icloud.com";
+        return parking;
+      } else
         return null;
-     }else if(command instanceof AssignParkingCommand) {
-            const parking = new Parking();
-            parking.parkingNumber=0;
-            parking.visitorEmail="larisabotha@icloud.com";
-            return parking;
-    } else
-     return null;
     }),
   };
 
   const queryBusMock = {
     execute: jest.fn((query: IQuery) => {
-      if(query instanceof getTrayListQuery) {
-        const trays=[];
-        const firstTray= new Tray();
-        firstTray.trayID=0;
-        firstTray.inviteID="someArbitraryString";
-        firstTray.containsResidentID=true;
-        firstTray.containsVisitorID=true;
+      if (query instanceof getTrayListQuery) {
+        const trays = [];
+        const firstTray = new Tray();
+        firstTray.trayID = 0;
+        firstTray.inviteID = "someArbitraryString";
+        firstTray.containsResidentID = true;
+        firstTray.containsVisitorID = true;
 
-        const secondTray= new Tray();
-        secondTray.trayID=2;
-        secondTray.inviteID="someArbitraryString1";
-        secondTray.containsResidentID=true;
-        secondTray.containsVisitorID=true;
+        const secondTray = new Tray();
+        secondTray.trayID = 2;
+        secondTray.inviteID = "someArbitraryString1";
+        secondTray.containsResidentID = true;
+        secondTray.containsVisitorID = true;
 
-        trays[0]=firstTray;
-        trays[1]=secondTray;
+        trays[0] = firstTray;
+        trays[1] = secondTray;
         return trays
-      } else if(query instanceof GetInviteQuery){
-        if(query.inviteID === "cb7c7938-1c41-427d-833e-2c6b77e0e26b") {
+      } else if (query instanceof GetInviteQuery) {
+        if (query.inviteID === "cb7c7938-1c41-427d-833e-2c6b77e0e26b") {
           const invite = new Invite();
           invite.inviteID = "cb7c7938-1c41-427d-833e-2c6b77e0e26b";
-          const formatYmd = (today: Date) => {return today.toISOString().slice(0, 10)};
+          const formatYmd = (today: Date) => { return today.toISOString().slice(0, 10) };
           const todayString = formatYmd(new Date());
           invite.inviteDate = todayString;
           invite.requiresParking = true;
           return invite;
-        } else if(query.inviteID === "f11ae766-ce23-4f27-b428-83cff1afbf04") {
+        } else if (query.inviteID === "f11ae766-ce23-4f27-b428-83cff1afbf04") {
           const invite = new Invite();
           invite.inviteID = "f11ae766-ce23-4f27-b428-83cff1afbf04";
-          const formatYmd = (today: Date) => {return today.toISOString().slice(0, 10)};
+          const formatYmd = (today: Date) => { return today.toISOString().slice(0, 10) };
           const todayString = formatYmd(new Date());
           invite.inviteDate = todayString;
           invite.requiresParking = false;
           return invite;
-        } else if(query.inviteID === "9f296b2e-514c-47bf-ac1b-192e3c66508d") {
+        } else if (query.inviteID === "9f296b2e-514c-47bf-ac1b-192e3c66508d") {
           const invite = new Invite();
           invite.inviteID = "9f296b2e-514c-47bf-ac1b-192e3c66508d";
           invite.inviteDate = "2022-02-01";
           invite.requiresParking = false;
           return invite;
-        } else 
-        return null;
-      } else if(query instanceof getTrayFromInviteQuery){
-        if(query.inviteID === "cb7c7938-1c41-427d-833e-2c6b77e0e26b"){
-          const tray= new Tray();
-          tray.trayID=0;
-          tray.inviteID="cb7c7938-1c41-427d-833e-2c6b77e0e26b";
-          tray.containsResidentID=true;
-          tray.containsVisitorID=true;
+        } else
+          return null;
+      } else if (query instanceof getTrayFromInviteQuery) {
+        if (query.inviteID === "cb7c7938-1c41-427d-833e-2c6b77e0e26b") {
+          const tray = new Tray();
+          tray.trayID = 0;
+          tray.inviteID = "cb7c7938-1c41-427d-833e-2c6b77e0e26b";
+          tray.containsResidentID = true;
+          tray.containsVisitorID = true;
           return tray;
-        } else if(query.inviteID === "f11ae766-ce23-4f27-b428-83cff1afbf04"){
-          const tray= new Tray();
-          tray.trayID=0;
-          tray.inviteID="f11ae766-ce23-4f27-b428-83cff1afbf04";
-          tray.containsResidentID=true;
-          tray.containsVisitorID=true;
+        } else if (query.inviteID === "f11ae766-ce23-4f27-b428-83cff1afbf04") {
+          const tray = new Tray();
+          tray.trayID = 0;
+          tray.inviteID = "f11ae766-ce23-4f27-b428-83cff1afbf04";
+          tray.containsResidentID = true;
+          tray.containsVisitorID = true;
           return tray;
-        } else 
-        return null;
-      } else if(query instanceof GetInviteReservationQuery){
-        if(query.invitationID === "cb7c7938-1c41-427d-833e-2c6b77e0e26b" )
-        {
-            const reservation = new ParkingReservation();
-            reservation.parkingNumber= 0;
-            reservation.invitationID= "cb7c7938-1c41-427d-833e-2c6b77e0e26b"
-            return reservation;
+        } else
+          return null;
+      } else if (query instanceof GetInviteReservationQuery) {
+        if (query.invitationID === "cb7c7938-1c41-427d-833e-2c6b77e0e26b") {
+          const reservation = new ParkingReservation();
+          reservation.parkingNumber = 0;
+          reservation.invitationID = "cb7c7938-1c41-427d-833e-2c6b77e0e26b"
+          return reservation;
 
-        } else if(query instanceof GetInviteQuery){
-          if(query.inviteID === "cb7c7938-1c41-427d-833e-2c6b77e0e26b")
-          {
-              
-              const invite = new Invite();
-              invite.idDocType ="RSA-ID";
-              invite.idNumber = "0012120178087";
-              invite.userEmail = "admin@mail.com";
-              invite.inviteDate = "2022-05-14";
-              invite.visitorEmail = "larisabotha@gmail.com";
-              invite.inviteID = "cb7c7938-1c41-427d-833e-2c6b77e0e26b";
+        } else if (query instanceof GetInviteQuery) {
+          if (query.inviteID === "cb7c7938-1c41-427d-833e-2c6b77e0e26b") {
 
-              return invite;
+            const invite = new Invite();
+            invite.idDocType = "RSA-ID";
+            invite.idNumber = "0012120178087";
+            invite.userEmail = "admin@mail.com";
+            invite.inviteDate = "2022-05-14";
+            invite.visitorEmail = "larisabotha@gmail.com";
+            invite.inviteID = "cb7c7938-1c41-427d-833e-2c6b77e0e26b";
 
-          }else if(query.inviteID === "f11ae766-ce23-4f27-b428-83cff1afbf04")
-          {
-              
-              const invite = new Invite();
-              invite.idDocType ="RSA-ID";
-              invite.idNumber = "0012120178087";
-              invite.userEmail = "admin@mail.com";
-              invite.inviteDate = "2022-05-15";
-              invite.visitorEmail = "larisabotha@icloud.com";
-              invite.inviteID = "f11ae766-ce23-4f27-b428-83cff1afbf04";
+            return invite;
 
-              return invite;
+          } else if (query.inviteID === "f11ae766-ce23-4f27-b428-83cff1afbf04") {
+
+            const invite = new Invite();
+            invite.idDocType = "RSA-ID";
+            invite.idNumber = "0012120178087";
+            invite.userEmail = "admin@mail.com";
+            invite.inviteDate = "2022-05-15";
+            invite.visitorEmail = "larisabotha@icloud.com";
+            invite.inviteID = "f11ae766-ce23-4f27-b428-83cff1afbf04";
+
+            return invite;
           } else {
-              return undefined;
+            return undefined;
           }
-      }else
-        return [];
-        
-    }else
-      return null;
+        } else
+          return [];
+
+      } else
+        return null;
     })
   };
 
@@ -183,11 +180,11 @@ describe('SignInService', () => {
         ConfigService,
         RestrictionsService,
         {
-            provide: CACHE_MANAGER,
-            useValue: {
-                get: () => {return 'any value'},
-                set: () => {return jest.fn()},
-            },
+          provide: CACHE_MANAGER,
+          useValue: {
+            get: () => { return 'any value' },
+            set: () => { return jest.fn() },
+          },
         },
         {
           provide: QueryBus, useValue: queryBusMock
@@ -207,48 +204,121 @@ describe('SignInService', () => {
     expect(inviteService).toBeDefined();
     expect(receptionistService).toBeDefined();
   });
-   
+
   describe("generateTray", () => {
     it("should generate a tray", async () => {
-      const generatedTray=await service.generateTray("hello",true,true);
-      expect( generatedTray.trayID).toEqual(0);
+      const generatedTray = await service.generateTray("hello", true, true);
+      expect(generatedTray.trayID).toEqual(0);
     });
   });
 
   describe("signIn", () => {
-      
+
     it("should return a tray number,assign parking if a valid invite id is given", async () => {
-      const trayNr = await service.signIn("cb7c7938-1c41-427d-833e-2c6b77e0e26b","some notes","13:02:01");
+      const trayNr = await service.signIn("cb7c7938-1c41-427d-833e-2c6b77e0e26b", "some notes", "13:02:01");
       expect(trayNr).toEqual(0);
     });
 
     it("should return a tray number if a valid invite id is given", async () => {
-      const trayNr = await service.signIn("f11ae766-ce23-4f27-b428-83cff1afbf04","some notes","13:02:01");
+      const trayNr = await service.signIn("f11ae766-ce23-4f27-b428-83cff1afbf04", "some notes", "13:02:01");
       expect(trayNr).toEqual(0);
     });
-    
+
 
     it("should throw an exception if invite with wrong date is given", async () => {
       try {
-        await service.signIn("9f296b2e-514c-47bf-ac1b-192e3c66508d","some notes","13:02:01");
-    } catch (error) {
+        await service.signIn("9f296b2e-514c-47bf-ac1b-192e3c66508d", "some notes", "13:02:01");
+      } catch (error) {
         expect(error).toBeDefined();
         expect(error.message).toEqual('The date on invitation with ID 9f296b2e-514c-47bf-ac1b-192e3c66508d does not match the sign in date')
-    }
+      }
     });
 
     it("should throw an exception if invalid invite id is given", async () => {
       try {
-        await service.signIn("yay","some notes","13:02:01");
-    } catch (error) {
+        await service.signIn("yay", "some notes", "13:02:01");
+      } catch (error) {
         expect(error).toBeDefined();
         expect(error.message).toEqual('Invitation with ID yay not found')
-    }
+      }
     });
 
   });
 
+  describe('bulkSignIn', () => {
+    it('should sign-in in bulk with "id"', async () => {
+      // Arrange
+      jest.spyOn(inviteService, 'createInviteForBulkSignIn').mockReturnValueOnce(Promise.resolve('hello world'))
+      jest.spyOn(commandBusMock as any, 'execute').mockReturnValueOnce([1, 2, 3, 4])
+
+
+      // Act
+      const response = await service.bulkSignIn('id;diinvite;id;di\nhello', 'user.email@email.com');
+
+      // Assert
+      expect(response).toEqual({ createCount: 0, signInCount: 1 })
+    })
+    it('should sign-in in bulk with "user"', async () => {
+      // Arrange
+      jest.spyOn(inviteService, 'createInviteForBulkSignIn').mockReturnValueOnce(Promise.resolve('hello world'))
+      jest.spyOn(commandBusMock as any, 'execute').mockReturnValueOnce([1, 2, 3, 4])
+
+
+      // Act
+      const response = await service.bulkSignIn(';user.email', 'user.email@email.com');
+
+      // Assert
+      expect(response).toEqual({ createCount: 0, signInCount: 0 })
+    })
+    it('should sign-in in bulk without "user"', async () => {
+      // Arrange
+      jest.spyOn(inviteService, 'createInviteForBulkSignIn').mockReturnValueOnce(Promise.resolve('hello world'))
+      jest.spyOn(commandBusMock as any, 'execute').mockReturnValueOnce([1, 2, 3, 4])
+
+
+      // Act
+      const response = await service.bulkSignIn('name.email', 'user.email@email.com');
+
+      // Assert
+      expect(response).toEqual({ createCount: 0, signInCount: 0 })
+    })
+    it('should sign-in in bulk with "name"', async () => {
+      // Arrange
+      jest.spyOn(inviteService, 'createInviteForBulkSignIn').mockReturnValueOnce(Promise.resolve('hello world'))
+      jest.spyOn(commandBusMock as any, 'execute').mockReturnValueOnce([1, 2, 3, 4])
+
+
+      // Act
+      const response = await service.bulkSignIn('name', 'user.email@email.com');
+
+      // Assert
+      expect(response).toEqual({ createCount: 0, signInCount: 0 })
+    })
+    it('should sign-in in bulk with "date"', async () => {
+      // Arrange
+      jest.spyOn(inviteService, 'createInviteForBulkSignIn').mockReturnValueOnce(Promise.resolve('hello world'))
+      jest.spyOn(commandBusMock as any, 'execute').mockReturnValueOnce([1, 2, 3, 4])
+
+
+      // Act
+      const response = await service.bulkSignIn('date;', 'user.email@email.com');
+
+      // Assert
+      expect(response).toEqual({ createCount: 0, signInCount: 0 })
+    })
+    it('should sign-in in bulk with "id and invite"', async () => {
+      // Arrange
+      jest.spyOn(inviteService, 'createInviteForBulkSignIn').mockReturnValueOnce(Promise.resolve('hello world'))
+      jest.spyOn(commandBusMock as any, 'execute').mockReturnValueOnce([1, 2, 3, 4])
+
+
+      // Act
+      const response = await service.bulkSignIn('id.invite\n;aa', 'user.email@email.com');
+
+      // Assert
+      expect(response).toEqual({ createCount: 0, signInCount: 1 })
+    })
+
+  });
 
 });
-
-
