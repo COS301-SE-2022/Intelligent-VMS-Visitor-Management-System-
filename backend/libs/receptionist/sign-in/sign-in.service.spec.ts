@@ -262,6 +262,12 @@ describe('SignInService', () => {
       expect(response).toEqual({ createCount: 0, signInCount: 1 })
     })
 
+    it('should sign-in in bulk with "user"', async () => {
+      // Arrange
+      jest.spyOn(inviteService, 'createInviteForBulkSignIn').mockReturnValueOnce(Promise.resolve('hello world'))
+      jest.spyOn(commandBusMock as any, 'execute').mockReturnValueOnce([1, 2, 3, 4])
+
+
 
     })
   })
