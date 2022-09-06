@@ -267,6 +267,10 @@ describe('SignInService', () => {
       jest.spyOn(inviteService, 'createInviteForBulkSignIn').mockReturnValueOnce(Promise.resolve('hello world'))
       jest.spyOn(commandBusMock as any, 'execute').mockReturnValueOnce([1, 2, 3, 4])
 
+       // Act
+       const response = await service.bulkSignIn(';user.email', 'user.email@email.com');
+
+
 
 
     })
