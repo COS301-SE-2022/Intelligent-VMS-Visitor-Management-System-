@@ -251,7 +251,10 @@ describe('SignInService', () => {
 
   describe('bulkSignIn', ()=>{
     it('should sign-in in bulk with "id"',async () => {
-      
+      //Arrange
+      jest.spyOn(inviteService, 'createInviteForBulkSignIn').mockReturnValueOnce(Promise.resolve('hello world'))
+      jest.spyOn(commandBusMock as any, 'execute').mockReturnValueOnce([1, 2, 3, 4])
+
     })
   })
 
