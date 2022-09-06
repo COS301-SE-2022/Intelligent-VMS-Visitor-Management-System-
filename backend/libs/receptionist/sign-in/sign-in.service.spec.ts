@@ -292,6 +292,10 @@ describe('SignInService', () => {
         // Act
         const response = await service.bulkSignIn('name', 'user.email@email.com');
 
+          // Assert
+      expect(response).toEqual({ createCount: 0, signInCount: 0 })
+    })
+
 
 
 
