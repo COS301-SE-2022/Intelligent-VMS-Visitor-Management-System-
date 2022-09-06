@@ -249,6 +249,13 @@ describe('SignInService', () => {
   });
 
 
+  describe('bulkSignIn', ()=>{
+    it('should sign-in in bulk with "id"',async () => {
+      
+    })
+  })
+
+
 });
 
 
