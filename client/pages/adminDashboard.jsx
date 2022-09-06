@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useState, useEffect, useRef } from "react";
-import { gql, useQuery, useMutation } from "@apollo/client";
+import { gql, useQuery, useMutation, useApolloClient } from "@apollo/client";
 
 import Layout from "../components/Layout";
 import AdminCard from "../components/AdminCard";
@@ -40,6 +40,9 @@ const AdminDashboard = () => {
 
     // Number of invites sent state
     const [numInvitesSent, setNumInvitesSent] = useState(0);
+
+    const [hoursMenu, setHours] = useState(0);
+    const [minutesMenu, setMinutes] = useState(0);
 
     // Visitor invite data object for chart
     const [visitorVals, setVisitorVals] = useState({
@@ -132,6 +135,9 @@ const AdminDashboard = () => {
     const [numInvitesPerResident, setNumInvitesPerResident] = useState(1);
     const [curfewTime, setCurfewTime] = useState(1);
 
+    const [defaultHours, setDefaultHours] = useState(0);
+    const [defaultMins, setDefaultMins] = useState(0);
+
     const numInvitesQuery = useQuery(gql`
         query {
             getTotalNumberOfVisitors
@@ -167,8 +173,6 @@ const AdminDashboard = () => {
         }
     `);
 
-  
-
     const predictedInvitesQuery = useQuery(gql`
         query {
           getPredictedInviteData(startDate: "${startDate}", endDate: "${endDate}") {
@@ -187,23 +191,27 @@ const AdminDashboard = () => {
           }
         }
     `);
-       const [adjustParkingMutation, { }] =
-       useMutation(gql`
+    const [adjustParkingMutation, { }] =
+        useMutation(gql`
        mutation {
         adjustParking(numDisiredParkingTotal: ${numParkingSpotsAvailable}) 
        }
    `);
 
-    
+    const client = useApolloClient();
+    function curfewMutationFunc(CURFEW) {
 
-    const [setCurfewTimeMutation, { data1, loading1, error1 }] =
-        useMutation(gql`
+        client.mutate({
+            mutation: gql`
         mutation {
-          setCurfewTime(curfewTime: ${curfewTime}) {
+          setCurfewTime(curfewTime: ${CURFEW}) {
             value
           }
         }
-    `);
+    `});
+    }
+
+
 
     const cancelRestrictions = () => {
         setNumInvitesPerResident(initialNumInvitesPerResident);
@@ -213,6 +221,7 @@ const AdminDashboard = () => {
     };
 
     const saveRestrictions = () => {
+
         if (numInvitesPerResident !== initialNumInvitesPerResident) {
             setInitialNumInvitesPerResident(numInvitesPerResident);
             setNumInvitesPerResidentMutation();
@@ -226,10 +235,47 @@ const AdminDashboard = () => {
             );
         }
 
-        if (curfewTime !== initialCurfewTime) {
-            setInitialCurfewTime(curfewTime);
-            setCurfewTimeMutation();
+
+        if (minutesMenu == "1") {
+            minutesMenu = "0" + minutesMenu;
+        } else if (minutesMenu == "2") {
+            minutesMenu = "0" + minutesMenu;
+        } else if (minutesMenu == "3") {
+            minutesMenu = "0" + minutesMenu;
+        } else if (minutesMenu == "4") {
+            minutesMenu = "0" + minutesMenu;
+        } else if (minutesMenu == "5") {
+            minutesMenu = "0" + minutesMenu;
+        } else if (minutesMenu == "6") {
+            minutesMenu = "0" + minutesMenu;
+        } else if (minutesMenu == "7") {
+            minutesMenu = "0" + minutesMenu;
+        } else if (minutesMenu == "8") {
+            minutesMenu = "0" + minutesMenu;
+        } else if (minutesMenu == "9") {
+            minutesMenu = "0" + minutesMenu;
+        } else if (minutesMenu == "0") {
+            minutesMenu = "0" + minutesMenu;
         }
+
+        if (hoursMenu == "0") {
+            hoursMenu = "0" + hoursMenu;
+        }
+
+        let temp = hoursMenu + minutesMenu;
+        
+        let numTemp = parseInt(temp);
+        setCurfewTime(numTemp);
+
+
+        if (numTemp !== "7777") {
+            setInitialCurfewTime(curfewTime);
+            curfewMutationFunc(numTemp);
+        }
+
+        setDefaultHours(hoursMenu);
+        setDefaultMins(minutesMenu);
+        
 
         setRestrictionsChanged(false);
     };
@@ -335,17 +381,7 @@ const AdminDashboard = () => {
         } else if (numInvitesPerResident.error) {
         }
 
-        //Curfew time
-        if (
-            !CurfewTimeQuery.loading &&
-            !CurfewTimeQuery.error
-        ) {
-            setCurfewTime(
-                CurfewTimeQuery.data.getCurfewTime.value
-            );
-            setInitialCurfewTime(curfewTime);
-        } else if (curfewTime.error) {
-        }
+
     }, [
         numInvitesQuery,
         numInviteInDateRangeQuery,
@@ -354,7 +390,7 @@ const AdminDashboard = () => {
         setParkingVals,
         setNumParkingSpotsAvailable,
         numInvitesPerResidentQuery,
-        CurfewTimeQuery,
+
     ]);
 
     useEffect(() => {
@@ -372,6 +408,31 @@ const AdminDashboard = () => {
             setPredictedParkingVals(predictedParking);
         }
     }, [predictedInvitesQuery]);
+
+    function populateCurfew(){
+        if (!CurfewTimeQuery.loading && !CurfewTimeQuery.error) {
+            const curfew = CurfewTimeQuery.data.getCurfewTime.value;
+            let tempH;
+            let tempM;
+            if (curfew == "0") {
+                tempH = "00";
+                tempM = "00";
+            } else {
+                let tempCurfew = String(curfew);
+                if (tempCurfew.length == 3) {
+                    tempCurfew = "0" + tempCurfew;
+                }
+                tempH = tempCurfew.substring(0, 2);
+                tempM = tempCurfew.substring(2, 4);
+            }
+            setDefaultHours(tempH);
+            setDefaultMins(tempM);
+        }
+    }
+
+    useEffect(() => {
+        populateCurfew();
+    }, [CurfewTimeQuery]);
 
     return (
         <Layout>
@@ -525,7 +586,7 @@ const AdminDashboard = () => {
 
 
 
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                         <div className="card bg-base-200">
                             <div className="card-body">
                                 <h2 className="card-title">
@@ -593,10 +654,10 @@ const AdminDashboard = () => {
                                     <div className="flex items-center space-x-3">
 
                                         <button className="btn btn-circle" onClick={() => {
-                                                     setNumParkingSpotsAvailable(numParkingSpotsAvailable +1);
-                                                     setRestrictionsChanged(true);
-                                                }}>
-                                            <AiOutlinePlus className="text-xl md:text-2xl lg:text-3xl"/>
+                                            setNumParkingSpotsAvailable(numParkingSpotsAvailable + 1);
+                                            setRestrictionsChanged(true);
+                                        }}>
+                                            <AiOutlinePlus className="text-xl md:text-2xl lg:text-3xl" />
 
                                         </button>
                                         <p
@@ -607,44 +668,138 @@ const AdminDashboard = () => {
                                         </p>
 
                                         <button className="btn btn-circle" onClick={() => {
-                                            if ( numParkingSpotsAvailable >0) {
-                                                setNumParkingSpotsAvailable(numParkingSpotsAvailable -1);
+                                            if (numParkingSpotsAvailable > 0) {
+                                                setNumParkingSpotsAvailable(numParkingSpotsAvailable - 1);
                                             }
-                                                    
-                                                     setRestrictionsChanged(true);
-                                                }}>
-                                            <AiOutlineMinus className="text-xl md:text-2xl lg:text-3xl"/>
+
+                                            setRestrictionsChanged(true);
+                                        }}>
+                                            <AiOutlineMinus className="text-xl md:text-2xl lg:text-3xl" />
 
                                         </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div>
-                        <div className="flex flex-col items-center justify-center space-x-3 text-2xl font-bold lg:flex-row">
-                            <div className="grid grid-cols-1 gap-1">
-                                <h3 className="font-semibold inline-block py-1 px-2 uppercase rounded uppercase last:mr-0 mr-1">Curfew time</h3>
-                                <div className="grid grid-cols-3 column-gap: 50px">
-                                    <input type="number" id="curfewTimeInput" placeholder="00"
-                                        onChange={(e) => {
-                                            setCurfewTime(e.target.value);
+
+                        <div className="card bg-base-200">
+                            <div className="card-body">
+                                <h2 className="card-title">
+                                    Curfew Time{" "}
+                                    <div className="badge badge-secondary">
+                                        Visitor
+                                    </div>
+                                </h2>
+                                <p>
+                                    Current curfew: {defaultHours}:{defaultMins}
+                                </p>
+
+                                <div className="card-actions flex items-center justify-start">
+                                    <div className="flex items-center justify-center">
+
+                                        <select className="select select-bordered select-secondary mx-5" name="hours" id="hours" onChange={(e) => {
+                                            
+                                            setHours(e.target.value);
+
                                             setRestrictionsChanged(true);
-                                            //console.log(e.target.value);
-                                            //alert(e.target.value);
-                                        }}
-                                    />
-                                    {/* <h1>:</h1> 
-                                     <input type="number" id="curfewTimeInput" placeholder="00"
-                                        onChange={(e) => {
-                                            setCurfewTime(e.target.value);
+                                        }}>
+                                            <option value="0">00</option>
+                                            <option value="1">01</option>
+                                            <option value="2">02</option>
+                                            <option value="3">03</option>
+                                            <option value="4">04</option>
+                                            <option value="5" >05</option>
+                                            <option value="6">06</option>
+                                            <option value="7">07</option>
+                                            <option value="8">08</option>
+                                            <option value="9">09</option>
+                                            <option value="10">10</option>
+                                            <option value="11">11</option>
+                                            <option value="12">12</option>
+                                            <option value="13">13</option>
+                                            <option value="14">14</option>
+                                            <option value="15">15</option>
+                                            <option value="16">16</option>
+                                            <option value="17">17</option>
+                                            <option value="18">18</option>
+                                            <option value="19">19</option>
+                                            <option value="20">20</option>
+                                            <option value="21">21</option>
+                                            <option value="22">22</option>
+                                            <option value="23">23</option>
+                                        </select>
+                                        <h1>    :    </h1>
+                                        <select className="select select-bordered select-secondary mx-5" name="minutes" id="minutes" onChange={(e) => {
+                                            
+                                            setMinutes(e.target.value);
                                             setRestrictionsChanged(true);
-                                            //alert(e.target.value);
-                                        }}
-                                    /> */}
+                                        }}>
+                                            <option value="00">00</option>
+                                            <option value="1">01</option>
+                                            <option value="2">02</option>
+                                            <option value="3">03</option>
+                                            <option value="4">04</option>
+                                            <option value="5">05</option>
+                                            <option value="6">06</option>
+                                            <option value="7">07</option>
+                                            <option value="8">08</option>
+                                            <option value="9">09</option>
+                                            <option value="10">10</option>
+                                            <option value="11">11</option>
+                                            <option value="12">12</option>
+                                            <option value="13">13</option>
+                                            <option value="14">14</option>
+                                            <option value="15">15</option>
+                                            <option value="16">16</option>
+                                            <option value="17">17</option>
+                                            <option value="18">18</option>
+                                            <option value="19">19</option>
+                                            <option value="20">20</option>
+                                            <option value="21">21</option>
+                                            <option value="22">22</option>
+                                            <option value="23">23</option>
+                                            <option value="24">24</option>
+                                            <option value="25">25</option>
+                                            <option value="26">26</option>
+                                            <option value="27">27</option>
+                                            <option value="28">28</option>
+                                            <option value="29">29</option>
+                                            <option value="30">30</option>
+                                            <option value="31">31</option>
+                                            <option value="32">32</option>
+                                            <option value="33">33</option>
+                                            <option value="34">34</option>
+                                            <option value="35">35</option>
+                                            <option value="36">36</option>
+                                            <option value="37">37</option>
+                                            <option value="38">38</option>
+                                            <option value="39">39</option>
+                                            <option value="40">40</option>
+                                            <option value="41">41</option>
+                                            <option value="42">42</option>
+                                            <option value="43">43</option>
+                                            <option value="44">44</option>
+                                            <option value="45">45</option>
+                                            <option value="46">46</option>
+                                            <option value="47">47</option>
+                                            <option value="48">48</option>
+                                            <option value="49">49</option>
+                                            <option value="50">50</option>
+                                            <option value="51">51</option>
+                                            <option value="52">52</option>
+                                            <option value="53">53</option>
+                                            <option value="54">54</option>
+                                            <option value="55">55</option>
+                                            <option value="56">56</option>
+                                            <option value="57">57</option>
+                                            <option value="58">58</option>
+                                            <option value="59">59</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
