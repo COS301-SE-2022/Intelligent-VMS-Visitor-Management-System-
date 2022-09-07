@@ -286,6 +286,17 @@ describe("VisitorInviteService", () => {
         })
     })
 
+    describe('getInvites', () => {
+        it('should get invites', async () => {
+            jest.spyOn(queryBusMock as any, 'execute').mockReturnValueOnce(30)
+            const response = await service.getInvites('id');
+            expect(response).toEqual(30)
+
+        })
+    })
+
+
+
 
 
 
