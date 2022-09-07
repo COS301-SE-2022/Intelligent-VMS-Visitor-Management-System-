@@ -259,6 +259,26 @@ describe("VisitorInviteService", () => {
 
         })
 
+        it('should not create bulk invite where numInvitesSent >= numInvitesAllowed', async () => {
+            // Arrange
+            jest.spyOn(queryBusMock as any, 'execute').mockReturnValueOnce(30)
+            jest.spyOn(queryBusMock as any, 'execute').mockReturnValueOnce(50)
+
+            // Act
+            try {
+                const response = await service.createInviteForBulkSignIn(2, 'email@email.com', 'visitor@email.com', 'visitor', 'id', '123123123123123', 'yesterday', false);
+                expect(true).toEqual(false);
+            }
+            catch (e) {
+                expect(e.message).toEqual('Max Number of Invites Sent')
+            }
+            // Assert
+
+        })
+    })
+
+    
+
 
 
 
