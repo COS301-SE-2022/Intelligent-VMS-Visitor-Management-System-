@@ -295,6 +295,15 @@ describe("VisitorInviteService", () => {
         })
     })
 
+    describe('cancel invite', () => {
+        it('should cancel invite', async () => {
+            jest.spyOn(queryBusMock as any, 'execute').mockReturnValueOnce({ userEmail: 'mail' })
+            jest.spyOn(commandBusMock as any, 'execute').mockReturnValueOnce({ userEmail: 'mail' })
+            const response = await service.cancelInvite('mail', 'id');
+            expect(response).toEqual(1)
+
+        })
+
 
 
 
