@@ -205,5 +205,12 @@ describe("VisitorInviteService", () => {
             jest.spyOn(commandBusMock as any, 'execute').mockReturnValueOnce(1)
             jest.spyOn(commandBusMock as any, 'execute').mockReturnValueOnce(5)
 
+              // Act
+              const response = await service.createInvite(2, 'email@email.com', 'visitor@email.com', 'visitor', 'id', '123123123123123', 'yesterday', true);
+              // Assert
+              expect(response).toEqual('id')
+  
+          })
+
 
 });
