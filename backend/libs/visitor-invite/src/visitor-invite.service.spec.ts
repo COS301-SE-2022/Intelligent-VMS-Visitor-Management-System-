@@ -382,4 +382,15 @@ describe("VisitorInviteService", () => {
             expect(response).toEqual({})
         })
     })
+
+    describe('getTotalNumberOfInvitesVisitor', () => {
+        it('should getTotalNumberOfInvitesVisitor', async () => {
+            jest.spyOn(queryBusMock as any, 'execute').mockReturnValueOnce({})
+
+            const response = await service.getTotalNumberOfInvitesVisitor('m')
+
+            expect(response).toEqual({})
+        })
+    })
+
 });
