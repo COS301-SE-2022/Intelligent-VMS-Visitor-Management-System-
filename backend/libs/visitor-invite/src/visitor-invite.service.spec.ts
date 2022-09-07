@@ -245,7 +245,21 @@ describe("VisitorInviteService", () => {
         })
     })
 
-    
+    describe('createInviteForBulkSignIn', () => {
+        it('should create bulk invite', async () => {
+            // Arrange
+            jest.spyOn(commandBusMock as any, 'execute').mockReturnValueOnce(1)
+            jest.spyOn(commandBusMock as any, 'execute').mockReturnValueOnce(5)
+
+            // Act
+            const response = await service.createInviteForBulkSignIn(3, 'user', 'visitor', 'name', 'id', 'ads', 'a', true)
+
+            // Assert
+            expect(response).toBeTruthy()
+
+        })
+
+
 
 
 
