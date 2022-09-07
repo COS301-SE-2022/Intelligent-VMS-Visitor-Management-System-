@@ -413,5 +413,15 @@ describe("VisitorInviteService", () => {
         })
     })
 
+    describe('getMostUsedInviteData', () => {
+        it('should getMostUsedInviteData', async () => {
+            jest.spyOn(queryBusMock as any, 'execute').mockReturnValueOnce({})
+
+            try { const response = await service.getMostUsedInviteData('') }
+
+            catch (e) { expect(e.message).toEqual('No Invites to make suggestion') }
+        })
+    })
+
 
 });
