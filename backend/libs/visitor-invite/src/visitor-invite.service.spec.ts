@@ -342,4 +342,14 @@ describe("VisitorInviteService", () => {
             expect(response).toEqual({})
         })
     })
+
+    describe('getInvitesByDate', () => {
+        it('should getInvitesByDate', async () => {
+            jest.spyOn(queryBusMock as any, 'execute').mockReturnValueOnce({})
+
+            const response = await service.getInvitesByDate('m')
+
+            expect(response).toEqual({})
+        })
+    })
 });
