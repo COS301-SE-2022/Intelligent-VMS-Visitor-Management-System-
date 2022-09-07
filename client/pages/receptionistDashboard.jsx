@@ -14,6 +14,7 @@ import InfoAlert from "../components/InfoAlert";
 import UploadPopUp from "../components/UploadPopUp";
 import ErrorAlert from "../components/ErrorAlert";
 import SuccessAlert from "../components/SuccessAlert";
+import Badge from "../components/badge";
 
 const ReceptionistDashboard = () => {
     const client = useApolloClient();
@@ -162,6 +163,7 @@ const ReceptionistDashboard = () => {
 
     return (
         <Layout>
+            <Badge colour="#ff0384fc" text="CONCEPT CONNOISSEUR" icon="FcGraduationCap"/>
             <div className="input-group w-full p-3">
                 <input
                     type="text"

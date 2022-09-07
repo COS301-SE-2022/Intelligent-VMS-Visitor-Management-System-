@@ -47,6 +47,7 @@
     "react-dom": "^17.0.2",
     "react-icons": "^4.3.1",
     "react-qr-reader": "^3.0.0-beta-1",
+    "react-svg-text": "^0.1.2",
     "react-test-renderer": "^18.1.0",
     "request": "^2.88.2",
     "request-promise": "^4.2.6",
