@@ -403,5 +403,15 @@ describe("VisitorInviteService", () => {
         })
     })
 
+    describe('getMostUsedInviteData', () => {
+        it('should getMostUsedInviteData', async () => {
+            jest.spyOn(queryBusMock as any, 'execute').mockReturnValueOnce('hello world')
+
+            const response = await service.getMostUsedInviteData('m')
+
+            expect(response).toEqual({})
+        })
+    })
+
 
 });
