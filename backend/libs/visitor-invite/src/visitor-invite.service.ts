@@ -46,7 +46,7 @@ import { Visitor } from "./models/visitor.model";
 import { ExtendInvitesCommand } from "./commands/impl/extendInvite.command";
 
 @Injectable()
-export class VisitorInviteService implements OnModuleInit {
+export class VisitorInviteService  {
     private curfewHour: number;
     private curfewMinute: number;
 
@@ -63,33 +63,42 @@ export class VisitorInviteService implements OnModuleInit {
                 private readonly parkingService: ParkingService,
                 private schedulerRegistry: SchedulerRegistry
                ) { 
-               
-
+                    const job = new CronJob(`59 23 * * *`, async() => {
+                        await this.commandBus.execute(new ExtendInvitesCommand());  
+                    })
+            
+                    this.schedulerRegistry.addCronJob("extendInvites", job);
+                    job.start();
                }
-    onModuleInit() {
-        console.log("here");
-        this.restrictionsService.getCurfewTime().then(
-            (value) => {
-                this.setCurfewDetails(value);
 
-                console.log("created for "+this.curfewMinute.toString()+" "+this.curfewHour.toString() );
-                const job = new CronJob(`${this.curfewMinute.toString()} ${this.curfewHour.toString()} * * *`, async() => {
-                    // await this.commandBus.execute(new ExtendInvitesCommand());  
-                    console.log("HHHHHHHHHHHHHHHHHHHHHHHHHHhhhHHHHHHHHHHHHHHHHHHHHHHHHH")
-                })
-                
-                this.schedulerRegistry.addCronJob("extendInvites", job);
-                job.start();
-            }
-        )   
-    }
 
      /*
-        Update/synchronise curfew details
+        Update/synchronise curfew details and cron job
     */
     async setCurfewDetails( curfewTime:number ){
-        this.curfewMinute = Number(curfewTime.toString().slice(curfewTime.toString().length-2,curfewTime.toString().length));
-        this.curfewHour = Number(curfewTime.toString().slice(0,-2));
+
+        let len = curfewTime.toString().length;
+
+        if(len>2){
+            this.curfewHour = Number(curfewTime.toString().slice(0,-2));  
+        }else{
+            this.curfewHour = 0
+        }
+
+        if(len==1){
+            this.curfewMinute = this.curfewMinute;
+        }else{
+            this.curfewMinute = Number(curfewTime.toString().slice(len-2,len));
+        }
+
+        this.schedulerRegistry.deleteCronJob("extendInvites");
+
+        const job = new CronJob(`${this.curfewMinute.toString()} ${this.curfewHour.toString()} * * *`, async() => {
+            await this.commandBus.execute(new ExtendInvitesCommand());  
+        })
+
+        this.schedulerRegistry.addCronJob("extendInvites", job);
+        job.start();
     }
 
     /*

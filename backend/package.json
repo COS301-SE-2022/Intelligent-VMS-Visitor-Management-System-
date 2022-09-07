@@ -142,12 +142,12 @@
       "^@vms/visitor(|/.*)$": "<rootDir>/libs/visitor/src/$1",
       "^@vms/user(|/.*)$": "<rootDir>/libs/user/src/$1",
       "^@vms/auth(|/.*)$": "<rootDir>/libs/auth/src/$1",
-      "^@vms/visitor-invite(|/.*)$": "<rootDir>/libs/visitor-invite/src/$1",
       "^@vms/resident(|/.*)$": "<rootDir>/libs/resident/src/$1",
       "^@vms/parking(|/.*)$": "<rootDir>/libs/parking/src/$1",
       "^@vms/mail(|/.*)$": "<rootDir>/libs/mail/src/$1",
       "^@vms/receptionist(|/.*)$": "<rootDir>/libs/receptionist/src/$1",
       "^@vms/restrictions(|/.*)$": "<rootDir>/libs/restrictions/src/$1",
+      "^@vms/visitor-invite(|/.*)$": "<rootDir>/libs/visitor-invite/src/$1",
       "^@vms/throttler(|/.*)$": "<rootDir>/libs/throttler/src/$1"
     }
   }

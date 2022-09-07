@@ -14,6 +14,7 @@ import InfoAlert from "../components/InfoAlert";
 import UploadPopUp from "../components/UploadPopUp";
 import ErrorAlert from "../components/ErrorAlert";
 import SuccessAlert from "../components/SuccessAlert";
+import { warning } from "daisyui/src/colors";
 
 const ReceptionistDashboard = () => {
     const client = useApolloClient();
@@ -96,8 +97,11 @@ const ReceptionistDashboard = () => {
                 const visitors = res.data.getInvitesByNameForSearch.filter(
                     (invite) => {
                         return (
-                            invite.inviteDate >= todayString &&
-                            invite.inviteState !== "signedOut"
+                            (invite.inviteDate >= todayString &&
+                            invite.inviteState !== "signedOut" && 
+                            invite.inviteState != "cancelled" && 
+                            invite.inviteID) 
+                            || invite.inviteState === "extended"
                         );
                     }
                 );
@@ -109,7 +113,13 @@ const ReceptionistDashboard = () => {
     const resetDefaultResults = () => {
         if (!loading && !error) {
             const invites = data.getInvitesByDate.filter((invite) => {
-                return invite.inviteState !== "signedOut";
+                return (
+                    (invite.inviteDate >= todayString &&
+                    invite.inviteState !== "signedOut" && 
+                    invite.inviteState != "cancelled" && 
+                    invite.inviteID) 
+                    || invite.inviteState === "extended"
+                );
             });
             setVisitorData(invites);
             setSearch(false);
@@ -135,12 +145,13 @@ const ReceptionistDashboard = () => {
             if (data) {
                 const invites = data.getInvitesByDate.filter((invite) => {
                     return (
-                        invite.inviteState !== "signedOut" &&
-                        invite.inviteState !== "cancelled" &&
-                        invite.inviteID
+                        (invite.inviteDate >= todayString &&
+                        invite.inviteState !== "signedOut" && 
+                        invite.inviteState != "cancelled" && 
+                        invite.inviteID) 
+                        || invite.inviteState === "extended"
                     );
                 });
-                console.log(invites);
                 setVisitorData(invites);
             }
         } else if (error) {
@@ -248,7 +259,7 @@ const ReceptionistDashboard = () => {
                                 {visitorData.map((visit, idx) => {
                                     return (
                                         <tr
-                                            className="hover relative z-0 cursor-pointer"
+                                            className=" hover relative z-0 cursor-pointer"
                                             key={visit.inviteID}
                                             onClick={() => {
                                                 setCurrentVisitData(visit);
@@ -315,12 +326,14 @@ const ReceptionistDashboard = () => {
                                                             }}
                                                             text="Sign Out"
                                                             htmlFor="signOut-modal"
-                                                            colour="bg-error"
+                                                            colour={visit.inviteState==="extended" ? "bg-warning " : "bg-error"}
                                                         />
                                                     </td>
                                                 )
                                             ) : (
+                                    
                                                 <td>--</td>
+                                                
                                             )}
                                         </tr>
                                     );

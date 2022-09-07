@@ -27,7 +27,6 @@ export class RestrictionsService {
 
     // Set the curfew
     async setCurfewTime(curfewTime: number) {
-        console.log(curfewTime);
         this.inviteService.setCurfewDetails(curfewTime);
         return this.commandBus.execute(new SetCurfewTimeCommand(curfewTime));
     }
