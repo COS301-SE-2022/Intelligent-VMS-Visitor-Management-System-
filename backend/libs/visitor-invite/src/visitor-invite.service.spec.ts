@@ -199,4 +199,11 @@ describe("VisitorInviteService", () => {
         });
     });
 
+    describe('createInvite', () => {
+        it('should create an invite where numInvitesSent < numInvitesAllowed', async () => {
+            // Arrange
+            jest.spyOn(commandBusMock as any, 'execute').mockReturnValueOnce(1)
+            jest.spyOn(commandBusMock as any, 'execute').mockReturnValueOnce(5)
+
+
 });
