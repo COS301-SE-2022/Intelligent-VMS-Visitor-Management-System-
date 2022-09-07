@@ -285,8 +285,8 @@ const CreateInvite = ({ name, email, idNumber, idDocType }) => {
                                     value={values.visitDate}
                                 />
 
-                                {!name && !email && !idNumber && !idDocType ? (
-                                    <VisitorSuggestions date={now}/>
+                                {!values.name.length > 0 && !email && !idNumber && !idDocType ? (
+                                    <VisitorSuggestions date={now} />
                                 ):(
                                     <div></div>
                                 )}
@@ -433,7 +433,7 @@ export async function getStaticProps(context) {
 
 CreateInvite.getInitialProps = async ({ query }) => {
     const { name, email, idNumber, idDocType } = query;
-
+    
     return {
         name: name ? name : "",
         email: email ? email : "",
