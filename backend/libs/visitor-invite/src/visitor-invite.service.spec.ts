@@ -393,4 +393,15 @@ describe("VisitorInviteService", () => {
         })
     })
 
+    describe('getVisitors', () => {
+        it('should getVisitors', async () => {
+            jest.spyOn(queryBusMock as any, 'execute').mockReturnValueOnce({})
+
+            const response = await service.getVisitors('m')
+
+            expect(response).toEqual({})
+        })
+    })
+
+
 });
