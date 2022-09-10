@@ -1,34 +1,49 @@
 from PIL import Image
 import face_recognition
 
+########### Load known encodings ################
+encodingMap = {}
+
+def init():
+    image = loadImage("./testFiles/TestImage.jpg")
+    encodings = getFaceEncodingsFromImage(image, getFacesLocationData(image))
+    encodingMap["kyle"] = encodings
+
 # Load image in format that face_recognition module understands
 def loadImage(path):
     return face_recognition.load_image_file(path)
 
 # Get position data from faces in image
-def detectFacesInImage(image):
-    face_locations = face_recognition.face_locations(image, number_of_times_to_upsample=0)
-    print("I found {} face(s) in this photograph.".format(len(face_locations)))
+def getFacesLocationData(image):
+    face_locations = face_recognition.face_locations(image, number_of_times_to_upsample=1)
     return face_locations
 
-# Get position of face in image
-def getFaceImages(face_locations):
-    for face_location in face_locations:
-
-        top, right, bottom, left = face_location
-        print("A face is located at pixel location Top: {}, Left: {}, Bottom: {}, Right: {}".format(top, left, bottom, right))
-
-        face_image = image[top:bottom, left:right]
-        pil_image = Image.fromarray(face_image)
-        pil_image.show()
-        pil_image.save("./testFiles/cropped.jpg")
+# Test if face encodings match
+def recognizeFace(knownEncodings, testEncoding):
+    if len(knownEncodings) > 0:
+        matches = face_recognition.compare_faces(knownEncodings, testEncoding)
+        return True in matches
+    else:
+        raise "Empty known encoding list"
 
 # Face encoding data for given image returns [] if no faces in image
-def getFaceEncodingsFromImage(image):
-    faceEncodings = face_recognition.face_encodings(image)
+def getFaceEncodingsFromImage(image, faceLocations):
+    faceEncodings = face_recognition.face_encodings(image, faceLocations)
     return faceEncodings
 
-image = loadImage("./testFiles/TestImage.jpg")
-getFaceEncodingsFromImage(image)
-locations = detectFacesInImage(image)
-getFaceImages(locations)
+def faceRecognition(imageData, name):
+    facesLocationData = getFacesLocationData(imageData)
+    
+    if(len(facesLocationData) > 0):
+        encodings = getFaceEncodingsFromImage(image, facesLocationData)
+        for faceEncoding in encodings:
+            print(recognizeFace(encodingMap[name], faceEncoding))
+    else:
+        print("No faces in image")
+
+# Load known encodings
+init()
+
+# Load test image
+image = loadImage("./testFiles/Test2.jpg")
+faceRecognition(image, "kyle")
