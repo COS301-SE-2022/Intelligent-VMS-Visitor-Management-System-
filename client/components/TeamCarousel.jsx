@@ -33,9 +33,9 @@ const TeamCarousel = ({ slideContent, numToShowPerSlide }) => {
             }
 
             slides.push({
-                currSlide: currSlide,
-                prevSlide: currSlide !== 0 ? currSlide - 1 : numSlides - 1,
-                nextSlide: currSlide !== numSlides - 1 ? currSlide + 1 : 0,
+                currSlide: currSlide + 1,
+                prevSlide: currSlide+1 !== 1 ? currSlide : numSlides,
+                nextSlide: currSlide !== numSlides ? currSlide + 1 : 1,
                 data: slideArr
             });
         }
@@ -49,13 +49,13 @@ const TeamCarousel = ({ slideContent, numToShowPerSlide }) => {
     }, [slideContent]);
 
     return (
-        <div className="carousel w-full">
+        <div className="carousel carousel-center w-full">
             {slides.length === 0 ? 
                 <div>Nothing to show...</div>
                 :
                 slides.map((slide, idx) => {
                     return(
-                    <div key={idx} id={`#slide${slide.currSlide}`} className="carousel-item w-full">
+                    <div key={idx} id={`slide${slide.currSlide}`} className="carousel-item w-full">
                         <div className="mx-8 grid w-full grid-cols-1 justify-center gap-3 md:grid-cols-2">
                             {slide.data.map((c, idx) => {
                                 return (

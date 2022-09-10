@@ -19,7 +19,7 @@ export class SignInService {
         private queryBus: QueryBus,
         private parkingService: ParkingService,
         private receptionistService: ReceptionistService,
-        @Inject(forwardRef(() => VisitorInviteService))
+        @Inject(forwardRef(() => {return VisitorInviteService}))
         private inviteService: VisitorInviteService) {}
 
         async signIn(
@@ -114,7 +114,7 @@ export class SignInService {
 
             await this.commandBus.execute(new BulkSignInCommand(idArray));
 
-            let bsiData = new BSIdata();
+            const bsiData = new BSIdata();
             bsiData.createCount = createCount;
             bsiData.signInCount = signInCount;
 

@@ -125,6 +125,7 @@
       ".dto.ts",
       ".error.ts",
       ".decorator.ts",
+      ".provider.ts",
       "index.ts",
       ".int-spec.ts"
     ],
@@ -145,7 +146,8 @@
       "^@vms/parking(|/.*)$": "<rootDir>/libs/parking/src/$1",
       "^@vms/mail(|/.*)$": "<rootDir>/libs/mail/src/$1",
       "^@vms/receptionist(|/.*)$": "<rootDir>/libs/receptionist/src/$1",
-      "^@vms/restrictions(|/.*)$": "<rootDir>/libs/restrictions/src/$1"
+      "^@vms/restrictions(|/.*)$": "<rootDir>/libs/restrictions/src/$1",
+      "^@vms/throttler(|/.*)$": "<rootDir>/libs/throttler/src/$1"
     }
   }
 }

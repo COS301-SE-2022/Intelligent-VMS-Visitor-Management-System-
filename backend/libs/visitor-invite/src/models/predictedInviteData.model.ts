@@ -6,5 +6,8 @@ export class PredictedInviteData {
     date: string;
 
     @Field((type) => {return Number})
-    data: number;
+    visitors: number;
+
+    @Field((type) => {return Number})
+    parking: number;
 }

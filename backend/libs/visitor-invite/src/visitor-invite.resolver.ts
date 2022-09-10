@@ -18,7 +18,7 @@ import { Visitor } from "./models/visitor.model";
 import { InviteSuggestion } from "./models/inviteSuggestion.model";
 import { GroupInvite } from "./models/groupInvite.model";
 
-//@UseGuards(GqlAuthGuard)
+@UseGuards(GqlAuthGuard)
 @Resolver((of) => {return Invite})
 export class VisitorInviteResolver {
     constructor(
@@ -118,7 +118,7 @@ export class VisitorInviteResolver {
     // Get the invites associated with given name for receptionist search
     @UseGuards(GqlAuthGuard, RolesGuard)
     @Roles("receptionist")
-    @Query((returns) => [Invite], { name: "getInvitesByNameForSearch"})
+    @Query((returns) => {return [Invite]}, { name: "getInvitesByNameForSearch"})
     async getInvitesByNameForReceptionistSearch(@Args("name") name: string) {
         return await this.visitorInviteService.getInvitesByNameForSearch(name);
     }
@@ -126,7 +126,7 @@ export class VisitorInviteResolver {
     // Get the invites associated with given ID for receptionist search
     @UseGuards(GqlAuthGuard, RolesGuard)
     @Roles("receptionist")
-    @Query((returns) => Invite, { name: "getInvitesByIDForSearch"})
+    @Query((returns) => {return Invite}, { name: "getInvitesByIDForSearch"})
     async getInvitesByIDForReceptionistSearch(@Args("inviteID") inviteID: string) {
         return await this.visitorInviteService.getInvite(inviteID);
     }
@@ -143,7 +143,7 @@ export class VisitorInviteResolver {
     //Get all invites in the database
     @UseGuards(GqlAuthGuard, RolesGuard)
     @Roles("receptionist", "admin")
-    @Query((returns) => [Invite], { name: "getInvitesByDate" })
+    @Query((returns) => {return [Invite]}, { name: "getInvitesByDate" })
     async getAllInvites(@Args("date") date: string) {
         return this.visitorInviteService.getInvitesByDate(date)
     }

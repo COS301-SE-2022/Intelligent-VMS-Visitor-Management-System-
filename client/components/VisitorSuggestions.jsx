@@ -2,12 +2,14 @@ import React from 'react';
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { gql, useLazyQuery } from "@apollo/client";
+import { useFormikContext } from "formik";
 import { HiEmojiSad } from "react-icons/hi";
 import { AiOutlinePlus,AiOutlineMinus } from "react-icons/ai"
 import useAuth from "../store/authStore.js";
 
-const VisitorSuggestions = ({ date }) => {
+const VisitorSuggestions = ({ date, setName, setFieldValue }) => {
 
+    const formikProps = useFormikContext();
     const [suggestionData, setSuggestionsData] = useState([]);
     const [amount, setAmount] = useState(3);
     const [show, setShow] = useState(false);
@@ -28,8 +30,7 @@ const VisitorSuggestions = ({ date }) => {
                 idDocType
             }
         }
-    `,
-        { fetchPolicy: "no-cache" }
+    `
     );
 
     useEffect(() => {

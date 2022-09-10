@@ -72,8 +72,7 @@ const VisitorDashboard = () => {
                     inviteState
                 }
             }
-        `,
-        { fetchPolicy: "network-only" }
+        `
     );
 
     const numInvitesQuery = useQuery(
@@ -86,7 +85,7 @@ const VisitorDashboard = () => {
         `,
         { fetchPolicy: "network-only" }
     );
-
+    
     const visitorsQuery = useQuery(
         gql`
             query {
@@ -505,5 +504,6 @@ export async function getStaticProps(context) {
         },
     };
 }
+
 
 export default VisitorDashboard;

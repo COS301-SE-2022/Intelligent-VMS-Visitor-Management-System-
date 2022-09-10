@@ -322,7 +322,7 @@ export class VisitorInviteService {
         const cachedPredictedInvites = await this.cacheManager.get("PREDICTIONS");
 
         if(cachedPredictedInvites) {
-            console.log("HIT!");
+            console.log(cachedPredictedInvites);
             return cachedPredictedInvites;
         } else {
             console.log("MISS");

@@ -62,9 +62,10 @@ const Reporting = () => {
 
     const predictedInvitesQuery = useQuery(gql`
         query {
-          getPredictedInviteData(startDate: "${startDate}", endDate: "${endDate}") {
-            date
-            data
+          getPredictedInviteData(startDate: "${getFormattedDateString(startDate)}", endDate: "${getFormattedDateString(endDate)}") {
+            date,
+            parking,
+            visitors
           }
         }
     `);
@@ -221,7 +222,7 @@ const Reporting = () => {
                 predictedInvitesQuery.data.getPredictedInviteData;
 
             predictedData.forEach((prediction) => {
-                _predictedMap.set(prediction.date, prediction.data);
+                _predictedMap.set(prediction.date, prediction.visitors);
             });
 
             setPredictedData({
@@ -262,6 +263,7 @@ const Reporting = () => {
                             ]}
                             setStart={setStartDate}
                             setRange={setRange}
+                            queryLoading={loading}
                         />
                     </div>
                 </div>

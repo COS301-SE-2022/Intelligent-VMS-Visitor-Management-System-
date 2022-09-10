@@ -118,23 +118,23 @@ export class ParkingService {
         if (difference>0) {//------------------------------------------ decrease available parking
             for (let index = 0; index < listOfAvailable.length&&index<difference; index++) {
                
-                let disableIndex = listOfAvailable[index].parkingNumber;
+                const disableIndex = listOfAvailable[index].parkingNumber;
                 this.disableParkingSpace(disableIndex);
             }
          
         } else if (difference<0) {//------------------------------------increase available parking 
             if (numDisiredParkingTotal>spaces) { //Increase overall total spaces
                 console.log("here");
-                let totalToCreate=numDisiredParkingTotal-spaces;
+                const totalToCreate=numDisiredParkingTotal-spaces;
                 for (let index = 0; index < listOfDisabled.length; index++) {//re-enable all disabled parking
-                             let enableIndex = listOfDisabled[index].parkingNumber;
+                             const enableIndex = listOfDisabled[index].parkingNumber;
                              this.enableParkingSpace(enableIndex);
                 }
                 this.createNParkingSpots(totalToCreate);
             } else { //overall total stays the same
-                let totalToEnable=difference*=-1;
+                const totalToEnable=difference*=-1;
                 for (let index = 0; index < listOfDisabled.length&&index<totalToEnable; index++) {//re-enable all disabled parking
-                    let enableIndex = listOfDisabled[index].parkingNumber;
+                    const enableIndex = listOfDisabled[index].parkingNumber;
                     this.enableParkingSpace(enableIndex);
                 }
             }
@@ -715,13 +715,13 @@ export class ParkingService {
             );
         }
 
-        let amounts = [];
+        const amounts = [];
 
-        let endD = new Date(endDate);
+        const endD = new Date(endDate);
         let loopD = new Date(startDate);
         let i = 0;
         while (loopD <= endD) {
-            let temp = await this.queryBus.execute(
+            const temp = await this.queryBus.execute(
                 new GetReservationsByDateQuery(loopD.toDateString()),
             );
             amounts[i] = temp.length;
