@@ -16,13 +16,13 @@ const SignInPopUp = ({
     trayNr,
 }) => {
     const [notes, setNotes] = useState("");
-    const time = new Date();
+    const now = new Date();
     const [signInMutation, { data, loading, error }] = useMutation(
         gql`
             mutation {
                 signIn(inviteID: "${
                     visitData.inviteID
-                }", notes: "${notes}", time: "${time.toLocaleTimeString()}") 
+                }", notes: "${notes}", time: "${now.toLocaleString()}") 
             }
     `,
         {

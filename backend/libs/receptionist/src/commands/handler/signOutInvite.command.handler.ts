@@ -18,8 +18,6 @@ export class SignOutInviteCommandHandler implements ICommandHandler<SignOutInvit
 
         return await this.inviteModel.findOneAndUpdate({ inviteID: inviteId }, { inviteState: "signedOut", signOutTime: signOutTime });
 
-       return await this.inviteModel.findOneAndUpdate({ inviteID: inviteId }, { inviteState: "inActive", signOutTime });
-
         
     }
 }
