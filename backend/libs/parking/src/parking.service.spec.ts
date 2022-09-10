@@ -37,6 +37,7 @@ import { getDisabledParkingQuery } from './queries/impl/getDisabledParking.query
 import { getTotalParkingQuery } from './queries/impl/getTotalParking.query';
 
 import { CACHE_MANAGER } from '@nestjs/common';
+import { SchedulerRegistry } from '@nestjs/schedule';
 
 describe('ParkingService', () => {
   let parkingService: ParkingService;
@@ -307,6 +308,11 @@ describe('ParkingService', () => {
       }),
   };
 
+  const scheduleMock = {
+    addCronJob: jest.fn(()=>({})),
+    deleteCronJob: jest.fn(()=>({})),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
         imports: [HttpModule],
@@ -324,6 +330,7 @@ describe('ParkingService', () => {
                     set: () => {return jest.fn()},
                 },
             },
+            { provide: SchedulerRegistry, useValue: scheduleMock},
             {
                 provide: QueryBus, useValue: queryBusMock
             },

@@ -13,6 +13,7 @@ import { UserService } from "@vms/user";
 import { MailService } from "@vms/mail";
 import { ParkingService } from "@vms/parking/parking.service";
 import { RestrictionsService } from "@vms/restrictions/restrictions.service";
+import { ScheduleModule, SchedulerRegistry } from "@nestjs/schedule";
 
 describe("VisitorInviteService", () => {
     let service: VisitorInviteService;
@@ -85,10 +86,16 @@ describe("VisitorInviteService", () => {
         sendInvite: jest.fn(() => ({ messageId: 'id' })),
         sendCancelNotice: jest.fn(() => ({ messageId: 'id' })),
     };
+
     const parkingServiceMock = {
         isParkingAvailable: jest.fn(() => true),
         reserveParking: jest.fn(() => ({})),
         unreserveParking: jest.fn(() => ({})),
+    };
+
+    const scheduleMock = {
+        addCronJob: jest.fn(()=>({})),
+        deleteCronJob: jest.fn(()=>({})),
     };
 
     beforeEach(async () => {
@@ -101,6 +108,7 @@ describe("VisitorInviteService", () => {
                 MailService,
                 RestrictionsService,
                 UserService,
+                { provide: SchedulerRegistry, useValue: scheduleMock},
                 { provide: ParkingService, useValue: parkingServiceMock },
                 { provide: CommandBus, useValue: commandBusMock },
                 { provide: MailService, useValue: mailServiceMock },
