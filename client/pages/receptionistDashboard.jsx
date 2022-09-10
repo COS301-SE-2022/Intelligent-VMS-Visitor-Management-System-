@@ -327,7 +327,7 @@ const ReceptionistDashboard = () => {
                                                             text="Sign Out"
                                                             htmlFor="signOut-modal"
                                                             colour={visit.inviteState==="extended" ? "bg-warning " : "bg-error"}
-                                                            signInTime={visit.signInTime}
+                                                            signInTime={visit.inviteState==="extended" ? visit.signInTime : null}
 
                           
                                                         />
