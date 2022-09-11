@@ -44,6 +44,7 @@
     "bcrypt": "^5.0.1",
     "cache-manager": "^3.6.3",
     "graphql": "^16.4.0",
+    "graphql-upload": "^16.0.2",
     "guid": "^0.0.12",
     "jsonwebtoken": "^8.5.1",
     "mongodb-memory-server": "^8.6.0",
