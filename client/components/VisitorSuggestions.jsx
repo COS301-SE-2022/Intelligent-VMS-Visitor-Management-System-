@@ -67,17 +67,17 @@ const VisitorSuggestions = ({ date, setName, setFieldValue }) => {
                                     formikProps.setFieldValue('idDocType', visitor.idDocType); 
                                 }} key={idx}>
                                     <div className="bg-base-100 shadow-xl my-2 mx-3 rounded-lg flex">
-                                    <div className="avatar placeholder m-3">
-                                    <div className="w-10 rounded-full bg-secondary text-neutral-content">
-                                        <span className="text-lg capitalize">
-                                            {visitor.visitorName[0]}
-                                        </span>
-                                    </div>
-                                    </div>
-                                    <div className="flex flex-col justify-center items-start">
-                                        <div className="text-sm font-bold capitalize">{visitor.visitorName}</div>
-                                        <div className="text-xs">{visitor._id}</div>
-                                    </div>
+                                        <div className="avatar placeholder m-3">
+                                            <div className="w-10 rounded-full bg-secondary text-neutral-content">
+                                                <span className="text-lg capitalize">
+                                                    {visitor.visitorName[0]}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div className="flex flex-col justify-center items-start">
+                                            <div className="text-sm font-bold capitalize">{visitor.visitorName}</div>
+                                            <div className="text-xs">{visitor._id}</div>
+                                        </div>
                                     </div>
                                 </button>
                             )  

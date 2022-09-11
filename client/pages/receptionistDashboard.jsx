@@ -163,7 +163,6 @@ const ReceptionistDashboard = () => {
 
     return (
         <Layout>
-            <Badge colour="#ff0384fc" text="CONCEPT CONNOISSEUR" icon="FcGraduationCap"/>
             <div className="input-group w-full p-3">
                 <input
                     type="text"
