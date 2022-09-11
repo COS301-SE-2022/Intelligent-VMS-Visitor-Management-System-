@@ -14,8 +14,7 @@ def getFacesLocationData(image):
 # Test if face encodings match
 def recognizeFace(knownEncodings, testEncoding):
     if len(knownEncodings) > 0:
-        matches = face_recognition.compare_faces(knownEncodings, testEncoding)
-        return True in matches
+        return face_recognition.compare_faces(knownEncodings, testEncoding)
     else:
         raise "Empty known encoding list"
 
@@ -50,6 +49,16 @@ def getLargestFace(faceLocations):
             maxSurface = length * width
             maxSurfaceIdx = idx
     return maxSurfaceIdx
+
+def compareFaces(faceEncodings, idNumber):
+    knownEncodingsForName = faceEncodingsCollection.find_one({ "idNumber": idNumber })
+
+    if knownEncodingsForName:
+        for faceEncoding in faceEncodings:
+            if recognizeFace(knownEncodingsForName["encodings"], faceEncoding) == True:
+                return True
+        
+    return False
 
 def faceRecognition(imageData, idNumber):
     facesLocationData = getFacesLocationData(imageData)

@@ -2,7 +2,7 @@ from app import app, APP_ROOT, ALLOWED_EXTENSIONS
 from flask import request, redirect, url_for
 import json
 
-from app.faceRec.faceRecLib import loadImage, faceRecognition, storeFace, getFaceEncodingsFromImage, getFacesLocationData, getLargestFace
+from app.faceRec.faceRecLib import loadImage, faceRecognition, storeFace, getFaceEncodingsFromImage, getFacesLocationData, getLargestFace, compareFaces, addFaceEncoding
 
 # Parse filename to check if it is valid
 def allowedFile(filename):
@@ -23,7 +23,46 @@ def home():
 
 # Compare faces endpoint
 @app.route("/compareFaces", methods=['POST'])
-    return "Hello World"
+def comparefaces():
+    if request.method == "POST":
+        if 'file' not in request.files:
+            return createResponse({"error": "No file in request"})
+
+        # Get file data from request
+        file = request.files['file']
+
+        # Check if file is selected
+        if file.filename == '':
+            return createResponse({"error": "No file selected"})
+
+        if not request.args.get("idNumber"):
+            return createResponse({"error", "No id-number given"})
+
+        if file and allowedFile(file.filename):
+            idNumber = request.args.get("idNumber")
+            image = loadImage(file)
+            faceLocations = getFacesLocationData(image)
+            
+            # If no faces in image error
+            if len(faceLocations) == 0:
+                return createResponse({"error": "No Faces Detected"})
+
+            # Get facial encodings for uploaded image
+            encodings = getFaceEncodingsFromImage(image, faceLocations)             
+
+            matches = compareFaces(encodings, idNumber)
+
+            # If result is positive, store encoding
+            for idx, m in enumerate(matches):
+                if m == True:
+                    # This makes more sense in a real world scenario, in testing we will be adding a lot of the same face encodings
+                    # Adding positive outcomes helps with comparisons in the future
+                    addFaceEncoding(encodings[idx], idNumber)
+                    return createResponse({"result": True})
+
+            # No matching face was found
+            return createResponse({"result": False})
+
 
 # Store face encoding
 @app.route("/storeFace", methods=['POST'])
