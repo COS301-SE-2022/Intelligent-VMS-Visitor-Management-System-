@@ -106,4 +106,11 @@ export class UserResolver {
         return await this.userService.deauthorizeUserAccount(email); 
     }
 
+    @UseGuards(GqlAuthGuard, RolesGuard)
+    @Roles("admin")
+    @Query((returns) => { return [SearchUser] }, { name: "getUsersByType"})
+    async getUsersByType(@Args("permission") permission: number) {
+        return await this.userService.getUsersByType(permission);
+    }
+
 }

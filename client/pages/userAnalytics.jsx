@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/router";
-import { gql, useApolloClient, useQuery } from "@apollo/client";
+import { gql, useApolloClient, useLazyQuery, useQuery } from "@apollo/client";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 
 import { HiOutlineDocumentReport } from "react-icons/hi";
 import { RiDeleteBin5Fill } from "react-icons/ri";
@@ -23,7 +25,6 @@ const UserAnalytics = () => {
     const client = useApolloClient();
 
     const now = new Date();
-
     const [
         startDate,
         endDate,
@@ -32,7 +33,48 @@ const UserAnalytics = () => {
         setStartDate,
         setRange,
         range,
-    ] = useDateRange(now, 30);
+    ] = useDateRange(now, 7);
+
+    const [reportStartDate, setReportStartDate] = useState(startDate);
+    const [reportEndDate, setReportEndDate] = useState(endDate);
+    const [generatingReport, setGeneratingReport] = useState(false);
+
+    const generateReport = (invites) => {
+        const doc = jsPDF();
+
+        const tableColumn = ["User", "Visitor", "Date", "Status"];
+        const tableRows = [];
+
+        doc.text("User Report For " + name, 10, 15);
+        invites.forEach((invite) => {
+            const inviteData = [
+                token.email,
+                invite.visitorEmail,
+                invite.inviteDate,
+                invite.inviteState,
+            ];
+
+            tableRows.push(inviteData);
+        });
+        doc.autoTable(tableColumn, tableRows, {
+            startY: 20,
+            didParseCell: (data) => {
+                if (data.column.index === 3 && data.column.raw !== "Status") {
+                    switch (data.column.raw) {
+                        case "signedIn":
+                            data.cell.styles.textColor = "green";
+                            break;
+
+                        case "signedOut":
+                            data.cell.styles.textColor = "red";
+                            break;
+                    }
+                }
+            },
+        });
+        doc.save(`report_${name}.pdf`);
+        setGeneratingReport(false);
+    };
 
     const deleteUserAccount = (email, type) => {
         client
@@ -123,6 +165,17 @@ const UserAnalytics = () => {
         }
     `);
 
+    const [getInvitesForReport, getInvitesForReportQuery] = useLazyQuery(gql`
+        query {
+            getNumInvitesPerDateOfUser(dateStart: "${reportStartDate}", dateEnd: "${reportEndDate}", email: "${email}") {
+                visitorEmail,
+                visitorName,
+                inviteDate,
+                inviteState
+            }
+        }
+    `);
+
     const getTotalNumberOfInvites = useQuery(gql`
         query {
             getTotalNumberOfInvitesOfResident(email: "${email}")
@@ -164,6 +217,19 @@ const UserAnalytics = () => {
             );
         }
     }, [getTotalNumberOfInvites]);
+
+    useEffect(() => {
+        if (
+            !getInvitesForReportQuery.loading &&
+            !getInvitesForReportQuery.error
+        ) {
+            if (getInvitesForReportQuery.data) {
+                const invites =
+                    getInvitesForReportQuery.data.getNumInvitesPerDateOfUser;
+                generateReport(invites);
+            }
+        }
+    }, [getInvitesForReportQuery]);
 
     return (
         <Layout>
@@ -238,37 +304,79 @@ const UserAnalytics = () => {
                                             Generate User Activity Report
                                         </h2>
 
-                                        <input
-                                            type="month"
-                                            name="visitDate"
-                                            placeholder="Visit Date"
-                                            className="input input-bordered w-full"
-                                            onChange={(e) => {
-                                                console.log(
-                                                    e.currentTarget.value
-                                                );
-                                            }}
-                                        />
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div className="flex flex-col">
+                                                <p>Start Month</p>
+                                                <input
+                                                    type="month"
+                                                    name="visitDate"
+                                                    placeholder="Visit Date"
+                                                    className="input input-bordered w-full"
+                                                    onChange={(e) => {
+                                                        setReportStartDate(
+                                                            `${e.currentTarget.value}-01`
+                                                        );
+                                                    }}
+                                                    value={reportStartDate.substr(
+                                                        0,
+                                                        reportStartDate.length -
+                                                            3
+                                                    )}
+                                                />
+                                            </div>
+                                            <div className="flex flex-col">
+                                                <p>End Month</p>
+                                                <input
+                                                    min={
+                                                        reportStartDate &&
+                                                        reportStartDate.substr(
+                                                            0,
+                                                            reportStartDate.length -
+                                                                3
+                                                        )
+                                                    }
+                                                    type="month"
+                                                    name="visitDate"
+                                                    placeholder="Visit Date"
+                                                    className="input input-bordered w-full"
+                                                    onChange={(e) => {
+                                                        setReportEndDate(
+                                                            `${e.currentTarget.value}-01`
+                                                        );
+                                                    }}
+                                                    value={reportEndDate.substr(
+                                                        0,
+                                                        reportEndDate.length - 3
+                                                    )}
+                                                />
+                                            </div>
+                                        </div>
 
-                                        <Link
-                                            href={`/viewReport?email=${email}&startDate=${startDate}&endDate=${endDate}&name=${name}&total=${numInvites}`}
+                                        <button
+                                            className={`btn btn-primary ${
+                                                generatingReport
+                                                    ? "loading"
+                                                    : ""
+                                            }`}
+                                            onClick={(e) => {
+                                                setGeneratingReport(true);
+                                                getInvitesForReport();
+                                            }}
                                         >
-                                            <a className="btn btn-primary">
-                                                <HiOutlineDocumentReport className="text-xl" />
-                                                PDF Report
-                                            </a>
-                                        </Link>
+                                            <HiOutlineDocumentReport className="text-xl" />
+                                            PDF Report
+                                        </button>
                                     </div>
                                 </div>
 
-                                <div className="card bg-base-300">
-                                    <div className="card-body">
-                                        <h2 className="card-title">
-                                            Manage User Account
-                                        </h2>
+                                {token.email !== email && (
+                                    <div className="card bg-base-300">
+                                        <div className="card-body">
+                                            <h2 className="card-title">
+                                                Manage User Account
+                                            </h2>
 
-                                        <div className="flex justify-between">
-                                            {token.email !== email && (
+                                            <div className="flex justify-between">
                                                 <label
                                                     className="label cursor-pointer space-x-3"
                                                     onChange={() => {
@@ -292,63 +400,63 @@ const UserAnalytics = () => {
                                                         }
                                                     />
                                                 </label>
-                                            )}
 
-                                            {showConfirm && (
-                                                <div className="flex space-x-3">
-                                                    <button
-                                                        onClick={() => {
-                                                            if (auth) {
-                                                                authorizeUserAccount(
-                                                                    email,
-                                                                    type
+                                                {showConfirm && (
+                                                    <div className="flex space-x-3">
+                                                        <button
+                                                            onClick={() => {
+                                                                if (auth) {
+                                                                    authorizeUserAccount(
+                                                                        email,
+                                                                        type
+                                                                    );
+                                                                } else {
+                                                                    deauthorizeUserAccount(
+                                                                        email,
+                                                                        type
+                                                                    );
+                                                                }
+                                                                setShowConfirm(
+                                                                    false
                                                                 );
-                                                            } else {
-                                                                deauthorizeUserAccount(
-                                                                    email,
-                                                                    type
+                                                            }}
+                                                            className="btn btn-primary btn-sm gap-2"
+                                                        >
+                                                            <BiCheckShield className="text-lg" />
+                                                            Confirm
+                                                        </button>
+                                                        <button
+                                                            onClick={() => {
+                                                                setAuth(!auth);
+                                                                setShowConfirm(
+                                                                    false
                                                                 );
-                                                            }
-                                                            setShowConfirm(
-                                                                false
-                                                            );
-                                                        }}
-                                                        className="btn btn-primary btn-sm gap-2"
+                                                            }}
+                                                            className="btn btn-secondary btn-sm gap-2"
+                                                        >
+                                                            <BsShieldX className="text-lg" />
+                                                            Decline
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <div>
+                                                {token.email !== email && (
+                                                    <label
+                                                        htmlFor={
+                                                            "admin-confirm-modal-" +
+                                                            email
+                                                        }
+                                                        className="modal-button btn btn-error text-primary-content hover:btn-error"
                                                     >
-                                                        <BiCheckShield className="text-lg" />
-                                                        Confirm
-                                                    </button>
-                                                    <button
-                                                        onClick={() => {
-                                                            setAuth(!auth);
-                                                            setShowConfirm(
-                                                                false
-                                                            );
-                                                        }}
-                                                        className="btn btn-secondary btn-sm gap-2"
-                                                    >
-                                                        <BsShieldX className="text-lg" />
-                                                        Decline
-                                                    </button>
-                                                </div>
-                                            )}
-                                        </div>
-                                        <div>
-                                            {token.email !== email && (
-                                                <label
-                                                    htmlFor={
-                                                        "admin-confirm-modal-" +
-                                                        email
-                                                    }
-                                                    className="modal-button btn btn-error text-primary-content hover:btn-error"
-                                                >
-                                                    <RiDeleteBin5Fill />
-                                                    Delete Account
-                                                </label>
-                                            )}
+                                                        <RiDeleteBin5Fill />
+                                                        Delete Account
+                                                    </label>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                )}
                             </div>
                         </div>
 

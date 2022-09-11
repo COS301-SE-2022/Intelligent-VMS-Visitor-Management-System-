@@ -337,8 +337,31 @@ def calculateMinMaxAndMedians():
       maxResWOY.append(0)
       mdnResWOY.append(0)
 
-  for day in groupInvites:
+  for day in groupReservations:
+    print(day)
+    currDate = datetime.strptime(day['_id'], '%Y-%m-%d').date()
+    numParking = day['numParkings']
+    currMonthIndex = currDate.month-1
+    currDayIndex = currDate.weekday()
+    currWOYIndex = currDate.isocalendar()[1]-1
+    
+    if(numParking<minResDOW[currDayIndex]):
+      minResDOW[currDayIndex] = numParking
+    elif(numParking>maxResDOW[currDayIndex]):
+      maxResDOW[currDayIndex] = numParking
 
+    if(numParking<minResWOY[currWOYIndex]):
+      minResWOY[currWOYIndex] = numParking
+    elif(numParking>maxResWOY[currWOYIndex]):
+      maxResWOY[currWOYIndex] = numParking
+
+    if(numParking<minResMonth[currMonthIndex]):
+      minResMonth[currMonthIndex] = numParking
+    elif(numParking>maxResMonth[currMonthIndex]):
+      maxResMonth[currMonthIndex] = numParking
+
+  for day in groupInvites:
+    print(day)
     currDate = datetime.strptime(day['_id'], '%Y-%m-%d').date()
     numVisitors = day['numVisitors']
     currMonthIndex = currDate.month-1
@@ -360,28 +383,6 @@ def calculateMinMaxAndMedians():
     elif(numVisitors>maxVisMonth[currMonthIndex]):
       maxVisMonth[currMonthIndex] = numVisitors
 
-  for day in groupReservations:
-
-    currDate = datetime.strptime(day['_id'], '%Y-%m-%d').date()
-    numParking = day['numParkings']
-    currMonthIndex = currDate.month-1
-    currDayIndex = currDate.weekday()
-    currWOYIndex = currDate.isocalendar()[1]-1
-    
-    if(numParking<minResDOW[currDayIndex]):
-      minResDOW[currDayIndex] = numParking
-    elif(numParking>maxResDOW[currDayIndex]):
-      maxResDOW[currDayIndex] = numParking
-
-    if(numParking<minResWOY[currWOYIndex]):
-      minResWOY[currWOYIndex] = numParking
-    elif(numParking>maxResWOY[currWOYIndex]):
-      maxResWOY[currWOYIndex] = numParking
-
-    if(numParking<minResMonth[currMonthIndex]):
-      minResMonth[currMonthIndex] = numParking
-    elif(numParking>maxResMonth[currMonthIndex]):
-      maxResMonth[currMonthIndex] = numParking
 
   for i in range(7):
     mdnVisDOW[i] = (minVisDOW[i]+maxVisDOW[i])/2

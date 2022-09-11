@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { useState, useEffect, setState } from "react";
 import { gql, useApolloClient, useLazyQuery } from "@apollo/client";
+import { alert } from "react-custom-alert";
 import { BiQrScan } from "react-icons/bi";
 import { BsBoxArrowInRight, BsInfoCircle } from "react-icons/bs";
 import Layout from "../components/Layout";
@@ -134,8 +135,8 @@ const ReceptionistDashboard = () => {
             if (data) {
                 const invites = data.getInvitesByDate.filter((invite) => {
                     return (
-                        (invite.inviteState !== "signedOut" ||
-                            invite.inviteState !== "cancelled") &&
+                        invite.inviteState !== "signedOut" &&
+                        invite.inviteState !== "cancelled" &&
                         invite.inviteID
                     );
                 });
@@ -338,12 +339,6 @@ const ReceptionistDashboard = () => {
                     message={successMessage}
                     showConditon={showSuccessAlert}
                 />
-                <InfoAlert
-                    currentVisitData={currentVisitData}
-                    showConditon={showInfoAlert}
-                    setShowCondition={setShowInfoAlert}
-                    trayNr={trayNr}
-                />
             </div>
 
             <input
@@ -367,12 +362,12 @@ const ReceptionistDashboard = () => {
                     <SignInPopUp
                         visitData={currentVisitData}
                         setTrayNr={setTrayNr}
-                        setShowInfoAlert={setShowInfoAlert}
                         refetch={invitesQuery}
                         todayString={todayString}
                         currentButton={currentButton}
                         setShowSignInModal={setShowSignInModal}
                         setSearch={setSearch}
+                        trayNr={trayNr}
                     />
                 </div>
             </div>

@@ -1,5 +1,6 @@
 import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
+import { Cron } from "@nestjs/schedule";
 import { AssignParkingCommand } from './commands/impl/assignParking.command';
 import { FreeParkingCommand } from './commands/impl/freeParking.command';
 import { ReserveParkingCommand } from './commands/impl/reserveParking.command';
@@ -9,7 +10,9 @@ import { UnreserveParkingCommand } from './commands/impl/unreserveParking.comman
 import { CreateNParkingSpotsCommand } from './commands/impl/createNParkingSpots.command';
 import { AddParkingCommand } from './commands/impl/addParking.command';
 import { getAvailableParkingQuery } from "./queries/impl/getAvailableParking.query";
+import { getDisabledParkingQuery  } from "./queries/impl/getDisabledParking.query"
 import { getTotalAvailableParkingQuery } from './queries/impl/getTotalAvailableParking.query';
+import { getTotalParkingQuery } from "./queries/impl/getTotalParking.query";
 import { GetFreeParkingQuery } from './queries/impl/getFreeParking.query';
 import { GetInviteReservationQuery } from './queries/impl/getInviteReservation.query';
 import { GetReservationsQuery } from './queries/impl/getReservations.query';
@@ -25,6 +28,7 @@ import { GetParkingQuery } from "./queries/impl/getParking.query";
 import { GetReservationsByDateQuery } from "./queries/impl/getReservationsByDate.query";
 import { InvalidCommand } from "./errors/invalidCommand.error";
 import { GetNumberOfReservationsQuery } from "./queries/impl/getNumberOfReservations.query";
+import { GroupParkingCommand } from "./commands/impl/groupParking.command";
 import { ActivateReservationCommand } from "./commands/impl/activateReservation.command";
 
 @Injectable()
@@ -69,7 +73,7 @@ export class ParkingService {
     */
     async freeParking(parkingNumber: number) {
         //Validate input
-        const spaces = await this.getTotalAvailableParking();
+        const spaces = await this.getTotalParking();
 
         if (parkingNumber < 0 || parkingNumber > spaces)
             throw new InvalidCommand(
@@ -83,6 +87,61 @@ export class ParkingService {
 
         if (parking) return parking;
         else throw new ExternalError("Error outside the parking.service");
+    }
+
+        /*
+    Adjusts the parking spots in the database
+
+    Throws: 
+    Returns: a bool for now
+
+    Status: Done
+    */
+
+    async adjustParking(numDisiredParkingTotal: number) {
+        //Validate input
+        const spaces = await this.queryBus.execute(
+            new getTotalParkingQuery(),
+        );
+        const spacesEnabled = await this.queryBus.execute(
+            new getTotalAvailableParkingQuery(),
+        );
+        const listOfDisabled = await this.queryBus.execute(
+            new getDisabledParkingQuery(),
+        );
+        const listOfAvailable=await this.queryBus.execute(
+            new getAvailableParkingQuery(),
+        );
+        //let spacesDisabled=spaces-spacesEnabled;
+        let difference=spacesEnabled-numDisiredParkingTotal;
+
+        if (difference>0) {//------------------------------------------ decrease available parking
+            for (let index = 0; index < listOfAvailable.length&&index<difference; index++) {
+               
+                const disableIndex = listOfAvailable[index].parkingNumber;
+                this.disableParkingSpace(disableIndex);
+            }
+         
+        } else if (difference<0) {//------------------------------------increase available parking 
+            if (numDisiredParkingTotal>spaces) { //Increase overall total spaces
+                console.log("here");
+                const totalToCreate=numDisiredParkingTotal-spaces;
+                for (let index = 0; index < listOfDisabled.length; index++) {//re-enable all disabled parking
+                             const enableIndex = listOfDisabled[index].parkingNumber;
+                             this.enableParkingSpace(enableIndex);
+                }
+                this.createNParkingSpots(totalToCreate);
+            } else { //overall total stays the same
+                const totalToEnable=difference*=-1;
+                for (let index = 0; index < listOfDisabled.length&&index<totalToEnable; index++) {//re-enable all disabled parking
+                    const enableIndex = listOfDisabled[index].parkingNumber;
+                    this.enableParkingSpace(enableIndex);
+                }
+            }
+           
+        }
+        return true;
+
     }
 
     /*
@@ -262,7 +321,7 @@ export class ParkingService {
                 `Invitation with ID ${invitationID} not found`,
             );
 
-        const spaces = await this.getTotalAvailableParking();
+        const spaces = await this.getTotalParking();
 
         if (parkingNumber < 0 || parkingNumber > spaces)
             throw new InvalidCommand(
@@ -381,7 +440,7 @@ export class ParkingService {
     */
     async enableParkingSpace(parkingNumber: number) {
         //Validate input
-        const spaces = await this.getTotalAvailableParking();
+        const spaces = await this.getTotalParking();
 
         if (parkingNumber < 0 || parkingNumber > spaces)
             throw new InvalidCommand(
@@ -410,7 +469,7 @@ export class ParkingService {
     */
     async disableParkingSpace(parkingNumber: number) {
         //Validate input
-        const spaces = await this.getTotalAvailableParking();
+        const spaces = await this.getTotalParking();
 
         if (parkingNumber < 0 || parkingNumber > spaces)
             throw new InvalidCommand(
@@ -489,7 +548,7 @@ export class ParkingService {
         parkingNumber: number,
         ){
             //Validate input
-            const spaces = await this.getTotalAvailableParking();
+            const spaces = await this.getTotalParking();
 
         if (parkingNumber < 0 || parkingNumber > spaces)
             throw new InvalidQuery(
@@ -561,7 +620,18 @@ export class ParkingService {
             else
                 throw new ExternalError("Error outside the parking.service");
         }
-
+        async getTotalParking(
+            ){
+                const amount = this.queryBus.execute(
+                    new getTotalParkingQuery()
+                )
+        
+                if(amount)
+                    return amount;
+                else
+                    throw new ExternalError("Error outside the parking.service");
+            }
+        
     /*
     */
     async getAvailableParking(
@@ -575,6 +645,20 @@ export class ParkingService {
             else
                 throw new ExternalError("Error outside the parking.service");
         }
+
+    async getDisabledParking(
+        ){
+            const parking = this.queryBus.execute(
+                new getDisabledParkingQuery()
+            )
+    
+            if(parking)
+                return parking;
+            else
+                throw new ExternalError("Error outside the parking.service");
+        }
+
+  
 
      /*
     Get the reservations within the range
@@ -631,13 +715,13 @@ export class ParkingService {
             );
         }
 
-        let amounts = [];
+        const amounts = [];
 
-        let endD = new Date(endDate);
+        const endD = new Date(endDate);
         let loopD = new Date(startDate);
         let i = 0;
         while (loopD <= endD) {
-            let temp = await this.queryBus.execute(
+            const temp = await this.queryBus.execute(
                 new GetReservationsByDateQuery(loopD.toDateString()),
             );
             amounts[i] = temp.length;
@@ -691,5 +775,24 @@ export class ParkingService {
         );
 
         return numReservationsForDay < numAvailableParkingForDay;
+    }
+
+    @Cron("50 23 * * *")
+    async groupParking() {
+        const now = new Date();
+        const year = now.getFullYear();
+        let month = "" + (now.getMonth() + 1);
+        let day = "" + now.getDate();
+            
+        if (month.length < 2) {
+            month = '0' + month;
+        }
+        if (day.length < 2) {
+            day = '0' + day;
+        } 
+
+        const formatDate = [year, month, day].join('-');
+        
+        await this.commandBus.execute(new GroupParkingCommand(formatDate));
     }
 }

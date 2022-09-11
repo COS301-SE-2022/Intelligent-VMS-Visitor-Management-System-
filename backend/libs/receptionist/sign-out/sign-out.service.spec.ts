@@ -7,6 +7,7 @@ import { MailService } from '@vms/mail';
 import { ParkingService } from '@vms/parking';
 import { removeTrayByInviteIDCommand } from '@vms/receptionist/commands/impl/Tray/removeTrayByInviteID.command';
 import { Tray } from '@vms/receptionist/schema/tray.schema';
+import { UserService } from "@vms/user";
 import { VisitorInviteService } from '@vms/visitor-invite';
 import { RestrictionsService } from "@vms/restrictions";
 import { SignOutService } from './sign-out.service';
@@ -15,8 +16,8 @@ import { ReceptionistService } from '@vms/receptionist';
 describe('SignOutService', () => {
   let service: SignOutService;
   let inviteService: VisitorInviteService;
-  let receptionistService = {
-    getTrayByInviteID: jest.fn(()=> ({}))
+  const receptionistService = {
+    getTrayByInviteID: jest.fn(()=> {return {}})
 
   };
   /*eslint-disable*/
@@ -58,6 +59,7 @@ describe('SignOutService', () => {
       imports: [HttpModule],
       providers: [SignOutService,
         VisitorInviteService,
+        UserService,
         ParkingService,
         ReceptionistService,
         MailService,

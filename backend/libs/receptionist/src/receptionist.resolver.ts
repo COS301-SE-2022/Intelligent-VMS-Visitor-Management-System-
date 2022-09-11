@@ -22,14 +22,14 @@ export class ReceptionistResolver {
         return "👋 from Receptionist";
     }
 
-    @Mutation((returns) => Number, { name: "signOut" })
+    @Mutation((returns) => {return Number}, { name: "signOut" })
     async signOutInvite( 
         @Args("inviteID") inviteID: string,
     ){
         return await this.signOutService.signOut(inviteID);
     }
 
-    @Mutation((returns) => Number, { name: "signIn" })
+    @Mutation((returns) => {return Number}, { name: "signIn" })
     async signIn(
         @Args("inviteID") inviteID: string,
         @Args("notes") notes: string,
@@ -38,7 +38,7 @@ export class ReceptionistResolver {
         return this.signInService.signIn(inviteID, notes, time);
     }
 
-    @Mutation((returns) => BSIdata, { name: "bulkSignIn" })
+    @Mutation((returns) => {return BSIdata}, { name: "bulkSignIn" })
     async bulkSignIn(
         @Args("file") file: string,
         @Args("userEmail") userEmail: string,

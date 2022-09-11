@@ -6,7 +6,7 @@ export type GroupInviteDocument = GroupInvite & Document;
 @Schema()
 export class GroupInvite {
     @Prop()
-    date: string;
+    _id: string;
 
     @Prop()
     numInvites: number;

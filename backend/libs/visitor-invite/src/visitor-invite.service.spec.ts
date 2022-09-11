@@ -7,19 +7,24 @@ import { VisitorInviteService } from "./visitor-invite.service";
 import { GetInvitesQuery } from "./queries/impl/getInvites.query";
 import { GetNumberVisitorQuery } from "./queries/impl/getNumberOfVisitors.query";
 import { GetInvitesInRangeQuery } from "./queries/impl/getInvitesInRange.query";
-import {GetNumberOfInvitesOfResidentQuery} from "./queries/impl/getNumberOfInvitesOfResident.query";
+import { GetNumberOfInvitesOfResidentQuery } from "./queries/impl/getNumberOfInvitesOfResident.query";
 
-import {MailService} from "@vms/mail";
+import { UserService } from "@vms/user";
+import { MailService } from "@vms/mail";
 import { ParkingService } from "@vms/parking/parking.service";
 import { RestrictionsService } from "@vms/restrictions/restrictions.service";
 
 describe("VisitorInviteService", () => {
     let service: VisitorInviteService;
 
+    const commandBusMock = {
+        execute: jest.fn((command) => ({})),
+    };
+
     const queryBusMock = {
         execute: jest.fn((query: IQuery) => {
-            if(query instanceof GetInvitesQuery) {
-                if(query.email === "admin@mail.com") {
+            if (query instanceof GetInvitesQuery) {
+                if (query.email === "admin@mail.com") {
                     return [
                         {
                             visitorEmail: "visitor@mail.com",
@@ -43,9 +48,9 @@ describe("VisitorInviteService", () => {
                 } else {
                     return [];
                 }
-            } else if(query instanceof GetNumberVisitorQuery) {
+            } else if (query instanceof GetNumberVisitorQuery) {
                 return 898;
-            } else if(query instanceof GetInvitesInRangeQuery) {
+            } else if (query instanceof GetInvitesInRangeQuery) {
                 return [
                     {
                         visitorEmail: "visitor@mail.com",
@@ -66,8 +71,8 @@ describe("VisitorInviteService", () => {
                         requiresParking: false
                     }
                 ];
-            } else if(query instanceof GetNumberOfInvitesOfResidentQuery) {
-                if(query.email === "admin@mail.com") {
+            } else if (query instanceof GetNumberOfInvitesOfResidentQuery) {
+                if (query.email === "admin@mail.com") {
                     return 2;
                 } else {
                     return 0;
@@ -76,24 +81,37 @@ describe("VisitorInviteService", () => {
         }),
     };
 
+    const mailServiceMock = {
+        sendInvite: jest.fn(() => ({ messageId: 'id' })),
+        sendCancelNotice: jest.fn(() => ({ messageId: 'id' })),
+    };
+    const parkingServiceMock = {
+        isParkingAvailable: jest.fn(() => true),
+        reserveParking: jest.fn(() => ({})),
+        unreserveParking: jest.fn(() => ({})),
+    };
+
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
             imports: [HttpModule],
             providers: [
-                VisitorInviteService, 
+                VisitorInviteService,
                 ParkingService,
                 ConfigService,
                 MailService,
                 RestrictionsService,
-                CommandBus, 
+                UserService,
+                { provide: ParkingService, useValue: parkingServiceMock },
+                { provide: CommandBus, useValue: commandBusMock },
+                { provide: MailService, useValue: mailServiceMock },
                 {
                     provide: QueryBus, useValue: queryBusMock
                 },
                 {
-                      provide: CACHE_MANAGER,
-                      useValue: {
-                        get: () => {return 'any value'},
-                        set: () => {return jest.fn()},
+                    provide: CACHE_MANAGER,
+                    useValue: {
+                        get: () => { return 'any value' },
+                        set: () => { return jest.fn() },
                     },
                 },
             ],
@@ -196,5 +214,213 @@ describe("VisitorInviteService", () => {
             expect(numInvites).toEqual(2);
         });
     });
+
+    describe('createInvite', () => {
+        it('should create an invite where numInvitesSent < numInvitesAllowed', async () => {
+            // Arrange
+            jest.spyOn(commandBusMock as any, 'execute').mockReturnValueOnce(1)
+            jest.spyOn(commandBusMock as any, 'execute').mockReturnValueOnce(5)
+
+            // Act
+            const response = await service.createInvite(2, 'email@email.com', 'visitor@email.com', 'visitor', 'id', '123123123123123', 'yesterday', true);
+            // Assert
+            expect(response).toEqual('id')
+
+        })
+        it('should not create an invite where there is no parking', async () => {
+            // Arrange
+            parkingServiceMock.isParkingAvailable.mockReturnValueOnce(false)
+            jest.spyOn(commandBusMock as any, 'execute').mockReturnValueOnce(1)
+            jest.spyOn(commandBusMock as any, 'execute').mockReturnValueOnce(5)
+            try {
+                // Act
+                const response = await service.createInvite(2, 'email@email.com', 'visitor@email.com', 'visitor', 'id', '123123123123123', 'yesterday', true);
+            } catch (e) {
+                // Assert
+                expect(e.message).toEqual('Parking not available')
+            }
+
+        })
+        it('should not create an invite where numInvitesSent >= numInvitesAllowed', async () => {
+            // Arrange
+            jest.spyOn(queryBusMock as any, 'execute').mockReturnValueOnce(30)
+            jest.spyOn(queryBusMock as any, 'execute').mockReturnValueOnce(50)
+
+            // Act
+            try {
+                const response = await service.createInvite(2, 'email@email.com', 'visitor@email.com', 'visitor', 'id', '123123123123123', 'yesterday', false);
+                expect(true).toEqual(false);
+            }
+            catch (e) {
+                expect(e.message).toEqual('Max Number of Invites Sent')
+            }
+            // Assert
+
+        })
+    })
+
+    describe('createInviteForBulkSignIn', () => {
+        it('should create bulk invite', async () => {
+            // Arrange
+            jest.spyOn(commandBusMock as any, 'execute').mockReturnValueOnce(1)
+            jest.spyOn(commandBusMock as any, 'execute').mockReturnValueOnce(5)
+
+            // Act
+            const response = await service.createInviteForBulkSignIn(3, 'user', 'visitor', 'name', 'id', 'ads', 'a', true)
+
+            // Assert
+            expect(response).toBeTruthy()
+
+        })
+        it('should not create bulk invite where numInvitesSent >= numInvitesAllowed', async () => {
+            // Arrange
+            jest.spyOn(queryBusMock as any, 'execute').mockReturnValueOnce(30)
+            jest.spyOn(queryBusMock as any, 'execute').mockReturnValueOnce(50)
+
+            // Act
+            try {
+                const response = await service.createInviteForBulkSignIn(2, 'email@email.com', 'visitor@email.com', 'visitor', 'id', '123123123123123', 'yesterday', false);
+                expect(true).toEqual(false);
+            }
+            catch (e) {
+                expect(e.message).toEqual('Max Number of Invites Sent')
+            }
+            // Assert
+
+        })
+    })
+
+    describe('getInvite', () => {
+        it('should get invite', async () => {
+            jest.spyOn(queryBusMock as any, 'execute').mockReturnValueOnce(30)
+            const response = await service.getInvite('id');
+            expect(response).toEqual(30)
+
+        })
+    })
+
+    describe('getInvites', () => {
+        it('should get invites', async () => {
+            jest.spyOn(queryBusMock as any, 'execute').mockReturnValueOnce(30)
+            const response = await service.getInvites('id');
+            expect(response).toEqual(30)
+
+        })
+    })
+
+
+    describe('cancel invite', () => {
+        it('should cancel invite', async () => {
+            jest.spyOn(queryBusMock as any, 'execute').mockReturnValueOnce({ userEmail: 'mail' })
+            jest.spyOn(commandBusMock as any, 'execute').mockReturnValueOnce({ userEmail: 'mail' })
+            const response = await service.cancelInvite('mail', 'id');
+            expect(response).toEqual(1)
+
+        })
+        it('should not cancel invite when email dont match', async () => {
+            jest.spyOn(queryBusMock as any, 'execute').mockReturnValueOnce({ userEmail: 'mail' })
+            jest.spyOn(commandBusMock as any, 'execute').mockReturnValueOnce({ userEmail: 'mail' })
+            try { const response = await service.cancelInvite('email', 'id'); }
+            catch (e) { expect(e.message).toEqual('Invite was not issued by: email') }
+
+        })
+        it('should not cancel invite when invite not found', async () => {
+            jest.spyOn(queryBusMock as any, 'execute').mockReturnValueOnce(null)
+            jest.spyOn(commandBusMock as any, 'execute').mockReturnValueOnce({ userEmail: 'mail' })
+            try { const response = await service.cancelInvite('email', 'id'); }
+            catch (e) { expect(e.message).toEqual('Invite not found with ID: id') }
+
+        })
+    })
+
+    describe('getNumberOfOpenInvites', () => {
+        it('should getNumberOfOpenInvites', async () => {
+            jest.spyOn(queryBusMock as any, 'execute').mockReturnValueOnce({})
+
+            const response = await service.getNumberOfOpenInvites('m')
+
+            expect(response).toEqual({})
+        })
+    })
+
+    describe('getInvitesByDate', () => {
+        it('should getInvitesByDate', async () => {
+            jest.spyOn(queryBusMock as any, 'execute').mockReturnValueOnce({})
+
+            const response = await service.getInvitesByDate('m')
+
+            expect(response).toEqual({})
+        })
+    })
+
+    describe('getInvitesByName', () => {
+        it('should getInvitesByName', async () => {
+            jest.spyOn(queryBusMock as any, 'execute').mockReturnValueOnce({})
+
+            const response = await service.getInvitesByName('m')
+
+            expect(response).toEqual({})
+        })
+    })
+
+    describe('getInvitesByNameForSearch', () => {
+        it('should getInvitesByNameForSearch', async () => {
+            jest.spyOn(queryBusMock as any, 'execute').mockReturnValueOnce({})
+
+            const response = await service.getInvitesByNameForSearch('m')
+
+            expect(response).toEqual({})
+        })
+    })
+
+    describe('getInvitesByIDForReceptionistSearch', () => {
+        it('should getInvitesByIDForReceptionistSearch', async () => {
+            jest.spyOn(queryBusMock as any, 'execute').mockReturnValueOnce({})
+
+            const response = await service.getInvitesByIDForReceptionistSearch('m')
+
+            expect(response).toEqual({})
+        })
+    })
+
+    describe('getTotalNumberOfInvitesVisitor', () => {
+        it('should getTotalNumberOfInvitesVisitor', async () => {
+            jest.spyOn(queryBusMock as any, 'execute').mockReturnValueOnce({})
+
+            const response = await service.getTotalNumberOfInvitesVisitor('m')
+
+            expect(response).toEqual({})
+        })
+    })
+
+    describe('getVisitors', () => {
+        it('should getVisitors', async () => {
+            jest.spyOn(queryBusMock as any, 'execute').mockReturnValueOnce({})
+
+            const response = await service.getVisitors('m')
+
+            expect(response).toEqual({})
+        })
+    })
+
+    describe('getMostUsedInviteData', () => {
+        it('should getMostUsedInviteData', async () => {
+            jest.spyOn(queryBusMock as any, 'execute').mockReturnValueOnce('hello world')
+
+            const response = await service.getMostUsedInviteData('m')
+
+            expect(response).toEqual({})
+        })
+    })
+
+    describe('getMostUsedInviteData', () => {
+        it('should getMostUsedInviteData', async () => {
+            jest.spyOn(queryBusMock as any, 'execute').mockReturnValueOnce({})
+
+            try { const response = await service.getMostUsedInviteData('') }
+
+            catch (e) { expect(e.message).toEqual('No Invites to make suggestion') }
+        })
+    })
 
 });

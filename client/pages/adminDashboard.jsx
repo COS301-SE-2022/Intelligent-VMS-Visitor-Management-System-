@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useState, useEffect, useRef } from "react";
-import { gql, useQuery, useMutation } from "@apollo/client";
+import { gql, useQuery, useMutation, useApolloClient } from "@apollo/client";
 
 import Layout from "../components/Layout";
 import AdminCard from "../components/AdminCard";
@@ -13,7 +13,7 @@ import useAuth from "../store/authStore";
 
 import { AiOutlinePlus, AiOutlineMinus, AiOutlineCar } from "react-icons/ai";
 import { BiBuildingHouse, BiMailSend } from "react-icons/bi";
-import { FaSearch, FaParking } from "react-icons/fa";
+import { FaSearch, FaCarSide, FaPeopleArrows } from "react-icons/fa";
 import {
     MdBlock,
     MdDataSaverOn,
@@ -41,6 +41,9 @@ const AdminDashboard = () => {
     // Number of invites sent state
     const [numInvitesSent, setNumInvitesSent] = useState(0);
 
+    const [hoursMenu, setHours] = useState(0);
+    const [minutesMenu, setMinutes] = useState(0);
+
     // Visitor invite data object for chart
     const [visitorVals, setVisitorVals] = useState({
         data: [],
@@ -57,6 +60,7 @@ const AdminDashboard = () => {
 
     // Predicted Visitor Values
     const [predictedVisitorVals, setPredictedVisitorVals] = useState([]);
+    const [predictedParkingVals, setPredictedParkingVals] = useState([]);
 
     // Date Range Hook
     const [startDate, endDate, inviteDateMap, setDateMap] = useDateRange(
@@ -79,6 +83,8 @@ const AdminDashboard = () => {
     const [initialNumInvitesPerResident, setInitialNumInvitesPerResident] =
         useState(1);
 
+    const [initialCurfewTime, setInitialCurfewTime] = useState(1);
+
     const [initialNumParkingSpots, setInitialNumParkingSpots] = useState(0);
 
     const [numParkingSpotsAvailableToday, setNumParkingSpotsAvailableToday] =
@@ -92,6 +98,13 @@ const AdminDashboard = () => {
 
     // Search visitor name state
     const [name, setName] = useState("");
+
+    // Average values for week
+    const [avgVisitors, setAvgVisitors] = useState(0);
+    const [avgParking, setAvgParking] = useState(0);
+
+    // Cancellations for the week
+    const [numCancel, setNumCancel] = useState(0);
 
     const now = getFormattedDateString(new Date());
 
@@ -110,12 +123,30 @@ const AdminDashboard = () => {
         }
     `);
 
+    const CurfewTimeQuery = useQuery(gql`
+        query {
+            getCurfewTime {
+                value
+            }
+        }
+    `);
+
     // Number of invites per resident state
     const [numInvitesPerResident, setNumInvitesPerResident] = useState(1);
+    const [curfewTime, setCurfewTime] = useState(1);
+
+    const [defaultHours, setDefaultHours] = useState(0);
+    const [defaultMins, setDefaultMins] = useState(0);
 
     const numInvitesQuery = useQuery(gql`
         query {
             getTotalNumberOfVisitors
+        }
+    `);
+
+    const numParkingSpotsAvailableQuery = useQuery(gql`
+         query {
+            getTotalAvailableParking
         }
     `);
 
@@ -127,6 +158,7 @@ const AdminDashboard = () => {
                 dateEnd: "${endDate}"
             ) {
                 inviteDate
+                inviteState
             }
         }
     `,
@@ -141,17 +173,12 @@ const AdminDashboard = () => {
         }
     `);
 
-    const numParkingSpotsAvailableQuery = useQuery(gql`
-        query {
-            getTotalAvailableParking
-        }
-    `);
-
     const predictedInvitesQuery = useQuery(gql`
         query {
           getPredictedInviteData(startDate: "${startDate}", endDate: "${endDate}") {
             date
-            data
+            parking,
+            visitors
           }
         }
     `);
@@ -164,14 +191,37 @@ const AdminDashboard = () => {
           }
         }
     `);
+    const [adjustParkingMutation, { }] =
+        useMutation(gql`
+       mutation {
+        adjustParking(numDisiredParkingTotal: ${numParkingSpotsAvailable}) 
+       }
+   `);
+
+    const client = useApolloClient();
+    function curfewMutationFunc(CURFEW) {
+
+        client.mutate({
+            mutation: gql`
+        mutation {
+          setCurfewTime(curfewTime: ${CURFEW}) {
+            value
+          }
+        }
+    `});
+    }
+
+
 
     const cancelRestrictions = () => {
         setNumInvitesPerResident(initialNumInvitesPerResident);
         setNumParkingSpotsAvailable(initialNumParkingSpots);
+        setInitialCurfewTime(initialCurfewTime);
         setRestrictionsChanged(false);
     };
 
     const saveRestrictions = () => {
+
         if (numInvitesPerResident !== initialNumInvitesPerResident) {
             setInitialNumInvitesPerResident(numInvitesPerResident);
             setNumInvitesPerResidentMutation();
@@ -179,7 +229,53 @@ const AdminDashboard = () => {
 
         if (numParkingSpotsAvailable !== initialNumParkingSpots) {
             setInitialNumParkingSpots(numParkingSpotsAvailable);
+            adjustParkingMutation();
+            setNumParkingSpotsAvailableToday(
+                numParkingSpotsAvailable - parkingDateMap.get(parkingStartDate)
+            );
         }
+
+
+        if (minutesMenu == "1") {
+            minutesMenu = "0" + minutesMenu;
+        } else if (minutesMenu == "2") {
+            minutesMenu = "0" + minutesMenu;
+        } else if (minutesMenu == "3") {
+            minutesMenu = "0" + minutesMenu;
+        } else if (minutesMenu == "4") {
+            minutesMenu = "0" + minutesMenu;
+        } else if (minutesMenu == "5") {
+            minutesMenu = "0" + minutesMenu;
+        } else if (minutesMenu == "6") {
+            minutesMenu = "0" + minutesMenu;
+        } else if (minutesMenu == "7") {
+            minutesMenu = "0" + minutesMenu;
+        } else if (minutesMenu == "8") {
+            minutesMenu = "0" + minutesMenu;
+        } else if (minutesMenu == "9") {
+            minutesMenu = "0" + minutesMenu;
+        } else if (minutesMenu == "0") {
+            minutesMenu = "0" + minutesMenu;
+        }
+
+        if (hoursMenu == "0") {
+            hoursMenu = "0" + hoursMenu;
+        }
+
+        let temp = hoursMenu + minutesMenu;
+        
+        let numTemp = parseInt(temp);
+        setCurfewTime(numTemp);
+
+
+        if (numTemp !== "7777") {
+            setInitialCurfewTime(curfewTime);
+            curfewMutationFunc(numTemp);
+        }
+
+        setDefaultHours(hoursMenu);
+        setDefaultMins(minutesMenu);
+        
 
         setRestrictionsChanged(false);
     };
@@ -202,14 +298,20 @@ const AdminDashboard = () => {
             !numInviteInDateRangeQuery.error
         ) {
             const invites = numInviteInDateRangeQuery.data.getNumInvitesPerDate;
+            let numCancelled = 0;
             invites.forEach((invite) => {
-                if (!isNaN(inviteDateMap.get(invite.inviteDate))) {
+                if (invite.inviteState === "cancelled") {
+                    numCancelled++;
+                } else if (!isNaN(inviteDateMap.get(invite.inviteDate))) {
                     inviteDateMap.set(
                         invite.inviteDate,
                         inviteDateMap.get(invite.inviteDate) + 1
                     );
                 }
             });
+
+            setNumCancel(numCancelled);
+            setAvgVisitors(invites.length / 7);
 
             setDateMap(new Map(inviteDateMap));
             setVisitorVals({
@@ -239,6 +341,8 @@ const AdminDashboard = () => {
                     );
                 }
             });
+
+            setAvgParking(parkingNumbers.length / 7);
 
             setParkingDateMap(new Map(parkingDateMap));
             setParkingVals({
@@ -276,6 +380,8 @@ const AdminDashboard = () => {
             setInitialNumInvitesPerResident(numInvitesPerResident);
         } else if (numInvitesPerResident.error) {
         }
+
+
     }, [
         numInvitesQuery,
         numInviteInDateRangeQuery,
@@ -284,19 +390,49 @@ const AdminDashboard = () => {
         setParkingVals,
         setNumParkingSpotsAvailable,
         numInvitesPerResidentQuery,
+
     ]);
 
     useEffect(() => {
         if (!predictedInvitesQuery.loading && !predictedInvitesQuery.error) {
-            const predictedData =
-                predictedInvitesQuery.data.getPredictedInviteData.map(
-                    (invite) => {
-                        return invite.data;
-                    }
-                );
-            setPredictedVisitorVals(predictedData);
+            const predictedVisitors = [];
+            const predictedParking = [];
+            predictedInvitesQuery.data.getPredictedInviteData.forEach(
+                (invite) => {
+                    predictedVisitors.push(invite.visitors);
+                    predictedParking.push(invite.parking);
+                }
+            );
+
+            setPredictedVisitorVals(predictedVisitors);
+            setPredictedParkingVals(predictedParking);
         }
     }, [predictedInvitesQuery]);
+
+    function populateCurfew(){
+        if (!CurfewTimeQuery.loading && !CurfewTimeQuery.error) {
+            const curfew = CurfewTimeQuery.data.getCurfewTime.value;
+            let tempH;
+            let tempM;
+            if (curfew == "0") {
+                tempH = "00";
+                tempM = "00";
+            } else {
+                let tempCurfew = String(curfew);
+                if (tempCurfew.length == 3) {
+                    tempCurfew = "0" + tempCurfew;
+                }
+                tempH = tempCurfew.substring(0, 2);
+                tempM = tempCurfew.substring(2, 4);
+            }
+            setDefaultHours(tempH);
+            setDefaultMins(tempM);
+        }
+    }
+
+    useEffect(() => {
+        populateCurfew();
+    }, [CurfewTimeQuery]);
 
     return (
         <Layout>
@@ -367,11 +503,13 @@ const AdminDashboard = () => {
                                 visitorVals.data,
                                 predictedVisitorVals,
                                 parkingVals.data,
+                                predictedParkingVals
                             ]}
                             datalabels={[
                                 visitorVals.label,
                                 "Predicted Visitors",
                                 parkingVals.label,
+                                "Predicted Parking"
                             ]}
                         />
                         <div className="stats stats-vertical bg-base-200 shadow">
@@ -380,35 +518,41 @@ const AdminDashboard = () => {
                                     <MdOutlineCancel className="text-2xl md:text-4xl" />
                                 </div>
                                 <div className="stat-title">Cancellations</div>
-                                <div className="stat-value">31K</div>
+                                <div className="stat-value">{numCancel}</div>
                                 <div className="stat-desc">
-                                    Jan 1st - Feb 1st
+                                    For week {startDate} - {endDate}
                                 </div>
                             </div>
                             <div className="stat">
                                 <div className="stat-figure">
-                                    <FaParking className="text-2xl md:text-3xl" />
+                                    <FaPeopleArrows className="text-2xl md:text-3xl" />
                                 </div>
                                 <div className="stat-title">
-                                    Number of Parking Reservations
+                                    Average Visitors per day
                                 </div>
-                                <div className="stat-value">31K</div>
+                                <div className="stat-value">
+                                    {Math.ceil(avgVisitors)}
+                                </div>
                                 <div className="stat-desc">
-                                    Jan 1st - Feb 1st
+                                    For week {startDate} - {endDate}
                                 </div>
                             </div>
                             <div className="stat">
-                                <div className="stat-title">
-                                    Number of Residents
+                                <div className="stat-figure">
+                                    <FaCarSide className="text-2xl md:text-3xl" />
                                 </div>
-                                <div className="stat-value">31K</div>
+                                <div className="stat-title">
+                                    Average Parking Reservations per day
+                                </div>
+                                <div className="stat-value">
+                                    {Math.ceil(avgParking)}
+                                </div>
                                 <div className="stat-desc">
-                                    Jan 1st - Feb 1st
+                                    For week {startDate} - {endDate}
                                 </div>
                             </div>
                         </div>
                     </div>
-
                     <h1 className="flex flex-col items-center justify-center space-x-3 text-2xl font-bold lg:flex-row">
                         <span className="mr-3 text-xl text-primary md:text-3xl">
                             <MdBlock />
@@ -439,7 +583,10 @@ const AdminDashboard = () => {
                             )}
                         </div>
                     </h1>
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+
+
+
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                         <div className="card bg-base-200">
                             <div className="card-body">
                                 <h2 className="card-title">
@@ -479,7 +626,7 @@ const AdminDashboard = () => {
                                                 numInvitesPerResident > 1 &&
                                                     setNumInvitesPerResident(
                                                         numInvitesPerResident -
-                                                            1
+                                                        1
                                                     );
                                                 setRestrictionsChanged(true);
                                             }}
@@ -505,19 +652,13 @@ const AdminDashboard = () => {
                                 </p>
                                 <div className="card-actions flex items-center justify-start">
                                     <div className="flex items-center space-x-3">
-                                        <button className="btn btn-circle">
-                                            <AiOutlinePlus
-                                                onClick={() => {
-                                                    setNumParkingSpotsAvailable(
-                                                        numParkingSpotsAvailable +
-                                                            1
-                                                    );
-                                                    setRestrictionsChanged(
-                                                        true
-                                                    );
-                                                }}
-                                                className="text-xl md:text-2xl lg:text-3xl"
-                                            />
+
+                                        <button className="btn btn-circle" onClick={() => {
+                                            setNumParkingSpotsAvailable(numParkingSpotsAvailable + 1);
+                                            setRestrictionsChanged(true);
+                                        }}>
+                                            <AiOutlinePlus className="text-xl md:text-2xl lg:text-3xl" />
+
                                         </button>
                                         <p
                                             id="numParkingSpotsAvailable"
@@ -525,26 +666,140 @@ const AdminDashboard = () => {
                                         >
                                             {numParkingSpotsAvailable}
                                         </p>
-                                        <button className="btn btn-circle">
-                                            <AiOutlineMinus
-                                                onClick={() => {
-                                                    numParkingSpotsAvailable >
-                                                        0 &&
-                                                        setNumParkingSpotsAvailable(
-                                                            numParkingSpotsAvailable -
-                                                                1
-                                                        );
-                                                    setRestrictionsChanged(
-                                                        true
-                                                    );
-                                                }}
-                                                className="text-xl md:text-2xl lg:text-3xl"
-                                            />
+
+                                        <button className="btn btn-circle" onClick={() => {
+                                            if (numParkingSpotsAvailable > 0) {
+                                                setNumParkingSpotsAvailable(numParkingSpotsAvailable - 1);
+                                            }
+
+                                            setRestrictionsChanged(true);
+                                        }}>
+                                            <AiOutlineMinus className="text-xl md:text-2xl lg:text-3xl" />
+
                                         </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
+                        <div className="card bg-base-200">
+                            <div className="card-body">
+                                <h2 className="card-title">
+                                    Curfew Time{" "}
+                                    <div className="badge badge-secondary">
+                                        Visitor
+                                    </div>
+                                </h2>
+                                <p>
+                                    Current curfew: {defaultHours}:{defaultMins}
+                                </p>
+
+                                <div className="card-actions flex items-center justify-start">
+                                    <div className="flex items-center justify-center">
+
+                                        <select className="select select-bordered select-secondary mx-5" name="hours" id="hours" onChange={(e) => {
+                                            
+                                            setHours(e.target.value);
+
+                                            setRestrictionsChanged(true);
+                                        }}>
+                                            <option value="0">00</option>
+                                            <option value="1">01</option>
+                                            <option value="2">02</option>
+                                            <option value="3">03</option>
+                                            <option value="4">04</option>
+                                            <option value="5" >05</option>
+                                            <option value="6">06</option>
+                                            <option value="7">07</option>
+                                            <option value="8">08</option>
+                                            <option value="9">09</option>
+                                            <option value="10">10</option>
+                                            <option value="11">11</option>
+                                            <option value="12">12</option>
+                                            <option value="13">13</option>
+                                            <option value="14">14</option>
+                                            <option value="15">15</option>
+                                            <option value="16">16</option>
+                                            <option value="17">17</option>
+                                            <option value="18">18</option>
+                                            <option value="19">19</option>
+                                            <option value="20">20</option>
+                                            <option value="21">21</option>
+                                            <option value="22">22</option>
+                                            <option value="23">23</option>
+                                        </select>
+                                        <h1>    :    </h1>
+                                        <select className="select select-bordered select-secondary mx-5" name="minutes" id="minutes" onChange={(e) => {
+                                            
+                                            setMinutes(e.target.value);
+                                            setRestrictionsChanged(true);
+                                        }}>
+                                            <option value="00">00</option>
+                                            <option value="1">01</option>
+                                            <option value="2">02</option>
+                                            <option value="3">03</option>
+                                            <option value="4">04</option>
+                                            <option value="5">05</option>
+                                            <option value="6">06</option>
+                                            <option value="7">07</option>
+                                            <option value="8">08</option>
+                                            <option value="9">09</option>
+                                            <option value="10">10</option>
+                                            <option value="11">11</option>
+                                            <option value="12">12</option>
+                                            <option value="13">13</option>
+                                            <option value="14">14</option>
+                                            <option value="15">15</option>
+                                            <option value="16">16</option>
+                                            <option value="17">17</option>
+                                            <option value="18">18</option>
+                                            <option value="19">19</option>
+                                            <option value="20">20</option>
+                                            <option value="21">21</option>
+                                            <option value="22">22</option>
+                                            <option value="23">23</option>
+                                            <option value="24">24</option>
+                                            <option value="25">25</option>
+                                            <option value="26">26</option>
+                                            <option value="27">27</option>
+                                            <option value="28">28</option>
+                                            <option value="29">29</option>
+                                            <option value="30">30</option>
+                                            <option value="31">31</option>
+                                            <option value="32">32</option>
+                                            <option value="33">33</option>
+                                            <option value="34">34</option>
+                                            <option value="35">35</option>
+                                            <option value="36">36</option>
+                                            <option value="37">37</option>
+                                            <option value="38">38</option>
+                                            <option value="39">39</option>
+                                            <option value="40">40</option>
+                                            <option value="41">41</option>
+                                            <option value="42">42</option>
+                                            <option value="43">43</option>
+                                            <option value="44">44</option>
+                                            <option value="45">45</option>
+                                            <option value="46">46</option>
+                                            <option value="47">47</option>
+                                            <option value="48">48</option>
+                                            <option value="49">49</option>
+                                            <option value="50">50</option>
+                                            <option value="51">51</option>
+                                            <option value="52">52</option>
+                                            <option value="53">53</option>
+                                            <option value="54">54</option>
+                                            <option value="55">55</option>
+                                            <option value="56">56</option>
+                                            <option value="57">57</option>
+                                            <option value="58">58</option>
+                                            <option value="59">59</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -569,7 +824,6 @@ const AdminDashboard = () => {
                     </div>
                 </div>
             </div>
-
             <input
                 type="checkbox"
                 id="visitor-modal"

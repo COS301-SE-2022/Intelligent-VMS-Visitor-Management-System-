@@ -5,7 +5,7 @@ import { alert } from "react-custom-alert";
 
 const SignOutPopUp = ({
     setTrayNr,
-    setShowInfoAlert,
+    visitorName,
     refetch,
     currentButton,
     visitData,
@@ -22,10 +22,14 @@ const SignOutPopUp = ({
         if (!loading && !error) {
             if (data) {
                 refetch();
-                setShowInfoAlert(true);
+                alert({
+                    message: `Tray Number For ${visitData.visitorName}: ${data.signOut}`,
+                    type: "info",
+                });
                 setSearch(false);
             }
-        } else {
+        } else if (error) {
+            console.log("ERROR");
         }
     }, [loading, error, data]);
 

@@ -38,6 +38,23 @@ type ParkingReservation {
   activated: Boolean!
 }
 
+type InviteSuggestion {
+  visitorEmail: String!
+  visitorName: String!
+  idDocType: String!
+  idNumber: String!
+}
+
+type Visitor {
+  _id: String!
+  visitorName: String!
+  idNumber: String!
+  idDocType: String!
+  numInvites: Float!
+  visits: [String!]!
+  prob: Float!
+}
+
 type Invite {
   userEmail: String!
   visitorEmail: String!
@@ -61,13 +78,15 @@ type SearchInvite {
 
 type PredictedInviteData {
   date: String!
-  data: Float!
+  visitors: Float!
+  parking: Float!
 }
 
-type Visitor {
-  _id: String!
-  visitorName: String!
-  numInvites: Float!
+type GroupInvite {
+  _id: String
+  numInvites: Float
+  numVisitors: Float
+  firstDate: String
 }
 
 type BSIdata {
@@ -84,6 +103,7 @@ type Query {
   helloUser: String!
   searchUser(searchQuery: String!): [SearchUser!]!
   getUnauthorizedUsers: [User!]!
+  getUsersByType(permission: Float!): [SearchUser!]!
   helloInvite: String!
   getInvites: [Invite!]!
   getInvitesWithEmail(email: String!): [Invite!]!
@@ -99,15 +119,21 @@ type Query {
   getNumberOfOpenInvites(email: String!): Float!
   getPredictedInviteData(startDate: String!, endDate: String!): [PredictedInviteData!]!
   getVisitors(email: String!): [Visitor!]!
+  getMostUsedInviteData(email: String!): InviteSuggestion!
+  getInvitesForUserType(permission: Float!): [GroupInvite!]!
+  getSuggestions(date: String!, userEmail: String!): [Visitor!]!
   helloParking: String!
   getTotalAvailableParking: Float!
+  getDisabledParking: [Parking!]!
   getFreeParking: [Parking!]!
   getReservations: ParkingReservation!
   getInviteReservation(invitationID: String!): ParkingReservation!
   getUsedParkingsInRange(startDate: String!, endDate: String!): [ParkingReservation!]!
   isParkingAvailable(startDate: String!): Boolean!
   getNumberOfReservations(startDate: String!): Float!
+  getTotalParking: Float!
   getNumInvitesPerResident: Restriction!
+  getCurfewTime: Restriction!
   helloResident: String!
   helloReceptionist: String!
 }
@@ -127,7 +153,10 @@ type Mutation {
   unreservedParking(invitationID: String!): Boolean!
   freeParking(parkingNumber: Float!): Parking!
   createNParkingSpots(N: Float!): Boolean!
+  adjustParking(numDisiredParkingTotal: Float!): Boolean!
+  disableParkingSpace(parkingNumber: Float!): Parking!
   setNumInvitesPerResident(numInvites: Float!): Restriction!
+  setCurfewTime(curfewTime: Float!): Restriction!
   signOut(inviteID: String!): Float!
   signIn(inviteID: String!, notes: String!, time: String!): Float!
   bulkSignIn(file: String!, userEmail: String!): BSIdata!
