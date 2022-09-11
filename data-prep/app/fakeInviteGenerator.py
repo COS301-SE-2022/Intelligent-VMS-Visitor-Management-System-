@@ -157,7 +157,7 @@ def createInvites(startDate,endDate,maxResidents):
             visId = fake.msisdn()
             visRelation = fake.relation()
             if(visRelation == "family"):
-                for i in range(1,75):
+                for i in range(1,60):
                     inviteDate = fake.date_between_dates(startDate,endDate)
                     #Saturdays, Fridays, Decembers and holidays are always busier
                     if(inviteDate.weekday()==5 or inviteDate.weekday()==4):
@@ -172,7 +172,7 @@ def createInvites(startDate,endDate,maxResidents):
                     
                     createVisitation(userEmail,visEmail,visName,visId,inviteDate,visRelation,invites,fake,trays,reservations)
             elif(visRelation == "friend"):
-                for i in range(1,110):
+                for i in range(1,85):
                     inviteDate = fake.date_between_dates(startDate,endDate)
                     #Saturdays, Fridays, Decembers and holidays are always busier
                     if(inviteDate.weekday()==5 or inviteDate.weekday()==4):

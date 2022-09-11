@@ -5,6 +5,7 @@ from sklearn.model_selection import train_test_split
 from datetime import date, timedelta, datetime
 from dateutil.relativedelta import relativedelta
 import math
+import numpy
 
 from app.database import invitesCollection,groupInvitesCollection,parkingReservationCollection,groupParkingReservationsCollection
 from app.holidaysSA import ourHolidays
@@ -14,6 +15,8 @@ import joblib
 import time
 
 global start_date
+visReg = joblib.load("VMS_visitor-reg-model.pkl")
+parkReg = joblib.load("VMS_parking-reg-model.pkl")
 
 invite = invitesCollection.find_one({})
 if(invite):
@@ -539,10 +542,6 @@ def generateTrainingData():
 def predictMany(startingDate,endingDate):
 
   startTime = time.time()
-
-  visReg = joblib.load("VMS_visitor-reg-model.pkl")
-  parkReg = joblib.load("VMS_parking-reg-model.pkl")
-
   output = []
 
   startDate = datetime.strptime(startingDate, '%Y-%m-%d').date()
@@ -678,17 +677,15 @@ def train():
 
 
 def visitorFeatureAnalysis():
-    reg = joblib.load("VMS_visitor-reg-model.pkl")
 
-    imp = reg.feature_importances_.tolist()
+    imp = visReg.feature_importances_.tolist()
     print(imp)
 
     return json.dumps(imp)
 
 def parkingFeatureAnalysis():
-    reg = joblib.load("VMS_parking-reg-model.pkl")
 
-    imp = reg.feature_importances_.tolist()
+    imp = parkReg.feature_importances_.tolist()
     print(imp)
 
     return json.dumps(imp)
