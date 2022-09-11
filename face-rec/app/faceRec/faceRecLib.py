@@ -2,14 +2,6 @@ import face_recognition
 
 from app.database import faceEncodingsCollection
 
-########### Load known encodings ################
-encodingMap = {}
-
-def init():
-    image = loadImage("./testFiles/TestImage.jpg")
-    encodings = getFaceEncodingsFromImage(image, getFacesLocationData(image))
-    encodingMap["kyle"] = encodings
-
 # Load image in format that face_recognition module understands
 def loadImage(path):
     return face_recognition.load_image_file(path)
@@ -32,16 +24,40 @@ def getFaceEncodingsFromImage(image, faceLocations):
     faceEncodings = face_recognition.face_encodings(image, faceLocations)
     return faceEncodings
 
+# Add face encoding to existing entry
+def addFaceEncoding(faceEncoding, idNumber):
+    return faceEncodingsCollection.update_one(
+            {"idNumber": idNumber},
+            {"$push": { "encodings": faceEncoding }}
+    )
+
+# Store face encoding in database
 def storeFace(faceEncoding, idNumber, name):
-    return True
+    return faceEncodingsCollection.insert_one({
+        "idNumber": idNumber,
+        "name": name,
+        "encodings": [faceEncoding.tolist()]
+    })
+
+# Get face with largest surface area bounding box
+def getLargestFace(faceLocations):
+    maxSurface = 0
+    maxSurfaceIdx = 0
+    for idx, location in enumerate(faceLocations):
+        length = location[3] - location[1]
+        width = location[0] - location[2]
+        if length * width > maxSurface:
+            maxSurface = length * width
+            maxSurfaceIdx = idx
+    return maxSurfaceIdx
 
 def faceRecognition(imageData, idNumber):
     facesLocationData = getFacesLocationData(imageData)
     
     if(len(facesLocationData) > 0):
-        encodings = getFaceEncodingsFromImage(image, facesLocationData)
+        encodings = getFaceEncodingsFromImage(imageData, facesLocationData)
 
-        knownEncodingsForName = faceEncodingsCollection.find({ idNumber: idNumber })
+        knownEncodingsForName = list(faceEncodingsCollection.find({ idNumber: idNumber }))
 
         if knownEncodingsForName:
             for faceEncoding in encodings:

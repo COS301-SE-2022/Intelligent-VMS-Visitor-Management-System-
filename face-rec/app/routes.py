@@ -1,17 +1,14 @@
 from app import app, APP_ROOT, ALLOWED_EXTENSIONS
 from flask import request, redirect, url_for
-from werkzeug.utils import secure_filename
 import json
 
-from app.faceRec.faceRecLib import loadImage, faceRecognition, init
-
-# init()
+from app.faceRec.faceRecLib import loadImage, faceRecognition, storeFace, getFaceEncodingsFromImage, getFacesLocationData, getLargestFace
 
 # Parse filename to check if it is valid
 def allowedFile(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+# Create OK response with json data
 def createResponse(data):
     return app.response_class(
         response = json.dumps(data),
@@ -24,33 +21,56 @@ def createResponse(data):
 def home():
     return "facial recognition api"
 
+# Compare faces endpoint
+@app.route("/compareFaces", methods=['POST'])
+    return "Hello World"
+
 # Store face encoding
 @app.route("/storeFace", methods=['POST'])
-def storeFace():
+def storeface():
     if request.method == "POST":
 
         # Check if file is in request
         if 'file' not in request.files:
-            flash('No file in request')
-            return redirect(request.url)
-
+            return createResponse({"error": "No file in request"})
+        
         # Get file data from request
         file = request.files['file']
 
         # Check if file is selected
         if file.filename == '':
-            abort(400)
             return redirect(request.url)
+
+        if not request.args.get("idNumber"):
+            return createResponse({"error": "No id-number given"})
+
+        if not request.args.get("name"):
+            return createResponse({"error": "No id-number given"})
 
         # Check if file extension is allowed
         if file and allowedFile(file.filename):
-            # Sanitize filename to prevent directory escalation
-            filename = secure_filename(file.filename)
-            
-            image = loadImage(file)
-            data = faceRecognition(image, "kyle")
-            print("Result: {}".format(data))
+            name = request.args.get("name")
+            idNumber = request.args.get("idNumber")
 
-            return createResponse({"result": data})
+            image = loadImage(file)
+            faceLocations = getFacesLocationData(image)
+            
+            # If no faces in image error
+            if len(faceLocations) == 0:
+                return createResponse({"error": "No Faces Detected"})
+
+            # Get encodings for faces in image
+            encodings = getFaceEncodingsFromImage(image, faceLocations)             
+
+            print("Found {} face(s) in image".format(len(faceLocations)))
+            
+            # If there is one face in the image store it immediately
+            if len(faceLocations) != 1:
+                storeFace(encodings[0], idNumber, name)
+            else:
+                faceIdx = getLargestFace(faceLocations)
+                storeFace(encodings[faceIdx], idNumber, name)
+            
+            return createResponse({"result": True})
         
         return createResponse({"error": "Invalid File"})
