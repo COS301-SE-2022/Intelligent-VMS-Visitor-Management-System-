@@ -1,16 +1,30 @@
-from app import app, APP_ROOT
+from app import app, APP_ROOT, ALLOWED_EXTENSIONS
 from flask import request, redirect, url_for
-
 from werkzeug.utils import secure_filename
+import json
 
-def allowed_file():
+from app.faceRec.faceRecLib import loadImage, faceRecognition, init
+
+# init()
+
+# Parse filename to check if it is valid
+def allowedFile(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+def createResponse(data):
+    return app.response_class(
+        response = json.dumps(data),
+        status = 200,
+        mimetype = 'application/json'
+    )
+
+# Endpoint check
 @app.route("/")
 def home():
     return "facial recognition api"
 
+# Store face encoding
 @app.route("/storeFace", methods=['POST'])
 def storeFace():
     if request.method == "POST":
@@ -25,18 +39,18 @@ def storeFace():
 
         # Check if file is selected
         if file.filename == '':
-            flash('No selected file')
+            abort(400)
             return redirect(request.url)
 
         # Check if file extension is allowed
-        if file and allowed_file(file.filename):
+        if file and allowedFile(file.filename):
             # Sanitize filename to prevent directory escalation
             filename = secure_filename(file.filename)
+            
+            image = loadImage(file)
+            data = faceRecognition(image, "kyle")
+            print("Result: {}".format(data))
 
-            # Save file in folder
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-
-            return redirect(url_for('uploaded_file',
-                                    filename=filename))
-
-    return "Storing face"
+            return createResponse({"result": data})
+        
+        return createResponse({"error": "Invalid File"})

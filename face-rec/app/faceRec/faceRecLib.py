@@ -1,5 +1,6 @@
-from PIL import Image
 import face_recognition
+
+from app.database import faceEncodingsCollection
 
 ########### Load known encodings ################
 encodingMap = {}
@@ -31,19 +32,21 @@ def getFaceEncodingsFromImage(image, faceLocations):
     faceEncodings = face_recognition.face_encodings(image, faceLocations)
     return faceEncodings
 
-def faceRecognition(imageData, name):
+def storeFace(faceEncoding, idNumber, name):
+    return True
+
+def faceRecognition(imageData, idNumber):
     facesLocationData = getFacesLocationData(imageData)
     
     if(len(facesLocationData) > 0):
         encodings = getFaceEncodingsFromImage(image, facesLocationData)
-        for faceEncoding in encodings:
-            print(recognizeFace(encodingMap[name], faceEncoding))
-    else:
-        print("No faces in image")
 
-# Load known encodings
-init()
+        knownEncodingsForName = faceEncodingsCollection.find({ idNumber: idNumber })
 
-# Load test image
-image = loadImage("./testFiles/Test2.jpg")
-faceRecognition(image, "kyle")
+        if knownEncodingsForName:
+            for faceEncoding in encodings:
+                if recognizeFace(knownEncodingsForName, faceEncoding) == True:
+                    return True
+
+    return False
+
