@@ -1,4 +1,4 @@
-import { ConfigModule, ConfigService } from '@nestjs/config';
+/*import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import mongoose from 'mongoose';
@@ -47,3 +47,4 @@ describe('VisitorInviteService Int', () => {
     expect(service).toBeDefined();
   });
 });
+*/
