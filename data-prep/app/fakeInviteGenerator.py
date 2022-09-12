@@ -151,53 +151,53 @@ def createInvites(startDate,endDate,maxResidents):
     createVisitation(fake.email(),fake.email(),fake.name(),fake.msisdn(),startDate,fake.relation(),invites,fake,trays,reservations)
     for i in range(1,maxResidents):
         userEmail = fake.email()
-        for i in range(1,20):
+        for i in range(1,16):
             visEmail = fake.email()
             visName = fake.name()
             visId = fake.msisdn()
             visRelation = fake.relation()
             if(visRelation == "family"):
-                for i in range(1,60):
+                for i in range(1,40):
                     inviteDate = fake.date_between_dates(startDate,endDate)
                     #Saturdays, Fridays, Decembers and holidays are always busier
                     if(inviteDate.weekday()==5 or inviteDate.weekday()==4):
-                        for i in range(0,12):
+                        for i in range(0,8):
                             createVisitation(fake.email(),fake.email(),fake.name(),fake.msisdn(),inviteDate,fake.relation(),invites,fake,trays,reservations)
                     if(inviteDate.month==12 or inviteDate.month==7):
-                        for i in range(0,18):
+                        for i in range(0,12):
                             createVisitation(fake.email(),fake.email(),fake.name(),fake.msisdn(),inviteDate,fake.relation(),invites,fake,trays,reservations)
                     if(inviteDate in ourHolidays):
-                        for i in range(0,10):
+                        for i in range(0,4):
                             createVisitation(fake.email(),fake.email(),fake.name(),fake.msisdn(),inviteDate,fake.relation(),invites,fake,trays,reservations)
                     
                     createVisitation(userEmail,visEmail,visName,visId,inviteDate,visRelation,invites,fake,trays,reservations)
             elif(visRelation == "friend"):
-                for i in range(1,85):
+                for i in range(1,65):
                     inviteDate = fake.date_between_dates(startDate,endDate)
                     #Saturdays, Fridays, Decembers and holidays are always busier
                     if(inviteDate.weekday()==5 or inviteDate.weekday()==4):
-                        for i in range(0,12):
+                        for i in range(0,8):
                             createVisitation(fake.email(),fake.email(),fake.name(),fake.msisdn(),inviteDate,fake.relation(),invites,fake,trays,reservations)
                     if(inviteDate.month==12):
-                        for i in range(0,18):
+                        for i in range(0,12):
                             createVisitation(fake.email(),fake.email(),fake.name(),fake.msisdn(),inviteDate,fake.relation(),invites,fake,trays,reservations)
                     if(inviteDate in ourHolidays):
-                        for i in range(0,10):
+                        for i in range(0,4):
                             createVisitation(fake.email(),fake.email(),fake.name(),fake.msisdn(),inviteDate,fake.relation(),invites,fake,trays,reservations)
                     
                     createVisitation(userEmail,visEmail,visName,visId,inviteDate,visRelation,invites,fake,trays,reservations)
             else:
-                for i in range(1,15):
+                for i in range(1,8):
                     inviteDate = fake.date_between_dates(startDate,endDate)
                     #Saturdays, Fridays, Decembers and holidays are always busier
                     if(inviteDate.weekday()==5 or inviteDate.weekday()==4):
-                        for i in range(0,12):
+                        for i in range(0,8):
                            createVisitation(fake.email(),fake.email(),fake.name(),fake.msisdn(),inviteDate,fake.relation(),invites,fake,trays,reservations)
                     if(inviteDate.month==12):
-                        for i in range(0,18):
+                        for i in range(0,12):
                             createVisitation(fake.email(),fake.email(),fake.name(),fake.msisdn(),inviteDate,fake.relation(),invites,fake,trays,reservations)
                     if(inviteDate in ourHolidays):
-                        for i in range(0,10):
+                        for i in range(0,4):
                             createVisitation(fake.email(),fake.email(),fake.name(),fake.msisdn(),inviteDate,fake.relation(),invites,fake,trays,reservations)
                     
                     createVisitation(userEmail,visEmail,visName,visId,inviteDate,visRelation,invites,fake,trays,reservations)
