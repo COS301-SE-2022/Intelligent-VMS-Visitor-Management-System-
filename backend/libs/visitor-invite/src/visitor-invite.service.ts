@@ -63,13 +63,14 @@ export class VisitorInviteService  {
                 private readonly parkingService: ParkingService,
                 private schedulerRegistry: SchedulerRegistry
                ) { 
-                    const job = new CronJob(`59 23 * * *`, async() => {
+                    /*const job = new CronJob(`59 23 * * *`, async() => {
                         await this.commandBus.execute(new ExtendInvitesCommand());  
                     })
             
                     this.schedulerRegistry.addCronJob("extendInvites", job);
-                    job.start();
+                    job.start();*/
                }
+               
 
 
      /*
