@@ -102,8 +102,17 @@ describe("VisitorInviteService", () => {
     const scheduleMock = {
         addCronJob: jest.fn(()=>({})),
         deleteCronJob: jest.fn(()=>({})),
-        start: jest.fn(()=>{console.log("j")}),
     };
+
+    // jest.mock('cron', () => {
+    //     const actual = jest.requireActual('cron');
+    //     return {
+    //         ...actual,
+    //         CronJob: jest.fn().mockReturnValue({
+    //             start: jest.fn(() => {})
+    //         }),
+    //     }
+    // });
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
