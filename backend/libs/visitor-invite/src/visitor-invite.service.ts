@@ -44,6 +44,7 @@ import { GetInvitesForUsersQuery } from "./queries/impl/getInvitesForUsers.query
 import { GetVisitorVisitsQuery } from "./queries/impl/getVisitorVisits.query";
 import { Visitor } from "./models/visitor.model";
 import { ExtendInvitesCommand } from "./commands/impl/extendInvites.command";
+import { CancelInvitesCommand } from "./commands/impl/cancelInvites.command";
 
 @Injectable()
 export class VisitorInviteService  {
@@ -63,8 +64,9 @@ export class VisitorInviteService  {
                 private readonly parkingService: ParkingService,
                 private schedulerRegistry: SchedulerRegistry
                ) { 
-                    const job = new CronJob(`59 23 * * *`, async() => {
-                        await this.commandBus.execute(new ExtendInvitesCommand());  
+                    const job = new CronJob(`59 23 * * *`, () => {
+                        this.commandBus.execute(new ExtendInvitesCommand());  
+                        this.commandBus.execute(new CancelInvitesCommand());
                     })
             
                     this.schedulerRegistry.addCronJob("extendInvites", job);
@@ -93,7 +95,8 @@ export class VisitorInviteService  {
         this.schedulerRegistry.deleteCronJob("extendInvites");
 
         const job = new CronJob(`${this.curfewMinute.toString()} ${this.curfewHour.toString()} * * *`, async() => {
-            await this.commandBus.execute(new ExtendInvitesCommand());  
+            this.commandBus.execute(new ExtendInvitesCommand()); 
+            this.commandBus.execute(new CancelInvitesCommand()); 
         })
 
         this.schedulerRegistry.addCronJob("extendInvites", job);
