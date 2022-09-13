@@ -389,15 +389,14 @@ export class VisitorInviteService {
             let pYes = monthCount/monthTotal * dowCount/dowTotal * visitors[i].numInvites/dayTotal
             //let pNo = (monthTotal-monthCount)/monthTotal * (dowTotal-dowCount)/dowTotal * (dayTotal-visitors[i].numInvites)/dayTotal
 
-            if(pYes > 0){
-                let suggestion = new Visitor()
-                suggestion.visitorName = visitors[i].visitorName;
-                suggestion._id = visitors[i]._id;
-                suggestion.idNumber = visitors[i].idNumber;
-                suggestion.idDocType = visitors[i].idDocType;
-                suggestion.prob = pYes;
-                suggestions.push(suggestion);
-            }
+            let suggestion = new Visitor()
+            suggestion.visitorName = visitors[i].visitorName;
+            suggestion._id = visitors[i]._id;
+            suggestion.idNumber = visitors[i].idNumber;
+            suggestion.idDocType = visitors[i].idDocType;
+            suggestion.prob = pYes;
+            suggestions.push(suggestion);
+            
                    
         }
 
@@ -405,7 +404,6 @@ export class VisitorInviteService {
 
         //sort descending
         suggestions.sort(function(a, b){return b.prob - a.prob});
-        console.log(suggestions);
 
         //find IQR
         let q3Index = Math.round(1/4*(suggestions.length+1));
@@ -416,7 +414,7 @@ export class VisitorInviteService {
 
         //filter
         for(let i=0;i<suggestions.length;i++){
-            if(suggestions[i].prob<threshold)
+            if(suggestions[i].prob<=threshold )
             break;
             else
             finalSuggestions.push(suggestions[i])
