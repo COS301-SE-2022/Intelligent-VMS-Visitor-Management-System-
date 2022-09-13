@@ -404,7 +404,7 @@ export class VisitorInviteService  {
     async getSuggestions(date: string, userEmail: string){
         let visitors:Visitor[] = JSON.parse(JSON.stringify(await this.queryBus.execute(new GetVisitorVisitsQuery(userEmail))));
         let predDate = new Date(date);
-        let output = [];
+        let suggestions = [];
 
         const today = new Date();
 
@@ -434,22 +434,39 @@ export class VisitorInviteService  {
 
             let pYes = monthCount/monthTotal * dowCount/dowTotal * visitors[i].numInvites/dayTotal
             //let pNo = (monthTotal-monthCount)/monthTotal * (dowTotal-dowCount)/dowTotal * (dayTotal-visitors[i].numInvites)/dayTotal
-
-            if(pYes >= 0.000025){
-                let suggestion = new Visitor()
-                suggestion.visitorName = visitors[i].visitorName;
-                suggestion._id = visitors[i]._id;
-                suggestion.idNumber = visitors[i].idNumber;
-                suggestion.idDocType = visitors[i].idDocType;
-                suggestion.prob = pYes;
-                output.push(suggestion);
-                console.log(output);
-            }
             
+            let suggestion = new Visitor()
+            suggestion.visitorName = visitors[i].visitorName;
+            suggestion._id = visitors[i]._id;
+            suggestion.idNumber = visitors[i].idNumber;
+            suggestion.idDocType = visitors[i].idDocType;
+            suggestion.prob = pYes;
+            suggestions.push(suggestion);
+            
+                   
         }
-        output.sort(function(a, b){return b.prob - a.prob});
-        console.log(output);
-        return output
+
+        let finalSuggestions =[];
+
+        //sort descending
+        suggestions.sort(function(a, b){return b.prob - a.prob});
+
+        //find IQR
+        let q3Index = Math.round(1/4*(suggestions.length+1));
+        let q1Index = Math.round(3/4*(suggestions.length+1));
+        let iqr = suggestions[q3Index].prob - suggestions[q1Index].prob;
+
+        let threshold = suggestions[suggestions.length-1].prob + iqr;
+
+        //filter
+        for(let i=0;i<suggestions.length;i++){
+            if(suggestions[i].prob<=threshold )
+            break;
+            else
+            finalSuggestions.push(suggestions[i])
+        }
+        
+        return finalSuggestions;
     }
 
     //TODO do the same for parking
