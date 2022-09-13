@@ -43,7 +43,7 @@ import { UserService } from "@vms/user";
 import { GetInvitesForUsersQuery } from "./queries/impl/getInvitesForUsers.query";
 import { GetVisitorVisitsQuery } from "./queries/impl/getVisitorVisits.query";
 import { Visitor } from "./models/visitor.model";
-import { ExtendInvitesCommand } from "./commands/impl/extendInvite.command";
+import { ExtendInvitesCommand } from "./commands/impl/extendInvites.command";
 
 @Injectable()
 export class VisitorInviteService  {
@@ -63,16 +63,14 @@ export class VisitorInviteService  {
                 private readonly parkingService: ParkingService,
                 private schedulerRegistry: SchedulerRegistry
                ) { 
-                    /*const job = new CronJob(`59 23 * * *`, async() => {
+                    const job = new CronJob(`59 23 * * *`, async() => {
                         await this.commandBus.execute(new ExtendInvitesCommand());  
                     })
             
                     this.schedulerRegistry.addCronJob("extendInvites", job);
-                    job.start();*/
+                    job.start();
                }
-               
-
-
+            
      /*
         Update/synchronise curfew details and cron job
     */
@@ -434,7 +432,7 @@ export class VisitorInviteService  {
             let pYes = monthCount/monthTotal * dowCount/dowTotal * visitors[i].numInvites/dayTotal
             //let pNo = (monthTotal-monthCount)/monthTotal * (dowTotal-dowCount)/dowTotal * (dayTotal-visitors[i].numInvites)/dayTotal
 
-            if(pYes >= 0.00025){
+            if(pYes >= 0.000025){
                 let suggestion = new Visitor()
                 suggestion.visitorName = visitors[i].visitorName;
                 suggestion._id = visitors[i]._id;
@@ -526,11 +524,5 @@ export class VisitorInviteService  {
         await this.cacheManager.set("PREDICTIONS", data.data, { ttl: 900000 });
         return data.data;
     }
-
-    // /* CRON JOBS */
-    // @Cron(`0 18 * * *`)
-    // async extendInvites() {
-    //     console.log("job");
-    // }
 
 }

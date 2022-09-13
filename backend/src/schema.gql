@@ -67,7 +67,7 @@ type Invite {
   inviteState: String!
   notes: String!
   signOutTime: String!
-  signInTime: String!
+  signInTime: String
   trayNumber: Float!
 }
 

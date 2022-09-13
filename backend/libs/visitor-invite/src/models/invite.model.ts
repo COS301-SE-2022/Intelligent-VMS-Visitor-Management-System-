@@ -35,8 +35,8 @@ export class Invite {
     @Field((type)=> {return String})
     signOutTime?: Date;
 
-    @Field((type)=> {return String!||null})
-    signInTime?: string;
+    @Field((type)=> {return String} , {nullable:true})
+    signInTime: string;
 
     @Field((type)=> {return Number})
     trayNumber?: number;

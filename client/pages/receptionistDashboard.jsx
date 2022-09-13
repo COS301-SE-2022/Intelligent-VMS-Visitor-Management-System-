@@ -68,6 +68,7 @@ const ReceptionistDashboard = () => {
                 inviteState
                 idDocType
                 userEmail
+                signInTime
             }
         }
     `,
