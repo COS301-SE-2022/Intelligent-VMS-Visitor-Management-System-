@@ -19,6 +19,9 @@ global start_date
 visReg = joblib.load("VMS_visitor-reg-model.pkl")
 parkReg = joblib.load("VMS_parking-reg-model.pkl")
 
+allGroupInvites = groupInvitesCollection.find()
+allGroupParking = groupParkingReservationsCollection.find()
+
 invite = invitesCollection.find_one({})
 if(invite):
   start_date = datetime.strptime(invite['inviteDate'], '%Y-%m-%d').date()
@@ -272,9 +275,23 @@ def calculateRecentReservationAverages(invDate):
     return mnResDays,mnResWeeks,mnResMonths
 
 #############numpy
-def calculateMinMaxAndMedians():
-  groupInvites = list(groupInvitesCollection.find())
-  return np.min(groupInvites),np.max(groupInvites),np.median(groupInvites)
+def calculateVisitorMinMaxAndMedians():
+  groupInvites = list(allGroupInvites)
+
+  temp = []
+  for day in groupInvites:
+      temp.append(day["numInvites"])
+
+  return np.min(np.array(temp)),np.max(np.array(temp)),np.median(np.array(temp))
+
+def calculateParkingMinMaxAndMedians():
+  groupParking = list(allGroupParking)
+
+  temp = []
+  for day in groupParking:
+      temp.append(day["numParking"])
+
+  return np.min(np.array(temp)),np.max(np.array(temp)),np.median(np.array(temp))
   
 ##################
 
@@ -612,7 +629,7 @@ def train():
       "min_samples_split": 2,
       "criterion": "friedman_mse",
       "learning_rate": 0.1,
-      "loss": "huber",
+      "loss": "quantile",
       "alpha": 0.5,
       "verbose": True
   }
