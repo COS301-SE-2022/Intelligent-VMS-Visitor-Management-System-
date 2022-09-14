@@ -23,7 +23,6 @@ export class ReceptionistResolver {
 
     @Query((returns) => {return Boolean}, { name: "compareFaces" })
     async compareFaces() {
-
         return "";
     }
 
@@ -50,4 +49,5 @@ export class ReceptionistResolver {
     ) {
         return this.signInService.bulkSignIn(decodeURI(file),userEmail);
     }
+
 }
