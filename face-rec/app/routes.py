@@ -50,18 +50,11 @@ def comparefaces():
             # Get facial encodings for uploaded image
             encodings = getFaceEncodingsFromImage(image, faceLocations)             
 
+            # Compare face data
             matches = compareFaces(encodings, idNumber)
-
-            # If result is positive, store encoding
-            for idx, m in enumerate(matches):
-                if m == True:
-                    # This makes more sense in a real world scenario, in testing we will be adding a lot of the same face encodings
-                    # Adding positive outcomes helps with comparisons in the future
-                    addFaceEncoding(encodings[idx], idNumber)
-                    return createResponse({"result": True})
-
+            
             # No matching face was found
-            return createResponse({"result": False})
+            return createResponse({"result": matches})
 
 
 # Store face encoding

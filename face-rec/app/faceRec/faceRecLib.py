@@ -55,7 +55,8 @@ def compareFaces(faceEncodings, idNumber):
 
     if knownEncodingsForName:
         for faceEncoding in faceEncodings:
-            if recognizeFace(knownEncodingsForName["encodings"], faceEncoding) == True:
+            matches = recognizeFace(knownEncodingsForName["encodings"], faceEncoding)
+            if True in matches:
                 return True
         
     return False
