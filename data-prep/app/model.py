@@ -629,8 +629,7 @@ def train():
       "min_samples_split": 2,
       "criterion": "friedman_mse",
       "learning_rate": 0.1,
-      "loss": "quantile",
-      "alpha": 0.5,
+      "loss": "squared_error",
       "verbose": True
   }
 
