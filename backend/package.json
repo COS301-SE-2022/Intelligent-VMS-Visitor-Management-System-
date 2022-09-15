@@ -147,7 +147,8 @@
       "^@vms/mail(|/.*)$": "<rootDir>/libs/mail/src/$1",
       "^@vms/receptionist(|/.*)$": "<rootDir>/libs/receptionist/src/$1",
       "^@vms/restrictions(|/.*)$": "<rootDir>/libs/restrictions/src/$1",
-      "^@vms/throttler(|/.*)$": "<rootDir>/libs/throttler/src/$1"
+      "^@vms/throttler(|/.*)$": "<rootDir>/libs/throttler/src/$1",
+      "^@vms/rewards(|/.*)$": "<rootDir>/libs/rewards/src/$1"
     }
   }
 }

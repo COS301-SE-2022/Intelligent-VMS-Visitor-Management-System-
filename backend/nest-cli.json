@@ -109,6 +109,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/throttler/tsconfig.lib.json"
       }
+    },
+    "rewards": {
+      "type": "library",
+      "root": "libs/rewards",
+      "entryFile": "index",
+      "sourceRoot": "libs/rewards/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/rewards/tsconfig.lib.json"
+      }
     }
   },
   "compilerOptions": {
