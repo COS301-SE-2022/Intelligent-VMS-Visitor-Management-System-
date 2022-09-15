@@ -23,6 +23,15 @@ export class User {
     @Prop()
     name: string;
 
+    @Prop()
+    signUpDate: string;
+
+    @Prop()
+    xp: number;
+
+    @Prop()
+    badges: string;
+
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

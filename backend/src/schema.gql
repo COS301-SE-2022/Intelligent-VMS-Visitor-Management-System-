@@ -20,6 +20,11 @@ type LoginUser {
   access_token: String
 }
 
+type ProfileInfo {
+  xp: Int!
+  badges: String!
+}
+
 type Restriction {
   name: String!
   value: Int!
@@ -101,6 +106,7 @@ input UserInputType {
 
 type Query {
   helloUser: String!
+  getProfileInfo(email: String!): ProfileInfo!
   searchUser(searchQuery: String!): [SearchUser!]!
   getUnauthorizedUsers: [User!]!
   getUsersByType(permission: Float!): [SearchUser!]!

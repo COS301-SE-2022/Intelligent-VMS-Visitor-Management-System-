@@ -18,11 +18,16 @@ export class UserService {
     }
 
     async createUser(email: string, password: string, permission: number, idNumber: string, idDocType: string, name: string) {
-        return this.commandBus.execute(new CreateUserCommand(email, password, permission, idNumber, idDocType, name));
+        let dateString = (new Date).toLocaleDateString();
+        return this.commandBus.execute(new CreateUserCommand(email, password, permission, idNumber, idDocType, name, dateString));
     }
 
     async searchUser(searchQuery: string) {
         return this.queryBus.execute(new SearchUserQuery(searchQuery));
+    }
+
+    async getProfileInfo(email: string) {
+        return this.queryBus.execute(new GetUserQuery(email));
     }
     
     async getUnAuthorizedUsers(permission: number) {
