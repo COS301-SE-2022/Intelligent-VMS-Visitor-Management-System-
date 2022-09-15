@@ -14,7 +14,6 @@ import { UserService } from "./user.service";
 import { User } from "./models/user.model";
 import { SearchUser } from "./models/searchUser.model"; 
 import { LoginUser } from "./dto/loginUser.dto";
-import { ProfileInfo } from "./models/profileInfo.model";
 
 @Resolver((of) => {return User})
 export class UserResolver {
@@ -28,12 +27,6 @@ export class UserResolver {
     @Query((returns) => {return String}, { name: "helloUser" })
     async hello(@CurrentUser() user: User) {
         return "👋 from to " + user.email + " " + user.permission;
-    }
-
-    //@UseGuards(GqlAuthGuard)
-    @Query((returns) => {return ProfileInfo}, { name: "getProfileInfo"})
-    async getProfileInfo(@Args("email") email: string) {
-        return this.userService.getProfileInfo(email); 
     }
 
     @UseGuards(GqlAuthGuard,RolesGuard)

@@ -26,7 +26,7 @@ export class UserService {
         return this.queryBus.execute(new SearchUserQuery(searchQuery));
     }
 
-    async getProfileInfo(email: string) {
+    async getUserByEmail(email: string) {
         return this.queryBus.execute(new GetUserQuery(email));
     }
     

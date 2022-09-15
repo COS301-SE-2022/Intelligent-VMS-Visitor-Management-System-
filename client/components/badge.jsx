@@ -4,24 +4,39 @@ import { FcGraduationCap,FcHome,FcOvertime,FcConferenceCall,FcAdvertising,FcInvi
 import {GiNightSleep} from "react-icons/gi";
 import {AiFillDelete} from "react-icons/ai";
 
-const Badge = ({colour,text,type,width,desc,active,level}) => {
+const Badge = ({colour,title,type,width,desc,active,level,xp}) => {
 
     const icon = () => {
+
         switch(type) {
-  
-          case "concept": return <FcGraduationCap className="" x={40.879-18} y={26.575-18} size={36} opacity={active? 1 : 0.5}/>; 
+          case "concept": return <FcGraduationCap className="" x={40.879-18} y={26.575-18} size={36} opacity={active? 1 : 0.5} />; 
           case "invite": return <FcInvite className="" x={40.879-18} y={26.575-18} size={36} opacity={active? 1 : 0.5}/>;
           case "sleepover": return <GiNightSleep className="text-[#1e3a8a]" x={40.879-18} y={26.575-18} size={36} opacity={active? 1 : 0.5}/>;
           case "cancellation": return <AiFillDelete className="text-[#ea580c]" x={40.879-18} y={26.575-18} size={36} opacity={active? 1 : 0.5}/>;
-          case "time":  return <FcOvertime className="text-[#1e3a8a]" x={40.879-18} y={26.575-18} size={36} opacity={active? 1 : 0.5}/>;
-          case "visits":  return <FcConferenceCall className="text-[#1e3a8a]" x={40.879-18} y={26.575-18} size={36} opacity={active? 1 : 0.5} />;
-          case "suggestion":  return <FcAdvertising className="text-[#1e3a8a]" x={40.879-18} y={26.575-18} size={36} opacity={active? 1 : 0.5}/>;
-          default: return <FcHome className="text-[#1e3a8a]" x={40.879-18} y={26.575-18} size={36} opacity={active? 1 : 0.5}/>;
+          case "time": return <FcOvertime className="" x={40.879-18} y={26.575-18} size={36} opacity={active? 1 : 0.5}/>;
+          case "visits": return <FcConferenceCall className="" x={40.879-18} y={26.575-18} size={36} opacity={active? 1 : 0.5} />;
+          case "suggestion": return <FcAdvertising className="" x={40.879-18} y={26.575-18} size={36} opacity={active? 1 : 0.5}/>;
+          default: return <FcHome x={40.879-18} y={26.575-18} size={36} opacity={active? 1 : 0.5}/>;
         }
     }
 
     if(!active){
-        colour="#a8a29e"
+
+        colour="#a8a29e";
+        
+    } else {
+
+        console.log("j");
+        switch(type) {
+            case "concept": colour="#be185d";
+            case "invite": colour="#84cc16";
+            case "sleepover": colour="#1e3a8a";
+            case "cancellation": colour="#ea580c";
+            case "time":  colour="#dc2626";
+            case "visits":  colour="#facc15";
+            case "suggestion": colour="#ea580c";
+            default: colour="#be185d";
+          }
     }
 
     return (
@@ -119,7 +134,8 @@ const Badge = ({colour,text,type,width,desc,active,level}) => {
                 />
 
                 <Text className="text-[30px] font-noto font-bold" width={9} x={71.339} y={82.587} scaleToFit={true} textAnchor="middle" verticalAnchor="middle" fill={active? colour: "#525252"}>
-                    {Math.trunc(10*level)+" XP"}
+                    {/* {Math.trunc(10*level)+" XP"} */}
+                    { xp + " XP"}
                 </Text>
 
                 {/* <path
@@ -139,7 +155,7 @@ const Badge = ({colour,text,type,width,desc,active,level}) => {
                     ...........................
                 </Text> */}
                 <Text lineHeight="0.9em" capHeight="1.2em" className="font-noto tracking-wider font-bold text-[9px] p-5" width={72.0011-5} x={41.0055} y={26.575+33} textAnchor="middle" verticalAnchor="middle" fill="white">
-                    {text}
+                    {title}
                 </Text>
                 <Text className="text-[6.5px] tracking-wider" width={72.0011+5} x={41.0055} y={26.575+45} textAnchor="middle" verticalAnchor="middle" fill="white">
                     ...........................

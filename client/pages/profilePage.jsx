@@ -9,7 +9,10 @@ import { gql, useApolloClient, useLazyQuery } from "@apollo/client";
 
 const ProfilePage = () => {
 
-    const [xp,setXP] = useState(0)
+    const [xp,setXP] = useState(0);
+    const [userBadges,setUserBadges] = useState("");
+    const [badges,setBadges] = useState([]);
+    const [rewards,setRewards] = useState([]);
 
     // Get Data From JWT Token
     const jwtTokenData = useAuth((state) => {
@@ -21,6 +24,18 @@ const ProfilePage = () => {
         query {
             getProfileInfo( email: "${jwtTokenData.email}" ) {
                 xp
+                badges
+                allBadges {
+                    type
+                    levels
+                    xp
+                    title
+                    desc
+                }
+                allRewards{
+                    xp
+                    type
+                }
             }
         }
     `,
@@ -33,7 +48,11 @@ const ProfilePage = () => {
         profileQuery();
         if (!loading && !error) {
             if (data) {
-                setXP(data.getProfileInfo.xp);
+                let info = data.getProfileInfo;
+                setXP(info.xp);
+                setBadges(info.allBadges);
+                setRewards(info.allRewards);
+                setUserBadges(info.badges);
             }
         } else if (error) {
             if (error.message === "Unauthorized") {
@@ -76,7 +95,7 @@ const ProfilePage = () => {
                     <span className="truncate text-sm font-bold ml-3">{xp} XP</span>
                 </div>
                 <div className="rounded bg-base-200 h-4 w-full mx-3 content-center">
-                    <div style={{ width: `${xp}%`}} className="bg-secondary rounded h-4"></div>
+                    <div style={{ width: `${xp/400}%`}} className="bg-secondary rounded h-4"></div>
                 </div> 
                 <FaFlagCheckered className="pb-2" size={30}/>
                 <span className='pb-2 ml-2 text-xs' > Maximum Access</span> 
@@ -90,7 +109,17 @@ const ProfilePage = () => {
             
         
         <div className="mx-5 mt-5 grid grid-cols-7 space-y-2 space-x-3">
-            <Badge width={160} active={true} level={1} type="concept" colour="#be185d" text="CONCEPT CONNOISSEUR" desc="You created 3 invites"/>
+            {badges.map((badge, idx) => {
+                {for (var i=0;i<badge.levels;i++){    
+                    let active = false;  
+                    if(parseInt(userBadges[idx])>=i+1)  
+                        console.log("here");
+                        active = true;
+                    return <Badge active={true} width={160} level={i+1} type={badge.type} title={badge.title[i]} desc={badge.desc[i]} xp={badge.xp[i]}/>
+                }}
+                
+            })}
+            {/* <Badge width={160} active={true} level={1} type="concept" colour="#be185d" text="CONCEPT CONNOISSEUR" desc="You created 3 invites"/>
             <Badge width={160} active={true} level={1} type="invite" colour="#84cc16" text="INVITE ROOKIE" desc="You created 3 invites"/>
             <Badge width={160} active={true} level={2} type="invite" colour="#84cc16" text="INVITE AMATEUR" desc="You created 30 invites"/>
             <Badge width={160} active={false} level={3} type="invite" colour="#84cc16" text="INVITE EXPERT" desc="You created 300 invites"/>
@@ -102,7 +131,7 @@ const ProfilePage = () => {
             <Badge width={160} active={false} level={3} type="visits" colour="#facc15" text="DR. POPULAR" desc="You had 100 visitors"/>
             <Badge width={160} active={true} level={1} type="cancellation" colour="#ea580c" text="DASHBOARD DUSTER" desc="You cancelled 8 invites"/>
             <Badge width={160} active={false} level={2} type="cancellation" colour="#ea580c" text="DASHBOARD SWEEPER" desc="You cancelled 18 invites"/>
-            <Badge width={160} active={false} level={3} type="cancellation" colour="#ea580c" text="DASHBOARD POLISHER" desc="You cancelled 70 invites"/>
+            <Badge width={160} active={false} level={3} type="cancellation" colour="#ea580c" text="DASHBOARD POLISHER" desc="You cancelled 70 invites"/> */}
         </div>
 
         <div className="divider mt-10 text-base md:text-lg lg:text-2xl px-3">
