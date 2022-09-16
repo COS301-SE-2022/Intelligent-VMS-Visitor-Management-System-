@@ -21,11 +21,6 @@ export class ReceptionistResolver {
         return "👋 from Receptionist";
     }
 
-    @Query((returns) => {return Boolean}, { name: "compareFaces" })
-    async compareFaces() {
-        return "";
-    }
-
     @Mutation((returns) => {return Number}, { name: "signOut" })
     async signOutInvite( 
         @Args("inviteID") inviteID: string,

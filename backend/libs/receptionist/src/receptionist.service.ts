@@ -7,6 +7,7 @@ import * as FormData from "form-data";
 
 import { getTrayFromInviteQuery } from './queries/impl/getTrayFromInvite.query';
 import { Tray } from './models/tray.model'
+import { SignInService } from '../sign-in/sign-in.service';
 
 @Injectable()
 export class ReceptionistService {
@@ -60,14 +61,17 @@ export class ReceptionistService {
 
         const formData = new FormData();
         formData.append('file', file.buffer, { filename: file.originalname });
-
+        
         const response = await firstValueFrom(
             this.httpService.post(
-                `${this.FACE_REC_CONNECTION}/compareFaces?idNumber=${idNumber}`,
+                `${this.FACE_REC_CONNECTION}/compareFaces`,
                 formData,
                 { headers: formData.getHeaders() }
             )
         );
+
+        if(response.data && response.data.result) {
+        }
 
         return response.data;
     }
