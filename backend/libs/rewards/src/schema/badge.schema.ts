@@ -15,7 +15,7 @@ export class Badge {
     title: string[];
 
     @Prop()
-    xp: number[];
+    xp?: number[];
 
     @Prop()
     desc: string[];

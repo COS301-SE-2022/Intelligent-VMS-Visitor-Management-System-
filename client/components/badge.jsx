@@ -4,7 +4,7 @@ import { FcGraduationCap,FcHome,FcOvertime,FcConferenceCall,FcAdvertising,FcInvi
 import {GiNightSleep} from "react-icons/gi";
 import {AiFillDelete} from "react-icons/ai";
 
-const Badge = ({colour,title,type,width,desc,active,level,xp}) => {
+const Badge = ({colour,title,type,width,desc,desc2,desc3,active,level,xp,w2,w3}) => {
 
     const icon = () => {
 
@@ -20,21 +20,72 @@ const Badge = ({colour,title,type,width,desc,active,level,xp}) => {
         }
     }
 
+    const pad = (s,num) => {
+
+        for( var i=0;i<num;i+=2){
+            s="_"+s+"_";
+        }
+
+        return s;
+    }
+
+    desc3 = "";
+    desc2 = "";
+    var desc1 = "";
+
+    if(desc.length>14){
+        
+        for (var i=14;i>=0;i--){
+            if(desc[i].localeCompare(" ")==0){
+                desc1 = desc.substr(0,i);
+                desc1 = pad(desc1,14-i);
+                desc2 = desc.substr(i,desc.length).trim();
+                break;
+            }
+        }
+    }
+
+    console.log("llll");
+    console.log(desc2);
+    
+    if(desc2.length>11){
+        for (var i=11;i>=0;i--){
+            if(desc[i].localeCompare(" ")==0){
+                desc3 = desc2.substr(i,desc2.length).trim();
+                desc2 = desc2.substr(0,i);
+                desc2 = pad(desc2,11-i);
+                break;
+            }
+        }
+    }
+    console.log(desc);
+    console.log(desc2);
+    console.log(desc3);
+    w2 = ((12/desc.length)*desc2.length).toFixed(1);
+    w3 = ((12/desc2.length)*desc3.length).toFixed(1);
+
+
     if(!active){
 
         colour="#a8a29e";
-        
+
     } else {
 
-        console.log("j");
         switch(type) {
             case "concept": colour="#be185d";
+            break;
             case "invite": colour="#84cc16";
+            break;
             case "sleepover": colour="#1e3a8a";
+            break;
             case "cancellation": colour="#ea580c";
+            break;
             case "time":  colour="#dc2626";
+            break;
             case "visits":  colour="#facc15";
+            break;
             case "suggestion": colour="#ea580c";
+            break;
             default: colour="#be185d";
           }
     }
@@ -51,7 +102,7 @@ const Badge = ({colour,title,type,width,desc,active,level,xp}) => {
                 {/*Background*/}
                 <path
                     style={{
-                        fill: "grey-100",
+                        fill: "grey-300",
                         fillOpacity: 1,
                         strokeWidth: 1,
                         strokeOpacity: 0,
@@ -61,7 +112,7 @@ const Badge = ({colour,title,type,width,desc,active,level,xp}) => {
                 
                 <path
                     d="m41.007 0 .004 22.511h.006V54l.001 47.974h-.003c-5.949-.268-38.403-25.469-39.944-31.23-1.54-5.761-2.037-42.437 2.927-45.739 1.055-.702 4.848-1.26 10.194-1.669a27 27 0 0 1 3.376-9.851A27 27 0 0 1 41.008 0z"
-                    fill="grey-100"
+                    fill="grey-300"
                     style={{
                         strokeOpacity: 0,
                     }}
@@ -134,8 +185,7 @@ const Badge = ({colour,title,type,width,desc,active,level,xp}) => {
                 />
 
                 <Text className="text-[30px] font-noto font-bold" width={9} x={71.339} y={82.587} scaleToFit={true} textAnchor="middle" verticalAnchor="middle" fill={active? colour: "#525252"}>
-                    {/* {Math.trunc(10*level)+" XP"} */}
-                    { xp + " XP"}
+                    {xp? (xp + " XP") : (Math.trunc(10*level)+" XP")}
                 </Text>
 
                 {/* <path
@@ -160,8 +210,14 @@ const Badge = ({colour,title,type,width,desc,active,level,xp}) => {
                 <Text className="text-[6.5px] tracking-wider" width={72.0011+5} x={41.0055} y={26.575+45} textAnchor="middle" verticalAnchor="middle" fill="white">
                     ...........................
                 </Text>
-                <Text className="text-[4px] font-main" width={41.0055+2} x={41.0055} y={26.575+51} textAnchor="middle" verticalAnchor="start" fill="white">
-                    {desc}
+                <Text className="text-[12px] font-main" width={41.0055+2} x={41.0055} y={26.575+51} scaleToFit={true} textAnchor="middle" verticalAnchor="start" fill="white">
+                    {desc1}
+                </Text>
+                <Text className={"text-["+w2.toString()+"px] font-main"} width={41.0055+2} x={41.0055} y={26.575+57} scaleToFit={true} textAnchor="middle" verticalAnchor="start" fill="white">
+                    {desc2}
+                </Text>
+                <Text className={"text-["+w3.toString()+"px] font-main"} width={41.0055+2} x={41.0055} y={26.575+63} scaleToFit={true} textAnchor="middle" verticalAnchor="start" fill="white">
+                    {desc3}
                 </Text>
                 
             </g>

@@ -8,8 +8,8 @@ export class Badge {
     @Field((type) => {return Int})
     levels: number;
 
-    @Field((type) => {return [Int]})
-    xp: number[];
+    @Field((type) => {return [Int]},{nullable:true})
+    xp?: number[];
 
     @Field((type) => {return [String]})
     desc: string[];

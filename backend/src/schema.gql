@@ -97,12 +97,13 @@ type BSIdata {
 type Reward {
   type: String!
   xp: Int!
+  desc: String!
 }
 
 type Badge {
   type: String!
   levels: Int!
-  xp: [Int!]!
+  xp: [Int!]
   desc: [String!]!
   title: [String!]!
 }

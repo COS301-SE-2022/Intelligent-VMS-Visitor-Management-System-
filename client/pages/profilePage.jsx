@@ -4,6 +4,7 @@ import Badge from '../components/badge';
 import Layout from '../components/Layout';
 import {AiFillStar} from "react-icons/ai";
 import {FaFlagCheckered} from "react-icons/fa";
+import {ImCross,ImCheckmark} from "react-icons/im";
 import useAuth from "../store/authStore.js";
 import { gql, useApolloClient, useLazyQuery } from "@apollo/client";
 
@@ -35,6 +36,7 @@ const ProfilePage = () => {
                 allRewards{
                     xp
                     type
+                    desc
                 }
             }
         }
@@ -62,17 +64,8 @@ const ProfilePage = () => {
         }
     }, [loading, error, router, data, profileQuery]);
 
-    // var userBadges = getUserBadgesString;
-    // for(j to allBadges.length){
-    // 	for( i to userBadges[j]){
-    // 		return (
-    // 		<Badge level=i colour=allBadges[j].colour type=allBadges[j].type title=allBadges[j].title/>
-    // 		}
-    // 	}
-    // }
-
-
     return (
+
         <Layout>
         <div className="flex flex-col justify-center items-center mt-5 w-full">
             <div className="avatar placeholder m-3">
@@ -110,15 +103,16 @@ const ProfilePage = () => {
         
         <div className="mx-5 mt-5 grid grid-cols-7 space-y-2 space-x-3">
             {badges.map((badge, idx) => {
-                {for (var i=0;i<badge.levels;i++){    
-                    let active = false;  
-                    if(parseInt(userBadges[idx])>=i+1)  
-                        console.log("here");
+                return [...Array(badge.levels)].map((x,i) => {
+                    let active = false; 
+                    if(parseInt(userBadges[idx])>=i+1){
                         active = true;
-                    return <Badge active={true} width={160} level={i+1} type={badge.type} title={badge.title[i]} desc={badge.desc[i]} xp={badge.xp[i]}/>
-                }}
+                    }   
+                    return <Badge active={active} width={160} level={i+1} type={badge.type} title={badge.title[i]} desc={badge.desc[i]} xp={badge.xp[i]}/>
                 
+                })      
             })}
+
             {/* <Badge width={160} active={true} level={1} type="concept" colour="#be185d" text="CONCEPT CONNOISSEUR" desc="You created 3 invites"/>
             <Badge width={160} active={true} level={1} type="invite" colour="#84cc16" text="INVITE ROOKIE" desc="You created 3 invites"/>
             <Badge width={160} active={true} level={2} type="invite" colour="#84cc16" text="INVITE AMATEUR" desc="You created 30 invites"/>
@@ -137,6 +131,58 @@ const ProfilePage = () => {
         <div className="divider mt-10 text-base md:text-lg lg:text-2xl px-3">
             PRIVILEGES
         </div>
+
+        <div className="flex h-full items-center justify-center overflow-x-auto p-3">
+                {loading ? (
+                    <progress className="progress progress-primary w-56">
+                        progress
+                    </progress>
+                ) : (
+                    <table className="mb-5 table w-full">
+                        <thead>
+                            <tr>
+                                <th>Requirement</th>
+                                <th>Reward</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        {rewards.length > 0 ? (
+                            <tbody>
+                                {rewards.map((reward, idx) => {
+                                    return (
+                                        <tr
+                                            className="hover z-0 cursor-pointer"
+                                            key={idx}
+                                        >
+                                            <td className="capitalize ">
+                                                {reward.xp+" XP"}
+                                            </td>
+                                            <td className="">
+                                                {reward.desc}
+                                            </td>
+
+                                            <td className="">
+                                            {xp<reward.xp? (
+                                                <ImCross className="text-error"/>
+                                            ):(
+                                                <ImCheckmark className="text-success"/>
+                                            )}
+                                            </td>
+                                            
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        ) : (
+                            <tbody>
+                                <tr>
+                                    <th>Nothing to show...</th>
+                                </tr>
+                            </tbody>
+                        )}
+                    </table>
+                )}
+            </div>
         
         </Layout>
     );

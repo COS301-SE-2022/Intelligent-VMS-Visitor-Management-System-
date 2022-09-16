@@ -7,4 +7,7 @@ export class Reward {
 
     @Field((type) => {return Int})
     xp: number;
+
+    @Field((type) => {return String})
+    desc: string;
 }

@@ -10,6 +10,9 @@ export class Reward {
 
     @Prop()
     type: string;
+
+    @Prop()
+    desc: string;
 }
 
 export const RewardsSchema = SchemaFactory.createForClass(Reward);
