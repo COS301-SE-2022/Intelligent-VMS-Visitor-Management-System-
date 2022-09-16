@@ -3,20 +3,18 @@ import { gql, useMutation } from "@apollo/client";
 import { alert } from "react-custom-alert";
 import { ImEnter } from "react-icons/im";
 
+import FaceRec from "./FaceRec";
+
 const SignInPopUp = ({
-    visitorName,
-    visitorID,
-    inviteID,
     refetch,
-    todayString,
     currentButton,
     visitData,
     setShowSignInModal,
     setSearch,
-    trayNr,
 }) => {
     const [notes, setNotes] = useState("");
     const time = new Date();
+
     const [signInMutation, { data, loading, error }] = useMutation(
         gql`
             mutation {
@@ -24,25 +22,17 @@ const SignInPopUp = ({
                     visitData.inviteID
                 }", notes: "${notes}", time: "${time.toLocaleTimeString()}") 
             }
-    `,
-        {
-            refetchQueries: [
-                {
-                    query: gql`
-            query {
-                getInvitesByDate( date: "${todayString}" ) {
-                    inviteID
-                    inviteDate
-                    idNumber
-                    visitorName
-                    inviteState
-                }
-            }
-            `,
-                },
-            ],
-        }
+    `
     );
+    
+    const onFaceRecSuccess = (data) => {
+        if(data.result) {
+           setShowSignInModal(false);
+           setSearch(false);
+        } else {
+           console.log(data.error);
+        }
+    };
 
     useEffect(() => {
         if (!loading && !error) {
@@ -67,12 +57,17 @@ const SignInPopUp = ({
             </div>
 
             <h1 className="mt-5 text-center text-3xl font-bold ">
-                Confirm Sign-in
+                Sign In
             </h1>
-            <p className="max-w-5/6">
-                Confirm sign-in of visitor with id{" "}
-                <span className="font-bold">{visitData.idNumber}</span>
+            <p className="max-w-5/6 mb-3">
+                Ensure face is visible in camera
             </p>
+
+            <div>
+                <FaceRec onSuccess={onFaceRecSuccess} />
+            </div>
+            {
+            /*
             <input
                 type="text"
                 onChange={(evt) => setNotes(evt.target.value)}
@@ -91,8 +86,11 @@ const SignInPopUp = ({
                     setShowSignInModal(false);
                 }}
             >
-                Sign in
+                Authorize
             </label>
+
+            */
+            }
         </div>
     );
 };

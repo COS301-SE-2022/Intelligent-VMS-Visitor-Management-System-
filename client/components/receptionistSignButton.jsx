@@ -1,9 +1,8 @@
 const ReceptionistSignButton = ({ htmlFor, text, colour, onClick, key }) => {
     return (
         <label
-            htmlFor={htmlFor}
             key={key}
-            className={`modal-button btn max-w-md border-0 ${colour} z-10 text-white`}
+            className={`max-w-md border-0 text-white p-3 ${colour} badge badge-md z-10`}
             onClick={onClick}
         >
             {text}
