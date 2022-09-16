@@ -210,10 +210,10 @@ const ReceptionistSignUp = () => {
                                     onBlur={handleBlur}
                                     value={values.idNumber}
                                 />
-                                <span className="text-error">
-                                    {errors.idNumber &&
+                              <span className="text-error">
+                                    {errors.idValue &&
                                         touched.idNumber &&
-                                        errors.idNumber}
+                                        errors.idValue}
                                 </span>
 
                                 <input

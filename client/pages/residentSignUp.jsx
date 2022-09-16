@@ -211,9 +211,9 @@ const ResidentSignUp = () => {
                                     value={values.idNumber}
                                 />
                                 <span className="text-error">
-                                    {errors.idNumber &&
+                                    {errors.idValue &&
                                         touched.idNumber &&
-                                        errors.idNumber}
+                                        errors.idValue}
                                 </span>
 
                                 <input
