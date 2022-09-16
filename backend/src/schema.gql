@@ -136,7 +136,6 @@ type Query {
   getCurfewTime: Restriction!
   helloResident: String!
   helloReceptionist: String!
-  compareFaces: Boolean!
 }
 
 type Mutation {
