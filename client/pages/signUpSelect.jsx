@@ -30,8 +30,10 @@ const SignUpSelect = () => {
     const client = useApolloClient();
     const router = useRouter();
 
-    const navigateToverify = () => {
-        // 👇️ navigate to /contacts
+    const navigateToResidentSignup = () => {
+        router.push("/residentSignUp");
+      };
+    const navigateToReceptionistSignup = () => {
         router.push("/verify");
       };
 
@@ -53,10 +55,10 @@ const SignUpSelect = () => {
                                 </p>
 
                                 <div className="flex items-center space-x-3">
-                                    <button onClick={navigateToverify}>Resident</button>
+                                    <button onClick={navigateToResidentSignup}> <span className="text-sm font-bold md:text-base">Resident</span></button>
                                 </div>
                                 <div>
-                                    <button onClick={navigateToverify}>Receptionist</button>
+                                    <button onClick={navigateToReceptionistSignup}><span className="text-sm font-bold md:text-base">Receptionist</span></button>
                                 </div>
                                 
                                 
