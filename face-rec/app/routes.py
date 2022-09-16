@@ -3,6 +3,16 @@ from flask import request, redirect, url_for
 import json
 
 from app.faceRec.faceRecLib import loadImage, faceRecognition, storeFace, getFaceEncodingsFromImage, getFacesLocationData, getLargestFace, compareFaces, addFaceEncoding
+from app.classifier.knnClassifier import predict, train
+
+
+def updateClassifier():
+    global knnClassifier
+    knnClassifier = train("./model.plk", 1)
+    return knnClassifier
+
+print("RUN!")
+knnClassifier = updateClassifier()
 
 # Parse filename to check if it is valid
 def allowedFile(filename):
@@ -35,27 +45,14 @@ def comparefaces():
         if file.filename == '':
             return createResponse({"error": "No file selected"})
 
-        if not request.args.get("idNumber"):
-            return createResponse({"error", "No id-number given"})
-
         if file and allowedFile(file.filename):
-            idNumber = request.args.get("idNumber")
-            image = loadImage(file)
-            faceLocations = getFacesLocationData(image)
-            
-            # If no faces in image error
-            if len(faceLocations) == 0:
-                return createResponse({"error": "No Faces Detected"})
+            imgData = loadImage(file)
+            data = predict(imgData, knnClassifier)
 
-            # Get facial encodings for uploaded image
-            encodings = getFaceEncodingsFromImage(image, faceLocations)             
+            if data.get("error"):
+                return createResponse(data)
 
-            # Compare face data
-            matches = compareFaces(encodings, idNumber)
-            
-            # No matching face was found
-            return createResponse({"result": matches})
-
+            return createResponse({"result": data})
 
 # Store face encoding
 @app.route("/storeFace", methods=['POST'])
@@ -106,3 +103,10 @@ def storeface():
             return createResponse({"result": True})
         
         return createResponse({"error": "Invalid File"})
+
+@app.route("/train", methods=["POST"])
+def trainClassifier():
+    if request.method == "POST":
+        global knnClassifier
+        knnClassifier = updateClassifier()
+        return createResponse({"result": "done"})
