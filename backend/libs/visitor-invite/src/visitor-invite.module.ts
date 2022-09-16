@@ -34,6 +34,7 @@ import { GetVisitorsQueryHandler } from "./queries/handlers/getVisitors.handler"
 import { GetVisitorVisitsQueryHandler } from "./queries/handlers/getVisitorVisits.handler";
 import { GetMostUsedInviteDataQueryHandler } from "./queries/handlers/getMostUsedInviteData.handler";
 import { GetInvitesForUsersQueryHandler } from "./queries/handlers/getInvitesForUsers.handler";
+import { GetInviteForSignInDataQueryHandler } from "./queries/handlers/getInviteForSignInData.handler";
 
 @Module({
     imports: [
@@ -74,6 +75,7 @@ import { GetInvitesForUsersQueryHandler } from "./queries/handlers/getInvitesFor
         GetMostUsedInviteDataQueryHandler,
         GetVisitorVisitsQueryHandler,
         getNumberOfVisitors,
+        GetInviteForSignInDataQueryHandler,
     ],
     exports: [VisitorInviteService],
 })

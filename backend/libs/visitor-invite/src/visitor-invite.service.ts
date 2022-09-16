@@ -8,6 +8,7 @@ import { randomUUID } from "crypto";
 
 import { CreateInviteCommand } from "./commands/impl/createInvite.command";
 import { CancelInviteCommand } from "./commands/impl/cancelInvite.command";
+import { GetInviteForSignInDataQuery } from "./queries/impl/getInviteForSignInData.query";
 import { GetInvitesQuery } from "./queries/impl/getInvites.query";
 import { GetInviteQuery } from "./queries/impl/getInvite.query";
 import { GetNumberVisitorQuery } from "./queries/impl/getNumberOfVisitors.query";
@@ -174,6 +175,11 @@ export class VisitorInviteService {
     //Get invite by ID
     async getInvite(inviteID: string) {
         return this.queryBus.execute(new GetInviteQuery(inviteID));
+    }
+
+    // Get invite by visitor id-number and invite date
+    async getInviteForSignInData(idNumber: string, inviteDate: string) {
+        return this.queryBus.execute(new GetInviteForSignInDataQuery(idNumber, inviteDate));
     }
 
     async cancelInvite(email: string, inviteID: string) {
