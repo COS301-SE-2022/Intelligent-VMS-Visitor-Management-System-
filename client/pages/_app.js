@@ -43,6 +43,7 @@ function MyApp({ Component, pageProps }) {
             "/expire",
             "/signUp",
             "/residentSignUp",
+            "/receptionistSignUp",
             "/signUpSelect",
             "/verify",
             "/authorize",
