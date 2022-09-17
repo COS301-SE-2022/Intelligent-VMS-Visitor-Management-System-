@@ -46,7 +46,9 @@ const ReceptionistSignUp = () => {
     useEffect(() => {
         if (verified && permission === -999) {
             router.push("/verify");
-        } 
+        } else if (permission >= 0) {
+            router.push("/");
+        }
     }, [router, verified, permission]);
 
     return (
@@ -104,9 +106,7 @@ const ReceptionistSignUp = () => {
                                 "Password needs minimum of 8 characters with one number and one special character";
                         } else if (values.confirmPassword !== values.password) {
                             errors.confirmPassword = "Passwords do not match";
-                        } else if (!values.userType) {
-                            errors.userType = "Please select user type";
-                        }
+                         }
 
                         return errors;
                     }}
@@ -118,7 +118,7 @@ const ReceptionistSignUp = () => {
                                     signup(
                                         email: "${values.email}", 
                                         password: "${values.password}", 
-                                        type: "${values.userType}", 
+                                        type: "receptionist", 
                                         idNumber: "${values.idNumber}",
                                         IDDocType: "${values.idDoc}",
                                         name: "${values.name}"
@@ -210,7 +210,7 @@ const ReceptionistSignUp = () => {
                                     onBlur={handleBlur}
                                     value={values.idNumber}
                                 />
-                              <span className="text-error">
+                                <span className="text-error">
                                     {errors.idValue &&
                                         touched.idNumber &&
                                         errors.idValue}
@@ -250,22 +250,9 @@ const ReceptionistSignUp = () => {
                                 </span>
 
                                 <p className="text-sm md:text-lg lg:text-xl">
-                                    You are signing up as a Receptionist
-                                    <Field
-                                            onChange={handleChange}
-                                            onBlur={handleBlur}
-                                            className="radio checked:bg-secondary"
-                                            type="hidden"
-                                            name="userType"
-                                            value="receptionist"
-                                            aria-label="receptionist"
-                                        />
+                                    I&apos;m a... <span>{values.userType}</span>
                                 </p>
-                                <span className="text-error">
-                                    {errors.userType &&
-                                        touched.userType &&
-                                        errors.userType}
-                                </span>
+
                                 <motion.button
                                     className="btn btn-primary space-x-4 overflow-y-hidden"
                                     type="submit"
