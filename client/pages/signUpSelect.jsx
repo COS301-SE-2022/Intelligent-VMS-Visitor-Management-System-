@@ -34,7 +34,7 @@ const SignUpSelect = () => {
         router.push("/residentSignUp");
       };
     const navigateToReceptionistSignup = () => {
-        router.push("/verify");
+        router.push("/receptionistSignUp");
       };
 
 
