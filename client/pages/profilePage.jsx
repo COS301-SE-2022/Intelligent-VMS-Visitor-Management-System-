@@ -6,7 +6,7 @@ import {AiFillStar} from "react-icons/ai";
 import {FaFlagCheckered} from "react-icons/fa";
 import {ImCross,ImCheckmark} from "react-icons/im";
 import useAuth from "../store/authStore.js";
-import { gql, useApolloClient, useLazyQuery } from "@apollo/client";
+import { gql, useLazyQuery } from "@apollo/client";
 
 const ProfilePage = () => {
 

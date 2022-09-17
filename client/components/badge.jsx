@@ -4,7 +4,7 @@ import { FcGraduationCap,FcHome,FcOvertime,FcConferenceCall,FcAdvertising,FcInvi
 import {GiNightSleep} from "react-icons/gi";
 import {AiFillDelete} from "react-icons/ai";
 
-const Badge = ({colour,title,type,width,desc,desc2,desc3,active,level,xp,w2,w3}) => {
+const Badge = ({colour,title,type,width,desc,active,level,xp}) => {
 
     const icon = () => {
 
@@ -20,17 +20,8 @@ const Badge = ({colour,title,type,width,desc,desc2,desc3,active,level,xp,w2,w3})
         }
     }
 
-    const pad = (s,num) => {
-
-        for( var i=0;i<num;i+=2){
-            s="_"+s+"_";
-        }
-
-        return s;
-    }
-
-    desc3 = "";
-    desc2 = "";
+    var desc3 = "";
+    var desc2 = "";
     var desc1 = "";
 
     if(desc.length>14){
@@ -38,31 +29,35 @@ const Badge = ({colour,title,type,width,desc,desc2,desc3,active,level,xp,w2,w3})
         for (var i=14;i>=0;i--){
             if(desc[i].localeCompare(" ")==0){
                 desc1 = desc.substr(0,i);
-                desc1 = pad(desc1,14-i);
                 desc2 = desc.substr(i,desc.length).trim();
                 break;
             }
         }
     }
-
-    console.log("llll");
-    console.log(desc2);
     
     if(desc2.length>11){
         for (var i=11;i>=0;i--){
-            if(desc[i].localeCompare(" ")==0){
+            if(desc2[i].localeCompare(" ")==0){
                 desc3 = desc2.substr(i,desc2.length).trim();
                 desc2 = desc2.substr(0,i);
-                desc2 = pad(desc2,11-i);
                 break;
             }
         }
     }
-    console.log(desc);
-    console.log(desc2);
-    console.log(desc3);
-    w2 = ((12/desc.length)*desc2.length).toFixed(1);
-    w3 = ((12/desc2.length)*desc3.length).toFixed(1);
+
+    var w1 = "text-["+(desc1.length*0.9).toFixed(1).toString()+"px] ";
+    var w2 = "text-["+(desc2.length*0.9).toFixed(1).toString()+"px] ";
+    var w3 = "text-["+(desc3.length*0.9).toFixed(1).toString()+"px] ";
+
+    console.log(desc1)
+    console.log("desc 1 length: "+desc1.length)
+    console.log("desc 1: "+w1)
+    console.log(desc2)
+    console.log("desc 2 length: "+desc2.length)
+    console.log("desc 2: "+w2)
+    console.log(desc3)
+    console.log("desc 3 length: "+desc3.length)
+    console.log("desc 3: "+w3)
 
 
     if(!active){
@@ -198,7 +193,7 @@ const Badge = ({colour,title,type,width,desc,desc2,desc3,active,level,xp,w2,w3})
                     fill={colour}
                     fillOpacity={1-(level*0.2)}
                 />
-                <circle cx={40.879} cy={26.575} r={23.699} fill={"#fff"} fillOpacity="0.9"/>   */}
+                <circle cx={40.879} cy={26.575} r={23.699} fill={"#fff"} fillOpacity="0.9"/> */}
 
                 {icon()}
                 {/* <Text className="text-[6.5px] tracking-wider" width={72.0011+5} x={41.0055} y={26.575+25} textAnchor="middle" verticalAnchor="middle" fill="white">
@@ -210,13 +205,13 @@ const Badge = ({colour,title,type,width,desc,desc2,desc3,active,level,xp,w2,w3})
                 <Text className="text-[6.5px] tracking-wider" width={72.0011+5} x={41.0055} y={26.575+45} textAnchor="middle" verticalAnchor="middle" fill="white">
                     ...........................
                 </Text>
-                <Text className="text-[12px] font-main" width={41.0055+2} x={41.0055} y={26.575+51} scaleToFit={true} textAnchor="middle" verticalAnchor="start" fill="white">
+                <Text className={w1+" font-main"} width={41.0055+2} x={41.0055} y={26.575+51} scaleToFit={true} textAnchor="middle" verticalAnchor="start" fill="white">
                     {desc1}
                 </Text>
-                <Text className={"text-["+w2.toString()+"px] font-main"} width={41.0055+2} x={41.0055} y={26.575+57} scaleToFit={true} textAnchor="middle" verticalAnchor="start" fill="white">
+                <Text className={w2+" font-main"} width={41.0055+2} x={41.0055} y={26.575+57} scaleToFit={true} textAnchor="middle" verticalAnchor="start" fill="white">
                     {desc2}
                 </Text>
-                <Text className={"text-["+w3.toString()+"px] font-main"} width={41.0055+2} x={41.0055} y={26.575+63} scaleToFit={true} textAnchor="middle" verticalAnchor="start" fill="white">
+                <Text className={w3+" font-main"} width={41.0055+2} x={41.0055} y={26.575+63} scaleToFit={true} textAnchor="middle" verticalAnchor="start" fill="white">
                     {desc3}
                 </Text>
                 
