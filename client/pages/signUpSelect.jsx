@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { gql, useQuery, useApolloClient } from "@apollo/client";
 import { Field, Formik } from "formik";
@@ -25,14 +26,13 @@ const SignUpSelect = () => {
         showCondition: false,
     });
 
-
-
     const client = useApolloClient();
     const router = useRouter();
 
     const navigateToResidentSignup = () => {
         router.push("/residentSignUp");
       };
+
     const navigateToReceptionistSignup = () => {
         router.push("/receptionistSignUp");
       };
@@ -42,12 +42,7 @@ const SignUpSelect = () => {
         <Layout>
             <div className="relative mb-4 flex h-full min-h-[80vh] w-full flex-col items-center justify-center overflow-hidden">
                 
-
-                
-                            <form
-                            
-                                className="prose form-control space-y-4 rounded-xl border p-14"
-                            >
+                    <div className="prose form-control space-y-4 rounded-xl border p-14" >
                                 <h1>What type of account would you like to sign up for? </h1>
         
                                 <p className="text-sm md:text-lg lg:text-xl">
@@ -55,18 +50,16 @@ const SignUpSelect = () => {
                                 </p>
 
                                 <div className="flex items-center space-x-3">
-                                    <button onClick={navigateToResidentSignup}> <span className="text-sm font-bold md:text-base">Resident</span></button>
+                                    <Link href="/residentSignUp"> 
+                                        <a>
+                                            <span className="text-sm font-bold md:text-base">Resident</span>
+                                        </a>
+                                    </Link>
                                 </div>
                                 <div>
                                     <button onClick={navigateToReceptionistSignup}><span className="text-sm font-bold md:text-base">Receptionist</span></button>
                                 </div>
-                                
-                                
-                            </form>
-                        
-                    
-                
-                
+                    </div>
             </div>
         </Layout>
         
