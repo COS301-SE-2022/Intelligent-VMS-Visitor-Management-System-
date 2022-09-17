@@ -239,7 +239,7 @@ describe('SignInService', () => {
         await service.signIn("yay", "some notes", "13:02:01");
       } catch (error) {
         expect(error).toBeDefined();
-        expect(error.message).toEqual('Invitation with ID yay not found')
+        expect(error.message).toEqual('Invite not found with id')
       }
     });
 
