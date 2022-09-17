@@ -1,10 +1,11 @@
 import { useEffect, useState, useRef } from "react";
 import { MdFaceUnlock, MdLoop } from "react-icons/md"; 
 
-const Camera = ({ children, onPicture, addFace, buttonText, options, setOptions, setError }) => {
+const Camera = ({ children, onPicture, addNewFace, buttonText, options, setOptions, setError, setShowAddFace }) => {
 
     const canvasRef = useRef(null);
     const videoRef = useRef(null);
+    const [loading, setLoading] = useState(true);
 
     let videoStream = null;
 
@@ -12,6 +13,7 @@ const Camera = ({ children, onPicture, addFace, buttonText, options, setOptions,
 
     const handleVideo = (stream) => {
         if(document) {
+            setLoading(false);
             videoStream = stream;
             videoRef.current.srcObject = stream;
         }
@@ -57,18 +59,26 @@ const Camera = ({ children, onPicture, addFace, buttonText, options, setOptions,
         };
     }, [videoStream]);
 
+    const onAddFace = () => {
+        addNewFace();
+    };
+
     return(
         <div>
-            <video className="rounded-lg" ref={videoRef} autoPlay={true}>
-                Camera not available
-            </video>
+            { !loading ?
+                <video id="faceRecVideo" className="rounded-lg" ref={videoRef} autoPlay={true}>
+                    <p>Camera not available</p>
+                </video>
+                :
+                <progress className="progress progress-primary"></progress>
+            }
             {
                 !options.tryAgain && !options.addFace ?
                 <button className="btn btn-primary mt-3 w-full" onClick={takePicture}>{buttonText}</button>
                 :
                 <div className="space-x-4">
                     { options.addFace && 
-                    <button className="btn btn-secondary mt-3" onClick={addFace}>
+                    <button className="btn btn-secondary mt-3" onClick={onAddFace}>
                         <span className="mr-2">
                             <MdFaceUnlock className="text-lg"/>
                         </span>

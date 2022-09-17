@@ -1,19 +1,15 @@
 import { useRouter } from "next/router";
-import { useState, useEffect, setState } from "react";
+import { useState, useEffect } from "react";
 import { gql, useApolloClient, useLazyQuery } from "@apollo/client";
-import { alert } from "react-custom-alert";
 import { BiQrScan, BiLogIn } from "react-icons/bi";
 import { FaMailBulk } from "react-icons/fa";
-import { BsBoxArrowInRight, BsInfoCircle } from "react-icons/bs";
+import { BsInfoCircle } from "react-icons/bs";
 import Layout from "../components/Layout";
-import QRScanner from "../components/QRScanner";
 import SignInPopUp from "../components/SignInPopUp";
 import SignOutPopUp from "../components/SignOutPopUp";
 import VisitInfoModal from "../components/VisitInfoModal";
 import ReceptionistSignButton from "../components/receptionistSignButton";
-import InfoAlert from "../components/InfoAlert";
 import UploadPopUp from "../components/UploadPopUp";
-import ErrorAlert from "../components/ErrorAlert";
 import SuccessAlert from "../components/SuccessAlert";
 
 const ReceptionistDashboard = () => {
