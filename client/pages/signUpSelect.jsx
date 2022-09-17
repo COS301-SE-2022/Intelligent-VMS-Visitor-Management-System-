@@ -1,12 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/router";
-import { gql, useQuery, useApolloClient } from "@apollo/client";
-import { Field, Formik } from "formik";
-import { motion } from "framer-motion";
+import { useApolloClient } from "@apollo/client";
+
 
 import Layout from "../components/Layout";
-import ErrorAlert from "../components/ErrorAlert";
-
 import useAuth from "../store/authStore";
 
 const SignUpSelect = () => {
@@ -25,25 +22,9 @@ const SignUpSelect = () => {
         showCondition: false,
     });
 
-
-
-    const client = useApolloClient();
-    const router = useRouter();
-
-    const navigateToResidentSignup = () => {
-        router.push("/residentSignUp");
-      };
-    const navigateToReceptionistSignup = () => {
-        router.push("/receptionistSignUp");
-      };
-
-
     return (
         <Layout>
             <div className="relative mb-4 flex h-full min-h-[80vh] w-full flex-col items-center justify-center overflow-hidden">
-                
-
-                
                             <form
                             
                                 className="prose form-control space-y-4 rounded-xl border p-14"
@@ -55,22 +36,17 @@ const SignUpSelect = () => {
                                 </p>
 
                                 <div className="flex items-center space-x-3">
-                                    <button onClick={navigateToResidentSignup}> <span className="text-sm font-bold md:text-base">Resident</span></button>
+                                    <a href={"/residentSignUp"}> <span className="text-sm font-bold md:text-base">Resident</span></a>
                                 </div>
+
                                 <div>
-                                    <button onClick={navigateToReceptionistSignup}><span className="text-sm font-bold md:text-base">Receptionist</span></button>
-                                </div>
-                                
-                                
+                                    <a href={"/receptionistSignUp"}><span className="text-sm font-bold md:text-base">Receptionist</span></a>
+                                </div> 
                             </form>
-                        
-                    
-                
-                
             </div>
         </Layout>
         
     );
-};//<button onClick={navigateToverify}>Verify</button>
+};
 
 export default SignUpSelect;
