@@ -250,7 +250,7 @@ const ReceptionistSignUp = () => {
                                 </span>
 
                                 <p className="text-sm md:text-lg lg:text-xl">
-                                    I&apos;m a... <span>{values.userType}</span>
+                                    You are signing up as a receptionist
                                 </p>
 
                                 <motion.button
