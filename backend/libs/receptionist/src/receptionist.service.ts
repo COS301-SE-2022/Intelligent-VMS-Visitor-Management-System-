@@ -49,6 +49,11 @@ export class ReceptionistService {
                 { headers: formData.getHeaders() }
             )
         );
+        
+        if(response.data.result) {
+        } else {
+        }
+
         return response.data;
     } 
 

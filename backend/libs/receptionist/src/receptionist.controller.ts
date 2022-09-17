@@ -17,10 +17,10 @@ export class ReceptionistController {
 
     @UseGuards(JwtAuthGuard, HttpRolesGuard)
     @Roles("receptionist")
-    @Post("/signInWithFace")
+    @Post("/signInAndAddFace")
     @UseInterceptors(FileInterceptor('file'))
-    async storeFace(@UploadedFile() file: Express.Multer.File, @Query("idNumber") idNumber: string, @Query("name") name: string, @Query("invitationID") inviteID: string, @Query("signInTime") signInTime: string) {
-        return await this.receptionistService.uploadFaceFile(file, idNumber, name);
+    async storeFace(@UploadedFile() file: Express.Multer.File, @Query("inviteID") inviteID: string) {
+        return await this.signInService.uploadFaceFile(file, inviteID);
     }
 
     @UseGuards(JwtAuthGuard, HttpRolesGuard)

@@ -94,16 +94,50 @@ export class SignInService {
                     }
 
                     const tray = await this.generateTray(invite.inviteID,true,true);
-  
+                    
                     return {
                         "trayNo": tray.trayID,
-                        "name": invite.VisitorName,
+                        "name": invite.visitorName,
                     }
                 } else {
                     return {"error": "Invite Date does not match"};
                 }
             }
         }
+
+        async uploadFaceFile(file: Express.Multer.File, inviteID: string) {
+            console.log(inviteID);
+            if(!inviteID) {
+                return {
+                    "error": "No invite id provided"
+                }
+            }
+
+            const invite = await this.inviteService.getInvite(inviteID);
+
+            if(!invite) {
+                return {"error": "Invite not found"};
+            } else if (invite.inviteState === "signedIn" || invite.inviteState === "signedOut") {
+                return {"error": "Invite already used"};
+            } 
+
+            const formData = new FormData();
+            formData.append('file', file.buffer, { filename: file.originalname });
+
+            const response = await firstValueFrom(
+                this.httpService.post(
+                    `${this.FACE_REC_CONNECTION}/storeFace?idNumber=${invite.idNumber}&name=${invite.visitorName}`,
+                    formData,
+                    { headers: formData.getHeaders() }
+                )
+            );
+        
+            return {
+                trayNo: await this.signIn(inviteID, "", new Date().toLocaleTimeString()),
+                name: invite.visitorName
+            };
+        } 
+
 
         async compareFaceFile(file: Express.Multer.File, idNumber: string) {
             if(!idNumber) {

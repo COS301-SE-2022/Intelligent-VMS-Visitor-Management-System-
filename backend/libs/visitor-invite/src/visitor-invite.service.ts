@@ -174,7 +174,14 @@ export class VisitorInviteService {
 
     //Get invite by ID
     async getInvite(inviteID: string) {
-        return this.queryBus.execute(new GetInviteQuery(inviteID));
+        if(inviteID.length === 0) {
+            throw new InviteNotFound("No invite given");
+        }
+        const invite = await this.queryBus.execute(new GetInviteQuery(inviteID));
+        if(!invite) {
+            throw new InviteNotFound("Invite not found with id");
+        }
+        return invite;
     }
 
     // Get invite by visitor id-number and invite date
