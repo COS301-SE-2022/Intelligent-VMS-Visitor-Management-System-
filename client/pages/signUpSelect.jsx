@@ -50,9 +50,13 @@ const SignUpSelect = () => {
 
                                 </div>
 
-                                <div>
-                                    <a href={"/receptionistSignUp"}><span className="text-sm font-bold md:text-base">Receptionist</span></a>
-                                </div> 
+                                <div className="flex items-center space-x-3">
+                                    <Link href="/receptionistSignUp"> 
+                                        <a>
+                                            <span className="text-sm font-bold md:text-base">Receptionist</span>
+                                        </a>
+                                    </Link>
+                                </div>
                             </form>
 
             </div>
