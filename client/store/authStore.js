@@ -77,6 +77,7 @@ const useAuth = create(
                     return [
                         { content: "Login", path: "/login" },
                         { content: "SignUpSelect", path: "/signUpSelect"}
+
                     ];
                 }
 

@@ -1,4 +1,7 @@
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+
 import { useRouter } from "next/router";
 import { useApolloClient } from "@apollo/client";
 
@@ -22,6 +25,7 @@ const SignUpSelect = () => {
         showCondition: false,
     });
 
+
     return (
         <Layout>
             <div className="relative mb-4 flex h-full min-h-[80vh] w-full flex-col items-center justify-center overflow-hidden">
@@ -29,6 +33,7 @@ const SignUpSelect = () => {
                             
                                 className="prose form-control space-y-4 rounded-xl border p-14"
                             >
+
                                 <h1>What type of account would you like to sign up for? </h1>
         
                                 <p className="text-sm md:text-lg lg:text-xl">
@@ -36,13 +41,20 @@ const SignUpSelect = () => {
                                 </p>
 
                                 <div className="flex items-center space-x-3">
-                                    <a href={"/residentSignUp"}> <span className="text-sm font-bold md:text-base">Resident</span></a>
+
+                                    <Link href="/residentSignUp"> 
+                                        <a>
+                                            <span className="text-sm font-bold md:text-base">Resident</span>
+                                        </a>
+                                    </Link>
+
                                 </div>
 
                                 <div>
                                     <a href={"/receptionistSignUp"}><span className="text-sm font-bold md:text-base">Receptionist</span></a>
                                 </div> 
                             </form>
+
             </div>
         </Layout>
         
