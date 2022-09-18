@@ -8,6 +8,9 @@ import { DeleteUserCommand } from "./commands/impl/deleteUser.command";
 import { AuthorizeUserCommand } from "./commands/impl/authorizeUser.command";
 import { DeauthorizeUserAccountCommand } from "./commands/impl/deauthorizeUserAccount.command";
 import { GetUsersByTypeQuery } from "./queries/impl/getUsersByType.query";
+import { GetNumInvitesQuery } from "./queries/impl/getNumInvites.query";
+import { GetNumInvitesPerResidentQuery } from "./queries/impl/getNumInvitesPerResident.query";
+import { UpdateNumInvitesCommand } from "./commands/impl/updateNumInvites.command";
 
 @Injectable()
 export class UserService {
@@ -28,6 +31,18 @@ export class UserService {
 
     async getUserByEmail(email: string) {
         return this.queryBus.execute(new GetUserQuery(email));
+    }
+
+    async getNumInvites(email: string) {
+        return this.queryBus.execute(new GetNumInvitesQuery(email));
+    }
+
+    async getNumInvitesPerResident() {
+        return this.queryBus.execute(new GetNumInvitesPerResidentQuery());
+    }
+
+    async updateNumInvites(difference: number) {
+        return this.commandBus.execute(new UpdateNumInvitesCommand(difference));
     }
     
     async getUnAuthorizedUsers(permission: number) {

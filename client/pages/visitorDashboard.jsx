@@ -78,9 +78,7 @@ const VisitorDashboard = () => {
     const numInvitesQuery = useQuery(
         gql`
             query {
-                getNumInvitesPerResident {
-                    value
-                }
+                getNumInvites(email: "${token.email}")
             }
         `,
         { fetchPolicy: "network-only" }
@@ -204,7 +202,7 @@ const VisitorDashboard = () => {
 
     useEffect(() => {
         if (!numInvitesQuery.loading && !numInvitesQuery.error) {
-            const maxNum = numInvitesQuery.data.getNumInvitesPerResident.value;
+            const maxNum = numInvitesQuery.data.getNumInvites;
             setMaxNumInvites(maxNum);
             if (maxNumInvites > 0) {
                 const percentage = (openInvites.length / maxNumInvites) * 100;

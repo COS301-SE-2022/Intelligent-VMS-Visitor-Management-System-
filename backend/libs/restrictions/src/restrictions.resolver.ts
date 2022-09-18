@@ -14,11 +14,11 @@ export class RestrictionResolver {
         private restrictionsService: RestrictionsService
     ) {}
     
-    @UseGuards(GqlAuthGuard)
-    @Query((returns) => {return Restriction}, { name: "getNumInvitesPerResident"})
-    async getNumInvitesPerResident() {
-        return this.restrictionsService.getNumInvitesPerResident();
-    }
+    // @UseGuards(GqlAuthGuard)
+    // @Query((returns) => {return Restriction}, { name: "getNumInvitesPerResident"})
+    // async getNumInvitesPerResident() {
+    //     return this.restrictionsService.getNumInvitesPerResident();
+    // }
 
     @UseGuards(GqlAuthGuard, RolesGuard)
     @Roles("admin")

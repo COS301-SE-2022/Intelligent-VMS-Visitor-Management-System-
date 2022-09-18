@@ -125,6 +125,8 @@ type Query {
   searchUser(searchQuery: String!): [SearchUser!]!
   getUnauthorizedUsers: [User!]!
   getUsersByType(permission: Float!): [SearchUser!]!
+  getNumInvitesPerResident: Float!
+  getNumInvites(email: String!): Float!
   helloInvite: String!
   getInvites: [Invite!]!
   getInvitesWithEmail(email: String!): [Invite!]!
@@ -153,7 +155,6 @@ type Query {
   isParkingAvailable(startDate: String!): Boolean!
   getNumberOfReservations(startDate: String!): Float!
   getTotalParking: Float!
-  getNumInvitesPerResident: Restriction!
   getCurfewTime: Restriction!
   helloResident: String!
   helloReceptionist: String!
@@ -164,6 +165,7 @@ type Mutation {
   login(email: String!, password: String!): LoginUser!
   signup(email: String!, password: String!, type: String!, IDDocType: String!, idNumber: String!, name: String!): Boolean!
   verify(verifyID: String!, email: String!): Boolean!
+  updateNumInvites(difference: Float!): Boolean!
   deleteUserAccount(email: String!): Boolean!
   authorizeUserAccount(email: String!): Boolean!
   deauthorizeUserAccount(email: String!): Boolean!

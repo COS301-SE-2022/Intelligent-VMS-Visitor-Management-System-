@@ -74,6 +74,19 @@ export class UserResolver {
         return this.authService.verifyNewAccount(verifyID, email); 
     }
 
+    @UseGuards(GqlAuthGuard, RolesGuard)
+    @Roles("admin")
+    @Mutation((returns) => {return Boolean}, { name: "updateNumInvites"})
+    async updateNumInvites(@Args("difference") difference: number) {
+        try{
+            this.userService.updateNumInvites(difference);
+            return true;
+        }catch(e){
+            return false;
+        }
+        
+    }
+
     // Get all the unauthorized user accounts
     @UseGuards(GqlAuthGuard, RolesGuard)
     @Roles("receptionist", "admin")
@@ -112,5 +125,20 @@ export class UserResolver {
     async getUsersByType(@Args("permission") permission: number) {
         return await this.userService.getUsersByType(permission);
     }
+
+    @UseGuards(GqlAuthGuard, RolesGuard)
+    @Roles("admin")
+    @Query((returns) => { return Number }, { name: "getNumInvitesPerResident"})
+    async getNumInvitesPerResident() {
+        return await this.userService.getNumInvitesPerResident();
+    }
+
+    @UseGuards(GqlAuthGuard)
+    @Query((returns) => { return Number }, { name: "getNumInvites"})
+    async getNumInvites(@Args("email") email: string) {
+        return await this.userService.getNumInvites(email);
+    }
+
+    
 
 }

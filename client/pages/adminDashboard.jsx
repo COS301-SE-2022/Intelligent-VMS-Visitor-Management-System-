@@ -117,9 +117,7 @@ const AdminDashboard = () => {
 
     const numInvitesPerResidentQuery = useQuery(gql`
         query {
-            getNumInvitesPerResident {
-                value
-            }
+            getNumInvitesPerResident
         }
     `);
 
@@ -186,11 +184,10 @@ const AdminDashboard = () => {
     const [setNumInvitesPerResidentMutation, { data, loading, error }] =
         useMutation(gql`
         mutation {
-          setNumInvitesPerResident(numInvites: ${numInvitesPerResident}) {
-            value
-          }
+          updateNumInvites(difference: ${numInvitesPerResident - initialNumInvitesPerResident})
         }
     `);
+
     const [adjustParkingMutation, { }] =
         useMutation(gql`
        mutation {
@@ -375,7 +372,7 @@ const AdminDashboard = () => {
             !numInvitesPerResidentQuery.error
         ) {
             setNumInvitesPerResident(
-                numInvitesPerResidentQuery.data.getNumInvitesPerResident.value
+                numInvitesPerResidentQuery.data.getNumInvitesPerResident
             );
             setInitialNumInvitesPerResident(numInvitesPerResident);
         } else if (numInvitesPerResident.error) {

@@ -16,6 +16,9 @@ import { CreateUserCommandHandler } from "./commands/handlers/createUser.handler
 import { DeleteUserCommandHandler } from "./commands/handlers/deleteUser.handler";
 import { AuthorizeUserCommandHandler } from "./commands/handlers/authorizeUser.handler";
 import { DeauthorizeUserAccountCommandHandler } from "./commands/handlers/deauthorizeUserAccount.handler";
+import { GetNumInvitesPerResidentQueryHandler } from "./queries/handlers/getNumInvitesPerResident.handler";
+import { GetNumInvitesQueryHandler } from "./queries/handlers/getNumInvites.handler";
+import { UpdateNumInvitesCommandHandler } from "./commands/handlers/updateNumInvites.handler";
 
 @Module({
     imports: [
@@ -32,6 +35,9 @@ import { DeauthorizeUserAccountCommandHandler } from "./commands/handlers/deauth
         SearchUserQueryHandler,
         GetUsersByTypeQueryHandler,
         GetUnAuthUsersQueryHandler,
+        GetNumInvitesPerResidentQueryHandler,
+        GetNumInvitesQueryHandler,
+        UpdateNumInvitesCommandHandler,
         AuthorizeUserCommandHandler,
         DeauthorizeUserAccountCommandHandler
     ],
