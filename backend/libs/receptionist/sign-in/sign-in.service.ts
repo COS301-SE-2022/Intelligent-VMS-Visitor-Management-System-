@@ -131,7 +131,7 @@ export class SignInService {
                     { headers: formData.getHeaders() }
                 )
             );
-        
+
             return {
                 trayNo: await this.signIn(inviteID, "", new Date().toLocaleTimeString()),
                 name: invite.visitorName
