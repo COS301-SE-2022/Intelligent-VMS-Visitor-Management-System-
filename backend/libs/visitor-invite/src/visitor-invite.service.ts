@@ -43,6 +43,7 @@ import { GetInvitesForUsersQuery } from "./queries/impl/getInvitesForUsers.query
 import { GetVisitorVisitsQuery } from "./queries/impl/getVisitorVisits.query";
 import { Visitor } from "./models/visitor.model";
 import { GetNumberOfCancellationsOfResidentQuery } from "./queries/impl/getNumberOfCancellationsOfResident.query";
+import { GetNumberOfVisitsOfResidentQuery } from "./queries/impl/getNumberOfVisitsOfResident.query";
 
 @Injectable()
 export class VisitorInviteService {
@@ -235,6 +236,11 @@ export class VisitorInviteService {
     // Get Number of cancelled invites per resident
     async getTotalNumberOfCancellationsOfResident(email: string) {
         return await this.queryBus.execute(new GetNumberOfCancellationsOfResidentQuery(email)); 
+    }
+
+    // Get Number of cancelled invites per resident
+    async getTotalNumberOfVisitsOfResident(email: string) {
+        return await this.queryBus.execute(new GetNumberOfVisitsOfResidentQuery(email)); 
     }
 
     // Get Number of invites per resident

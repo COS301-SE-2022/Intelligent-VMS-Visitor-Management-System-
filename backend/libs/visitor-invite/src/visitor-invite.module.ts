@@ -34,6 +34,8 @@ import { GetVisitorsQueryHandler } from "./queries/handlers/getVisitors.handler"
 import { GetVisitorVisitsQueryHandler } from "./queries/handlers/getVisitorVisits.handler";
 import { GetMostUsedInviteDataQueryHandler } from "./queries/handlers/getMostUsedInviteData.handler";
 import { GetInvitesForUsersQueryHandler } from "./queries/handlers/getInvitesForUsers.handler";
+import { GetTotalNumberOfCancellationOfResidentQueryHandler } from "./queries/handlers/getTotalNumberOfCancellationsOfResident.handler";
+import { GetTotalNumberOfVisitsOfResidentQueryHandler } from "./queries/handlers/getTotalNumberOfVisitsOfResident.handler";
 
 @Module({
     imports: [
@@ -67,6 +69,8 @@ import { GetInvitesForUsersQueryHandler } from "./queries/handlers/getInvitesFor
         GetInvitesInRangeByEmailQueryHandler,
         GetTotalNumberOfInvitesOfResidentQueryHandler,
         GetTotalNumberOfInvitesVisitorQueryHandler,
+        GetTotalNumberOfCancellationOfResidentQueryHandler,
+        GetTotalNumberOfVisitsOfResidentQueryHandler,
         CreateGroupInviteCommandHandler,
         GetNumberOfOpenInvitesQueryHandler,
         GetInvitesForUsersQueryHandler,

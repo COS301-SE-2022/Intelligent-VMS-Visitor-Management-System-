@@ -4,7 +4,6 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Invite, InviteDocument } from "../../schema/invite.schema";
 import { GetNumberOfCancellationsOfResidentQuery } from "../impl/getNumberOfCancellationsOfResident.query";
 
-//Query class to count the total number of invites that have been sent for admin analytics
 @QueryHandler(GetNumberOfCancellationsOfResidentQuery)
 export class GetTotalNumberOfCancellationOfResidentQueryHandler implements IQueryHandler {
     constructor(
@@ -13,7 +12,7 @@ export class GetTotalNumberOfCancellationOfResidentQueryHandler implements IQuer
 
     async execute(query: GetNumberOfCancellationsOfResidentQuery) {
         const { email } = query;
-        const numInvites = await this.inviteModel.find({"$and":[{userEmail: email},{"inviteState":"cancelled"}]}).count();
-        return numInvites;
+        const numCancellations = await this.inviteModel.find({"$and":[{userEmail: email},{"inviteState":"cancelled"}]}).count();
+        return numCancellations;
     }
 }
