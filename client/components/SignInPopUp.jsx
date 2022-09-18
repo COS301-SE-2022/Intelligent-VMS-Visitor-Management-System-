@@ -17,6 +17,7 @@ const SignInPopUp = ({
     setShowSignInModal,
     setSearch,
 }) => {
+    const BACKEND_URL = process.env.BACKEND_URL;
     const token = useAuth((state) => state.access_token);
     const [notes, setNotes] = useState("");
     const [showVerify, setShowVerify] = useState(false);
@@ -53,7 +54,7 @@ const SignInPopUp = ({
         e.currentTarget.classList.add("loading");
         const formData = new FormData();
         formData.append("file", file);
-        const response = await axios.post(`http://localhost:3001/receptionist/signInAndAddFace?inviteID=${verifyData.inviteID}`, formData, {
+        const response = await axios.post(`${BACKEND_URL}/receptionist/signInAndAddFace?inviteID=${verifyData.inviteID}`, formData, {
             headers: {
                 'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
                 'Authorization': `Bearer ${token}`

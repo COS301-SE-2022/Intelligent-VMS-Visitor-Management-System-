@@ -8,6 +8,7 @@ import useAuth from "../store/authStore";
 
 const FaceRec = ({ onSuccess, onAddFace, setFile }) => {
 
+    const BACKEND_URL = process.env.BACKEND_URL;
     const token = useAuth((state) => state.access_token);
     const [options, setOptions] = useState({tryAgain: false, addFace: false});
     const [error, setError] = useState("");
@@ -25,7 +26,7 @@ const FaceRec = ({ onSuccess, onAddFace, setFile }) => {
         const formData = new FormData();
         const file = await urlToFile(imageData, "face.png", "image/png")
         formData.append("file", file);
-        const response = await axios.post("http://localhost:3001/receptionist/compareFace?idNumber=0109195273090", formData, {
+        const response = await axios.post(`${BACKEND_URL}/receptionist/compareFace?idNumber=0109195273090`, formData, {
             headers: {
                 'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
                 'Authorization': `Bearer ${token}`
