@@ -17,6 +17,7 @@ const SignInPopUp = ({
     setShowSignInModal,
     setSearch,
 }) => {
+
     const BACKEND_URL = process.env.BACKEND_URL;
     const token = useAuth((state) => state.access_token);
     const [notes, setNotes] = useState("");
@@ -49,7 +50,7 @@ const SignInPopUp = ({
             console.log(err);
         });
     }
-    
+
     const confirmVerify = async (e) => {
         e.currentTarget.classList.add("loading");
         const formData = new FormData();
