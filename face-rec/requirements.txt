@@ -18,5 +18,6 @@ Werkzeug==2.2.2
 boost==0.1
 cmake
 boost-py
-dlib
 gunicorn==20.0.4
+python-dotenv
+dnspython
