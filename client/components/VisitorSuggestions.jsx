@@ -7,7 +7,7 @@ import { HiEmojiSad } from "react-icons/hi";
 import { AiOutlinePlus,AiOutlineMinus } from "react-icons/ai"
 import useAuth from "../store/authStore.js";
 
-const VisitorSuggestions = ({ date, setName, setFieldValue }) => {
+const VisitorSuggestions = ({ date, setFieldValue }) => {
 
     const formikProps = useFormikContext();
     const [suggestionData, setSuggestionsData] = useState([]);
@@ -78,10 +78,11 @@ const VisitorSuggestions = ({ date, setName, setFieldValue }) => {
 
                             if( idx < amount){
                                 return (
-                                    <button className="" onClick={ () => {
-                                        router.push(
-                                            `/createInvite?name=${visitor.visitorName}&email=${visitor._id}&idNumber=${visitor.idNumber}&idDocType=${visitor.idDocType}`
-                                        );
+                                    <button key={idx} className="" onClick={ () => {
+                                        formikProps.setFieldValue('name', visitor.visitorName); 
+                                        formikProps.setFieldValue('email', visitor._id); 
+                                        formikProps.setFieldValue('idValue', visitor.idNumber); 
+                                        formikProps.setFieldValue('idDocType', visitor.idDocType);
                                     } }>
                                         
                                         <div className="hover:bg-base-200 bg-base-100 shadow-xl mb-3 mx-3 rounded-lg flex">
@@ -98,7 +99,7 @@ const VisitorSuggestions = ({ date, setName, setFieldValue }) => {
                                             </div>
                                         </div>
     
-                                    </ button>
+                                    </button>
                                 )  
                             }
                             

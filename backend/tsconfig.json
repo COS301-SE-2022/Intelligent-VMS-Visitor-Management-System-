@@ -5,6 +5,8 @@
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "allowJs": true,
+    "maxNodeModuleJsDepth": 10,
     "allowSyntheticDefaultImports": true,
     "target": "es2017",
     "sourceMap": true,
