@@ -14,7 +14,7 @@ export class RewardsService {
     async getProfileInfo(email: string) {
         let user = await this.userService.getUserByEmail(email);
         let allRewards = await this.queryBus.execute(new GetAllRewardsQuery());
-        let allBadges = await this.queryBus.execute(new GetAllBadgesQuery());
+        let allBadges = await this.getAllBadges();
         
         let pi = new ProfileInfo();
         pi.allBadges = allBadges;
@@ -22,5 +22,9 @@ export class RewardsService {
         pi.xp = user.xp;
         pi.badges = user.badges;
         return pi;
+    }
+
+    async getAllBadges(){
+        return await this.queryBus.execute(new GetAllBadgesQuery());
     }
 }
