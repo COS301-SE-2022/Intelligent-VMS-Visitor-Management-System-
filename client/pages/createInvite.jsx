@@ -419,16 +419,6 @@ const CreateInvite = ({ name, email, idNumber, idDocType }) => {
     );
 };
 
-/*
-export async function getStaticProps(context) {
-    return {
-        props: {
-            protected: true,
-        },
-    };
-}
-*/
-
 CreateInvite.getInitialProps = async ({ query }) => {
     const { name, email, idNumber, idDocType } = query;
     

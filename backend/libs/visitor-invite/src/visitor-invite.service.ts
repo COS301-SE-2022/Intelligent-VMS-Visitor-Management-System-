@@ -8,6 +8,7 @@ import { randomUUID } from "crypto";
 
 import { CreateInviteCommand } from "./commands/impl/createInvite.command";
 import { CancelInviteCommand } from "./commands/impl/cancelInvite.command";
+import { GetInviteForSignInDataQuery } from "./queries/impl/getInviteForSignInData.query";
 import { GetInvitesQuery } from "./queries/impl/getInvites.query";
 import { GetInviteQuery } from "./queries/impl/getInvite.query";
 import { GetNumberVisitorQuery } from "./queries/impl/getNumberOfVisitors.query";
@@ -47,6 +48,8 @@ import { GetNumberOfVisitsOfResidentQuery } from "./queries/impl/getNumberOfVisi
 
 @Injectable()
 export class VisitorInviteService {
+    AI_BASE_CONNECTION: string;
+
     constructor(private readonly commandBus: CommandBus, 
                 private readonly queryBus: QueryBus, 
                 private readonly httpService: HttpService,
@@ -58,7 +61,9 @@ export class VisitorInviteService {
                 @Inject(CACHE_MANAGER) private cacheManager: Cache,
                 @Inject(forwardRef(() => {return ParkingService}))
                 private readonly parkingService: ParkingService,
-               ) {}
+               ) {
+        this.AI_BASE_CONNECTION = this.configService.get<string>("AI_API_CONNECTION");
+    }
 
     /*
         Create an invitation for a visitor
@@ -172,7 +177,19 @@ export class VisitorInviteService {
 
     //Get invite by ID
     async getInvite(inviteID: string) {
-        return this.queryBus.execute(new GetInviteQuery(inviteID));
+        if(inviteID.length === 0) {
+            throw new InviteNotFound("No invite given");
+        }
+        const invite = await this.queryBus.execute(new GetInviteQuery(inviteID));
+        if(!invite) {
+            throw new InviteNotFound("Invite not found with id");
+        }
+        return invite;
+    }
+
+    // Get invite by visitor id-number and invite date
+    async getInviteForSignInData(idNumber: string, inviteDate: string) {
+        return this.queryBus.execute(new GetInviteForSignInDataQuery(idNumber, inviteDate));
     }
 
     async cancelInvite(email: string, inviteID: string) {
@@ -339,16 +356,13 @@ export class VisitorInviteService {
             return cachedPredictedInvites;
         } else {
             console.log("MISS");
-            const baseURL = this.configService.get<string>("AI_API_CONNECTION");
-            const data = await firstValueFrom(this.httpService.get(`${baseURL}/predict?startDate=${startDate}&endDate=${endDate}`)); 
+            const data = await firstValueFrom(this.httpService.get(`${this.AI_BASE_CONNECTION}/predict?startDate=${startDate}&endDate=${endDate}`)); 
             if(data.data.length === 1) {
                 return [];
             }
             await this.cacheManager.set("PREDICTIONS", data.data, { ttl: 90000 });
-            console.log(data.data);
             return data.data;
         }
-
     }
 
     getMonthsBetweenDates(startDate, endDate) {
@@ -361,18 +375,17 @@ export class VisitorInviteService {
         return (
           (endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24)
         );
-      }
+    }
     
-      getWeekdayBetweenDates(startDate, endDate) {
-
+    getWeekdayBetweenDates(startDate, endDate) {
         return (4 * (endDate.getMonth() - startDate.getMonth()) + 52 * (endDate.getFullYear() - startDate.getFullYear()));
-      }
+    }
 
     async getSuggestions(date: string, userEmail: string){
         let visitors:Visitor[] = JSON.parse(JSON.stringify(await this.queryBus.execute(new GetVisitorVisitsQuery(userEmail))));
         let predDate = new Date(date);
         let suggestions = [];
-
+        
         const today = new Date();
 
         for(let i=0 ; i<visitors.length; i++){
@@ -380,19 +393,23 @@ export class VisitorInviteService {
             let dowCount = 0;
             let monthCount = 0;
         
-            let visitData = JSON.parse(JSON.stringify(visitors[i].visits))
+            const visitData = JSON.parse(JSON.stringify(visitors[i].visits))
             let firstInviteDate = new Date(visitors[i].visits[0]);
 
             for(let j=0 ; j<visitData.length; j++)
             {
-                let currDate = new Date(visitData[j])
-                if(currDate.getMonth() == predDate.getMonth())
+                const currDate = new Date(visitData[j])
+                if(currDate.getMonth() == predDate.getMonth()) {
                     monthCount++;
-                if(currDate.getDay() == predDate.getDay())
-                    dowCount++;
+                }
 
-                if(currDate<firstInviteDate)
-                firstInviteDate = currDate;
+                if(currDate.getDay() == predDate.getDay()) {
+                    dowCount++;
+                }
+
+                if(currDate<firstInviteDate) {
+                    firstInviteDate = currDate;
+                }
             }
 
             let monthTotal = this.getMonthsBetweenDates(firstInviteDate,today);

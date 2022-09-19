@@ -5,10 +5,9 @@ import { ReceptionistService } from "./receptionist.service";
 import { SignInService } from "../sign-in/sign-in.service";
 import { SignOutService } from "../sign-out/sign-out.service";
 import { Invite } from "@vms/visitor-invite/models/invite.model";
-import { stringify } from "querystring";
 import { BSIdata } from "./models/BSIdata.model";
 
-//@UseGuards(GqlAuthGuard)
+@UseGuards(GqlAuthGuard)
 @Resolver((of) => {return Invite})
 export class ReceptionistResolver {
     constructor(
@@ -45,4 +44,5 @@ export class ReceptionistResolver {
     ) {
         return this.signInService.bulkSignIn(decodeURI(file),userEmail);
     }
+
 }
