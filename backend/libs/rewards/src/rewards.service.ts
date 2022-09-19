@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { QueryBus, CommandBus } from "@nestjs/cqrs";
 import { UserService } from '@vms/user';
 import { ProfileInfo } from './models/profileInfo.model';
@@ -9,6 +9,7 @@ import { GetAllRewardsQuery } from './queries/impl/getAllRewards.query';
 export class RewardsService {
     constructor(private queryBus: QueryBus,
                 private commandBus: CommandBus,
+                @Inject(forwardRef(() => {return UserService}))
                 private readonly userService: UserService,) {}
 
     async getProfileInfo(email: string) {

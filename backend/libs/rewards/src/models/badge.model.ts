@@ -16,5 +16,8 @@ export class Badge {
 
     @Field((type) => {return [String]})
     title: string[];
+
+    @Field((type) => {return [Int]})
+    requirements?: number[];
  
 }

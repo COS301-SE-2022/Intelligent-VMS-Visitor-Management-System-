@@ -22,9 +22,9 @@ import { GetMaxCurfewTimePerResidentQuery } from "./queries/impl/getMaxCurfewTim
 export class UserService {
     constructor(private queryBus: QueryBus, 
                 private commandBus: CommandBus, 
-                //private rewardService: RewardsService,
-                //@Inject(forwardRef(() => {return VisitorInviteService}))
-                //private visitorInviteService: VisitorInviteService
+                private rewardService: RewardsService,
+                @Inject(forwardRef(() => {return VisitorInviteService}))
+                private visitorInviteService: VisitorInviteService
                 ) {}
 
     async findOne(email: string) {
@@ -92,5 +92,41 @@ export class UserService {
         return users;
     }
 
-  
+    async calculateBadges(email:string){
+        const user = await this.getUserByEmail(email);
+        const allBadges = await this.rewardService.getAllBadges(); 
+        const badges = user.badges;
+
+        let variable:number;
+        allBadges.forEach(async (badge:Badge,i:number)=>{
+            if(badges[i]<badge.levels){
+                switch(badge.type){
+                    case "invite":
+                        variable = await this.visitorInviteService.getTotalNumberOfInvitesOfResident(email);
+                        break;
+                    case "concept":
+                        //todo fuck knows
+                        break;
+                    case "cancellation":
+                        variable = await this.visitorInviteService.getTotalNumberOfCancellationsOfResident(email);
+                        break;
+                    case "sleepover":
+                        break;
+                    case "visits":
+                        variable = await this.visitorInviteService.getTotalNumberOfVisitsOfResident(email);
+                        break;
+                }
+                let level = badges[i]+1;
+                while(level<=badge.levels){
+                    if(badge.requirements[level]>=variable){
+                        //TODO check if this is a thing
+                        badges[i]=level;
+                    }else{
+                        break;
+                    }
+                }
+            }
+        })
+            
+    }
 }

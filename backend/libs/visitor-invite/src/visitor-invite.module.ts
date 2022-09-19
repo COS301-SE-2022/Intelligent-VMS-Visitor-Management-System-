@@ -44,8 +44,8 @@ import { GetTotalNumberOfVisitsOfResidentQueryHandler } from "./queries/handlers
         HttpModule.register({
             maxRedirects: 5,
         }),
-        UserModule,
-        AuthModule,
+        forwardRef(() => {return UserModule}),
+        forwardRef(() => {return AuthModule}),
         forwardRef(() => {return ParkingModule}),
         MailModule,
         RestrictionsModule,

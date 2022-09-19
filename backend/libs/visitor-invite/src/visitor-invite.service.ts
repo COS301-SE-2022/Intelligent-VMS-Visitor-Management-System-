@@ -53,6 +53,7 @@ export class VisitorInviteService {
                 private readonly configService: ConfigService,
                 private readonly mailService: MailService,
                 private readonly restrictionsService: RestrictionsService,
+                @Inject(forwardRef(() => {return UserService}))
                 private readonly userService: UserService,
                 @Inject(CACHE_MANAGER) private cacheManager: Cache,
                 @Inject(forwardRef(() => {return ParkingService}))

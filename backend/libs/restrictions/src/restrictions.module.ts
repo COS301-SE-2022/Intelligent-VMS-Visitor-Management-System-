@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module,forwardRef } from '@nestjs/common';
 import { MongooseModule } from "@nestjs/mongoose";
 import { CqrsModule } from "@nestjs/cqrs";
 
@@ -14,7 +14,7 @@ import { GetCurfewTimeQueryHandler } from "./queries/handlers/getCurfewTimeQuery
 
 @Module({
     imports: [
-        AuthModule,
+        forwardRef(() => {return AuthModule}),
         CqrsModule,
         MongooseModule.forFeature([{ name: Restriction.name, schema: RestrictionSchema }]),
     ],

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module,forwardRef } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { MongooseModule } from "@nestjs/mongoose";
 import { AuthModule } from '@vms/auth';
@@ -12,8 +12,8 @@ import { Reward, RewardsSchema } from './schema/reward.schema';
 
 @Module({
   imports: [  CqrsModule,
-              UserModule,
-              AuthModule,
+              forwardRef(() => {return AuthModule}),
+              forwardRef(() => {return UserModule}),
               MongooseModule.forFeature([
                   { name: Reward.name, schema: RewardsSchema },
                   { name: Badge.name, schema: BadgesSchema },

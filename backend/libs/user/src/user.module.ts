@@ -23,11 +23,13 @@ import { UpdateMaxCurfewTimeCommandHandler } from "./commands/handlers/updateMax
 import { GetCurfewTimeQueryHandler } from "./queries/handlers/getCurfewTime.handler";
 import { GetMaxCurfewTimePerResidentQueryHandler } from "./queries/handlers/getMaxCurfewTimePerResident.handler";
 import { VisitorInviteModule } from "@vms/visitor-invite";
+import { RewardsModule } from "@vms/rewards";
 
 @Module({
     imports: [
         forwardRef(() => {return AuthModule}),
-        //forwardRef(() => {return VisitorInviteModule}),
+        forwardRef(() => {return RewardsModule}),
+        forwardRef(() => {return VisitorInviteModule}),
         CqrsModule,
         MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     ],

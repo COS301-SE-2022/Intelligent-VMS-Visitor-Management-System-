@@ -87,8 +87,8 @@ export class UserResolver {
         
     }
 
-    // @UseGuards(GqlAuthGuard, RolesGuard)
-    // @Roles("admin")
+    @UseGuards(GqlAuthGuard, RolesGuard)
+    @Roles("admin")
     @Mutation((returns) => {return Boolean}, { name: "updateMaxCurfewTime"})
     async updateMaxCurfewTime(@Args("difference") difference: number) {
         try{
@@ -132,16 +132,16 @@ export class UserResolver {
         return await this.userService.deauthorizeUserAccount(email); 
     }
 
-    // @UseGuards(GqlAuthGuard)
-    // @Mutation((returns) => { return Boolean }, { name: "calculateBadges" })
-    // async calculateBadges(@Args("email") email: string) {
-    //     try{
-    //         await this.userService.calculateBadges(email); 
-    //         return true;
-    //     }catch(e){
-    //         return false;
-    //     }
-    // }
+    @UseGuards(GqlAuthGuard)
+    @Mutation((returns) => { return Boolean }, { name: "calculateBadges" })
+    async calculateBadges(@Args("email") email: string) {
+        try{
+            await this.userService.calculateBadges(email); 
+            return true;
+        }catch(e){
+            return false;
+        }
+    }
 
     @UseGuards(GqlAuthGuard, RolesGuard)
     @Roles("admin")
