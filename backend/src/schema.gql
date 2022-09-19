@@ -86,6 +86,7 @@ type User {
   email: String!
   permission: Int!
   badges: String!
+  signUpTime: String!
 }
 
 type PredictedInviteData {

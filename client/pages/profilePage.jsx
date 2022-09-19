@@ -6,7 +6,7 @@ import {AiFillStar} from "react-icons/ai";
 import {FaFlagCheckered} from "react-icons/fa";
 import {ImCross,ImCheckmark} from "react-icons/im";
 import useAuth from "../store/authStore.js";
-import { gql, useLazyQuery } from "@apollo/client";
+import { gql, useQuery, useMutation, useLazyQuery } from "@apollo/client";
 
 const ProfilePage = () => {
 
@@ -16,14 +16,12 @@ const ProfilePage = () => {
     const [rewards,setRewards] = useState([]);
 
     // Get Data From JWT Token
-    const jwtTokenData = useAuth((state) => {
-        return state.decodedToken;
-    })();
+    const token = useAuth((state) => state.decodedToken)();
 
     const [profileQuery, { loading, error, data }] = useLazyQuery(
         gql`
         query {
-            getProfileInfo( email: "${jwtTokenData.email}" ) {
+            getProfileInfo( email: "${token.email}" ) {
                 xp
                 badges
                 allBadges {
@@ -44,9 +42,17 @@ const ProfilePage = () => {
         { fetchPolicy: "no-cache" }
     );
 
+    const [updateBadges, { }] =
+        useMutation(gql`
+        mutation {
+            calculateBadges( email: "${token.email}" ) 
+        }
+    `);
+
     const router = useRouter();
     useEffect(() => {
 
+        updateBadges();
         profileQuery();
         if (!loading && !error) {
             if (data) {
@@ -71,12 +77,12 @@ const ProfilePage = () => {
             <div className="avatar placeholder m-3">
                 <div className="w-20 rounded-full bg-secondary text-neutral-content">
                     <span className="text-5xl capitalize">
-                        {jwtTokenData.name[0]}
+                        {token.name[0]}
                     </span>
                 </div>
             </div>
             <div className="flex flex-col justify-center items-center">
-                <div className="text-xl font-bold capitalize">{jwtTokenData.name}</div>
+                <div className="text-xl font-bold capitalize">{token.name}</div>
                 <h3 className='text-primary' >Level 3 </h3>
             </div>
         </div>

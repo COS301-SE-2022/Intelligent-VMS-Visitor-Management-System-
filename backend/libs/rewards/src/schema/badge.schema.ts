@@ -19,6 +19,9 @@ export class Badge {
 
     @Prop()
     desc: string[];
+
+    @Prop()
+    requirements: number[];
 }
 
 export const BadgesSchema = SchemaFactory.createForClass(Badge);

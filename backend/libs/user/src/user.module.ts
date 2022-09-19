@@ -24,6 +24,8 @@ import { GetCurfewTimeQueryHandler } from "./queries/handlers/getCurfewTime.hand
 import { GetMaxCurfewTimePerResidentQueryHandler } from "./queries/handlers/getMaxCurfewTimePerResident.handler";
 import { VisitorInviteModule } from "@vms/visitor-invite";
 import { RewardsModule } from "@vms/rewards";
+import { UpdateUserCommandHandler } from "./commands/handlers/updateUser.handler";
+import { GetDaysWithVMSQueryHandler } from "./queries/handlers/getDaysWithVMS.handler";
 
 @Module({
     imports: [
@@ -47,7 +49,9 @@ import { RewardsModule } from "@vms/rewards";
         UpdateMaxInvitesCommandHandler,
         GetMaxCurfewTimePerResidentQueryHandler,
         GetCurfewTimeQueryHandler,
+        GetDaysWithVMSQueryHandler,
         UpdateMaxCurfewTimeCommandHandler,
+        UpdateUserCommandHandler,
         AuthorizeUserCommandHandler,
         DeauthorizeUserAccountCommandHandler
     ],

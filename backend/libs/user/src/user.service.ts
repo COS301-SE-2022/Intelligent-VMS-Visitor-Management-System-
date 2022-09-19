@@ -17,6 +17,8 @@ import { VisitorInviteService } from "@vms/visitor-invite";
 import { GetCurfewTimeQuery } from "./queries/impl/getCurfewTime.query";
 import { UpdateMaxCurfewTimeCommand } from "./commands/impl/updateMaxCurfewTime.command";
 import { GetMaxCurfewTimePerResidentQuery } from "./queries/impl/getMaxCurfewTimePerResident.query";
+import { UpdateUserCommand } from "./commands/impl/updateUser.command";
+import { GetDaysWithVMSQuery } from "./queries/impl/getDaysWithVMS.query";
 
 @Injectable()
 export class UserService {
@@ -92,41 +94,65 @@ export class UserService {
         return users;
     }
 
+    async getDaysWithVMS(email: string) {
+        return await this.queryBus.execute(new GetDaysWithVMSQuery(email));
+    }
+
+    async updateUser(email: string, badges:string, xp:number) {
+        this.commandBus.execute(new UpdateUserCommand(email,badges,xp));
+    }
+
     async calculateBadges(email:string){
         const user = await this.getUserByEmail(email);
-        const allBadges = await this.rewardService.getAllBadges(); 
-        const badges = user.badges;
+        const allBadges = await this.rewardService.getAllBadges();
+        let badges = user.badges;
+        let i = 0;
 
         let variable:number;
-        allBadges.forEach(async (badge:Badge,i:number)=>{
-            if(badges[i]<badge.levels){
+        let change = false;
+        let xp = 0;
+        // allBadges.forEach(async (badge:Badge,i:number)=>{
+        for( let badge of allBadges){
+            if(parseInt(badges.charAt(i))<badge.levels){
                 switch(badge.type){
                     case "invite":
                         variable = await this.visitorInviteService.getTotalNumberOfInvitesOfResident(email);
                         break;
-                    case "concept":
-                        //todo fuck knows
-                        break;
-                    case "cancellation":
-                        variable = await this.visitorInviteService.getTotalNumberOfCancellationsOfResident(email);
-                        break;
-                    case "sleepover":
-                        break;
-                    case "visits":
-                        variable = await this.visitorInviteService.getTotalNumberOfVisitsOfResident(email);
-                        break;
+    //             case "concept":
+    //                 //todo fuck knows
+    //                 break;
+                case "cancellation":
+                    variable = await this.visitorInviteService.getTotalNumberOfCancellationsOfResident(email);
+                    break;
+    //             case "sleepover":
+    //                 break;
+                case "time":
+                    variable = await this.getDaysWithVMS(email);
+                    console.log("days "+variable);
+                    break;
+                case "visits":
+                    variable = await this.visitorInviteService.getTotalNumberOfVisitsOfResident(email);
+                    break;
                 }
-                let level = badges[i]+1;
+                let level = parseInt(badges.charAt(i))+1;
                 while(level<=badge.levels){
-                    if(badge.requirements[level]>=variable){
-                        //TODO check if this is a thing
-                        badges[i]=level;
+                    if(badge.requirements[level-1]<=variable){
+                        change = true;
+                        badges = badges.slice(0,i)+level.toString()+badges.slice(i+1);
+                        xp += badge.xp[level-1];
                     }else{
                         break;
                     }
-                }
-            }
-        })
-            
+                level++;
+                }   
+        }
+        i++;
+        }
+
+        if(change){
+            this.updateUser(email,badges,xp);
+        }
+        
+
     }
 }
