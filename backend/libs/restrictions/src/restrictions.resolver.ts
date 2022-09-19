@@ -15,9 +15,9 @@ export class RestrictionResolver {
     ) {}
     
     // @UseGuards(GqlAuthGuard)
-    // @Query((returns) => {return Restriction}, { name: "getNumInvitesPerResident"})
-    // async getNumInvitesPerResident() {
-    //     return this.restrictionsService.getNumInvitesPerResident();
+    // @Query((returns) => {return Restriction}, { name: "getMaxInvitesPerResident"})
+    // async getMaxInvitesPerResident() {
+    //     return this.restrictionsService.getMaxInvitesPerResident();
     // }
 
     @UseGuards(GqlAuthGuard, RolesGuard)
@@ -27,11 +27,11 @@ export class RestrictionResolver {
         return this.restrictionsService.setNumInvitesPerResident(numInvites);
     }
 
-    @UseGuards(GqlAuthGuard)
-    @Query((returns) => {return Restriction}, { name: "getCurfewTime"})
-    async getCurfewTime() {
-        return this.restrictionsService.getCurfewTime();
-    }
+    // @UseGuards(GqlAuthGuard)
+    // @Query((returns) => {return Restriction}, { name: "getCurfewTime"})
+    // async getCurfewTime() {
+    //     return this.restrictionsService.getCurfewTime();
+    // }
 
     @UseGuards(GqlAuthGuard, RolesGuard)
     @Roles("admin")

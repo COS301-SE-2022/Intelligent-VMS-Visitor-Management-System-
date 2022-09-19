@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import { QueryBus, CommandBus } from "@nestjs/cqrs";
 import { SearchUserQuery } from "./queries/impl/searchUser.query";
 import { GetUserQuery } from "./queries/impl/getUser.query";
@@ -9,12 +9,23 @@ import { AuthorizeUserCommand } from "./commands/impl/authorizeUser.command";
 import { DeauthorizeUserAccountCommand } from "./commands/impl/deauthorizeUserAccount.command";
 import { GetUsersByTypeQuery } from "./queries/impl/getUsersByType.query";
 import { GetNumInvitesQuery } from "./queries/impl/getNumInvites.query";
-import { GetNumInvitesPerResidentQuery } from "./queries/impl/getNumInvitesPerResident.query";
-import { UpdateNumInvitesCommand } from "./commands/impl/updateNumInvites.command";
+import { GetMaxInvitesPerResidentQuery } from "./queries/impl/getMaxInvitesPerResident.query";
+import { UpdateMaxInvitesCommand } from "./commands/impl/updateMaxInvites.command";
+import { RewardsService } from "@vms/rewards";
+import { Badge } from "@vms/rewards/models/badge.model";
+import { VisitorInviteService } from "@vms/visitor-invite";
+import { GetCurfewTimeQuery } from "./queries/impl/getCurfewTime.query";
+import { UpdateMaxCurfewTimeCommand } from "./commands/impl/updateMaxCurfewTime.command";
+import { GetMaxCurfewTimePerResidentQuery } from "./queries/impl/getMaxCurfewTimePerResident.query";
 
 @Injectable()
 export class UserService {
-    constructor(private queryBus: QueryBus, private commandBus: CommandBus) {}
+    constructor(private queryBus: QueryBus, 
+                private commandBus: CommandBus, 
+                //private rewardService: RewardsService,
+                //@Inject(forwardRef(() => {return VisitorInviteService}))
+                //private visitorInviteService: VisitorInviteService
+                ) {}
 
     async findOne(email: string) {
         return this.queryBus.execute(new GetUserQuery(email));
@@ -37,12 +48,24 @@ export class UserService {
         return this.queryBus.execute(new GetNumInvitesQuery(email));
     }
 
-    async getNumInvitesPerResident() {
-        return this.queryBus.execute(new GetNumInvitesPerResidentQuery());
+    async getMaxInvitesPerResident() {
+        return this.queryBus.execute(new GetMaxInvitesPerResidentQuery());
     }
 
-    async updateNumInvites(difference: number) {
-        return this.commandBus.execute(new UpdateNumInvitesCommand(difference));
+    async updateMaxInvites(difference: number) {
+        return this.commandBus.execute(new UpdateMaxInvitesCommand(difference));
+    }
+
+    async getCurfewTime(email: string) {
+        return this.queryBus.execute(new GetCurfewTimeQuery(email));
+    }
+
+    async getMaxCurfewTimePerResident() {
+        return this.queryBus.execute(new GetMaxCurfewTimePerResidentQuery());
+    }
+
+    async updateMaxCurfewTime(difference: number) {
+        return this.commandBus.execute(new UpdateMaxCurfewTimeCommand(difference));
     }
     
     async getUnAuthorizedUsers(permission: number) {
@@ -68,4 +91,6 @@ export class UserService {
         const users = await this.queryBus.execute(new GetUsersByTypeQuery(permission));
         return users;
     }
+
+  
 }

@@ -1,3 +1,3 @@
-export class UpdateNumInvitesCommand {
+export class UpdateMaxCurfewTimeCommand {
     constructor(public readonly difference: number) {}
 }

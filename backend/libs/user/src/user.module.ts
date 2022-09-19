@@ -18,11 +18,16 @@ import { AuthorizeUserCommandHandler } from "./commands/handlers/authorizeUser.h
 import { DeauthorizeUserAccountCommandHandler } from "./commands/handlers/deauthorizeUserAccount.handler";
 import { GetMaxInvitesPerResidentQueryHandler } from "./queries/handlers/getMaxInvitesPerResident.handler";
 import { GetNumInvitesQueryHandler } from "./queries/handlers/getNumInvites.handler";
-import { UpdateNumInvitesCommandHandler } from "./commands/handlers/updateNumInvites.handler";
+import { UpdateMaxInvitesCommandHandler } from "./commands/handlers/updateMaxInvites.handler";
+import { UpdateMaxCurfewTimeCommandHandler } from "./commands/handlers/updateMaxCurfewTime.handler";
+import { GetCurfewTimeQueryHandler } from "./queries/handlers/getCurfewTime.handler";
+import { GetMaxCurfewTimePerResidentQueryHandler } from "./queries/handlers/getMaxCurfewTimePerResident.handler";
+import { VisitorInviteModule } from "@vms/visitor-invite";
 
 @Module({
     imports: [
         forwardRef(() => {return AuthModule}),
+        //forwardRef(() => {return VisitorInviteModule}),
         CqrsModule,
         MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     ],
@@ -37,7 +42,10 @@ import { UpdateNumInvitesCommandHandler } from "./commands/handlers/updateNumInv
         GetUnAuthUsersQueryHandler,
         GetMaxInvitesPerResidentQueryHandler,
         GetNumInvitesQueryHandler,
-        UpdateNumInvitesCommandHandler,
+        UpdateMaxInvitesCommandHandler,
+        GetMaxCurfewTimePerResidentQueryHandler,
+        GetCurfewTimeQueryHandler,
+        UpdateMaxCurfewTimeCommandHandler,
         AuthorizeUserCommandHandler,
         DeauthorizeUserAccountCommandHandler
     ],

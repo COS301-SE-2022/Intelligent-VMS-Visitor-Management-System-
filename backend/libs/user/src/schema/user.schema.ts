@@ -34,6 +34,12 @@ export class User {
 
     @Prop()
     numInvites: number;
+
+    @Prop()
+    curfewTime: number;
+
+    @Prop()
+    sleepovers: number;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
