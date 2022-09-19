@@ -117,7 +117,7 @@ const AdminDashboard = () => {
 
     const numInvitesPerResidentQuery = useQuery(gql`
         query {
-            getNumInvitesPerResident
+            getMaxInvitesPerResident
         }
     `);
 
@@ -372,7 +372,7 @@ const AdminDashboard = () => {
             !numInvitesPerResidentQuery.error
         ) {
             setNumInvitesPerResident(
-                numInvitesPerResidentQuery.data.getNumInvitesPerResident
+                numInvitesPerResidentQuery.data.getMaxInvitesPerResident
             );
             setInitialNumInvitesPerResident(numInvitesPerResident);
         } else if (numInvitesPerResident.error) {

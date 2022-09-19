@@ -1,5 +1,5 @@
 /*eslint-disable*/
-export class GetNumInvitesPerResidentQuery {
+export class GetMaxInvitesPerResidentQuery {
     constructor() {}
 }
 /*eslint-enable*/

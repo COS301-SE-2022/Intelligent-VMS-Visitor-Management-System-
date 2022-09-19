@@ -5,7 +5,7 @@ import { Invite, InviteDocument } from "../../schema/invite.schema";
 import { GetNumberOfCancellationsOfResidentQuery } from "../impl/getNumberOfCancellationsOfResident.query";
 
 @QueryHandler(GetNumberOfCancellationsOfResidentQuery)
-export class GetTotalNumberOfCancellationOfResidentQueryHandler implements IQueryHandler {
+export class GetTotalNumberOfCancellationsOfResidentQueryHandler implements IQueryHandler {
     constructor(
         @InjectModel(Invite.name) private inviteModel: Model<InviteDocument>,
     ) {}

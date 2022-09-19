@@ -58,7 +58,7 @@ describe('RestrictionsService', () => {
   });
 
   it("should return a valid number of invites", async () => {
-        const res = await service.getNumInvitesPerResident();
+        const res = await service.getMaxInvitesPerResident();
         expect(res.numInvites).toBeDefined();
   });
 
@@ -81,7 +81,7 @@ describe('RestrictionsService', () => {
       const res = await service.setNumInvitesPerResident(1);
       expect(res).toEqual(true);
 
-      const val = await service.getNumInvitesPerResident();
+      const val = await service.getMaxInvitesPerResident();
       expect(val.numInvites).toEqual(1);
   });
 

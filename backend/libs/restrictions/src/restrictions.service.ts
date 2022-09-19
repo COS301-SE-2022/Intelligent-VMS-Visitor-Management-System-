@@ -16,7 +16,7 @@ export class RestrictionsService {
     }
 
     // Set the number of invites a resident may have sent/open at once
-    async getNumInvitesPerResident() {
+    async getMaxInvitesPerResident() {
         return await this.queryBus.execute(new GetNumInvitesQuery());
     }
 

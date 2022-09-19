@@ -16,7 +16,7 @@ import { CreateUserCommandHandler } from "./commands/handlers/createUser.handler
 import { DeleteUserCommandHandler } from "./commands/handlers/deleteUser.handler";
 import { AuthorizeUserCommandHandler } from "./commands/handlers/authorizeUser.handler";
 import { DeauthorizeUserAccountCommandHandler } from "./commands/handlers/deauthorizeUserAccount.handler";
-import { GetNumInvitesPerResidentQueryHandler } from "./queries/handlers/getNumInvitesPerResident.handler";
+import { GetMaxInvitesPerResidentQueryHandler } from "./queries/handlers/getMaxInvitesPerResident.handler";
 import { GetNumInvitesQueryHandler } from "./queries/handlers/getNumInvites.handler";
 import { UpdateNumInvitesCommandHandler } from "./commands/handlers/updateNumInvites.handler";
 
@@ -35,7 +35,7 @@ import { UpdateNumInvitesCommandHandler } from "./commands/handlers/updateNumInv
         SearchUserQueryHandler,
         GetUsersByTypeQueryHandler,
         GetUnAuthUsersQueryHandler,
-        GetNumInvitesPerResidentQueryHandler,
+        GetMaxInvitesPerResidentQueryHandler,
         GetNumInvitesQueryHandler,
         UpdateNumInvitesCommandHandler,
         AuthorizeUserCommandHandler,

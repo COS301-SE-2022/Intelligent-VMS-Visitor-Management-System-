@@ -75,7 +75,7 @@ export class VisitorInviteService {
 
         // If permission level is that of resident check invite limit
         if(permission !== 0 && permission !== 1) {
-            const numInvitesAllowed = await this.restrictionsService.getNumInvitesPerResident();
+            const numInvitesAllowed = await this.restrictionsService.getMaxInvitesPerResident();
             const numInvitesSent = await this.getTotalNumberOfInvitesOfResident(userEmail);
 
             if(numInvitesSent >= numInvitesAllowed) {
@@ -133,7 +133,7 @@ export class VisitorInviteService {
     
             // If permission level is that of resident check invite limit
             if(permission !== 0 && permission !== 1) {
-                const numInvitesAllowed = await this.restrictionsService.getNumInvitesPerResident();
+                const numInvitesAllowed = await this.restrictionsService.getMaxInvitesPerResident();
                 const numInvitesSent = await this.getTotalNumberOfInvitesOfResident(userEmail);
     
                 if(numInvitesSent >= numInvitesAllowed) {

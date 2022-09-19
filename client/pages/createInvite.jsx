@@ -74,9 +74,7 @@ const CreateInvite = ({ name, email, idNumber, idDocType }) => {
 
     const numInvitesQuery = useQuery(gql`
         query {
-            getNumInvitesPerResident {
-                value
-            }
+            getMaxInvitesPerResident
         }
     `);
 
@@ -89,7 +87,7 @@ const CreateInvite = ({ name, email, idNumber, idDocType }) => {
     useEffect(() => {
         if (!numInvitesQuery.loading && !numInvitesQuery.error) {
             setNumInvitesAllowed(
-                numInvitesQuery.data.getNumInvitesPerResident.value
+                numInvitesQuery.data.getMaxInvitesPerResident
             );
         } else if (numInvitesQuery.error) {
             if (numInvitesQuery.error.message === "Unauthorized") {

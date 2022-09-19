@@ -75,7 +75,7 @@ export const unAuthInvitesMock = [{
     request: {
         query: gql`
             query {
-                getNumInvitesPerResident {
+                getMaxInvitesPerResident {
                     value
               }
             }
@@ -104,7 +104,7 @@ export const inviteLimitReached = [{
     request: {
         query: gql`
             query {
-                getNumInvitesPerResident {
+                getMaxInvitesPerResident {
                     value
               }
             }
@@ -112,7 +112,7 @@ export const inviteLimitReached = [{
     },
     result: {
         data: {
-            getNumInvitesPerResident: {
+            getMaxInvitesPerResident: {
                 value: 3
             }
         }
@@ -139,7 +139,7 @@ export const inviteLimitNotReached = [{
     request: {
         query: gql`
             query {
-                getNumInvitesPerResident {
+                getMaxInvitesPerResident {
                     value
               }
             }
@@ -147,7 +147,7 @@ export const inviteLimitNotReached = [{
     },
     result: {
         data: {
-            getNumInvitesPerResident: {
+            getMaxInvitesPerResident: {
                 value: 3
             }
         }
