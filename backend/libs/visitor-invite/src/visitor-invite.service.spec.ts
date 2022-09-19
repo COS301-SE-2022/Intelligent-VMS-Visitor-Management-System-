@@ -1,6 +1,6 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { CACHE_MANAGER } from "@nestjs/common";
-import { CommandBus, IQuery, QueryBus } from "@nestjs/cqrs";
+import { CommandBus, ICommand, IQuery, QueryBus } from "@nestjs/cqrs";
 import { ConfigService } from "@nestjs/config";
 import { HttpModule } from "@nestjs/axios";
 import { VisitorInviteService } from "./visitor-invite.service";
@@ -13,12 +13,19 @@ import { UserService } from "@vms/user";
 import { MailService } from "@vms/mail";
 import { ParkingService } from "@vms/parking/parking.service";
 import { RestrictionsService } from "@vms/restrictions/restrictions.service";
+import { SchedulerRegistry } from "@nestjs/schedule";
+import { ExtendInvitesCommand } from "./commands/impl/extendInvites.command";
+import { CronJob } from "cron";
 
 describe("VisitorInviteService", () => {
     let service: VisitorInviteService;
 
     const commandBusMock = {
-        execute: jest.fn((command) => ({})),
+        execute: jest.fn((command: ICommand) => {
+            if(command instanceof ExtendInvitesCommand){
+                return 2300
+            }
+        }),
     };
 
     const queryBusMock = {
@@ -85,11 +92,27 @@ describe("VisitorInviteService", () => {
         sendInvite: jest.fn(() => ({ messageId: 'id' })),
         sendCancelNotice: jest.fn(() => ({ messageId: 'id' })),
     };
+
     const parkingServiceMock = {
         isParkingAvailable: jest.fn(() => true),
         reserveParking: jest.fn(() => ({})),
         unreserveParking: jest.fn(() => ({})),
     };
+
+    const scheduleMock = {
+        addCronJob: jest.fn(()=>({})),
+        deleteCronJob: jest.fn(()=>({})),
+    };
+
+    // jest.mock('cron', () => {
+    //     const actual = jest.requireActual('cron');
+    //     return {
+    //         ...actual,
+    //         CronJob: jest.fn().mockReturnValue({
+    //             start: jest.fn(() => {})
+    //         }),
+    //     }
+    // });
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
@@ -101,6 +124,10 @@ describe("VisitorInviteService", () => {
                 MailService,
                 RestrictionsService,
                 UserService,
+                { provide: CronJob, useValue: {
+                    start: ()=>{console.log("j")}
+                }},
+                { provide: SchedulerRegistry, useValue: scheduleMock},
                 { provide: ParkingService, useValue: parkingServiceMock },
                 { provide: CommandBus, useValue: commandBusMock },
                 { provide: MailService, useValue: mailServiceMock },

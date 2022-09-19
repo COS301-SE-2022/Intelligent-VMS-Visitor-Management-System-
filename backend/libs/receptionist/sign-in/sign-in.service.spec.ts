@@ -21,6 +21,7 @@ import { GetInviteQuery } from '@vms/visitor-invite/queries/impl/getInvite.query
 import { RestrictionsService } from "@vms/restrictions";
 import { SignInService } from './sign-in.service';
 import { async } from 'rxjs';
+import { SchedulerRegistry } from '@nestjs/schedule';
 
 describe('SignInService', () => {
   let service: SignInService;
@@ -166,6 +167,10 @@ describe('SignInService', () => {
     })
   };
 
+  const scheduleMock = {
+    addCronJob: jest.fn(()=>({})),
+    deleteCronJob: jest.fn(()=>({})),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -186,6 +191,7 @@ describe('SignInService', () => {
             set: () => { return jest.fn() },
           },
         },
+        { provide: SchedulerRegistry, useValue: scheduleMock},
         {
           provide: QueryBus, useValue: queryBusMock
         },

@@ -1,9 +1,10 @@
-import { forwardRef, Inject, Injectable, CACHE_MANAGER } from "@nestjs/common";
+import { forwardRef, Inject, Injectable, CACHE_MANAGER, OnModuleInit } from "@nestjs/common";
 import { Cache } from 'cache-manager';
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import { HttpService } from "@nestjs/axios";
 import { ConfigService } from "@nestjs/config";
-import { Cron } from '@nestjs/schedule';
+import { Cron,SchedulerRegistry  } from '@nestjs/schedule';
+import { CronJob } from "cron";
 import { randomUUID } from "crypto";
 
 import { CreateInviteCommand } from "./commands/impl/createInvite.command";
@@ -43,9 +44,14 @@ import { UserService } from "@vms/user";
 import { GetInvitesForUsersQuery } from "./queries/impl/getInvitesForUsers.query";
 import { GetVisitorVisitsQuery } from "./queries/impl/getVisitorVisits.query";
 import { Visitor } from "./models/visitor.model";
+import { ExtendInvitesCommand } from "./commands/impl/extendInvites.command";
+import { CancelInvitesCommand } from "./commands/impl/cancelInvites.command";
 
 @Injectable()
-export class VisitorInviteService {
+export class VisitorInviteService  {
+    private curfewHour: number;
+    private curfewMinute: number;
+
     AI_BASE_CONNECTION: string;
 
     constructor(private readonly commandBus: CommandBus, 
@@ -53,13 +59,53 @@ export class VisitorInviteService {
                 private readonly httpService: HttpService,
                 private readonly configService: ConfigService,
                 private readonly mailService: MailService,
+                @Inject(forwardRef(() => {return RestrictionsService}))
                 private readonly restrictionsService: RestrictionsService,
                 private readonly userService: UserService,
                 @Inject(CACHE_MANAGER) private cacheManager: Cache,
                 @Inject(forwardRef(() => {return ParkingService}))
                 private readonly parkingService: ParkingService,
-               ) {
-        this.AI_BASE_CONNECTION = this.configService.get<string>("AI_API_CONNECTION");
+                private schedulerRegistry: SchedulerRegistry
+               ) { 
+                    this.AI_BASE_CONNECTION = this.configService.get<string>("AI_API_CONNECTION");
+                    
+                    const job = new CronJob(`59 23 * * *`, () => {
+                        this.commandBus.execute(new ExtendInvitesCommand());  
+                        this.commandBus.execute(new CancelInvitesCommand());
+                    })
+            
+                    this.schedulerRegistry.addCronJob("extendInvites", job);
+                    job.start();
+               }
+            
+     /*
+        Update/synchronise curfew details and cron job
+    */
+    async setCurfewDetails( curfewTime:number ){
+
+        let len = curfewTime.toString().length;
+
+        if(len>2){
+            this.curfewHour = Number(curfewTime.toString().slice(0,-2));  
+        }else{
+            this.curfewHour = 0
+        }
+
+        if(len==1){
+            this.curfewMinute = this.curfewMinute;
+        }else{
+            this.curfewMinute = Number(curfewTime.toString().slice(len-2,len));
+        }
+
+        this.schedulerRegistry.deleteCronJob("extendInvites");
+
+        const job = new CronJob(`${this.curfewMinute.toString()} ${this.curfewHour.toString()} * * *`, async() => {
+            this.commandBus.execute(new ExtendInvitesCommand()); 
+            this.commandBus.execute(new CancelInvitesCommand()); 
+        })
+
+        this.schedulerRegistry.addCronJob("extendInvites", job);
+        job.start();
     }
 
     /*
@@ -405,7 +451,7 @@ export class VisitorInviteService {
 
             let pYes = monthCount/monthTotal * dowCount/dowTotal * visitors[i].numInvites/dayTotal
             //let pNo = (monthTotal-monthCount)/monthTotal * (dowTotal-dowCount)/dowTotal * (dayTotal-visitors[i].numInvites)/dayTotal
-
+            
             let suggestion = new Visitor()
             suggestion.visitorName = visitors[i].visitorName;
             suggestion._id = visitors[i]._id;
@@ -440,6 +486,7 @@ export class VisitorInviteService {
         return finalSuggestions;
     }
 
+    //TODO do the same for parking
     /* CRON JOBS */
     @Cron("50 23 * * *")
     async groupInvites() {
