@@ -1,0 +1,27 @@
+name: Face Rec Deploy
+
+on:
+  push:
+    branches: [ main,develop ]
+
+  workflow_dispatch:
+
+jobs:
+  cicd:
+    runs-on: ubuntu-latest
+    environment: vms
+    steps:
+      - name: "⚡ Checkout"
+        uses: actions/checkout@v3
+        
+      - name: "⭐️ Deploy container"  
+        uses: gonuit/heroku-docker-deploy@v1.3.2
+        with:
+          email: ${{ secrets.HEROKU_EMAIL }}
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: "vms-capstone-face-rec"
+          dockerfile_directory: ./face-rec
+          dockerfile_name: Dockerfile
+          docker_options: "--no-cache"
+          process_type: web
+
