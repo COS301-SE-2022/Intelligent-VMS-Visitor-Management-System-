@@ -14,6 +14,7 @@ import useAuth from "../store/authStore";
 
 const SignInPopUp = ({
     refetch,
+    showSignInModal,
     setShowSignInModal,
     setSearch,
 }) => {
@@ -28,7 +29,8 @@ const SignInPopUp = ({
     const client = useApolloClient();
     
     const getInvite = (inviteID) => {
-        client.query({
+        console.log(showSignInModal);
+        showSignInModal && client.query({
             query: gql`
                 query {
                     getInvite(inviteID: "${inviteID}") {
@@ -37,7 +39,8 @@ const SignInPopUp = ({
                         userEmail,
                         idDocType,
                         idNumber,
-                        inviteDate
+                        inviteDate,
+                        inviteState
                     }
                 }
             `
@@ -99,8 +102,11 @@ const SignInPopUp = ({
     };
 
     const onAddFace = (inviteID) => {
-        setShowVerify(true);
-        getInvite(inviteID);
+        console.log("HERE!")
+        if(showSignInModal) {
+            setShowVerify(true);
+            getInvite(inviteID);
+        }
     };
     
     const cancelAddFace = () => {

@@ -3,11 +3,24 @@ import { MdPassword } from "react-icons/md";
 import { AiFillCar } from "react-icons/ai";
 import { BsFillCalendarEventFill, BsFillPersonCheckFill } from "react-icons/bs";
 import { IoFileTrayFull } from "react-icons/io5";
+import { visit } from "graphql";
 
 const VisitInfoModal = ({ setShowInfo, visitModalData }) => {
     if (!visitModalData) {
         return <div className="progress"></div>;
     }
+    
+    const transformStateString = (state) => {
+        if(state === "inActive") {
+            return "Inactive";
+        } else if(state === "signedIn") {
+            return "Signed In";
+        } else if(state === "signedOut") {
+            return "Signed Out";
+        } else {
+            return state.toUpperCase();
+        }
+    };
 
     return (
         <div className="flex w-full flex-col">
@@ -21,16 +34,19 @@ const VisitInfoModal = ({ setShowInfo, visitModalData }) => {
                         </div>
                     </div>
                     <div className="flex flex-col justify-center">
-                        <h1 className="text-2xl font-bold capitalize">
+                        <h1 className="text-xl font-bold capitalize">
                             {visitModalData.visitorName}
                         </h1>
                         <div className="badge badge-primary">Visitor</div>
                     </div>
                 </div>
-                <div className="space-y-3">
+                <div className="space-y-1">
                     <div className="flex items-center space-x-3">
                         <BsFillCalendarEventFill className="text-xl" />
                         <p>{visitModalData.inviteDate}</p>
+                    </div>
+                    <div className="flex items-center space-x-3 w-full">
+                        <div className={`badge badge-secondary justify-end`}>{transformStateString(visitModalData.inviteState)}</div>
                     </div>
                     { /*
                     <div className="flex items-center space-x-3">
@@ -74,6 +90,11 @@ const VisitInfoModal = ({ setShowInfo, visitModalData }) => {
                     </p>
                 </div>
             </div>
+            {visitModalData.inviteState === "signedIn" &&
+                <div className="card-actions mt-3 justify-end">
+                    <button className="btn btn-error">Sign Out</button>
+                </div>
+            }
         </div>
     );
 };
