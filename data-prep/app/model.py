@@ -623,19 +623,29 @@ def train():
   startTime = time.time()
 
   #Global parameters
-  params = { 
-      "n_estimators": 100,
-      "max_depth": 3,
-      "min_samples_split": 2,
+  VisParams = { 
+      "n_estimators": 700,
+      "max_depth": 5,
+      "min_samples_split": 5,
       "criterion": "friedman_mse",
-      "learning_rate": 0.1,
+      "learning_rate": 0.05,
       "loss": "squared_error",
       "verbose": True
   }
 
+  ParkParams = { 
+      "n_estimators": 700,
+      "max_depth": 5,
+      "min_samples_split": 8,
+      "criterion": "friedman_mse",
+      "learning_rate": 0.05,
+      "loss": "absolute_error",
+      "verbose": True
+  }
+
   #Create regressor
-  visReg = ensemble.GradientBoostingRegressor(**params)
-  parkReg = ensemble.GradientBoostingRegressor(**params)
+  visReg = ensemble.GradientBoostingRegressor(**VisParams)
+  parkReg = ensemble.GradientBoostingRegressor(**ParkParams)
 
   visData,resData,visOutput,resOutput = generateTrainingData()
 
