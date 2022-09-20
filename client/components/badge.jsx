@@ -72,6 +72,9 @@ const Badge = ({colour,title,type,width,desc,active,level,xp}) => {
 
     return (
         <svg
+        style={{
+            margin:"8px",
+        }}
         width={width}
         height={1.2195*width}
         viewBox="0 0 83.619131 101.97407"
