@@ -132,7 +132,7 @@ export class UserResolver {
         return await this.userService.deauthorizeUserAccount(email); 
     }
 
-    @UseGuards(GqlAuthGuard)
+    //@UseGuards(GqlAuthGuard)
     @Mutation((returns) => { return Boolean }, { name: "calculateBadges" })
     async calculateBadges(@Args("email") email: string) {
         try{
