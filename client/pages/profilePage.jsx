@@ -114,7 +114,7 @@ const ProfilePage = () => {
                     if(parseInt(userBadges[idx])>=i+1){
                         active = true;
                     }   
-                    return <Badge active={active} width={160} level={i+1} type={badge.type} title={badge.title[i]} desc={badge.desc[i]} xp={badge.xp[i]}/>
+                    return <Badge key={i} active={active} width={160} level={i+1} type={badge.type} title={badge.title[i]} desc={badge.desc[i]} xp={badge.xp[i]}/>
                 
                 })      
             })}
@@ -193,5 +193,11 @@ const ProfilePage = () => {
         </Layout>
     );
 }
-
+export async function getStaticProps(context) {
+    return {
+        props: {
+            protected: true,
+        },
+    };
+}
 export default ProfilePage;
