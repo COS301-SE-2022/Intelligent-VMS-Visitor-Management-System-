@@ -624,7 +624,7 @@ def train():
 
   #Global parameters
   VisParams = { 
-      "n_estimators": 700,
+      "n_estimators": 400,
       "max_depth": 5,
       "min_samples_split": 5,
       "criterion": "friedman_mse",
@@ -634,7 +634,7 @@ def train():
   }
 
   ParkParams = { 
-      "n_estimators": 700,
+      "n_estimators": 400,
       "max_depth": 5,
       "min_samples_split": 8,
       "criterion": "friedman_mse",
