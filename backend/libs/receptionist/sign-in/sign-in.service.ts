@@ -11,16 +11,42 @@ import { InvalidSignIn } from '../src/errors/invalidSignIn.error';
 import { Tray } from '@vms/receptionist/models/tray.model';
 import { BulkSignInCommand } from '@vms/receptionist/commands/impl/bulkSignIn.command';
 import { BSIdata } from '@vms/receptionist/models/BSIdata.model';
+import * as FormData from "form-data";
+import { HttpService } from '@nestjs/axios';
+import { ConfigService } from "@nestjs/config";
+import { firstValueFrom } from "rxjs";
 
 @Injectable()
 export class SignInService {
+    FACE_REC_CONNECTION: string;
 
     constructor(private commandBus: CommandBus, 
         private queryBus: QueryBus,
         private parkingService: ParkingService,
+        private readonly httpService: HttpService,
+        private readonly configService: ConfigService,
         private receptionistService: ReceptionistService,
         @Inject(forwardRef(() => {return VisitorInviteService}))
-        private inviteService: VisitorInviteService) {}
+        private inviteService: VisitorInviteService) {
+            this.FACE_REC_CONNECTION = this.configService.get<string>("FACE_REC_API_CONNECTION");
+        }
+
+        formatDate(date: Date) {
+            const d = new Date(date);
+            let month = '' + (d.getMonth() + 1);
+            let day = '' + d.getDate();
+            let year = d.getFullYear();
+
+            if (month.length < 2) {
+                month = '0' + month;
+            } 
+
+            if (day.length < 2) {
+                day = '0' + day;
+            }
+
+            return [year, month, day].join('-');
+        }
 
         async signIn(
             invitationID:string,
@@ -28,32 +54,117 @@ export class SignInService {
             signInTime: string
         ){
             const invite = await this.inviteService.getInvite(invitationID);
+
             if(!invite){
                 throw new InviteNotFound(`Invitation with ID ${invitationID} not found`);
             } else {
-                
                 const today = new Date();
-                if(new Date(invite.inviteDate).getDate() == today.getDate())
-                {
+                if(new Date(invite.inviteDate).getDate() == today.getDate()) {
                     await this.commandBus.execute(
                         new SignInInviteCommand(invitationID,notes,signInTime));
 
-                    if(invite.requiresParking)
-                    {
-                        this.parkingService.assignParking(invitationID);
+                    if(invite.requiresParking) {
+                        await this.parkingService.assignParking(invitationID);
                     }
 
                     const tray = await this.generateTray(invitationID,true,true);
   
                     return tray.trayID;
-
-                }else{
+                } else {
                     throw new InvalidSignIn(`The date on invitation with ID ${invitationID} does not match the sign in date`)
                 }
             }
-  
         }
-            
+
+        async signInFace(
+            idNumber: string,
+        ){
+            const today = new Date();
+            const invite = await this.inviteService.getInviteForSignInData(idNumber, this.formatDate(today));
+
+            if(!invite){
+                return {"error": "Invite not found"};
+            } else {
+                if(new Date(invite.inviteDate).getDate() == today.getDate()) {
+                    await this.commandBus.execute(
+                        new SignInInviteCommand(invite.inviteID, invite.notes, today.toLocaleTimeString()));
+
+                    if(invite.requiresParking) {
+                        await this.parkingService.assignParking(invite.inviteID);
+                    }
+
+                    const tray = await this.generateTray(invite.inviteID,true,true);
+                    
+                    return {
+                        "trayNo": tray.trayID,
+                        "name": invite.visitorName,
+                    }
+                } else {
+                    return {"error": "Invite Date does not match"};
+                }
+            }
+        }
+
+        async uploadFaceFile(file: Express.Multer.File, inviteID: string) {
+            console.log(inviteID);
+            if(!inviteID) {
+                return {
+                    "error": "No invite id provided"
+                }
+            }
+
+            const invite = await this.inviteService.getInvite(inviteID);
+
+            if(!invite) {
+                return {"error": "Invite not found"};
+            } else if (invite.inviteState === "signedIn" || invite.inviteState === "signedOut") {
+                return {"error": "Invite already used"};
+            } 
+
+            const formData = new FormData();
+            formData.append('file', file.buffer, { filename: file.originalname });
+
+            const response = await firstValueFrom(
+                this.httpService.post(
+                    `${this.FACE_REC_CONNECTION}/storeFace?idNumber=${invite.idNumber}&name=${invite.visitorName}`,
+                    formData,
+                    { headers: formData.getHeaders() }
+                )
+            );
+
+            return {
+                trayNo: await this.signIn(inviteID, "", new Date().toLocaleTimeString()),
+                name: invite.visitorName
+            };
+        } 
+
+
+        async compareFaceFile(file: Express.Multer.File, idNumber: string) {
+            if(!idNumber) {
+                return {
+                    "error": "No id-number provided"
+                }
+            }
+
+            const formData = new FormData();
+            formData.append('file', file.buffer, { filename: file.originalname });
+        
+            const response = await firstValueFrom(
+                this.httpService.post(
+                    `${this.FACE_REC_CONNECTION}/compareFaces`,
+                    formData,
+                    { headers: formData.getHeaders() }
+                )
+            );
+
+            if(response.data && response.data.result) {
+                return await this.signInFace(idNumber);
+            } 
+
+            return response.data;
+        }
+
+
         async generateTray(inviteID: string,containsResidentID: boolean,containsVisitorID: boolean):Promise<Tray>{
             //console.log("generating tray");
             return this.commandBus.execute(new generateTrayCommand(await 0, inviteID, containsResidentID, containsVisitorID));

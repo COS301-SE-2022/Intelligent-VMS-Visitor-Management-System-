@@ -1,18 +1,15 @@
 import { useRouter } from "next/router";
-import { useState, useEffect, setState } from "react";
+import { useState, useEffect } from "react";
 import { gql, useApolloClient, useLazyQuery } from "@apollo/client";
-import { alert } from "react-custom-alert";
-import { BiQrScan } from "react-icons/bi";
-import { BsBoxArrowInRight, BsInfoCircle } from "react-icons/bs";
+import { BiQrScan, BiLogIn } from "react-icons/bi";
+import { FaMailBulk } from "react-icons/fa";
+import { BsInfoCircle } from "react-icons/bs";
 import Layout from "../components/Layout";
-import QRScanner from "../components/QRScanner";
 import SignInPopUp from "../components/SignInPopUp";
 import SignOutPopUp from "../components/SignOutPopUp";
 import VisitInfoModal from "../components/VisitInfoModal";
 import ReceptionistSignButton from "../components/receptionistSignButton";
-import InfoAlert from "../components/InfoAlert";
 import UploadPopUp from "../components/UploadPopUp";
-import ErrorAlert from "../components/ErrorAlert";
 import SuccessAlert from "../components/SuccessAlert";
 
 const ReceptionistDashboard = () => {
@@ -209,9 +206,10 @@ const ReceptionistDashboard = () => {
                     )}
                 </div>
 
+
                 <label
                     htmlFor="QRScan-modal"
-                    className="modal-button btn btn-primary btn-sm float-right mx-3 gap-2 md:btn-md"
+                    className="modal-button btn btn-tertiary btn-sm float-right mx-3 gap-2 md:btn-md"
                     onClick={() => setShowScanner(true)}
                 >
                     <BiQrScan />
@@ -223,8 +221,17 @@ const ReceptionistDashboard = () => {
                     className="modal-button btn btn-secondary btn-sm float-right gap-2 md:btn-md"
                     onClick={() => setShowUploadPopUp(true)}
                 >
-                    <BsBoxArrowInRight />
+                    <FaMailBulk />
                     Bulk-SignIn
+                </label>
+
+                <label
+                    htmlFor="signIn-modal"
+                    className="modal-button btn btn-primary btn-sm float-right mx-3 gap-2 md:btn-md"
+                    onClick={() => setShowSignInModal(true)}
+                >
+                    <BiLogIn />
+                    Sign In
                 </label>
             </div>
 
@@ -285,9 +292,8 @@ const ReceptionistDashboard = () => {
                                                                     true
                                                                 );
                                                             }}
-                                                            text="Sign In"
-                                                            colour="bg-success"
-                                                            htmlFor="signIn-modal"
+                                                            text="Not Signed In"
+                                                            colour="bg-tertiary"
                                                         />
                                                     </td>
                                                 ) : (
@@ -313,9 +319,9 @@ const ReceptionistDashboard = () => {
                                                                     true
                                                                 );
                                                             }}
-                                                            text="Sign Out"
+                                                            text="Signed In"
                                                             htmlFor="signOut-modal"
-                                                            colour="bg-error"
+                                                            colour="bg-success"
                                                         />
                                                     </td>
                                                 )
@@ -426,6 +432,7 @@ const ReceptionistDashboard = () => {
                     >
                         ✕
                     </label>
+                    { /*
                     <QRScanner
                         setCurrentVisitData={setCurrentVisitData}
                         setShowScanner={setShowScanner}
@@ -437,6 +444,8 @@ const ReceptionistDashboard = () => {
                         setErrorMessage={setErrorMessage}
                         setShowErrorAlert={setErrorMessage}
                     />
+                   */
+                   }
                 </div>
             </div>
 
@@ -492,6 +501,7 @@ const ReceptionistDashboard = () => {
         </Layout>
     );
 };
+
 export async function getStaticProps(context) {
     return {
         props: {

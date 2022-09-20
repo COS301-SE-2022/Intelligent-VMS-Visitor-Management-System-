@@ -439,7 +439,7 @@ describe('ParkingService', () => {
             await parkingService.assignParking("jippy");
           } catch (error) {
               expect(error).toBeDefined();
-              expect(error.message).toEqual(`Invitation with ID jippy not found`)
+              expect(error.message).toEqual(`Invite not found with id`)
           }
       });
 
@@ -462,7 +462,7 @@ describe('ParkingService', () => {
           await parkingService.unreserveParking("jippy");
         } catch (error) {
             expect(error).toBeDefined();
-            expect(error.message).toEqual(`Invitation with ID jippy not found.`)
+            expect(error.message).toEqual(`Invite not found with id`)
         }
     });
 });
@@ -478,7 +478,7 @@ describe('ParkingService', () => {
               await parkingService.reserveParking("jippy");
           } catch (error) {
               expect(error).toBeDefined();
-              expect(error.message).toEqual("Invitation with ID jippy not found")
+              expect(error.message).toEqual("Invite not found with id")
           }
       });
 
@@ -508,7 +508,7 @@ describe('ParkingService', () => {
             await parkingService.reserveParkingSpace(0,"jippy");
         } catch (error) {
             expect(error).toBeDefined();
-            expect(error.message).toEqual("Invitation with ID jippy not found")
+            expect(error.message).toEqual("Invite not found with id")
         }
     });
 
@@ -694,7 +694,7 @@ describe('ParkingService', () => {
                     await parkingService.getInviteReservation("jippy");
                 } catch (error) {
                     expect(error).toBeDefined();
-                    expect(error.message).toEqual(`Invitation with ID jippy not found.`)
+                    expect(error.message).toEqual(`Invite not found with id`)
                 }
             });
 

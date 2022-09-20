@@ -1,4 +1,5 @@
-import { forwardRef, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
+import { HttpModule } from "@nestjs/axios";
 import { CqrsModule } from '@nestjs/cqrs';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ParkingModule } from '@vms/parking';
@@ -17,18 +18,22 @@ import { ReceptionistService } from './receptionist.service';
 import { Tray,TraySchema } from './schema/tray.schema';
 import {RemoveTrayByInviteIDCommandHandler} from './commands/handler/Tray/removeTrayByInviteID.handler';
 import { BulkSignInCommandHandler } from './commands/handler/bulkSignInCommand.handler';
+import { ReceptionistController } from './receptionist.controller';
 
 @Module({
   imports: [
     CqrsModule,
     VisitorInviteModule,
     ParkingModule,
+    HttpModule.register({
+        maxRedirects: 5,
+    }),
     MongooseModule.forFeature([
       { name: Invite.name, schema: InviteSchema },
       { name: Tray.name, schema: TraySchema },
     ]),
-  
   ],
+  controllers: [ReceptionistController],
   providers: [
     ReceptionistService,
     SignInService,
