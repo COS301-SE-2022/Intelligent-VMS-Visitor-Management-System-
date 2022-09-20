@@ -30,15 +30,15 @@ export class Invite {
     inviteState: string
 
     @Field((type) => {return String})
-    notes?: string
+    notes?: string;
 
     @Field((type)=> {return String})
-    signOutTime?: Date
+    signOutTime?: Date;
 
-    @Field((type)=> {return String})
-    signInTime?: string
+    @Field((type)=> {return String} , {nullable:true})
+    signInTime: string;
 
     @Field((type)=> {return Number})
-    trayNumber?: number
+    trayNumber?: number;
 
 }
