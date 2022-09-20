@@ -14,6 +14,7 @@ const ProfilePage = () => {
     const [userBadges,setUserBadges] = useState("");
     const [badges,setBadges] = useState([]);
     const [rewards,setRewards] = useState([]);
+    const [progress,setProgress] = useState([]);
 
     // Get Data From JWT Token
     const token = useAuth((state) => state.decodedToken)();
@@ -24,6 +25,7 @@ const ProfilePage = () => {
             getProfileInfo( email: "${token.email}" ) {
                 xp
                 badges
+                progress
                 allBadges {
                     type
                     levels
@@ -53,6 +55,7 @@ const ProfilePage = () => {
                 setBadges(info.allBadges);
                 setRewards(info.allRewards);
                 setUserBadges(info.badges);
+                setProgress(info.progress);
             }
         } else if (error) {
             if (error.message === "Unauthorized") {
@@ -86,7 +89,7 @@ const ProfilePage = () => {
                     <span className="truncate text-sm font-bold ml-3">{xp} XP</span>
                 </div>
                 <div className="rounded bg-base-200 h-4 w-full mx-3 content-center">
-                    <div style={{ width: `${xp/400}%`}} className="bg-secondary rounded h-4"></div>
+                    <div style={{ width: `${progress}%`}} className="bg-secondary rounded h-4"></div>
                 </div> 
                 <FaFlagCheckered className="pb-2" size={30}/>
                 <span className='pb-2 ml-2 text-xs' > Maximum Access</span> 

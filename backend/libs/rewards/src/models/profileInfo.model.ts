@@ -1,4 +1,4 @@
-import { Field, Int, ObjectType } from "@nestjs/graphql";
+import { Field, Float, Int, ObjectType } from "@nestjs/graphql";
 import { Badge } from "./badge.model";
 import { Reward } from "./reward.model";
 
@@ -15,4 +15,7 @@ export class ProfileInfo {
 
     @Field((type) => {return [Reward]})
     allRewards: Reward[];
+
+    @Field((type) => {return Float})
+    progress: number;
 }
