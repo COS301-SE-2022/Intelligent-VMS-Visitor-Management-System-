@@ -19,6 +19,7 @@ import { UpdateMaxCurfewTimeCommand } from "./commands/impl/updateMaxCurfewTime.
 import { GetMaxCurfewTimePerResidentQuery } from "./queries/impl/getMaxCurfewTimePerResident.query";
 import { UpdateUserCommand } from "./commands/impl/updateUser.command";
 import { GetDaysWithVMSQuery } from "./queries/impl/getDaysWithVMS.query";
+import { IncreaseSuggestionsCommand } from "./commands/impl/increaseSuggestions.command";
 
 @Injectable()
 export class UserService {
@@ -74,6 +75,10 @@ export class UserService {
         return this.queryBus.execute(new GetUnAuthUsersQuery(permission === 0 ? -1 : -2));
     }
 
+    async increaseSuggestions(email: string){
+        this.commandBus.execute(new IncreaseSuggestionsCommand(email));
+    }
+
     async deleteUserAccount(email: string) {
         const res = await this.commandBus.execute(new DeleteUserCommand(email));
         return res.deletedCount > 0;
@@ -99,7 +104,6 @@ export class UserService {
     }
 
     async updateUser(email: string, badges:string, xp:number) {
-        console.log("XP "+xp);
         this.commandBus.execute(new UpdateUserCommand(email,badges,xp));
     }
 
@@ -132,6 +136,9 @@ export class UserService {
                         break;
                     case "visits":
                         variable = await this.visitorInviteService.getTotalNumberOfVisitsOfResident(email);
+                        break;
+                    case "suggestion":
+                        //variable = await this.visitorInviteService.getTotalNumberOfVisitsOfResident(email);
                         break;
                 }
                 let level = parseInt(badges.charAt(i))+1;

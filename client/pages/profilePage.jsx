@@ -42,19 +42,9 @@ const ProfilePage = () => {
         { fetchPolicy: "no-cache" }
     );
 
-    const [updateBadges, { staleTime: Infinity }] =
-        useMutation(gql`
-        mutation {
-            calculateBadges( email: "${token.email}" ) 
-        }
-    `);
-
-
-
     const router = useRouter();
     useEffect(() => {
   
-        updateBadges();
         profileQuery();
         if (!loading && !error) {
             if (data) {

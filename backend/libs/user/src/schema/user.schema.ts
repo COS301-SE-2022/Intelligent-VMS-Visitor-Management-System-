@@ -40,6 +40,9 @@ export class User {
 
     @Prop()
     sleepovers: number;
+
+    @Prop()
+    suggestions: number;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

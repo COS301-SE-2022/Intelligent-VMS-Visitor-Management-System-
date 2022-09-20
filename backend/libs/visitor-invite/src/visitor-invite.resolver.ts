@@ -60,6 +60,7 @@ export class VisitorInviteResolver {
         @Args("IDNumber") idNumber: string,
         @Args("inviteDate") inviteDate: string,
         @Args("requiresParking") requiresParking: boolean,
+        @Args("suggestion") suggestion: boolean,
     ) {
         return this.visitorInviteService.createInvite(
             user.permission,
@@ -69,7 +70,8 @@ export class VisitorInviteResolver {
             idDocType,
             idNumber,
             inviteDate,
-            requiresParking
+            requiresParking,
+            suggestion
         );
     }
 

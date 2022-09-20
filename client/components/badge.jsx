@@ -64,7 +64,7 @@ const Badge = ({colour,title,type,width,desc,active,level,xp}) => {
             break;
             case "visits":  colour="#facc15";
             break;
-            case "suggestion": colour="#ea580c";
+            case "suggestion": colour="#22d3ee";
             break;
             default: colour="#be185d";
           }
@@ -86,7 +86,7 @@ const Badge = ({colour,title,type,width,desc,active,level,xp}) => {
                 
                 <path
                     style={{
-                        fill: "grey-300",
+                        fill: "grey-100",
                         fillOpacity: 1,
                         strokeWidth: 1,
                         strokeOpacity: 0,
@@ -96,7 +96,7 @@ const Badge = ({colour,title,type,width,desc,active,level,xp}) => {
 
                 <path
                     style={{
-                    fill: "grey-300",
+                    fill: "grey-100",
                     fillOpacity: 1,
                     strokeWidth: 1,
                     strokeOpacity: 0,
@@ -126,7 +126,7 @@ const Badge = ({colour,title,type,width,desc,active,level,xp}) => {
 
                 <path
                     fill={colour}
-                    fillOpacity={0.85-(level*0.2)}
+                    fillOpacity={0.85-(level*0.18)}
                     style={{
                         strokeWidth: 1,
                         strokeOpacity: 0,
@@ -137,7 +137,7 @@ const Badge = ({colour,title,type,width,desc,active,level,xp}) => {
                 <path
                     d="m41.007 0 .004 22.511h.006V54l.001 47.974h-.003c-5.949-.268-38.403-25.469-39.944-31.23-1.54-5.761-2.037-42.437 2.927-45.739 1.055-.702 4.848-1.26 10.194-1.669a27 27 0 0 1 3.376-9.851A27 27 0 0 1 41.008 0z"
                     fill={colour}
-                    fillOpacity={1-(level*0.2)}
+                    fillOpacity={1-(level*0.18)}
                     style={{
                         strokeOpacity: 0,
                     }}

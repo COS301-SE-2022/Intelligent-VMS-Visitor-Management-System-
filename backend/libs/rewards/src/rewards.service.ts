@@ -13,6 +13,9 @@ export class RewardsService {
                 private readonly userService: UserService,) {}
 
     async getProfileInfo(email: string) {
+
+        await this.userService.calculateBadges(email);
+
         let user = await this.userService.getUserByEmail(email);
         let allRewards = await this.queryBus.execute(new GetAllRewardsQuery());
         let allBadges = await this.getAllBadges();

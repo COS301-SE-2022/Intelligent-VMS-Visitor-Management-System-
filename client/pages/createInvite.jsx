@@ -26,6 +26,9 @@ const getFormattedDateString = (date) => {
 };
 
 const CreateInvite = ({ name, email, idNumber, idDocType }) => {
+
+    var suggestion = false;
+
     // Get Instance of NextJS router to redirect to different pages
     const router = useRouter();
     //let { name, email, idNumber, idDocType } = router.query;
@@ -206,6 +209,8 @@ const CreateInvite = ({ name, email, idNumber, idDocType }) => {
                         return errors;
                     }}
                     onSubmit={(values, { setSubmitting }) => {
+
+                        alert(suggestion);
                         const CREATE_INVITE = gql`
                             mutation {
                                 createInvite(
@@ -216,6 +221,7 @@ const CreateInvite = ({ name, email, idNumber, idDocType }) => {
                                     IDNumber: "${values.idValue}"
                                     inviteDate: "${values.visitDate}"
                                     requiresParking: ${values.reserveParking}
+                                    suggestion: ${suggestion}
                             )
                         }
                         `;

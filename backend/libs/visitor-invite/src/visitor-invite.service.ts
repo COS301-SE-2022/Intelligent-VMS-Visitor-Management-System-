@@ -122,13 +122,14 @@ export class VisitorInviteService  {
         idDocType: string,
         idNumber: string,
         inviteDate: string,
-        requiresParking: boolean
+        requiresParking: boolean,
+        suggestion: boolean
     ) {
 
         // If permission level is that of resident check invite limit
         if(permission !== 0 && permission !== 1) {
             const numInvitesAllowed = await this.userService.getMaxInvitesPerResident();
-            const numInvitesSent = await this.getTotalNumberOfInvitesOfResident(userEmail);
+            const numInvitesSent = await this.getNumberOfOpenInvites(userEmail);
 
             if(numInvitesSent >= numInvitesAllowed) {
                 throw new InviteLimitReachedError("Max Number of Invites Sent");
@@ -162,6 +163,12 @@ export class VisitorInviteService  {
         // Parking
         if(requiresParking) {
             await this.parkingService.reserveParking(inviteID);
+        }
+
+        //Suggestion count
+        if(suggestion){
+            console.log("here");
+            await this.userService.increaseSuggestions(userEmail);
         }
 
         const info = await this.mailService.sendInvite(visitorEmail, userEmail, inviteID, idDocType, requiresParking, inviteDate);
@@ -472,8 +479,7 @@ export class VisitorInviteService  {
             suggestion.idDocType = visitors[i].idDocType;
             suggestion.prob = pYes;
             suggestions.push(suggestion);
-            
-                   
+           
         }
 
         let finalSuggestions =[];
@@ -484,6 +490,9 @@ export class VisitorInviteService  {
         //find IQR
         let q3Index = Math.round(1/4*(suggestions.length+1));
         let q1Index = Math.round(3/4*(suggestions.length+1));
+        if(q1Index == suggestions.length){
+            q1Index -= 1;
+        }
         let iqr = suggestions[q3Index].prob - suggestions[q1Index].prob;
 
         let threshold = suggestions[suggestions.length-1].prob + iqr;

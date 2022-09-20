@@ -26,6 +26,7 @@ import { VisitorInviteModule } from "@vms/visitor-invite";
 import { RewardsModule } from "@vms/rewards";
 import { UpdateUserCommandHandler } from "./commands/handlers/updateUser.handler";
 import { GetDaysWithVMSQueryHandler } from "./queries/handlers/getDaysWithVMS.handler";
+import { IncreaseSuggestionsCommandHandler } from "./commands/handlers/increaseSuggestions.handler";
 
 @Module({
     imports: [
@@ -53,7 +54,8 @@ import { GetDaysWithVMSQueryHandler } from "./queries/handlers/getDaysWithVMS.ha
         UpdateMaxCurfewTimeCommandHandler,
         UpdateUserCommandHandler,
         AuthorizeUserCommandHandler,
-        DeauthorizeUserAccountCommandHandler
+        DeauthorizeUserAccountCommandHandler,
+        IncreaseSuggestionsCommandHandler,
     ],
     exports: [UserService],
 })
