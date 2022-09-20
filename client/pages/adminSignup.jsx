@@ -118,7 +118,7 @@ const AdminSignup = () => {
                                     signup(
                                         email: "${values.email}", 
                                         password: "${values.password}", 
-                                        type: "resident", 
+                                        type: "admin", 
                                         idNumber: "${values.idNumber}",
                                         IDDocType: "${values.idDoc}",
                                         name: "${values.name}"
