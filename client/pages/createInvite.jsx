@@ -27,8 +27,6 @@ const getFormattedDateString = (date) => {
 
 const CreateInvite = ({ name, email, idNumber, idDocType }) => {
 
-    var suggestion = false;
-
     // Get Instance of NextJS router to redirect to different pages
     const router = useRouter();
     //let { name, email, idNumber, idDocType } = router.query;
@@ -50,6 +48,9 @@ const CreateInvite = ({ name, email, idNumber, idDocType }) => {
 
     // Whether or not parking is available
     const [isParkingAvailable, setIsParkingAvailable] = useState(true);
+
+    // Whether or not the suggestion used to generate invite data
+    const [suggestion, setSuggestion] = useState(false);
 
     const [now, setNow] = useState(getFormattedDateString(new Date()));
 
@@ -290,7 +291,7 @@ const CreateInvite = ({ name, email, idNumber, idDocType }) => {
                                 />
 
                                 {!values.name.length > 0 && !email && !idNumber && !idDocType ? (
-                                    <VisitorSuggestions date={now} />
+                                    <VisitorSuggestions date={now} setSuggestion={setSuggestion} />
                                 ):(
                                     <div></div>
                                 )}

@@ -24,6 +24,7 @@ type ProfileInfo {
   badges: String!
   allBadges: [Badge!]!
   allRewards: [Reward!]!
+  progress: Float!
 }
 
 type Restriction {

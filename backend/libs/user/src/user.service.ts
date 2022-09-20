@@ -20,6 +20,7 @@ import { GetMaxCurfewTimePerResidentQuery } from "./queries/impl/getMaxCurfewTim
 import { UpdateUserCommand } from "./commands/impl/updateUser.command";
 import { GetDaysWithVMSQuery } from "./queries/impl/getDaysWithVMS.query";
 import { IncreaseSuggestionsCommand } from "./commands/impl/increaseSuggestions.command";
+import { GetNumSuggestionsQuery } from "./queries/impl/getNumSuggestions.query";
 
 @Injectable()
 export class UserService {
@@ -61,6 +62,10 @@ export class UserService {
 
     async getCurfewTime(email: string) {
         return this.queryBus.execute(new GetCurfewTimeQuery(email));
+    }
+
+    async getNumSuggestions(email: string) {
+        return this.queryBus.execute(new GetNumSuggestionsQuery(email));
     }
 
     async getMaxCurfewTimePerResident() {
@@ -111,13 +116,12 @@ export class UserService {
         const user = await this.getUserByEmail(email);
         const allBadges = await this.rewardService.getAllBadges();
         let badges = user.badges;
-        let i = 0;
 
         let variable:number;
         let change = false;
         let xp = 0;
         // allBadges.forEach(async (badge:Badge,i:number)=>{
-        for await ( let badge of allBadges){
+        for await ( let [i,badge] of allBadges){
             if(parseInt(badges.charAt(i))<badge.levels){
                 switch(badge.type){
                     case "invite":
@@ -138,7 +142,7 @@ export class UserService {
                         variable = await this.visitorInviteService.getTotalNumberOfVisitsOfResident(email);
                         break;
                     case "suggestion":
-                        //variable = await this.visitorInviteService.getTotalNumberOfVisitsOfResident(email);
+                        variable = await this.getNumSuggestions(email);
                         break;
                 }
                 let level = parseInt(badges.charAt(i))+1;
