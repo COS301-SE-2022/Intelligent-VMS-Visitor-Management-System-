@@ -12,6 +12,7 @@ import { VisitorInviteService } from '@vms/visitor-invite';
 import { RestrictionsService } from "@vms/restrictions";
 import { SignOutService } from './sign-out.service';
 import { ReceptionistService } from '@vms/receptionist';
+import { SchedulerRegistry } from '@nestjs/schedule';
 
 describe('SignOutService', () => {
   let service: SignOutService;
@@ -53,6 +54,11 @@ describe('SignOutService', () => {
   };
   /*eslint-enable*/
 
+  const scheduleMock = {
+    addCronJob: jest.fn(()=>({})),
+    deleteCronJob: jest.fn(()=>({})),
+  };
+
   beforeEach(async () => {
     
     const module: TestingModule = await Test.createTestingModule({
@@ -65,6 +71,7 @@ describe('SignOutService', () => {
         MailService,
         ConfigService,
         RestrictionsService,
+        { provide: SchedulerRegistry, useValue: scheduleMock},
         {
           provide: QueryBus, useValue: queryBusMock
         },
