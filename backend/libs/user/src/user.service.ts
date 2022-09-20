@@ -99,6 +99,7 @@ export class UserService {
     }
 
     async updateUser(email: string, badges:string, xp:number) {
+        console.log("XP "+xp);
         this.commandBus.execute(new UpdateUserCommand(email,badges,xp));
     }
 
@@ -112,27 +113,26 @@ export class UserService {
         let change = false;
         let xp = 0;
         // allBadges.forEach(async (badge:Badge,i:number)=>{
-        for( let badge of allBadges){
+        for await ( let badge of allBadges){
             if(parseInt(badges.charAt(i))<badge.levels){
                 switch(badge.type){
                     case "invite":
                         variable = await this.visitorInviteService.getTotalNumberOfInvitesOfResident(email);
                         break;
-    //             case "concept":
-    //                 //todo fuck knows
-    //                 break;
-                case "cancellation":
-                    variable = await this.visitorInviteService.getTotalNumberOfCancellationsOfResident(email);
-                    break;
+                    // case "concept":
+                    //     //for now it is just given
+                    //     break;
+                    case "cancellation":
+                        variable = await this.visitorInviteService.getTotalNumberOfCancellationsOfResident(email);
+                        break;
     //             case "sleepover":
     //                 break;
-                case "time":
-                    variable = await this.getDaysWithVMS(email);
-                    console.log("days "+variable);
-                    break;
-                case "visits":
-                    variable = await this.visitorInviteService.getTotalNumberOfVisitsOfResident(email);
-                    break;
+                    case "time":
+                        variable = await this.getDaysWithVMS(email);
+                        break;
+                    case "visits":
+                        variable = await this.visitorInviteService.getTotalNumberOfVisitsOfResident(email);
+                        break;
                 }
                 let level = parseInt(badges.charAt(i))+1;
                 while(level<=badge.levels){

@@ -1,6 +1,6 @@
 import React,{useEffect, useState} from 'react';
 import { useRouter } from "next/router";
-import Badge from '../components/badge';
+import Badge from '../components/Badge';
 import Layout from '../components/Layout';
 import {AiFillStar} from "react-icons/ai";
 import {FaFlagCheckered} from "react-icons/fa";
@@ -42,16 +42,18 @@ const ProfilePage = () => {
         { fetchPolicy: "no-cache" }
     );
 
-    const [updateBadges, { }] =
+    const [updateBadges, { staleTime: Infinity }] =
         useMutation(gql`
         mutation {
             calculateBadges( email: "${token.email}" ) 
         }
     `);
 
+
+
     const router = useRouter();
     useEffect(() => {
-
+  
         updateBadges();
         profileQuery();
         if (!loading && !error) {
@@ -118,20 +120,6 @@ const ProfilePage = () => {
                 
                 })      
             })}
-
-            {/* <Badge width={160} active={true} level={1} type="concept" colour="#be185d" text="CONCEPT CONNOISSEUR" desc="You created 3 invites"/>
-            <Badge width={160} active={true} level={1} type="invite" colour="#84cc16" text="INVITE ROOKIE" desc="You created 3 invites"/>
-            <Badge width={160} active={true} level={2} type="invite" colour="#84cc16" text="INVITE AMATEUR" desc="You created 30 invites"/>
-            <Badge width={160} active={false} level={3} type="invite" colour="#84cc16" text="INVITE EXPERT" desc="You created 300 invites"/>
-            <Badge width={160} active={true} level={1} type="sleepover" colour="#1e3a8a" text="SLEEPOVER PARTY" desc="You hosted 7 sleepovers"/>
-            <Badge width={160} active={true} level={1} type="time" colour="#dc2626" text="VMS TODDLER" desc="You celebrated 30-days with VMS"/>
-            <Badge width={160} active={true} level={3} type="suggestion" colour="#22d3ee" text="ULTIMATE ADVISEE" desc="You used 2 system suggestions"/>
-            <Badge width={160} active={true} level={1} type="visits" colour="#facc15" text="MR. POPULAR" desc="You had 15 visitors"/>
-            <Badge width={160} active={true} level={2} type="visits" colour="#facc15" text="MRS. POPULAR" desc="You had 25 visitors"/>
-            <Badge width={160} active={false} level={3} type="visits" colour="#facc15" text="DR. POPULAR" desc="You had 100 visitors"/>
-            <Badge width={160} active={true} level={1} type="cancellation" colour="#ea580c" text="DASHBOARD DUSTER" desc="You cancelled 8 invites"/>
-            <Badge width={160} active={false} level={2} type="cancellation" colour="#ea580c" text="DASHBOARD SWEEPER" desc="You cancelled 18 invites"/>
-            <Badge width={160} active={false} level={3} type="cancellation" colour="#ea580c" text="DASHBOARD POLISHER" desc="You cancelled 70 invites"/> */}
         </div>
 
         <div className="divider mt-10 text-base md:text-lg lg:text-2xl px-3">

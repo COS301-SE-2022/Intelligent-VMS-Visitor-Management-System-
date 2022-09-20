@@ -12,6 +12,6 @@ export class UpdateUserCommandHandler implements ICommandHandler {
 
     async execute(command: UpdateUserCommand) {
         const { email,badges,xp } = command;
-        return this.userModel.updateOne({ email: email }, [{$set: {"badges":badges}},{$inc:{"xp":xp}}]);
+        return this.userModel.updateOne({ email: email },{ $inc: {"xp":xp}, $set: {"badges":badges}});
     }
 }

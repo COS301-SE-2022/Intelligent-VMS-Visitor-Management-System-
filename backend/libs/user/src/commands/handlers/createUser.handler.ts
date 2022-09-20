@@ -12,6 +12,6 @@ export class CreateUserCommandHandler implements ICommandHandler {
 
     async execute(command: CreateUserCommand) {
         const { email, password, permission, name, idDocType, idNumber, date } = command;
-        await this.userModel.create({ email: email, password: password, permission: permission, name: name, idDocType: idDocType, idNumber: idNumber, xp: 0, signUpTime: date});
+        await this.userModel.create({ email: email, password: password, permission: permission, name: name, idDocType: idDocType, idNumber: idNumber, xp: 20, signUpTime: date, badges: "1000000"});
     }
 }
