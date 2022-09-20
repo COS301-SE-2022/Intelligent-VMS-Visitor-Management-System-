@@ -250,7 +250,7 @@ const AdminSignup = () => {
                                 </span>
 
                                 <p className="text-sm md:text-lg lg:text-xl">
-                                    You are signing up as a resident
+                                    You are signing up as a admin user
                                 </p>
 
                                 <motion.button
