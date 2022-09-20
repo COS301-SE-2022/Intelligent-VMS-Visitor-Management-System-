@@ -4,6 +4,7 @@ import { gql, useApolloClient, useLazyQuery } from "@apollo/client";
 import { BiQrScan, BiLogIn } from "react-icons/bi";
 import { FaMailBulk } from "react-icons/fa";
 import { BsInfoCircle } from "react-icons/bs";
+import QRScanner from "../components/QRScanner";
 import Layout from "../components/Layout";
 import SignInPopUp from "../components/SignInPopUp";
 import SignOutPopUp from "../components/SignOutPopUp";
@@ -106,7 +107,11 @@ const ReceptionistDashboard = () => {
     const resetDefaultResults = () => {
         if (!loading && !error) {
             const invites = data.getInvitesByDate.filter((invite) => {
-                return invite.inviteState !== "signedOut";
+                return (
+                    invite.inviteState !== "signedOut" &&
+                    invite.inviteState !== "cancelled" &&
+                    invite.inviteID
+                );
             });
             setVisitorData(invites);
             setSearch(false);
@@ -366,14 +371,10 @@ const ReceptionistDashboard = () => {
                         ✕
                     </label>
                     <SignInPopUp
-                        visitData={currentVisitData}
-                        setTrayNr={setTrayNr}
+                        showSignInModal={showSignInModal}
                         refetch={invitesQuery}
-                        todayString={todayString}
-                        currentButton={currentButton}
                         setShowSignInModal={setShowSignInModal}
                         setSearch={setSearch}
-                        trayNr={trayNr}
                     />
                 </div>
             </div>
@@ -432,10 +433,11 @@ const ReceptionistDashboard = () => {
                     >
                         ✕
                     </label>
-                    { /*
                     <QRScanner
+                        showScanner={showScanner}
                         setCurrentVisitData={setCurrentVisitData}
                         setShowScanner={setShowScanner}
+                        setShowVisitorModal={setShowVisitorModal}
                         setShowSignInModal={setShowSignInModal}
                         setShowSignOutModal={setShowSignOutModal}
                         setVisitorData={setVisitorData}
@@ -444,8 +446,6 @@ const ReceptionistDashboard = () => {
                         setErrorMessage={setErrorMessage}
                         setShowErrorAlert={setErrorMessage}
                     />
-                   */
-                   }
                 </div>
             </div>
 
