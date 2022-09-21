@@ -181,12 +181,7 @@ const CreateInvite = ({ name, email, idNumber, idDocType }) => {
                             )
                         ) {
                             errors.email = "Invalid email address";
-                        } else if (!values.name) {
-                            errors.name = "Required";
-                        } else if (!/[A-Za-z]+/i.test(values.name)) {
-                            errors.name =
-                                "Name contains non alphabetic characters";
-                        } else if (!values.idValue) {
+                        }  else if (!values.idValue) {
                             errors.idValue = "Required";
                         } else if (
                             (values.idDoc === "RSA-ID" ||
@@ -196,6 +191,11 @@ const CreateInvite = ({ name, email, idNumber, idDocType }) => {
                             )
                         ) {
                             errors.idValue = "Invalid RSA ID Number";
+                        }else if (!values.name) {
+                            errors.name = "Required";
+                        } else if (!/[A-Za-z]+/i.test(values.name)) {
+                            errors.name =
+                                "Name contains non alphabetic characters";
                         } else if (
                             values.idDoc === "UP-Student-ID" &&
                             !/^\d{8}$/i.test(values.idValue)
