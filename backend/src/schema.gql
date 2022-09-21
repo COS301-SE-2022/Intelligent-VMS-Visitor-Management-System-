@@ -140,7 +140,7 @@ type Query {
 
 type Mutation {
   login(email: String!, password: String!): LoginUser!
-  signup(email: String!, password: String!, type: String!, IDDocType: String!, idNumber: String!, name: String!): Boolean!
+  signup(email: String!, password: String!, confirmationPin: String!, type: String!, IDDocType: String!, idNumber: String!, name: String!): Boolean!
   verify(verifyID: String!, email: String!): Boolean!
   deleteUserAccount(email: String!): Boolean!
   authorizeUserAccount(email: String!): Boolean!

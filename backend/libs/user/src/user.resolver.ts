@@ -53,7 +53,7 @@ export class UserResolver {
     async signup(
         @Args("email") email: string,
         @Args("password") password: string,
-        @Args("confirmationPin") confirmationPin: number,
+        @Args("confirmationPin") confirmationPin: string,
         @Args("type") type: string,
         @Args("IDDocType") idDocType: string,
         @Args("idNumber") idNumber: string,

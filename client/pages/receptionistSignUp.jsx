@@ -67,6 +67,7 @@ const ReceptionistSignUp = () => {
                         email: "",
                         password: "",
                         confirmPassword: "",
+                        confirmationPin:"",
                         idDoc: "RSA-ID",
                         idNumber: "",
                         name: "",
@@ -106,7 +107,7 @@ const ReceptionistSignUp = () => {
                                 "Password needs minimum of 8 characters with one number and one special character";
                         } else if (values.confirmPassword !== values.password) {
                             errors.confirmPassword = "Passwords do not match";
-                         }else if(!/^(?=.*[0-9]){7}$/i.test(values.pin) ){
+                         }else if(!/^[0-9]{5}$/i.test(values.confirmationPin) ){
                             errors.pin="Pin needs to be a 5 digit number"
                          }
 

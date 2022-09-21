@@ -34,27 +34,29 @@ const SignUpSelect = () => {
                                 className="prose form-control space-y-4 rounded-xl border p-14"
                             >
 
-                                <h1>What type of account would you like to sign up for? </h1>
+                                <h2>What <span className="text-secondary">
+                                
+                            type of account</span> would you like to sign up for? </h2>
         
-                                <p className="text-sm md:text-lg lg:text-xl">
-                                    I&apos;m a... <span></span>
+                                <p className="text-secondary text-sm font-bold md:text-lg lg:text-xl">
+                                    I&apos;m a... 
                                 </p>
 
                                 <div className="flex items-center space-x-3">
 
                                     <Link href="/residentSignUp"> 
-                                        <a>
-                                            <span className="text-sm font-bold md:text-base">Resident</span>
+                                        <a style={{textDecoration: "none"}}>
+                                            <span className=" text-sm font-bold md:text-base">Resident</span>
                                         </a>
                                     </Link>
 
                                 </div>
 
                                 <div className="flex items-center space-x-3">
-                                    <Link href="/receptionistSignUp"> 
-                                        <a>
-                                            <span className="text-sm font-bold md:text-base">Receptionist</span>
-                                        </a>
+                                    <Link href="/receptionistSignUp" > 
+                                    <a style={{textDecoration: "none"}}>
+                                            <span className=" text-sm font-bold md:text-base">Receptionist</span> 
+                                    </a>
                                     </Link>
                                 </div>
                             </form>
