@@ -4,7 +4,8 @@ import { gql, useQuery, useApolloClient } from "@apollo/client";
 import { useRouter } from "next/router";
 
 import { BiMailSend } from "react-icons/bi";
-import { AiFillAlert } from "react-icons/ai";
+import { AiFillAlert,AiFillClockCircle } from "react-icons/ai";
+import { FaBed } from "react-icons/fa";
 
 import Layout from "../components/Layout";
 import DownloadChart from "../components/DownloadChart";
@@ -37,7 +38,8 @@ const VisitorDashboard = () => {
     });
     const [errorMessage, setErrorMessage] = useState("");
     const [maxNumInvites, setMaxNumInvites] = useState(0);
-    const [totalNumberInvites, setTotalNumberInvites] = useState(0);
+    const [curfew, setCurfew] = useState("0000");
+    const [maxSleepovers, setMaxSleepovers] = useState(0);
     const [todayInvites, setTodayInvites] = useState(0);
     const [openInvites, setOpenInvites] = useState([]);
     const [percentage, setPercentage] = useState(0);
@@ -79,6 +81,24 @@ const VisitorDashboard = () => {
         gql`
             query {
                 getNumInvites(email: "${token.email}")
+            }
+        `,
+        { fetchPolicy: "network-only" }
+    );
+
+    const numSleepoversQuery = useQuery(
+        gql`
+            query {
+                getNumSleepovers(email: "${token.email}")
+            }
+        `,
+        { fetchPolicy: "network-only" }
+    );
+
+    const curfewTimeQuery = useQuery(
+        gql`
+            query {
+                getCurfewTime(email: "${token.email}")
             }
         `,
         { fetchPolicy: "network-only" }
@@ -214,6 +234,22 @@ const VisitorDashboard = () => {
     }, [numInvitesQuery, openInvites.length, maxNumInvites]);
 
     useEffect(() => {
+        if (!numSleepoversQuery.loading && !numSleepoversQuery.error) {
+            setMaxSleepovers(numSleepoversQuery.data.getNumSleepovers);
+        }
+    }, [numSleepoversQuery, maxSleepovers]);
+
+    useEffect(() => {
+        if (!curfewTimeQuery.loading && !curfewTimeQuery.error) {
+            let time = curfewTimeQuery.data.getCurfewTime.toString()
+            while(time.length<3){
+                time = "0"+time;
+            }
+            setCurfew(time);
+        }
+    }, [curfewTimeQuery, curfew]);
+
+    useEffect(() => {
         if (!visitorsQuery.loading && !visitorsQuery.error) {
             const visitorData = visitorsQuery.data.getVisitors;
             if (visitorData.length > 4) {
@@ -254,7 +290,7 @@ const VisitorDashboard = () => {
                     datalabels={["Visitors"]}
                 />
                 <div className="col-span-2 grid grid-cols-1 gap-5 md:col-span-1">
-                    <div className="card h-full w-full bg-base-200 p-5 shadow">
+                    <div className="card h-full w-full bg-base-200 p-4 pb-1 shadow">
                         <h2 className="card-title font-normal">
                             <span className="text-2xl text-primary">
                                 <BiMailSend />
@@ -269,7 +305,8 @@ const VisitorDashboard = () => {
                         </div>
                         <div className="card-actions"></div>
                     </div>
-                    <div className="card h-full w-full bg-base-200 p-5 shadow">
+
+                    <div className="card h-full w-full bg-base-200 p-4 pb-1 shadow">
                         <h2 className="card-title font-normal">
                             <span className="text-2xl text-primary">
                                 <AiFillAlert />
@@ -301,6 +338,41 @@ const VisitorDashboard = () => {
                             </div>
                         </div>
                     </div>
+                    
+                    <div className="flex flex-row w-full space-x-3">
+                    <div className="card h-full w-1/2 bg-base-200 p-4 pb-1 shadow">
+                        <h2 className="card-title font-normal">
+                            <span className="text-2xl text-primary">
+                                <FaBed />
+                            </span>
+                            Maximum Sleepovers
+                        </h2>
+                        <div className="card-body justify-center">
+                            <h1 className="text-4xl font-bold">
+                                {maxSleepovers}
+                            </h1>
+                            <p>per Month</p>
+                        </div>
+                        <div className="card-actions"></div>
+                    </div>
+
+                    <div className="card h-full w-1/2 bg-base-200 p-4 pb-1 shadow">
+                        <h2 className="card-title font-normal">
+                            <span className="text-2xl text-primary">
+                                <AiFillClockCircle />
+                            </span>
+                            Visitor Curfew
+                        </h2>
+                        <div className="card-body justify-center">
+                            <h1 className="text-5xl font-bold">
+                                {curfew.slice(0,-2)+" : "+curfew.slice(-2)}
+                            </h1>
+                        </div>
+                        <div className="card-actions"></div>
+                    </div>
+
+                    </div>
+                
                 </div>
                 <div className="col-span-2 grid grid-cols-1 grid-rows-2 gap-4 md:grid-cols-2 md:grid-rows-1">
                     <div className="col-span-2 row-span-1">

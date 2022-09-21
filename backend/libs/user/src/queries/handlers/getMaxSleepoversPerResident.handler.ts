@@ -11,7 +11,7 @@ export class GetMaxSleepoversPerResidentQueryHandler implements IQueryHandler {
     ) {}
 
     async execute(query: GetMaxSleepoversPerResidentQuery): Promise<number> {
-        const user = await this.userModel.findOne({ email: "ADMIN" });
+        const user = await this.userModel.findOne({ permission: 0 });
         return user.numSleepovers;
     }
 }

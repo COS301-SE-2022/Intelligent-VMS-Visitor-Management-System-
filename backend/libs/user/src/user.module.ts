@@ -29,6 +29,8 @@ import { GetDaysWithVMSQueryHandler } from "./queries/handlers/getDaysWithVMS.ha
 import { IncreaseSuggestionsCommandHandler } from "./commands/handlers/increaseSuggestions.handler";
 import { GetNumSuggestionsQueryHandler } from "./queries/handlers/getNumSuggestions.handler";
 import { UpdatePrivilegesCommandHandler } from "./commands/handlers/updatePrivileges.handler";
+import { GetMaxSleepoversPerResidentQueryHandler } from "./queries/handlers/getMaxSleepoversPerResident.handler";
+import { GetNumSleepoversQueryHandler } from "./queries/handlers/getNumSleepovers.handler";
 
 @Module({
     imports: [
@@ -60,6 +62,9 @@ import { UpdatePrivilegesCommandHandler } from "./commands/handlers/updatePrivil
         AuthorizeUserCommandHandler,
         DeauthorizeUserAccountCommandHandler,
         IncreaseSuggestionsCommandHandler,
+        GetMaxSleepoversPerResidentQueryHandler,
+        GetNumSleepoversQueryHandler,
+        GetMaxSleepoversPerResidentQueryHandler,
     ],
     exports: [UserService],
 })

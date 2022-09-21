@@ -12,6 +12,6 @@ export class UpdateMaxInvitesCommandHandler implements ICommandHandler {
 
     async execute(command: UpdateMaxInvitesCommand) {
         const { difference } = command;
-        return await this.userModel.updateMany({},{$inc:{"numInvites":difference}});
+        return await this.userModel.updateMany({$ne:{permission:1}},{$inc:{"numInvites":difference}});
     }
 }

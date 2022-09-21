@@ -12,6 +12,6 @@ export class UpdateMaxSleepoversCommandHandler implements ICommandHandler {
 
     async execute(command: UpdateMaxSleepoversCommand) {
         const { difference } = command;
-        return await this.userModel.updateMany({},{$inc:{"numSleepovers":difference}});
+        return await this.userModel.updateMany({$ne:{permission:1}},{$inc:{"numSleepovers":difference}});
     }
 }

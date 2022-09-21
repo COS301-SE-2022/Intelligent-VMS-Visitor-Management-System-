@@ -11,7 +11,7 @@ export class GetMaxInvitesPerResidentQueryHandler implements IQueryHandler {
     ) {}
 
     async execute(query: GetMaxInvitesPerResidentQuery): Promise<number> {
-        const user = await this.userModel.findOne({ email: "ADMIN" });
+        const user = await this.userModel.findOne({ permission: 0 });
         return user.numInvites;
     }
 }
