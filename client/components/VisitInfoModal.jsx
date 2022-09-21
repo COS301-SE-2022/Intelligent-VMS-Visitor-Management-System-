@@ -5,7 +5,7 @@ import { BsFillCalendarEventFill, BsFillPersonCheckFill } from "react-icons/bs";
 import { IoFileTrayFull } from "react-icons/io5";
 import { visit } from "graphql";
 
-const VisitInfoModal = ({ setShowInfo, visitModalData }) => {
+const VisitInfoModal = ({ setCurrentVisitData, setShowVisitorModal, setShowSignOutModal, visitModalData }) => {
     if (!visitModalData) {
         return <div className="progress"></div>;
     }
@@ -90,9 +90,13 @@ const VisitInfoModal = ({ setShowInfo, visitModalData }) => {
                     </p>
                 </div>
             </div>
-            {visitModalData.inviteState === "signedIn" &&
+            {(visitModalData.inviteState === "signedIn" || visitModalData.inviteState === "EXTENDED") &&
                 <div className="card-actions mt-3 justify-end">
-                    <button className="btn btn-error">Sign Out</button>
+                    <button onClick={() => {
+                        setCurrentVisitData(visitModalData);
+                        setShowVisitorModal(false);
+                        setShowSignOutModal(true);
+                    }}className="btn btn-error">Sign Out</button>
                 </div>
             }
         </div>

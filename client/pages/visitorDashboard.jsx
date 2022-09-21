@@ -351,7 +351,7 @@ const VisitorDashboard = () => {
                                         {openInvites.map((visit, idx) => {
                                             return (
                                                 <OpenInviteCard
-                                                    key={idx}
+                                                    key={visit.inviteID}
                                                     name={visit.visitorName}
                                                     email={visit.visitorEmail}
                                                     inviteID={visit.inviteID}

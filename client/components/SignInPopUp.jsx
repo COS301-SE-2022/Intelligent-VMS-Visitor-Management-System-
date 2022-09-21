@@ -65,10 +65,10 @@ const SignInPopUp = ({
             }
         });
 
-        console.log(response.data);
         e.target.classList.remove("loading");
 
         if(response.data.trayNo) {
+           setShowVerify(false);
            setShowSignInModal(false);
            setSearch(false);
            setFile(null);
@@ -138,8 +138,8 @@ const SignInPopUp = ({
                 </div>
             </div>
 
-            <h1 className="mt-5 text-center text-3xl font-bold ">
-                Sign In
+            <h1 className="mt-5 text-center text-xl font-bold ">
+                Face Recognition to Sign In/Out Visitor
             </h1>
 
             { !showVerify ?

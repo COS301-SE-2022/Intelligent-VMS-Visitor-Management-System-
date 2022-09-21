@@ -42,16 +42,17 @@ const UserAnalytics = () => {
     const generateReport = (invites) => {
         const doc = jsPDF();
 
-        const tableColumn = ["User", "Visitor", "Date", "Status"];
+        const tableColumn = ["User", "Visitor", "Date", "Status", "Sign In Time"];
         const tableRows = [];
 
-        doc.text("User Report For " + name, 10, 15);
+        doc.text(`User Report For ${name} - (${reportStartDate} to ${reportEndDate})`, 10, 15);
         invites.forEach((invite) => {
             const inviteData = [
                 token.email,
                 invite.visitorEmail,
                 invite.inviteDate,
                 invite.inviteState,
+                invite.signInTime ? invite.signInTime : "--"
             ];
 
             tableRows.push(inviteData);
@@ -171,7 +172,8 @@ const UserAnalytics = () => {
                 visitorEmail,
                 visitorName,
                 inviteDate,
-                inviteState
+                inviteState,
+                signInTime
             }
         }
     `);
@@ -226,8 +228,12 @@ const UserAnalytics = () => {
             if (getInvitesForReportQuery.data) {
                 const invites =
                     getInvitesForReportQuery.data.getNumInvitesPerDateOfUser;
+                console.log(invites);
                 generateReport(invites);
             }
+        } else if(!getInvitesForReportQuery.loading && getInvitesForReportQuery.error) {
+            console.log(getInvitesForReportQuery.error);
+            console.log("EEEERR");
         }
     }, [getInvitesForReportQuery]);
 
@@ -341,7 +347,7 @@ const UserAnalytics = () => {
                                                     className="input input-bordered w-full"
                                                     onChange={(e) => {
                                                         setReportEndDate(
-                                                            `${e.currentTarget.value}-01`
+                                                            `${e.currentTarget.value}-30`
                                                         );
                                                     }}
                                                     value={reportEndDate.substr(

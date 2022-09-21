@@ -12,6 +12,8 @@ const SignOutPopUp = ({
     setShowSignOutModal,
     setSearch,
 }) => {
+
+    const BACKEND_URL = process.env.BACKEND_URL;
     const [signOutMutation, { data, loading, error }] = useMutation(gql`
         mutation {
             signOut(inviteID: "${visitData.inviteID}")
@@ -28,7 +30,7 @@ const SignOutPopUp = ({
                 });
                 setSearch(false);
             }
-        } else if (error) {
+        } else if (!loading && error) {
             console.log("ERROR");
         }
     }, [loading, error, data]);
