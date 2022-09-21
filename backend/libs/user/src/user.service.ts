@@ -170,7 +170,8 @@ export class UserService{
         let variable:number;
         let change = false;
         let xp = 0;
-        for await ( let [i,badge] of allBadges){
+        // let i=0;
+        for await ( let [i,badge] of allBadges.entries()){
             if(parseInt(badges.charAt(i))<badge.levels){
                 switch(badge.type){
                     case "invite":
@@ -206,7 +207,7 @@ export class UserService{
                 level++;
                 }   
         }
-        i++;
+       // i++;
         }
 
         if(change){

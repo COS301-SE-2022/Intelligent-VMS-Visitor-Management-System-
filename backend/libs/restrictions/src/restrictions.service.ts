@@ -15,24 +15,24 @@ export class RestrictionsService {
                 private inviteService: VisitorInviteService
                 ) {}
 
-    // Set the number of invites a resident may have sent/open at once
-    async setNumInvitesPerResident(numInvites: number) {
-        return this.commandBus.execute(new SetNumInvitesCommand(numInvites));
-    }
+    // // Set the number of invites a resident may have sent/open at once
+    // async setNumInvitesPerResident(numInvites: number) {
+    //     return this.commandBus.execute(new SetNumInvitesCommand(numInvites));
+    // }
 
-    // Set the number of invites a resident may have sent/open at once
-    async getMaxInvitesPerResident() {
-        return await this.queryBus.execute(new GetNumInvitesQuery());
-    }
+    // // Set the number of invites a resident may have sent/open at once
+    // async getNumInvitesPerResident() {
+    //     return await this.queryBus.execute(new GetNumInvitesQuery());
+    // }
 
-    // Set the curfew
-    async setCurfewTime(curfewTime: number) {
-        this.inviteService.setCurfewDetails(curfewTime);
-        return this.commandBus.execute(new SetCurfewTimeCommand(curfewTime));
-    }
+    // // Set the curfew
+    // async setCurfewTime(curfewTime: number) {
+    //     this.inviteService.setCurfewDetails(curfewTime);
+    //     return this.commandBus.execute(new SetCurfewTimeCommand(curfewTime));
+    // }
 
-    // Get the curfew
-    async getCurfewTime() {
-        return await this.queryBus.execute(new GetCurfewTimeQuery());
-    }
+    // // Get the curfew
+    // async getCurfewTime() {
+    //     return await this.queryBus.execute(new GetCurfewTimeQuery());
+    // }
 }

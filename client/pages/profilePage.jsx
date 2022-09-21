@@ -103,23 +103,18 @@ const ProfilePage = () => {
             
         
         <div className="mx-5 mt-5 grid grid-cols-7 space-y-2 space-x-3">
-            {loading ? (
-                        <progress className="progress progress-primary w-56 justify-self-center">
-                            progress
-                        </progress>
-                    ) : (
-                        badges.map((badge, idx) => {
-                            return [...Array(badge.levels)].map((x,i) => {
-                                let active = false; 
-                                if(parseInt(userBadges[idx])>=i+1){
-                                    active = true;
-                                }   
-                                return <Badge key={i} active={active} width={160} level={i+1} type={badge.type} title={badge.title[i]} desc={badge.desc[i]} xp={badge.xp[i]}/>
-                            
-                            })      
-                        })
-                    )
-            }
+
+            {badges.map((badge, idx) => {
+                return [...Array(badge.levels)].map((x,i) => {
+                    let active = false; 
+                    if(parseInt(userBadges[idx])>=i+1){
+                        active = true;
+                    }   
+                    return <Badge key={i} active={active} width={160} level={i+1} type={badge.type} title={badge.title[i]} desc={badge.desc[i]} xp={badge.xp[i]}/>
+                
+                })      
+            })}
+ 
         </div>
 
         <div className="divider mt-10 text-base md:text-lg lg:text-2xl px-3">
