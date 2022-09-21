@@ -392,20 +392,13 @@ export class VisitorInviteService  {
 
     // Get predicted number of invites in range
     async getPredictedInviteData(startDate: string, endDate: string) {
-        const cachedPredictedInvites = await this.cacheManager.get("PREDICTIONS");
-
-        if(cachedPredictedInvites) {
-            console.log(cachedPredictedInvites);
-            return cachedPredictedInvites;
-        } else {
-            console.log("MISS");
-            const data = await firstValueFrom(this.httpService.get(`${this.AI_BASE_CONNECTION}/predict?startDate=${startDate}&endDate=${endDate}`)); 
-            if(data.data.length === 1) {
-                return [];
-            }
-            await this.cacheManager.set("PREDICTIONS", data.data, { ttl: 90000 });
-            return data.data;
+        const data = await firstValueFrom(this.httpService.get(`${this.AI_BASE_CONNECTION}/getCache?startDate=${startDate}&endDate=${endDate}`)); 
+        
+        if(data.data.length === 0) {
+            this.httpService.get(`${this.AI_BASE_CONNECTION}/predictAsync?startDate=2022-01-01&endDate=2022-12-31`)
         }
+
+        return data.data;
     }
 
     getMonthsBetweenDates(startDate, endDate) {
@@ -473,7 +466,7 @@ export class VisitorInviteService  {
                    
         }
 
-        let finalSuggestions =[];
+        const finalSuggestions =[];
 
         //sort descending
         suggestions.sort(function(a, b){return b.prob - a.prob});
@@ -483,7 +476,7 @@ export class VisitorInviteService  {
         const q1Index = Math.round(3/4*(suggestions.length+1)) - 1;
         const iqr = suggestions[q3Index].prob - suggestions[q1Index].prob;
 
-        let threshold = suggestions[suggestions.length-1].prob + iqr;
+        const threshold = suggestions[suggestions.length-1].prob + iqr;
 
         //filter
         for(let i=0;i<suggestions.length;i++){
@@ -497,7 +490,6 @@ export class VisitorInviteService  {
         return finalSuggestions;
     }
 
-    //TODO do the same for parking
     /* CRON JOBS */
     @Cron("50 23 * * *")
     async groupInvites() {
@@ -535,7 +527,6 @@ export class VisitorInviteService  {
     }
 
     /* CRON JOBS */
-    @Cron("50 23 * * *")
     async cachePredictedVisitors() {
         const now = new Date();
         const startYear = now.getFullYear() - 1;
@@ -571,6 +562,15 @@ export class VisitorInviteService  {
         }
         await this.cacheManager.set("PREDICTIONS", data.data, { ttl: 900000 });
         return data.data;
+    }
+
+    @Cron("10 23 * * *")
+    async createCache() {
+        const baseURL = this.configService.get<string>("AI_API_CONNECTION");
+        const data = await firstValueFrom(this.httpService.get(`${baseURL}/predictAsync?startDate=2022-01-01&endDate=2022-12-31`)); 
+        if(data.data.length === 1) {
+            return [];
+        }
     }
 
 }
