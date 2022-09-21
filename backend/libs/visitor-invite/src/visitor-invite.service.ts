@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable, CACHE_MANAGER, OnModuleInit } from "@nestjs/common";
+import { forwardRef, Inject, Injectable, CACHE_MANAGER } from "@nestjs/common";
 import { Cache } from 'cache-manager';
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import { HttpService } from "@nestjs/axios";
@@ -46,6 +46,8 @@ import { GetVisitorVisitsQuery } from "./queries/impl/getVisitorVisits.query";
 import { Visitor } from "./models/visitor.model";
 import { ExtendInvitesCommand } from "./commands/impl/extendInvites.command";
 import { CancelInvitesCommand } from "./commands/impl/cancelInvites.command";
+import { GetInviteForSignOutDataQuery } from "./queries/impl/getInviteForSignOutData.query";
+import { GetInviteForSignQuery } from "./queries/impl/getInviteForSign.query";
 
 @Injectable()
 export class VisitorInviteService  {
@@ -69,7 +71,7 @@ export class VisitorInviteService  {
                ) { 
                     this.AI_BASE_CONNECTION = this.configService.get<string>("AI_API_CONNECTION");
                     
-                    const job = new CronJob(`59 23 * * *`, () => {
+                    const job = new CronJob(`30 23 * * *`, () => {
                         this.commandBus.execute(new ExtendInvitesCommand());  
                         this.commandBus.execute(new CancelInvitesCommand());
                     })
@@ -83,7 +85,7 @@ export class VisitorInviteService  {
     */
     async setCurfewDetails( curfewTime:number ){
 
-        let len = curfewTime.toString().length;
+        const len = curfewTime.toString().length;
 
         if(len>2){
             this.curfewHour = Number(curfewTime.toString().slice(0,-2));  
@@ -231,8 +233,16 @@ export class VisitorInviteService  {
     }
 
     // Get invite by visitor id-number and invite date
-    async getInviteForSignInData(idNumber: string, inviteDate: string) {
-        return this.queryBus.execute(new GetInviteForSignInDataQuery(idNumber, inviteDate));
+    async getInviteForSignInData(idNumber: string, inviteDate: string, inviteState: string) {
+        return this.queryBus.execute(new GetInviteForSignInDataQuery(idNumber, inviteDate, inviteState));
+    }
+
+    async getInviteForSignOutData(idNumber: string) {
+        return this.queryBus.execute(new GetInviteForSignOutDataQuery(idNumber));
+    }
+
+    async getInviteForSign(idNumber: string) {
+        return this.queryBus.execute(new GetInviteForSignQuery(idNumber));
     }
 
     async cancelInvite(email: string, inviteID: string) {
@@ -469,18 +479,19 @@ export class VisitorInviteService  {
         suggestions.sort(function(a, b){return b.prob - a.prob});
 
         //find IQR
-        let q3Index = Math.round(1/4*(suggestions.length+1));
-        let q1Index = Math.round(3/4*(suggestions.length+1));
-        let iqr = suggestions[q3Index].prob - suggestions[q1Index].prob;
+        const q3Index = Math.round(1/4*(suggestions.length+1)) - 1;
+        const q1Index = Math.round(3/4*(suggestions.length+1)) - 1;
+        const iqr = suggestions[q3Index].prob - suggestions[q1Index].prob;
 
         let threshold = suggestions[suggestions.length-1].prob + iqr;
 
         //filter
         for(let i=0;i<suggestions.length;i++){
-            if(suggestions[i].prob<=threshold )
-            break;
-            else
-            finalSuggestions.push(suggestions[i])
+            if(suggestions[i].prob<=threshold ) {
+                continue;
+            } else {
+                finalSuggestions.push(suggestions[i])
+            }
         }
         
         return finalSuggestions;

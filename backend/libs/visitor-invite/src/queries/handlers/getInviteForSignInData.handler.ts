@@ -10,8 +10,8 @@ export class GetInviteForSignInDataQueryHandler implements IQueryHandler {
     constructor(@InjectModel(Invite.name) private inviteModel: Model<InviteDocument>) {}
 
     async execute(query: GetInviteForSignInDataQuery) {
-        const { idNumber, inviteDate } = query; 
-        const invite = await this.inviteModel.findOne({ idNumber: idNumber, inviteDate: inviteDate, inviteState: "inActive"});
+        const { idNumber, inviteDate, inviteState } = query; 
+        const invite = await this.inviteModel.findOne({ idNumber: idNumber, inviteDate: inviteDate, inviteState: inviteState });
         return invite;
     }
 }

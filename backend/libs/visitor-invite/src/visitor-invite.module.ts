@@ -36,6 +36,8 @@ import { GetMostUsedInviteDataQueryHandler } from "./queries/handlers/getMostUse
 import { GetInvitesForUsersQueryHandler } from "./queries/handlers/getInvitesForUsers.handler";
 import { ExtendInvitesCommandHandler } from "./commands/handlers/extendInvitesCommand.handler";
 import { GetInviteForSignInDataQueryHandler } from "./queries/handlers/getInviteForSignInData.handler";
+import { GetInviteForSignOutDataQueryHandler } from "./queries/handlers/getInviteForSignOutData.handler";
+import { GetInviteForSignHandler } from "./queries/handlers/getInviteForSign.handler";
 
 @Module({
     imports: [
@@ -78,6 +80,8 @@ import { GetInviteForSignInDataQueryHandler } from "./queries/handlers/getInvite
         GetVisitorVisitsQueryHandler,
         getNumberOfVisitors,
         GetInviteForSignInDataQueryHandler,
+        GetInviteForSignOutDataQueryHandler,
+        GetInviteForSignHandler
     ],
     exports: [VisitorInviteService],
 })
