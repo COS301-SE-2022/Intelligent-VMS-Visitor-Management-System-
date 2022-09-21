@@ -1,5 +1,6 @@
 from app import app, APP_ROOT, ALLOWED_EXTENSIONS
 from flask import request, redirect, url_for
+from threading import Thread
 import json
 
 from app.faceRec.faceRecLib import loadImage, faceRecognition, storeFace, getFaceEncodingsFromImage, getFacesLocationData, getLargestFace, compareFaces, addFaceEncoding
@@ -11,7 +12,7 @@ def updateClassifier():
     knnClassifier = train("./model.plk", 1)
     return knnClassifier
 
-print("RUN!")
+print("Loading classifier")
 knnClassifier = updateClassifier()
 
 # Parse filename to check if it is valid
@@ -92,6 +93,7 @@ def storeface():
             encodings = getFaceEncodingsFromImage(image, faceLocations)             
 
             print("Found {} face(s) in image".format(len(faceLocations)))
+
             
             # If there is one face in the image store it immediately
             if len(faceLocations) != 1:
@@ -100,6 +102,10 @@ def storeface():
                 faceIdx = getLargestFace(faceLocations)
                 storeFace(encodings[faceIdx], idNumber, name)
             
+            # Create worker thread and update classifier
+            workerThread = Thread(target=updateClassifier)
+            workerThread.start()
+
             return createResponse({"result": True})
         
         return createResponse({"error": "Invalid File"})
