@@ -191,7 +191,7 @@ const CreateInvite = ({ name, email, idNumber, idDocType }) => {
                             )
                         ) {
                             errors.idValue = "Invalid RSA ID Number";
-                        }else if (!values.name) {
+                        } else if (!values.name) {
                             errors.name = "Required";
                         } else if (!/[A-Za-z]+/i.test(values.name)) {
                             errors.name =
@@ -367,7 +367,7 @@ const CreateInvite = ({ name, email, idNumber, idDocType }) => {
                                         whileHover="animate"
                                         className="label-text overflow-x-hidden pr-3"
                                     >
-                                        Reserve Parking{" "}
+                                        {values.reserveParking?  <span className='mr-3 text- font-bold text-secondary'>Parking Reserved</span>:<span className='mr-3 text-xl'>Reserve Parking </span> }
                                         <motion.span
                                             initial={false}
                                             className="inline-block"
