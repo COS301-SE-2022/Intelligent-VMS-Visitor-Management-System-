@@ -5,7 +5,7 @@ import { Field, Formik } from "formik";
 import { motion } from "framer-motion";
 
 import Layout from "../components/Layout";
-import ErrorAlert from "../components/ErrorAlert";
+
 
 import useAuth from "../store/authStore";
 
@@ -292,10 +292,7 @@ const ReceptionistSignUp = () => {
                         );
                     }}
                 </Formik>
-                <ErrorAlert
-                    message={error.message}
-                    showConditon={error.showCondition}
-                />
+
             </div>
         </Layout>
     );
