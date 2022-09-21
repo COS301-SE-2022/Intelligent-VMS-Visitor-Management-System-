@@ -2,7 +2,12 @@ from app import app,APP_ROOT
 from flask import request
 from app.fakeInviteGenerator import createInvites,resetInviteHistory
 
-from app.model import predictMany,train,visitorFeatureAnalysis,parkingFeatureAnalysis
+from app.model import predictMany,train,visitorFeatureAnalysis,parkingFeatureAnalysis,createPredictionCache,getCachedValues
+from threading import Thread
+import json
+
+def predictManyCache(startDate, endDate):
+    createPredictionCache(startDate, endDate)
 
 @app.route("/")
 def home():
@@ -12,7 +17,21 @@ def home():
 def predict():
     startDate = request.args.get('startDate')
     endDate = request.args.get('endDate')
-    return predictMany(startDate,endDate)
+    return json.dumps(predictMany(startDate,endDate))
+
+@app.route("/predictAsync")
+def predictAsync():
+    startDate = request.args.get('startDate')
+    endDate = request.args.get('endDate')
+    workerThread = Thread(target=predictManyCache, args=(startDate, endDate))
+    workerThread.start()
+    return "done"
+
+@app.route("/getCache")
+def getCache():
+    startDate = request.args.get('startDate')
+    endDate = request.args.get('endDate')
+    return json.dumps(getCachedValues(startDate, endDate))
 
 @app.route("/visitorFeatureAnalysis")
 def vFeatureAnalysis():
