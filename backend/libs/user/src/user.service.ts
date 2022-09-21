@@ -21,6 +21,7 @@ import { UpdateUserCommand } from "./commands/impl/updateUser.command";
 import { GetDaysWithVMSQuery } from "./queries/impl/getDaysWithVMS.query";
 import { IncreaseSuggestionsCommand } from "./commands/impl/increaseSuggestions.command";
 import { GetNumSuggestionsQuery } from "./queries/impl/getNumSuggestions.query";
+import { UpdatePrivilegesCommand } from "./commands/impl/updatePrivileges.command";
 
 @Injectable()
 export class UserService {
@@ -112,6 +113,46 @@ export class UserService {
         this.commandBus.execute(new UpdateUserCommand(email,badges,xp));
     }
 
+    async updatePrivileges(email:string,xpOld:number,xpCurrent:number){
+        const allRewards = await this.rewardService.getAllRewards();
+        var invites = 0;
+        var sleepovers = 0;
+        var themes = 0;
+
+        for await ( let reward of allRewards){
+            if(reward.xp>=xpCurrent){
+                switch(reward.type){
+                    case "invite":
+                        if(reward.xp>xpOld){
+                            invites++;
+                        } else {
+                            invites--;
+                        }
+                        break;
+                    case "sleepover":
+                        if(reward.xp>xpOld){
+                            sleepovers++;
+                        } else {
+                            sleepovers--;
+                        }
+                        break;
+                    case "theme":
+                        if(reward.xp>xpOld){
+                            themes++;
+                        } else {
+                            themes--;
+                        }
+                        break;
+                }
+            }
+        }
+
+        if(sleepovers!=0 && themes!=0 && invites!=0){
+            this.queryBus.execute(new UpdatePrivilegesCommand(email, sleepovers, themes, invites));
+        }
+
+    }
+
     async calculateBadges(email:string){
         const user = await this.getUserByEmail(email);
         const allBadges = await this.rewardService.getAllBadges();
@@ -120,7 +161,6 @@ export class UserService {
         let variable:number;
         let change = false;
         let xp = 0;
-        // allBadges.forEach(async (badge:Badge,i:number)=>{
         for await ( let [i,badge] of allBadges){
             if(parseInt(badges.charAt(i))<badge.levels){
                 switch(badge.type){
@@ -142,7 +182,7 @@ export class UserService {
                         variable = await this.visitorInviteService.getTotalNumberOfVisitsOfResident(email);
                         break;
                     case "suggestion":
-                        variable = await this.getNumSuggestions(email);
+                        //variable = await this.getNumSuggestions(email);
                         break;
                 }
                 let level = parseInt(badges.charAt(i))+1;
@@ -162,8 +202,7 @@ export class UserService {
 
         if(change){
             this.updateUser(email,badges,xp);
+            this.updatePrivileges(email,user.xp,user.xp+xp);
         }
-        
-
     }
 }

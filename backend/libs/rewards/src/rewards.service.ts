@@ -18,7 +18,7 @@ export class RewardsService {
         await this.userService.calculateBadges(email);
 
         let user = await this.userService.getUserByEmail(email);
-        let allRewards = await this.queryBus.execute(new GetAllRewardsQuery());
+        let allRewards = await this.getAllRewards();
         let allBadges = await this.getAllBadges();
         let maxRequirement = await this.getMaxRequirement();
         
@@ -37,6 +37,10 @@ export class RewardsService {
 
     async getAllBadges(){
         return await this.queryBus.execute(new GetAllBadgesQuery());
+    }
+
+    async getAllRewards(){
+        return await this.queryBus.execute(new GetAllRewardsQuery());
     }
 
     async getMaxRequirement(){

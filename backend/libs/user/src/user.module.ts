@@ -27,6 +27,8 @@ import { RewardsModule } from "@vms/rewards";
 import { UpdateUserCommandHandler } from "./commands/handlers/updateUser.handler";
 import { GetDaysWithVMSQueryHandler } from "./queries/handlers/getDaysWithVMS.handler";
 import { IncreaseSuggestionsCommandHandler } from "./commands/handlers/increaseSuggestions.handler";
+import { GetNumSuggestionsQueryHandler } from "./queries/handlers/getNumSuggestions.handler";
+import { UpdatePrivilegesCommandHandler } from "./commands/handlers/updatePrivileges.handler";
 
 @Module({
     imports: [
@@ -47,12 +49,14 @@ import { IncreaseSuggestionsCommandHandler } from "./commands/handlers/increaseS
         GetUnAuthUsersQueryHandler,
         GetMaxInvitesPerResidentQueryHandler,
         GetNumInvitesQueryHandler,
+        GetNumSuggestionsQueryHandler,
         UpdateMaxInvitesCommandHandler,
         GetMaxCurfewTimePerResidentQueryHandler,
         GetCurfewTimeQueryHandler,
         GetDaysWithVMSQueryHandler,
         UpdateMaxCurfewTimeCommandHandler,
         UpdateUserCommandHandler,
+        UpdatePrivilegesCommandHandler,
         AuthorizeUserCommandHandler,
         DeauthorizeUserAccountCommandHandler,
         IncreaseSuggestionsCommandHandler,
