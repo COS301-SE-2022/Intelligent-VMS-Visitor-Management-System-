@@ -65,6 +65,7 @@ const ProfilePage = () => {
         }
     }, [loading, error, router, data, profileQuery]);
 
+    document.body.style = "overflow-x:hidden";
     return (
 
         <Layout>
