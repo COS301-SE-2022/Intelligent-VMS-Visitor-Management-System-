@@ -118,6 +118,7 @@ const ResidentSignUp = () => {
                                     signup(
                                         email: "${values.email}", 
                                         password: "${values.password}", 
+                                        confirmationPin:"00000",
                                         type: "resident", 
                                         idNumber: "${values.idNumber}",
                                         IDDocType: "${values.idDoc}",

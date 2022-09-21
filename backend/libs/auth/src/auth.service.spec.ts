@@ -220,7 +220,7 @@ describe("AuthService", () => {
             const findOneMock = jest.spyOn(userService, 'findOne').mockReturnValueOnce(Promise.resolve(null))
             // Act
             try {
-                const response = await service.signup({ email: 'mail', password: 'password', type: 'receptionist', idNumber: 2323 })
+                const response = await service.signup({ email: 'mail', password: 'password',confirmationPin:'00000', type: 'receptionist', idNumber: 2323 })
                 expect(response).toEqual(true)
             }
             catch (e) {
@@ -234,7 +234,7 @@ describe("AuthService", () => {
             const findOneMock = jest.spyOn(userService, 'findOne').mockReturnValueOnce(Promise.resolve(null))
             // Act
             try {
-                const response = await service.signup({ email: 'mail', password: 'password', type: 'other', idNumber: 2323 })
+                const response = await service.signup({ email: 'mail', password: 'password',confirmationPin:'00000', type: 'other', idNumber: 2323 })
                 expect(response).toEqual({})
             }
             catch (e) {

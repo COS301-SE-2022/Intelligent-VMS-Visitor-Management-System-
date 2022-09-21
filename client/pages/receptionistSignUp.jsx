@@ -106,6 +106,8 @@ const ReceptionistSignUp = () => {
                                 "Password needs minimum of 8 characters with one number and one special character";
                         } else if (values.confirmPassword !== values.password) {
                             errors.confirmPassword = "Passwords do not match";
+                         }else if(!/^(?=.*[0-9]){7}$/i.test(values.pin) ){
+                            errors.pin="Pin needs to be a 5 digit number"
                          }
 
                         return errors;
@@ -118,6 +120,7 @@ const ReceptionistSignUp = () => {
                                     signup(
                                         email: "${values.email}", 
                                         password: "${values.password}", 
+                                        confirmationPin: "${values.confirmationPin}",
                                         type: "receptionist", 
                                         idNumber: "${values.idNumber}",
                                         IDDocType: "${values.idDoc}",
@@ -248,7 +251,21 @@ const ReceptionistSignUp = () => {
                                         touched.confirmPassword &&
                                         errors.confirmPassword}
                                 </span>
+                                <input
+                                    type="password"
+                                    name="confirmationPin"
+                                    placeholder="5 digit Confirmation Pin"
+                                    className="input input-bordered w-full"
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    value={values.confirmationPin}
+                                ></input>
 
+                                <span className="max-w-xs text-sm text-error md:text-base">
+                                    {errors.pin &&
+                                        touched.confirmationPin &&
+                                        errors.pin}
+                                </span>
                                 <p className="text-sm md:text-lg lg:text-xl">
                                     You are signing up as a receptionist
                                 </p>
