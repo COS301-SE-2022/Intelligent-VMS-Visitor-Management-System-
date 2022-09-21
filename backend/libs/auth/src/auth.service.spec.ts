@@ -7,11 +7,8 @@ import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import { Model } from "mongoose";
 import { getModelToken } from "@nestjs/mongoose";
 import { CACHE_MANAGER } from "@nestjs/common";
-
-import { LoginFailed } from "./errors/loginFailed.error";
 import * as bcrypt from "bcrypt";
 import { User, UserDocument } from "@vms/user/schema/user.schema";
-import { GetUserQuery } from "@vms/user/queries/impl/getUser.query";
 import { MailService } from "@vms/mail";
 
 describe("AuthService", () => {
