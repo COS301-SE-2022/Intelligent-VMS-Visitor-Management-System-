@@ -38,6 +38,7 @@ import { ExtendInvitesCommandHandler } from "./commands/handlers/extendInvitesCo
 import { GetInviteForSignInDataQueryHandler } from "./queries/handlers/getInviteForSignInData.handler";
 import { GetInviteForSignOutDataQueryHandler } from "./queries/handlers/getInviteForSignOutData.handler";
 import { GetInviteForSignHandler } from "./queries/handlers/getInviteForSign.handler";
+import { CancelInvitesCommandHandler } from "./commands/handlers/cancelInvitesCommand.handler";
 
 @Module({
     imports: [
@@ -61,6 +62,7 @@ import { GetInviteForSignHandler } from "./queries/handlers/getInviteForSign.han
         VisitorInviteResolver,
         CreateInviteCommandHandler,
         CancelInviteCommandHandler,
+        CancelInvitesCommandHandler,
         ExtendInvitesCommandHandler,
         GetInvitesQueryHandler,
         GetInviteQueryHandler,
