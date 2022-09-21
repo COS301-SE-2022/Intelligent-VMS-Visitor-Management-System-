@@ -1,13 +1,15 @@
-import { forwardRef, Inject, Injectable, CACHE_MANAGER } from "@nestjs/common";
+import { forwardRef, Inject, Injectable, CACHE_MANAGER, OnModuleInit } from "@nestjs/common";
 import { Cache } from 'cache-manager';
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import { HttpService } from "@nestjs/axios";
 import { ConfigService } from "@nestjs/config";
-import { Cron } from '@nestjs/schedule';
+import { Cron,SchedulerRegistry  } from '@nestjs/schedule';
+import { CronJob } from "cron";
 import { randomUUID } from "crypto";
 
 import { CreateInviteCommand } from "./commands/impl/createInvite.command";
 import { CancelInviteCommand } from "./commands/impl/cancelInvite.command";
+import { GetInviteForSignInDataQuery } from "./queries/impl/getInviteForSignInData.query";
 import { GetInvitesQuery } from "./queries/impl/getInvites.query";
 import { GetInviteQuery } from "./queries/impl/getInvite.query";
 import { GetNumberVisitorQuery } from "./queries/impl/getNumberOfVisitors.query";
@@ -42,20 +44,69 @@ import { UserService } from "@vms/user";
 import { GetInvitesForUsersQuery } from "./queries/impl/getInvitesForUsers.query";
 import { GetVisitorVisitsQuery } from "./queries/impl/getVisitorVisits.query";
 import { Visitor } from "./models/visitor.model";
+import { ExtendInvitesCommand } from "./commands/impl/extendInvites.command";
+import { CancelInvitesCommand } from "./commands/impl/cancelInvites.command";
 
 @Injectable()
-export class VisitorInviteService {
+export class VisitorInviteService  {
+    private curfewHour: number;
+    private curfewMinute: number;
+
+    AI_BASE_CONNECTION: string;
+
     constructor(private readonly commandBus: CommandBus, 
                 private readonly queryBus: QueryBus, 
                 private readonly httpService: HttpService,
                 private readonly configService: ConfigService,
                 private readonly mailService: MailService,
+                @Inject(forwardRef(() => {return RestrictionsService}))
                 private readonly restrictionsService: RestrictionsService,
                 private readonly userService: UserService,
                 @Inject(CACHE_MANAGER) private cacheManager: Cache,
                 @Inject(forwardRef(() => {return ParkingService}))
                 private readonly parkingService: ParkingService,
-               ) {}
+                private schedulerRegistry: SchedulerRegistry
+               ) { 
+                    this.AI_BASE_CONNECTION = this.configService.get<string>("AI_API_CONNECTION");
+                    
+                    const job = new CronJob(`59 23 * * *`, () => {
+                        this.commandBus.execute(new ExtendInvitesCommand());  
+                        this.commandBus.execute(new CancelInvitesCommand());
+                    })
+            
+                    this.schedulerRegistry.addCronJob("extendInvites", job);
+                    job.start();
+               }
+            
+     /*
+        Update/synchronise curfew details and cron job
+    */
+    async setCurfewDetails( curfewTime:number ){
+
+        let len = curfewTime.toString().length;
+
+        if(len>2){
+            this.curfewHour = Number(curfewTime.toString().slice(0,-2));  
+        }else{
+            this.curfewHour = 0
+        }
+
+        if(len==1){
+            this.curfewMinute = this.curfewMinute;
+        }else{
+            this.curfewMinute = Number(curfewTime.toString().slice(len-2,len));
+        }
+
+        this.schedulerRegistry.deleteCronJob("extendInvites");
+
+        const job = new CronJob(`${this.curfewMinute.toString()} ${this.curfewHour.toString()} * * *`, async() => {
+            this.commandBus.execute(new ExtendInvitesCommand()); 
+            this.commandBus.execute(new CancelInvitesCommand()); 
+        })
+
+        this.schedulerRegistry.addCronJob("extendInvites", job);
+        job.start();
+    }
 
     /*
         Create an invitation for a visitor
@@ -169,7 +220,19 @@ export class VisitorInviteService {
 
     //Get invite by ID
     async getInvite(inviteID: string) {
-        return this.queryBus.execute(new GetInviteQuery(inviteID));
+        if(inviteID.length === 0) {
+            throw new InviteNotFound("No invite given");
+        }
+        const invite = await this.queryBus.execute(new GetInviteQuery(inviteID));
+        if(!invite) {
+            throw new InviteNotFound("Invite not found with id");
+        }
+        return invite;
+    }
+
+    // Get invite by visitor id-number and invite date
+    async getInviteForSignInData(idNumber: string, inviteDate: string) {
+        return this.queryBus.execute(new GetInviteForSignInDataQuery(idNumber, inviteDate));
     }
 
     async cancelInvite(email: string, inviteID: string) {
@@ -326,16 +389,13 @@ export class VisitorInviteService {
             return cachedPredictedInvites;
         } else {
             console.log("MISS");
-            const baseURL = this.configService.get<string>("AI_API_CONNECTION");
-            const data = await firstValueFrom(this.httpService.get(`${baseURL}/predict?startDate=${startDate}&endDate=${endDate}`)); 
+            const data = await firstValueFrom(this.httpService.get(`${this.AI_BASE_CONNECTION}/predict?startDate=${startDate}&endDate=${endDate}`)); 
             if(data.data.length === 1) {
                 return [];
             }
             await this.cacheManager.set("PREDICTIONS", data.data, { ttl: 90000 });
-            console.log(data.data);
             return data.data;
         }
-
     }
 
     getMonthsBetweenDates(startDate, endDate) {
@@ -348,18 +408,17 @@ export class VisitorInviteService {
         return (
           (endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24)
         );
-      }
+    }
     
-      getWeekdayBetweenDates(startDate, endDate) {
-
+    getWeekdayBetweenDates(startDate, endDate) {
         return (4 * (endDate.getMonth() - startDate.getMonth()) + 52 * (endDate.getFullYear() - startDate.getFullYear()));
-      }
+    }
 
     async getSuggestions(date: string, userEmail: string){
         let visitors:Visitor[] = JSON.parse(JSON.stringify(await this.queryBus.execute(new GetVisitorVisitsQuery(userEmail))));
         let predDate = new Date(date);
         let suggestions = [];
-
+        
         const today = new Date();
 
         for(let i=0 ; i<visitors.length; i++){
@@ -367,19 +426,23 @@ export class VisitorInviteService {
             let dowCount = 0;
             let monthCount = 0;
         
-            let visitData = JSON.parse(JSON.stringify(visitors[i].visits))
+            const visitData = JSON.parse(JSON.stringify(visitors[i].visits))
             let firstInviteDate = new Date(visitors[i].visits[0]);
 
             for(let j=0 ; j<visitData.length; j++)
             {
-                let currDate = new Date(visitData[j])
-                if(currDate.getMonth() == predDate.getMonth())
+                const currDate = new Date(visitData[j])
+                if(currDate.getMonth() == predDate.getMonth()) {
                     monthCount++;
-                if(currDate.getDay() == predDate.getDay())
-                    dowCount++;
+                }
 
-                if(currDate<firstInviteDate)
-                firstInviteDate = currDate;
+                if(currDate.getDay() == predDate.getDay()) {
+                    dowCount++;
+                }
+
+                if(currDate<firstInviteDate) {
+                    firstInviteDate = currDate;
+                }
             }
 
             let monthTotal = this.getMonthsBetweenDates(firstInviteDate,today);
@@ -388,7 +451,7 @@ export class VisitorInviteService {
 
             let pYes = monthCount/monthTotal * dowCount/dowTotal * visitors[i].numInvites/dayTotal
             //let pNo = (monthTotal-monthCount)/monthTotal * (dowTotal-dowCount)/dowTotal * (dayTotal-visitors[i].numInvites)/dayTotal
-
+            
             let suggestion = new Visitor()
             suggestion.visitorName = visitors[i].visitorName;
             suggestion._id = visitors[i]._id;
@@ -423,6 +486,7 @@ export class VisitorInviteService {
         return finalSuggestions;
     }
 
+    //TODO do the same for parking
     /* CRON JOBS */
     @Cron("50 23 * * *")
     async groupInvites() {

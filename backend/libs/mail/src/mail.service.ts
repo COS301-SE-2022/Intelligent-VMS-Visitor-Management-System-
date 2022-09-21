@@ -53,7 +53,7 @@ export class MailService {
         return this.transporter.sendMail({
             from: '"VMS 👋" <firestorm19091@gmail.com>', // sender address
             to: to, // list of receivers
-            subject: "You received an invite", // Subject line
+            subject: "Verify Account", // Subject line
             html: `<h1>Hello New User!👋</h1>
                 <br />
                 <h3>Thank you for choosing V Ʌ S</h3>

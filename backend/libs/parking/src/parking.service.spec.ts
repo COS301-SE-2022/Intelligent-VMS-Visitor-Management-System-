@@ -37,6 +37,7 @@ import { getDisabledParkingQuery } from './queries/impl/getDisabledParking.query
 import { getTotalParkingQuery } from './queries/impl/getTotalParking.query';
 
 import { CACHE_MANAGER } from '@nestjs/common';
+import { SchedulerRegistry } from '@nestjs/schedule';
 
 describe('ParkingService', () => {
   let parkingService: ParkingService;
@@ -307,6 +308,11 @@ describe('ParkingService', () => {
       }),
   };
 
+  const scheduleMock = {
+    addCronJob: jest.fn(()=>({})),
+    deleteCronJob: jest.fn(()=>({})),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
         imports: [HttpModule],
@@ -324,6 +330,7 @@ describe('ParkingService', () => {
                     set: () => {return jest.fn()},
                 },
             },
+            { provide: SchedulerRegistry, useValue: scheduleMock},
             {
                 provide: QueryBus, useValue: queryBusMock
             },
@@ -439,7 +446,7 @@ describe('ParkingService', () => {
             await parkingService.assignParking("jippy");
           } catch (error) {
               expect(error).toBeDefined();
-              expect(error.message).toEqual(`Invitation with ID jippy not found`)
+              expect(error.message).toEqual(`Invite not found with id`)
           }
       });
 
@@ -462,7 +469,7 @@ describe('ParkingService', () => {
           await parkingService.unreserveParking("jippy");
         } catch (error) {
             expect(error).toBeDefined();
-            expect(error.message).toEqual(`Invitation with ID jippy not found.`)
+            expect(error.message).toEqual(`Invite not found with id`)
         }
     });
 });
@@ -478,7 +485,7 @@ describe('ParkingService', () => {
               await parkingService.reserveParking("jippy");
           } catch (error) {
               expect(error).toBeDefined();
-              expect(error.message).toEqual("Invitation with ID jippy not found")
+              expect(error.message).toEqual("Invite not found with id")
           }
       });
 
@@ -508,7 +515,7 @@ describe('ParkingService', () => {
             await parkingService.reserveParkingSpace(0,"jippy");
         } catch (error) {
             expect(error).toBeDefined();
-            expect(error.message).toEqual("Invitation with ID jippy not found")
+            expect(error.message).toEqual("Invite not found with id")
         }
     });
 
@@ -694,7 +701,7 @@ describe('ParkingService', () => {
                     await parkingService.getInviteReservation("jippy");
                 } catch (error) {
                     expect(error).toBeDefined();
-                    expect(error.message).toEqual(`Invitation with ID jippy not found.`)
+                    expect(error.message).toEqual(`Invite not found with id`)
                 }
             });
 

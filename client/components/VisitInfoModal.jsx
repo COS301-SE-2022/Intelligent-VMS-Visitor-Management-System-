@@ -32,12 +32,15 @@ const VisitInfoModal = ({ setShowInfo, visitModalData }) => {
                         <BsFillCalendarEventFill className="text-xl" />
                         <p>{visitModalData.inviteDate}</p>
                     </div>
+                    { /*
                     <div className="flex items-center space-x-3">
                         <IoFileTrayFull className="text-xl" />
                         <p>7</p>
                         <AiFillCar className="text-xl" />
                         <p>13</p>
                     </div>
+                    */
+                    }
                 </div>
             </div>
 
