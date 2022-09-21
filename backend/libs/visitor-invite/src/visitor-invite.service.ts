@@ -51,8 +51,8 @@ import { CancelInvitesCommand } from "./commands/impl/cancelInvites.command";
 
 @Injectable()
 export class VisitorInviteService  {
-    private curfewHour: number;
-    private curfewMinute: number;
+    private curfewHour: string;
+    private curfewMinute: string;
 
     AI_BASE_CONNECTION: string;
 
@@ -73,38 +73,57 @@ export class VisitorInviteService  {
                     this.AI_BASE_CONNECTION = this.configService.get<string>("AI_API_CONNECTION");
                     
                     const job = new CronJob(`59 23 * * *`, () => {
-                        this.commandBus.execute(new ExtendInvitesCommand());  
-                        this.commandBus.execute(new CancelInvitesCommand());
+                        this.extendInvitesJob();
                     })
             
                     this.schedulerRegistry.addCronJob("extendInvites", job);
                     job.start();
                }
+
+    extendInvitesJob(){
+        this.commandBus.execute(new ExtendInvitesCommand());  
+        this.commandBus.execute(new CancelInvitesCommand());
+    }
+
+    async justAFunc(s:string){
+        console.log(s);
+    }
             
      /*
         Update/synchronise curfew details and cron job
     */
-    async setCurfewDetails( curfewTime:number ){
+    async setCurfewDetails( difference:number ){
 
-        let len = curfewTime.toString().length;
+        let curfewTime = Number(this.curfewHour.concat(this.curfewMinute))+difference;
+        let today = new Date();
+        let currMin = today.getMinutes().toString();
 
-        if(len>2){
-            this.curfewHour = Number(curfewTime.toString().slice(0,-2));  
-        }else{
-            this.curfewHour = 0
+        if(currMin.length<2){
+            currMin = "0"+currMin;
         }
 
-        if(len==1){
-            this.curfewMinute = this.curfewMinute;
+        let currentTime = Number(today.getHours().toString().concat(currMin))
+
+        if(curfewTime< currentTime){
+            this.extendInvitesJob();
+        }
+
+        if(curfewTime.toString().length>2){
+            this.curfewHour = curfewTime.toString().slice(0,-3);  
         }else{
-            this.curfewMinute = Number(curfewTime.toString().slice(len-2,len));
+            this.curfewHour = "0";
+        }
+        
+        if(curfewTime.toString().length<=1){
+            this.curfewMinute = curfewTime.toString();
+        }else{
+            this.curfewMinute = curfewTime.toString().slice(-2);
         }
 
         this.schedulerRegistry.deleteCronJob("extendInvites");
 
-        const job = new CronJob(`${this.curfewMinute.toString()} ${this.curfewHour.toString()} * * *`, async() => {
-            this.commandBus.execute(new ExtendInvitesCommand()); 
-            this.commandBus.execute(new CancelInvitesCommand()); 
+        const job = new CronJob(`${this.curfewMinute} ${this.curfewHour} * * *`, async() => {
+            this.extendInvitesJob();
         })
 
         this.schedulerRegistry.addCronJob("extendInvites", job);

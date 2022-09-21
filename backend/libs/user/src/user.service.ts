@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable } from "@nestjs/common";
+import { forwardRef, Inject, Injectable, OnModuleInit } from "@nestjs/common";
 import { QueryBus, CommandBus } from "@nestjs/cqrs";
 import { SearchUserQuery } from "./queries/impl/searchUser.query";
 import { GetUserQuery } from "./queries/impl/getUser.query";
@@ -24,7 +24,7 @@ import { GetNumSuggestionsQuery } from "./queries/impl/getNumSuggestions.query";
 import { UpdatePrivilegesCommand } from "./commands/impl/updatePrivileges.command";
 
 @Injectable()
-export class UserService {
+export class UserService{
     constructor(private queryBus: QueryBus, 
                 private commandBus: CommandBus, 
                 private rewardService: RewardsService,
@@ -74,6 +74,7 @@ export class UserService {
     }
 
     async updateMaxCurfewTime(difference: number) {
+        this.visitorInviteService.setCurfewDetails(difference);
         return this.commandBus.execute(new UpdateMaxCurfewTimeCommand(difference));
     }
     
@@ -118,6 +119,7 @@ export class UserService {
         var invites = 0;
         var sleepovers = 0;
         var themes = 0;
+        var curfewHours = 0;
 
         for await ( let reward of allRewards){
             if(reward.xp>=xpCurrent){
@@ -143,12 +145,19 @@ export class UserService {
                             themes--;
                         }
                         break;
+                    case "curfew":
+                        if(reward.xp>xpOld){
+                            curfewHours++;
+                        } else {
+                            curfewHours--;
+                        }
+                        break;
                 }
             }
         }
 
-        if(sleepovers!=0 && themes!=0 && invites!=0){
-            this.queryBus.execute(new UpdatePrivilegesCommand(email, sleepovers, themes, invites));
+        if(sleepovers!=0 && themes!=0 && invites!=0 && curfewHours){
+            this.queryBus.execute(new UpdatePrivilegesCommand(email, sleepovers, themes, invites, curfewHours));
         }
 
     }
