@@ -22,10 +22,6 @@ import { GetDaysWithVMSQuery } from "./queries/impl/getDaysWithVMS.query";
 import { IncreaseSuggestionsCommand } from "./commands/impl/increaseSuggestions.command";
 import { GetNumSuggestionsQuery } from "./queries/impl/getNumSuggestions.query";
 import { UpdatePrivilegesCommand } from "./commands/impl/updatePrivileges.command";
-import { GetMaxSleepoversPerResidentQuery } from "./queries/impl/getMaxSleepoversPerResident.query";
-import { UpdateMaxSleepoversCommand } from "./commands/impl/updateMaxSleepovers.command";
-import { GetNumSleepoversQuery } from "./queries/impl/getNumSleepovers.query";
-import { GetRewardTypesCountQuery } from "@vms/rewards/queries/impl/getRewardTypesCount.query";
 
 @Injectable()
 export class UserService{
@@ -42,9 +38,13 @@ export class UserService{
 
     async createUser(email: string, password: string, permission: number, idNumber: string, idDocType: string, name: string) {
         const dateString = (new Date()).toLocaleDateString();
-        const typeCounts = this.queryBus.execute(new GetRewardTypesCountQuery());
-        //TODO get restrictions
-        return this.commandBus.execute(new CreateUserCommand(email, password, permission, idNumber, idDocType, name, dateString));
+        const typeCounts = await this.rewardService.getTypeCounts();
+        const badgeCount = (await this.rewardService.getAllBadges()).length;
+        let badges ="1";
+        for(var i=0;i<badgeCount-1;i++){
+            badges += "0";
+        }
+        return this.commandBus.execute(new CreateUserCommand(email, password, permission, idNumber, idDocType, name, badges, typeCounts["sleepover"],typeCounts["theme"],typeCounts["invite"],typeCounts["curfew"], dateString));
     }
 
     async searchUser(searchQuery: string) {
@@ -55,46 +55,8 @@ export class UserService{
         return this.queryBus.execute(new GetUserQuery(email));
     }
 
-    async getNumInvites(email: string) {
-        return this.queryBus.execute(new GetNumInvitesQuery(email));
-    }
-
-    async getMaxInvitesPerResident() {
-        return this.queryBus.execute(new GetMaxInvitesPerResidentQuery());
-    }
-
-    async updateMaxInvites(difference: number) {
-        return this.commandBus.execute(new UpdateMaxInvitesCommand(difference));
-    }
-
-    async getCurfewTime(email: string) {
-        return this.queryBus.execute(new GetCurfewTimeQuery(email));
-    }
-
     async getNumSuggestions(email: string) {
         return this.queryBus.execute(new GetNumSuggestionsQuery(email));
-    }
-
-    async getMaxCurfewTimePerResident() {
-        return this.queryBus.execute(new GetMaxCurfewTimePerResidentQuery());
-    }
-
-    async updateMaxCurfewTime(difference: number) {
-        this.visitorInviteService.setCurfewDetails(difference);
-        return this.commandBus.execute(new UpdateMaxCurfewTimeCommand(difference));
-    }
-
-    async getMaxSleepoversPerResident() {
-        return this.queryBus.execute(new GetMaxSleepoversPerResidentQuery());
-    }
-
-    async getNumSleepovers(email: string) {
-        return this.queryBus.execute(new GetNumSleepoversQuery(email));
-    }
-
-    async updateMaxSleepoversTime(difference: number) {
-        this.visitorInviteService.setCurfewDetails(difference);
-        return this.commandBus.execute(new UpdateMaxSleepoversCommand(difference));
     }
     
     async getUnAuthorizedUsers(permission: number) {

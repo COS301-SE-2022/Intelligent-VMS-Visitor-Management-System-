@@ -14,14 +14,8 @@ export class RewardsResolver {
     constructor(
         private rewardsService: RewardsService
     ) {}
-    
-    // @UseGuards(GqlAuthGuard)
-    // @Query((returns) => {return Reward}, { name: "getAllBadges"})
-    // async getMaxInvitesPerResident() {
-    //     return this.rewardsService.getAllBadges();
-    // }
 
-    //@UseGuards(GqlAuthGuard)
+    @UseGuards(GqlAuthGuard)
     @Query((returns) => {return ProfileInfo}, { name: "getProfileInfo"})
     async getProfileInfo(@Args("email") email: string) {
         return this.rewardsService.getProfileInfo(email); 

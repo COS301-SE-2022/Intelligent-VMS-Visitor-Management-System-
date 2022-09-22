@@ -11,22 +11,21 @@ export class CreateUserCommandHandler implements ICommandHandler {
     ) {}
 
     async execute(command: CreateUserCommand) {
-        const { email, password, permission, name, idDocType, idNumber, date } = command;
-        let id = new mongoose.mongo.ObjectId();
+        const { email, password, permission, name, idDocType, idNumber, badges, numSleepovers, numThemes, numInvites, curfewTime, date } = command;
         await this.userModel.create({ email: email, 
                                       password: password, 
                                       permission: permission, 
                                       name: name, 
                                       idDocType: idDocType, 
                                       idNumber: idNumber, 
-                                      signUpTime: date, 
+                                      signUpDate: date, 
                                       xp: 20, 
-                                      badges: "1000000", 
+                                      badges: badges, 
                                       suggestions: 0, 
-                                      numSleepovers:0, 
-                                      numInvites:0, 
-                                      numThemes:0, 
-                                      curfewTime:0});
+                                      numSleepovers:numSleepovers, 
+                                      numInvites:numInvites, 
+                                      numThemes:numThemes, 
+                                      curfewTime:curfewTime});
         
     }
 }

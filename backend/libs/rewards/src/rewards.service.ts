@@ -5,6 +5,7 @@ import { ProfileInfo } from './models/profileInfo.model';
 import { GetAllBadgesQuery } from './queries/impl/getAllBadges.query';
 import { GetAllRewardsQuery } from './queries/impl/getAllRewards.query';
 import { GetMaxRequirementQuery } from './queries/impl/getMaxRequirement.query';
+import { GetRewardTypesCountQuery } from './queries/impl/getRewardTypesCount.query';
 
 @Injectable()
 export class RewardsService {
@@ -45,5 +46,14 @@ export class RewardsService {
 
     async getMaxRequirement(){
         return await this.queryBus.execute(new GetMaxRequirementQuery());
+    }
+
+    async getTypeCounts(){
+        var counts = await this.queryBus.execute(new GetRewardTypesCountQuery());
+        var dict = {}
+        for(const type of counts){
+            dict[type._id] = type.count;
+        }
+        return dict;
     }
 }
