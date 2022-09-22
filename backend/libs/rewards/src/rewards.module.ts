@@ -6,6 +6,7 @@ import { UserModule } from '@vms/user';
 import { GetAllBadgesQueryHandler } from './queries/handlers/getAllBadgesQuery.handler';
 import { GetAllRewardsQueryHandler } from './queries/handlers/getAllRewardsQuery.handler';
 import { GetMaxRequirementQueryHandler } from './queries/handlers/getMaxRequirementQuery.handler';
+import { GetRewardTypesCountQueryHandler } from './queries/handlers/getRewardTypesCountQuery.handler';
 import { RewardsResolver } from './rewards.resolver';
 import { RewardsService } from './rewards.service';
 import { Badge, BadgesSchema } from './schema/badge.schema';
@@ -25,6 +26,7 @@ import { Reward, RewardsSchema } from './schema/reward.schema';
               GetAllBadgesQueryHandler,
               GetAllRewardsQueryHandler,
               GetMaxRequirementQueryHandler,
+              GetRewardTypesCountQueryHandler
             ],
   exports: [RewardsService],
 })

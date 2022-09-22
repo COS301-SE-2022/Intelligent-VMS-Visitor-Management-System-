@@ -48,6 +48,7 @@ import { GetNumberOfCancellationsOfResidentQuery } from "./queries/impl/getNumbe
 import { GetNumberOfVisitsOfResidentQuery } from "./queries/impl/getNumberOfVisitsOfResident.query";
 import { ExtendInvitesCommand } from "./commands/impl/extendInvites.command";
 import { CancelInvitesCommand } from "./commands/impl/cancelInvites.command";
+import { GetInvitesOfResidentQuery } from "./queries/impl/getInvitesOfResident.query"
 
 @Injectable()
 export class VisitorInviteService  {
@@ -186,7 +187,6 @@ export class VisitorInviteService  {
 
         //Suggestion count
         if(suggestion){
-            console.log("here");
             await this.userService.increaseSuggestions(userEmail);
         }
 
@@ -326,6 +326,36 @@ export class VisitorInviteService  {
     // Get Number of cancelled invites per resident
     async getTotalNumberOfCancellationsOfResident(email: string) {
         return await this.queryBus.execute(new GetNumberOfCancellationsOfResidentQuery(email)); 
+    }
+
+    // Get Number of sleepovers per resident
+    async getTotalNumberOfSleepoversOfResident(email: string) {
+        const invites = await this.queryBus.execute(new GetInvitesOfResidentQuery(email));
+        let sleepovers = 0; 
+        for(let invite of invites){
+
+            if(invite.signInTime && invite.signOutTime && (new Date(invite.signInTime.slice(0,10))).getDate() != (new Date(invite.signOutTime.slice(0,10))).getDate() || invite.inviteState == "extended"){
+                sleepovers++;
+            }
+        }
+        console.log("sleepovers : "+sleepovers);
+        return sleepovers;
+    }
+
+    // Get Number of sleepovers per resident this month
+    async getTotalNumberOfSleepoversThisMonthOfResident(email: string) {
+        const today = new Date();
+        const monthStart = new Date(today.getFullYear(),today.getMonth(),1);
+        const monthEnd = new Date(today.getFullYear(),today.getMonth()+1,0);
+        const invites = await this.queryBus.execute(new GetInvitesInRangeByEmailQuery(monthStart.toLocaleDateString().replace(/\//g, '-'),monthEnd.toLocaleDateString().replace(/\//g, '-'),email));
+        let sleepovers = 0; 
+        for(let invite of invites){
+
+            if(invite.signInTime && invite.signOutTime && (new Date(invite.signInTime.slice(0,10))).getDate() != (new Date(invite.signOutTime.slice(0,10))).getDate() || invite.inviteState == "extended"){
+                sleepovers++;
+            }
+        }
+        return sleepovers;
     }
 
     // Get Number of cancelled invites per resident

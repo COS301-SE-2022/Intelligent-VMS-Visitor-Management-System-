@@ -76,9 +76,9 @@ const ProfilePage = () => {
                     </span>
                 </div>
             </div>
-            <div className="flex flex-col justify-center items-center">
+            <div className="flex flex-col justify-center items-center mb-5">
                 <div className="text-xl font-bold capitalize">{token.name}</div>
-                <h3 className='text-primary' >Level 3 </h3>
+                
             </div>
         </div>
 
