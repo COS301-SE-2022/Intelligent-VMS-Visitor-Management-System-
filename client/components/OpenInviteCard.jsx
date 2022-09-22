@@ -42,7 +42,7 @@ const OpenInviteCard = ({
                     }}
                     className="btn btn-circle btn-sm absolute top-[-0.5em] right-[-0.5em] text-lg"
                 >
-                    <MdOutlineDeleteOutline />
+                    <MdOutlineDeleteOutline size={25} color={"#ff4d4d"}/>
                 </button>
             </div>
             <div className="divider">Invite</div>
