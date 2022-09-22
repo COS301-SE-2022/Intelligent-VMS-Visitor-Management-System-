@@ -41,7 +41,9 @@ describe("UserService", () => {
             }
         })
     }
-
+    const commandBusMock = {
+        execute: jest.fn(() => ({}))
+    }
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
             providers: [
