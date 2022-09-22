@@ -4,25 +4,27 @@
 
 directive @upper on FIELD_DEFINITION
 
-type User {
-  email: String!
-  permission: Int!
+type Reward {
+  type: String!
+  xp: Int!
+  desc: String!
 }
 
-type SearchUser {
-  email: String!
-  permission: Int!
-  name: String!
+type Badge {
+  type: String!
+  levels: Int!
+  xp: [Int!]
+  desc: [String!]!
+  title: [String!]!
+  requirements: [Int!]!
 }
 
-type LoginUser {
-  email: String
-  access_token: String
-}
-
-type Restriction {
-  name: String!
-  value: Int!
+type ProfileInfo {
+  xp: Int!
+  badges: String!
+  allBadges: [Badge!]!
+  allRewards: [Reward!]!
+  progress: Float!
 }
 
 type Parking {
@@ -67,13 +69,20 @@ type Invite {
   inviteState: String!
   notes: String!
   signOutTime: String!
-  signInTime: String!
+  signInTime: String
   trayNumber: Float!
 }
 
 type SearchInvite {
   visitorEmail: String!
   visitorName: String!
+}
+
+type User {
+  email: String!
+  permission: Int!
+  badges: String!
+  signUpDate: String!
 }
 
 type PredictedInviteData {
@@ -89,30 +98,20 @@ type GroupInvite {
   firstDate: String
 }
 
+type SearchUser {
+  email: String!
+  permission: Int!
+  name: String!
+}
+
+type LoginUser {
+  email: String
+  access_token: String
+}
+
 type BSIdata {
   signInCount: Int!
   createCount: Int!
-}
-
-type Reward {
-  type: String!
-  xp: Int!
-  desc: String!
-}
-
-type Badge {
-  type: String!
-  levels: Int!
-  xp: [Int!]
-  desc: [String!]!
-  title: [String!]!
-}
-
-type ProfileInfo {
-  xp: Int!
-  badges: String!
-  allBadges: [Badge!]!
-  allRewards: [Reward!]!
 }
 
 input UserInputType {
@@ -125,9 +124,17 @@ type Query {
   searchUser(searchQuery: String!): [SearchUser!]!
   getUnauthorizedUsers: [User!]!
   getUsersByType(permission: Float!): [SearchUser!]!
+  getMaxInvitesPerResident: Float!
+  getNumInvites(email: String!): Float!
+  getMaxSleepoversPerResident: Float!
+  getNumSleepovers(email: String!): Float!
+  getMaxCurfewTimePerResident: Float!
+  getCurfewTime(email: String!): Float!
+  getProfileInfo(email: String!): ProfileInfo!
   helloInvite: String!
   getInvites: [Invite!]!
   getInvitesWithEmail(email: String!): [Invite!]!
+  getInvite(inviteID: String!): Invite!
   getTotalNumberOfVisitors: Float!
   getNumInvitesPerDate(dateStart: String!, dateEnd: String!): [Invite!]!
   getNumInvitesPerDateOfUser(dateStart: String!, dateEnd: String!, email: String!): [Invite!]!
@@ -153,21 +160,20 @@ type Query {
   isParkingAvailable(startDate: String!): Boolean!
   getNumberOfReservations(startDate: String!): Float!
   getTotalParking: Float!
-  getNumInvitesPerResident: Restriction!
-  getCurfewTime: Restriction!
   helloResident: String!
   helloReceptionist: String!
-  getProfileInfo(email: String!): ProfileInfo!
 }
 
 type Mutation {
   login(email: String!, password: String!): LoginUser!
   signup(email: String!, password: String!, type: String!, IDDocType: String!, idNumber: String!, name: String!): Boolean!
   verify(verifyID: String!, email: String!): Boolean!
+  updateMaxInvites(difference: Float!): Boolean!
+  updateMaxCurfewTime(difference: Float!): Boolean!
   deleteUserAccount(email: String!): Boolean!
   authorizeUserAccount(email: String!): Boolean!
   deauthorizeUserAccount(email: String!): Boolean!
-  createInvite(userEmail: String!, visitorName: String!, visitorEmail: String!, IDDocType: String!, IDNumber: String!, inviteDate: String!, requiresParking: Boolean!): String!
+  createInvite(userEmail: String!, visitorName: String!, visitorEmail: String!, IDDocType: String!, IDNumber: String!, inviteDate: String!, requiresParking: Boolean!, suggestion: Boolean!): String!
   cancelInvite(inviteID: String!): Boolean!
   assignParking(invitationID: String!): Parking!
   reserveParkingSpace(invitationID: String!, parkingNumber: Float!): ParkingReservation!
@@ -177,8 +183,6 @@ type Mutation {
   createNParkingSpots(N: Float!): Boolean!
   adjustParking(numDisiredParkingTotal: Float!): Boolean!
   disableParkingSpace(parkingNumber: Float!): Parking!
-  setNumInvitesPerResident(numInvites: Float!): Restriction!
-  setCurfewTime(curfewTime: Float!): Restriction!
   signOut(inviteID: String!): Float!
   signIn(inviteID: String!, notes: String!, time: String!): Float!
   bulkSignIn(file: String!, userEmail: String!): BSIdata!

@@ -17,7 +17,7 @@ export class RewardsResolver {
     
     // @UseGuards(GqlAuthGuard)
     // @Query((returns) => {return Reward}, { name: "getAllBadges"})
-    // async getNumInvitesPerResident() {
+    // async getMaxInvitesPerResident() {
     //     return this.rewardsService.getAllBadges();
     // }
 

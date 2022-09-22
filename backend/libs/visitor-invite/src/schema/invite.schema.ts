@@ -7,6 +7,7 @@ export enum InviteState{
     signedIn,
     inActive,
     signedOut,
+    cancelled
 }
 
 @Schema()
@@ -42,10 +43,10 @@ export class Invite {
     visitorName: string;
     
     @Prop()
-    signOutTime: string;
+    signOutTime?: string;
 
     @Prop()
-    signInTime: string;
+    signInTime?: string;
 
     @Prop()
     creationTime: string;

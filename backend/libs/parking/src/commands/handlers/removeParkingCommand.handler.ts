@@ -16,6 +16,6 @@ export class RemoveParkingCommandHandler implements ICommandHandler<RemoveParkin
 
     //TODO (Larisa) change find one
 
-    //return await this.parkingModel.create(parkingSpace);
+    //return await this.parkingModel.re(parkingSpace);
   }
 }

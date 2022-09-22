@@ -4,7 +4,7 @@ from faker import Faker
 from faker.providers import DynamicProvider
 from datetime import datetime, timedelta
 
-from app.database import invitesCollection,groupInvitesCollection,parkingReservationCollection,groupParkingReservationsCollection,trayCollection
+from app.database import invitesCollection,groupInvitesCollection,parkingReservationCollection,groupParkingReservationsCollection,trayCollection,userCollection
 from app.holidaysSA import ourHolidays
 
 global fake
@@ -59,8 +59,8 @@ def createVisitation(resident_email,visitor_email,visitor_name,id_num,invite_dat
   if(invite_state != "inActive" and invite_state != "cancelled"):
     trays.append(create_fake_tray(invite_id))
     activated = fake.boolean()
-    inTime = fake.date_time_between_dates(invite_date,invite_date).strftime("%Y-%m-%d, %H:%M:%S")
-    outTime = fake.date_time_between_dates(invite_date,invite_date).strftime("%Y-%m-%d, %H:%M:%S")
+    inTime = fake.date_time_between_dates(invite_date,invite_date).strftime("%Y/%m/%d, %H:%M:%S")
+    outTime = fake.date_time_between_dates(invite_date,invite_date).strftime("%Y/%m/%d, %H:%M:%S")
 
     if(invite_state == "signedIn"):
         invites.append(create_fake_signedIn_invite(invite_id,invite_state,req_parking,resident_email,visitor_email,visitor_name,id_num,invite_date,relation,inTime))
@@ -84,7 +84,7 @@ def create_fake_invite(invite_id,invite_state,req_parking,resident_email,visitor
       "visitorEmail": visitor_email,
       "idDocType": fake.doc(),
       "idNumber": id_num,
-      "inviteDate": invite_date.strftime("%Y-%m-%d"),
+      "inviteDate": invite_date.strftime("%Y/%m/%d"),
       "inviteState": invite_state,
       "visitorName": visitor_name,
       "relation": relation,
@@ -99,7 +99,7 @@ def create_fake_signedOut_invite(invite_id,invite_state,req_parking,resident_ema
       "visitorEmail": visitor_email,
       "idDocType": fake.doc(),
       "idNumber": id_num,
-      "inviteDate": invite_date.strftime("%Y-%m-%d"),
+      "inviteDate": invite_date.strftime("%Y/%m/%d"),
       "inviteState": invite_state,
       "visitorName": visitor_name,
       "relation": relation,
@@ -116,7 +116,7 @@ def create_fake_signedIn_invite(invite_id,invite_state,req_parking,resident_emai
       "visitorEmail": visitor_email,
       "idDocType": fake.doc(),
       "idNumber": id_num,
-      "inviteDate": invite_date.strftime("%Y-%m-%d"),
+      "inviteDate": invite_date.strftime("%Y/%m/%d"),
       "inviteState": invite_state,
       "visitorName": visitor_name,
       "relation": relation,
@@ -129,7 +129,7 @@ def create_fake_parkingReservation(invite_id,resDate,activated):
     return {
         "invitationID": invite_id,
         "parkingNumber": random.randint(0,35),
-        "reservationDate": resDate.strftime("%Y-%m-%d"),
+        "reservationDate": resDate.strftime("%Y/%m/%d"),
         "activated": activated
     }
 
@@ -141,9 +141,19 @@ def create_fake_tray(invite_id):
         "containsVisitorID": True
     }
 
+def create_fake_resident(email):
+    return{
+        "email": email,
+        "password": "$2b$10$yWljmYjKC3soHOprL.YUVun/d41SJSzY61PRFMsOMxjfaN.cNe/6q",
+        "permission": -1,
+        "name": fake.email(),
+        "idDocType": "RSA-ID",
+        "idNumber": fake.msisdn()
+    }
+
 def createInvites(startDate,endDate,maxResidents):
-    startDate = datetime.strptime(startDate, '%Y-%m-%d').date()
-    endDate = datetime.strptime(endDate, '%Y-%m-%d').date()
+    startDate = datetime.strptime(startDate, '%Y/%m/%d').date()
+    endDate = datetime.strptime(endDate, '%Y/%m/%d').date()
 
     invites = []
     reservations = []
@@ -151,69 +161,63 @@ def createInvites(startDate,endDate,maxResidents):
     createVisitation(fake.email(),fake.email(),fake.name(),fake.msisdn(),startDate,fake.relation(),invites,fake,trays,reservations)
     for i in range(1,maxResidents):
         userEmail = fake.email()
-        for i in range(1,20):
+        for i in range(1,16):
             visEmail = fake.email()
             visName = fake.name()
             visId = fake.msisdn()
             visRelation = fake.relation()
             if(visRelation == "family"):
-                for i in range(1,75):
+                for i in range(1,40):
                     inviteDate = fake.date_between_dates(startDate,endDate)
                     #Saturdays, Fridays, Decembers and holidays are always busier
                     if(inviteDate.weekday()==5 or inviteDate.weekday()==4):
-                        for i in range(0,12):
+                        for i in range(0,8):
                             createVisitation(fake.email(),fake.email(),fake.name(),fake.msisdn(),inviteDate,fake.relation(),invites,fake,trays,reservations)
                     if(inviteDate.month==12 or inviteDate.month==7):
-                        for i in range(0,18):
+                        for i in range(0,12):
                             createVisitation(fake.email(),fake.email(),fake.name(),fake.msisdn(),inviteDate,fake.relation(),invites,fake,trays,reservations)
                     if(inviteDate in ourHolidays):
-                        for i in range(0,10):
+                        for i in range(0,4):
                             createVisitation(fake.email(),fake.email(),fake.name(),fake.msisdn(),inviteDate,fake.relation(),invites,fake,trays,reservations)
                     
                     createVisitation(userEmail,visEmail,visName,visId,inviteDate,visRelation,invites,fake,trays,reservations)
             elif(visRelation == "friend"):
-                for i in range(1,110):
+                for i in range(1,65):
                     inviteDate = fake.date_between_dates(startDate,endDate)
                     #Saturdays, Fridays, Decembers and holidays are always busier
                     if(inviteDate.weekday()==5 or inviteDate.weekday()==4):
-                        for i in range(0,12):
+                        for i in range(0,8):
                             createVisitation(fake.email(),fake.email(),fake.name(),fake.msisdn(),inviteDate,fake.relation(),invites,fake,trays,reservations)
                     if(inviteDate.month==12):
-                        for i in range(0,18):
+                        for i in range(0,12):
                             createVisitation(fake.email(),fake.email(),fake.name(),fake.msisdn(),inviteDate,fake.relation(),invites,fake,trays,reservations)
                     if(inviteDate in ourHolidays):
-                        for i in range(0,10):
+                        for i in range(0,4):
                             createVisitation(fake.email(),fake.email(),fake.name(),fake.msisdn(),inviteDate,fake.relation(),invites,fake,trays,reservations)
                     
                     createVisitation(userEmail,visEmail,visName,visId,inviteDate,visRelation,invites,fake,trays,reservations)
             else:
-                for i in range(1,15):
+                for i in range(1,8):
                     inviteDate = fake.date_between_dates(startDate,endDate)
                     #Saturdays, Fridays, Decembers and holidays are always busier
                     if(inviteDate.weekday()==5 or inviteDate.weekday()==4):
-                        for i in range(0,12):
+                        for i in range(0,8):
                            createVisitation(fake.email(),fake.email(),fake.name(),fake.msisdn(),inviteDate,fake.relation(),invites,fake,trays,reservations)
                     if(inviteDate.month==12):
-                        for i in range(0,18):
+                        for i in range(0,12):
                             createVisitation(fake.email(),fake.email(),fake.name(),fake.msisdn(),inviteDate,fake.relation(),invites,fake,trays,reservations)
                     if(inviteDate in ourHolidays):
-                        for i in range(0,10):
+                        for i in range(0,4):
                             createVisitation(fake.email(),fake.email(),fake.name(),fake.msisdn(),inviteDate,fake.relation(),invites,fake,trays,reservations)
                     
                     createVisitation(userEmail,visEmail,visName,visId,inviteDate,visRelation,invites,fake,trays,reservations)
 
-    #send generated invites and reservations to db
-    #invitesCollection.delete_many({})
     invitesCollection.insert_many(invites)
 
-    #parkingReservationCollection.delete_many({})
     parkingReservationCollection.insert_many(reservations)
 
-    #trayCollection.delete_many({})
     trayCollection.insert_many(trays)
 
-    #create new group invites
-    #groupInvitesCollection.delete_many({})
     invitesCollection.aggregate([
     {
         '$group': {
@@ -293,5 +297,6 @@ def resetInviteHistory():
     trayCollection.delete_many({})
     groupInvitesCollection.delete_many({})
     groupParkingReservationsCollection.delete_many({})
+    userCollection.delete_many({})
 
 

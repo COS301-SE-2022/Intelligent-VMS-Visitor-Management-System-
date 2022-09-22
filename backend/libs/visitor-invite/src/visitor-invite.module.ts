@@ -34,6 +34,10 @@ import { GetVisitorsQueryHandler } from "./queries/handlers/getVisitors.handler"
 import { GetVisitorVisitsQueryHandler } from "./queries/handlers/getVisitorVisits.handler";
 import { GetMostUsedInviteDataQueryHandler } from "./queries/handlers/getMostUsedInviteData.handler";
 import { GetInvitesForUsersQueryHandler } from "./queries/handlers/getInvitesForUsers.handler";
+import { ExtendInvitesCommandHandler } from "./commands/handlers/extendInvitesCommand.handler";
+import { GetInviteForSignInDataQueryHandler } from "./queries/handlers/getInviteForSignInData.handler";
+import { GetTotalNumberOfCancellationsOfResidentQueryHandler } from "./queries/handlers/getTotalNumberOfCancellationsOfResident.handler";
+import { GetTotalNumberOfVisitsOfResidentQueryHandler } from "./queries/handlers/getTotalNumberOfVisitsOfResident.handler";
 
 @Module({
     imports: [
@@ -42,11 +46,11 @@ import { GetInvitesForUsersQueryHandler } from "./queries/handlers/getInvitesFor
         HttpModule.register({
             maxRedirects: 5,
         }),
-        UserModule,
-        AuthModule,
+        forwardRef(() => {return UserModule}),
+        forwardRef(() => {return AuthModule}),
         forwardRef(() => {return ParkingModule}),
         MailModule,
-        RestrictionsModule,
+        forwardRef(() => {return RestrictionsModule}),
         MongooseModule.forFeature([
             { name: Invite.name, schema: InviteSchema },
             { name: GroupInvite.name, schema: GroupInviteSchema },
@@ -57,6 +61,7 @@ import { GetInvitesForUsersQueryHandler } from "./queries/handlers/getInvitesFor
         VisitorInviteResolver,
         CreateInviteCommandHandler,
         CancelInviteCommandHandler,
+        ExtendInvitesCommandHandler,
         GetInvitesQueryHandler,
         GetInviteQueryHandler,
         GetInvitesByDateQueryHandler,
@@ -67,6 +72,8 @@ import { GetInvitesForUsersQueryHandler } from "./queries/handlers/getInvitesFor
         GetInvitesInRangeByEmailQueryHandler,
         GetTotalNumberOfInvitesOfResidentQueryHandler,
         GetTotalNumberOfInvitesVisitorQueryHandler,
+        GetTotalNumberOfCancellationsOfResidentQueryHandler,
+        GetTotalNumberOfVisitsOfResidentQueryHandler,
         CreateGroupInviteCommandHandler,
         GetNumberOfOpenInvitesQueryHandler,
         GetInvitesForUsersQueryHandler,
@@ -74,6 +81,7 @@ import { GetInvitesForUsersQueryHandler } from "./queries/handlers/getInvitesFor
         GetMostUsedInviteDataQueryHandler,
         GetVisitorVisitsQueryHandler,
         getNumberOfVisitors,
+        GetInviteForSignInDataQueryHandler,
     ],
     exports: [VisitorInviteService],
 })

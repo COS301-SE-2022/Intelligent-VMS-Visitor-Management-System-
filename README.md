@@ -16,7 +16,7 @@
 ![Issues](https://img.shields.io/github/issues/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-)
 
 ### 📐 The Project
-The VMS is an intelligent visitor management system that allows provides a platform for building residents to create invites for visitors, contractors or even prospective buyers. The visitor management platform will also allow the building management to view and analyse visiting data as they see fit. The system will also provide "smart" suggestions using a custom AI analytics engine.
+The VMS is an intelligent visitor management system that provides a platform for building residents to create invites for visitors, contractors or even prospective buyers. The visitor management platform will also allow the building management to view and analyse visiting data as they see fit. The system will also provide "smart" suggestions using a custom AI analytics engine.
 
 ### ⛓ Project Links - Demo 1
 <a href="https://github.com/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-/projects/1">📦 Project Board</a>
@@ -54,6 +54,21 @@ The VMS is an intelligent visitor management system that allows provides a platf
 <a href="https://docs.google.com/document/d/1r5v45Qm858vFibcYgaT9LOrBdd3hvhhcjkNR2GwYMNw/edit?usp=sharing">📲 Technical Installation Manual</a>
 
 <a href="https://drive.google.com/file/d/1Gs3Fhuz9MPYUq6RUcyVRiOAr9ur-9bxx/view?usp=sharing">🚧 Demo Video</a>
+
+### ⛓ Project Links - Demo 4
+<a href="https://github.com/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-/projects/1">📦 Project Board</a>
+
+<a href="https://docs.google.com/document/d/1H1qph418MlRJAnXKmxjCJjcUdoOnHHgsy3m5uIQUpOw/edit?usp=sharing">📊 SRS Document</a>
+
+
+<a href="https://docs.google.com/document/d/1EKpR3CEmGI7LoP-Xay-QMfZSxIZ8t2b5Zy8wEFhAIkY/edit?usp=sharing">📊 Quality Requirements Testing</a>
+
+<a href="https://docs.google.com/document/d/1vzGkBj-z6qehz3pOtaYuUYPNi2w1h8cGahX0uUgkSGk/edit?usp=sharing"> Testing Policy[work in progress]</a>
+
+<a href="https://docs.google.com/document/d/1YLsJSseVc8EUI0MPoKMe_InlRHobMgEgD7avqhEulSM/edit?usp=sharing">📊 User testing</a>
+
+
+
 
 ### 👏 The Team
 <hr />

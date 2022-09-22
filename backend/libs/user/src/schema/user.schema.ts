@@ -32,6 +32,17 @@ export class User {
     @Prop()
     badges: string;
 
+    @Prop()
+    numInvites: number;
+
+    @Prop()
+    curfewTime: number;
+
+    @Prop()
+    numSleepovers: number;
+
+    @Prop()
+    suggestions: number;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

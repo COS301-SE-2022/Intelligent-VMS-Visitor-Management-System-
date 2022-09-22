@@ -74,6 +74,32 @@ export class UserResolver {
         return this.authService.verifyNewAccount(verifyID, email); 
     }
 
+    @UseGuards(GqlAuthGuard, RolesGuard)
+    @Roles("admin")
+    @Mutation((returns) => {return Boolean}, { name: "updateMaxInvites"})
+    async updateMaxInvites(@Args("difference") difference: number) {
+        try{
+            this.userService.updateMaxInvites(difference);
+            return true;
+        }catch(e){
+            return false;
+        }
+        
+    }
+
+    @UseGuards(GqlAuthGuard, RolesGuard)
+    @Roles("admin")
+    @Mutation((returns) => {return Boolean}, { name: "updateMaxCurfewTime"})
+    async updateMaxCurfewTime(@Args("difference") difference: number) {
+        try{
+            this.userService.updateMaxCurfewTime(difference);
+            return true;
+        }catch(e){
+            return false;
+        }
+        
+    }
+
     // Get all the unauthorized user accounts
     @UseGuards(GqlAuthGuard, RolesGuard)
     @Roles("receptionist", "admin")
@@ -106,11 +132,62 @@ export class UserResolver {
         return await this.userService.deauthorizeUserAccount(email); 
     }
 
+    // @UseGuards(GqlAuthGuard)
+    // @Mutation((returns) => { return Boolean }, { name: "calculateBadges" })
+    // async calculateBadges(@Args("email") email: string) {
+    //     try{
+    //         await this.userService.calculateBadges(email); 
+    //         return true;
+    //     }catch(e){
+    //         return false;
+    //     }
+    // }
+
     @UseGuards(GqlAuthGuard, RolesGuard)
     @Roles("admin")
     @Query((returns) => { return [SearchUser] }, { name: "getUsersByType"})
     async getUsersByType(@Args("permission") permission: number) {
         return await this.userService.getUsersByType(permission);
     }
+
+    @UseGuards(GqlAuthGuard, RolesGuard)
+    @Roles("admin")
+    @Query((returns) => { return Number }, { name: "getMaxInvitesPerResident"})
+    async getMaxInvitesPerResident() {
+        return await this.userService.getMaxInvitesPerResident();
+    }
+
+    @UseGuards(GqlAuthGuard)
+    @Query((returns) => { return Number }, { name: "getNumInvites"})
+    async getNumInvites(@Args("email") email: string) {
+        return await this.userService.getNumInvites(email);
+    }
+
+    @UseGuards(GqlAuthGuard, RolesGuard)
+    @Roles("admin")
+    @Query((returns) => { return Number }, { name: "getMaxSleepoversPerResident"})
+    async getMaxSleepoversPerResident() {
+        return await this.userService.getMaxSleepoversPerResident();
+    }
+
+    @UseGuards(GqlAuthGuard)
+    @Query((returns) => { return Number }, { name: "getNumSleepovers"})
+    async getNumSleepovers(@Args("email") email: string) {
+        return await this.userService.getNumSleepovers(email);
+    }
+
+    @UseGuards(GqlAuthGuard, RolesGuard)
+    @Roles("admin")
+    @Query((returns) => { return Number }, { name: "getMaxCurfewTimePerResident"})
+    async getMaxCurfewTimePerResident() {
+        return await this.userService.getMaxCurfewTimePerResident();
+    }
+
+    @UseGuards(GqlAuthGuard)
+    @Query((returns) => { return Number }, { name: "getCurfewTime"})
+    async getCurfewTime(@Args("email") email: string) {
+        return await this.userService.getCurfewTime(email);
+    }
+    
 
 }

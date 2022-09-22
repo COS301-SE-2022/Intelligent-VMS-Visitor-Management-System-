@@ -11,6 +11,7 @@ import { ReceptionistService } from './receptionist.service';
 import { RestrictionsService } from "@vms/restrictions";
 import { Tray } from './schema/tray.schema';
 import { CACHE_MANAGER } from '@nestjs/common';
+import { SchedulerRegistry } from '@nestjs/schedule';
 
 describe('ReceptionistService', () => {
   let service: ReceptionistService;
@@ -39,10 +40,16 @@ describe('ReceptionistService', () => {
   };
   /*eslint-enable*/
 
+  const scheduleMock = {
+    addCronJob: jest.fn(()=>({})),
+    deleteCronJob: jest.fn(()=>({})),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [HttpModule],
-      providers: [ReceptionistService,
+      providers: [
+        ReceptionistService,
         VisitorInviteService,
         ParkingService,
         MailService,
@@ -56,6 +63,7 @@ describe('ReceptionistService', () => {
                 set: () => {return jest.fn()},
             },
         },
+        { provide: SchedulerRegistry, useValue: scheduleMock},
         {
           provide: QueryBus, useValue: queryBusMock
         },

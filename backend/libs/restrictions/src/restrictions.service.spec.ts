@@ -1,5 +1,13 @@
+import { HttpModule } from '@nestjs/axios';
+import { CACHE_MANAGER } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { SchedulerRegistry } from '@nestjs/schedule';
 import { Test, TestingModule } from '@nestjs/testing';
+import { MailService } from '@vms/mail';
+import { ParkingService } from "@vms/parking/parking.service";
+import { UserService } from '@vms/user';
+import { VisitorInviteService } from '@vms/visitor-invite';
 import { SetCurfewTimeCommand } from './commands/impl/setCurfewTime.command';
 import { SetNumInvitesCommand } from './commands/impl/setNumInvites.command';
 import { GetCurfewTimeQuery } from './queries/impl/getCurfewTime.query';
@@ -35,12 +43,31 @@ describe('RestrictionsService', () => {
       })
   };
 
+  const scheduleMock = {
+    addCronJob: jest.fn(()=>({})),
+    deleteCronJob: jest.fn(()=>({})),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+        imports: [HttpModule],
         providers: [
             RestrictionsService,
+            VisitorInviteService,
+            ParkingService,
+            MailService,
+            UserService,
+            ConfigService,
+            {
+                provide: CACHE_MANAGER,
+                useValue: {
+                    get: () => {return 'any value'},
+                    set: () => {return jest.fn()},
+                },
+            },
             QueryBus,
             CommandBus,
+            { provide: SchedulerRegistry, useValue: scheduleMock},
             {
                 provide: QueryBus, useValue: queryBusMock
             },
@@ -58,7 +85,7 @@ describe('RestrictionsService', () => {
   });
 
   it("should return a valid number of invites", async () => {
-        const res = await service.getNumInvitesPerResident();
+        const res = await service.getMaxInvitesPerResident();
         expect(res.numInvites).toBeDefined();
   });
 
@@ -81,7 +108,7 @@ describe('RestrictionsService', () => {
       const res = await service.setNumInvitesPerResident(1);
       expect(res).toEqual(true);
 
-      const val = await service.getNumInvitesPerResident();
+      const val = await service.getMaxInvitesPerResident();
       expect(val.numInvites).toEqual(1);
   });
 

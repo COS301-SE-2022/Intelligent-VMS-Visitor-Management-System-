@@ -14,30 +14,30 @@ export class RestrictionResolver {
         private restrictionsService: RestrictionsService
     ) {}
     
-    @UseGuards(GqlAuthGuard)
-    @Query((returns) => {return Restriction}, { name: "getNumInvitesPerResident"})
-    async getNumInvitesPerResident() {
-        return this.restrictionsService.getNumInvitesPerResident();
-    }
+    // @UseGuards(GqlAuthGuard)
+    // @Query((returns) => {return Restriction}, { name: "getMaxInvitesPerResident"})
+    // async getMaxInvitesPerResident() {
+    //     return this.restrictionsService.getMaxInvitesPerResident();
+    // }
 
-    @UseGuards(GqlAuthGuard, RolesGuard)
-    @Roles("admin")
-    @Mutation((returns) => {return Restriction}, { name: "setNumInvitesPerResident"})
-    async setNumInvitesPerResident(@Args("numInvites") numInvites: number) {
-        return this.restrictionsService.setNumInvitesPerResident(numInvites);
-    }
+    // @UseGuards(GqlAuthGuard, RolesGuard)
+    // @Roles("admin")
+    // @Mutation((returns) => {return Restriction}, { name: "setNumInvitesPerResident"})
+    // async setNumInvitesPerResident(@Args("numInvites") numInvites: number) {
+    //     return this.restrictionsService.setNumInvitesPerResident(numInvites);
+    // }
 
-    @UseGuards(GqlAuthGuard)
-    @Query((returns) => {return Restriction}, { name: "getCurfewTime"})
-    async getCurfewTime() {
-        return this.restrictionsService.getCurfewTime();
-    }
+    // @UseGuards(GqlAuthGuard)
+    // @Query((returns) => {return Restriction}, { name: "getCurfewTime"})
+    // async getCurfewTime() {
+    //     return this.restrictionsService.getCurfewTime();
+    // }
 
-    @UseGuards(GqlAuthGuard, RolesGuard)
-    @Roles("admin")
-    @Mutation((returns) => {return Restriction}, { name: "setCurfewTime"})
-    async setCurfewTime(@Args("curfewTime") curfewTime: number) {
-        return this.restrictionsService.setCurfewTime(curfewTime);
-    }
+    // @UseGuards(GqlAuthGuard, RolesGuard)
+    // @Roles("admin")
+    // @Mutation((returns) => {return Restriction}, { name: "setCurfewTime"})
+    // async setCurfewTime(@Args("curfewTime") curfewTime: number) {
+    //     return this.restrictionsService.setCurfewTime(curfewTime);
+    // }
 
 }
