@@ -12,6 +12,7 @@ const SignOutPopUp = ({
     setShowSignOutModal,
     setSearch,
 }) => {
+
     const [signOutMutation, { data, loading, error }] = useMutation(gql`
         mutation {
             signOut(inviteID: "${visitData.inviteID}")
@@ -28,8 +29,11 @@ const SignOutPopUp = ({
                 });
                 setSearch(false);
             }
-        } else if (error) {
-            console.log("ERROR");
+        } else if (!loading && error) {
+                alert({
+                    message: `Error: ${error}`,
+                    type: "error",
+                });
         }
     }, [loading, error, data]);
 
@@ -46,6 +50,7 @@ const SignOutPopUp = ({
             </h1>
             <p>Confirm sign-out of visitor with id {visitData.idNumber}</p>
             <label
+                data-testid="signout-label"
                 htmlFor="signOut-modal"
                 className="modal-button btn btn-primary mt-5 mb-5 w-5/6"
                 onClick={() => {

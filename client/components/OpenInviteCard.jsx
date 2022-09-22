@@ -40,6 +40,7 @@ const OpenInviteCard = ({
                         }
                         cancelInvite(inviteID);
                     }}
+                    data-testid="cancelbutton"
                     className="btn btn-circle btn-sm absolute top-[-0.5em] right-[-0.5em] text-lg"
                 >
                     <MdOutlineDeleteOutline />

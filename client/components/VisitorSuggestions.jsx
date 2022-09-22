@@ -23,7 +23,7 @@ const VisitorSuggestions = ({ date, setFieldValue }) => {
     const [suggestionQuery, { loading, error, data }] = useLazyQuery(
         gql`
         query {
-            getSuggestions( date: "${date}", userEmail: "lindsay65@example.com" ) {
+            getSuggestions( date: "${date}", userEmail: "${jwtTokenData.email}" ) {
                 _id
                 visitorName
                 idNumber
