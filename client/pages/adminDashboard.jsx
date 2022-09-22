@@ -299,7 +299,7 @@ const AdminDashboard = () => {
         setCurfewTime(numTemp);
 
         if (numTemp !== 7777) {
-            setInitialCurfewTime(curfewTime);  
+            //setInitialCurfewTime(curfewTime);  
             curfewMutationFunc(numTemp);   
         }
 
@@ -855,12 +855,13 @@ const AdminDashboard = () => {
                                 <div className="card-actions flex items-center justify-start">
                                     <div className="flex items-center space-x-3">
                                         <button
-                                            data-testid="increaseInvites"
+                                            data-testid="increaseSleepovers"
                                             className="btn btn-circle"
                                             onClick={() => {
-                                                // setNumInvitesPerResident(
-                                                //     numInvitesPerResident + 1
-                                                // );
+                                                setMaxSleepovers(
+                                                    maxSleepoversQuery +
+                                                    1
+                                                );
                                                 setRestrictionsChanged(true);
                                             }}
                                         >
