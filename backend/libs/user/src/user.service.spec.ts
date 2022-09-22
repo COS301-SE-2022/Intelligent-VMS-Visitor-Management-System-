@@ -44,6 +44,7 @@ describe("UserService", () => {
     const commandBusMock = {
         execute: jest.fn(() => ({}))
     }
+
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
             providers: [
@@ -92,5 +93,16 @@ describe("UserService", () => {
         });
 
     });
+
+    describe('createUser', () => {
+        it('should create a user', async () => {
+            // Act
+            const response = await service.createUser('email', 'password', 0, 'id', 'id', 'name')
+
+            // Assert
+            expect(response).toEqual({})
+        })
+    })
+
     
 });
