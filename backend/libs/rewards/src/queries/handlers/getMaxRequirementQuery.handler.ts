@@ -10,7 +10,7 @@ export class GetMaxRequirementQueryHandler implements IQueryHandler {
     constructor(@InjectModel(Reward.name) private rewardModel: Model<RewardsDocument>) {}
 
     async execute(query: GetMaxRequirementQuery) {
-        const biggest = await this.rewardModel.find().sort({"xp":-1}).limit(1);
+        const biggest = await this.rewardModel.find().sort("-xp").limit(1);
         return biggest[0].xp;
     }
 }

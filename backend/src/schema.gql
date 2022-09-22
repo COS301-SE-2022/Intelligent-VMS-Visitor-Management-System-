@@ -129,6 +129,9 @@ type Query {
   searchUser(searchQuery: String!): [SearchUser!]!
   getUnauthorizedUsers: [User!]!
   getUsersByType(permission: Float!): [SearchUser!]!
+  getNumInvites(email: String!): Float!
+  getNumSleepovers(email: String!): Float!
+  getCurfewTimeOfResident(email: String!): Float!
   getProfileInfo(email: String!): ProfileInfo!
   helloInvite: String!
   getInvites: [Invite!]!
@@ -149,6 +152,9 @@ type Query {
   getMostUsedInviteData(email: String!): InviteSuggestion!
   getInvitesForUserType(permission: Float!): [GroupInvite!]!
   getSuggestions(date: String!, userEmail: String!): [Visitor!]!
+  getNumInvitesPerResident: Restriction!
+  getCurfewTime: Restriction!
+  getMaxSleepovers: Restriction!
   helloParking: String!
   getTotalAvailableParking: Float!
   getDisabledParking: [Parking!]!
@@ -159,9 +165,6 @@ type Query {
   isParkingAvailable(startDate: String!): Boolean!
   getNumberOfReservations(startDate: String!): Float!
   getTotalParking: Float!
-  getNumInvitesPerResident: Restriction!
-  getCurfewTime: Restriction!
-  getMaxSleepovers: Restriction!
   helloResident: String!
   helloReceptionist: String!
 }
@@ -175,6 +178,9 @@ type Mutation {
   deauthorizeUserAccount(email: String!): Boolean!
   createInvite(userEmail: String!, visitorName: String!, visitorEmail: String!, IDDocType: String!, IDNumber: String!, inviteDate: String!, requiresParking: Boolean!, suggestion: Boolean!): String!
   cancelInvite(inviteID: String!): Boolean!
+  setNumInvitesPerResident(numInvites: Float!): Restriction!
+  setCurfewTime(curfewTime: Float!): Restriction!
+  setMaxSleepovers(sleepovers: Float!): Restriction!
   assignParking(invitationID: String!): Parking!
   reserveParkingSpace(invitationID: String!, parkingNumber: Float!): ParkingReservation!
   reserveParking(invitationID: String!): ParkingReservation!
@@ -183,9 +189,6 @@ type Mutation {
   createNParkingSpots(N: Float!): Boolean!
   adjustParking(numDisiredParkingTotal: Float!): Boolean!
   disableParkingSpace(parkingNumber: Float!): Parking!
-  setNumInvitesPerResident(numInvites: Float!): Restriction!
-  setCurfewTime(curfewTime: Float!): Restriction!
-  setMaxSleepovers(sleepovers: Float!): Restriction!
   signOut(inviteID: String!): Float!
   signIn(inviteID: String!, notes: String!, time: String!): Float!
   bulkSignIn(file: String!, userEmail: String!): BSIdata!

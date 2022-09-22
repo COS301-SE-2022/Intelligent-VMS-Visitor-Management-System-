@@ -23,12 +23,18 @@ import { GetDaysWithVMSQueryHandler } from "./queries/handlers/getDaysWithVMS.ha
 import { IncreaseSuggestionsCommandHandler } from "./commands/handlers/increaseSuggestions.handler";
 import { GetNumSuggestionsQueryHandler } from "./queries/handlers/getNumSuggestions.handler";
 import { UpdatePrivilegesCommandHandler } from "./commands/handlers/updatePrivileges.handler";
+import { RestrictionsModule } from "@vms/restrictions";
+import { GetNumInvitesQueryHandler } from "./queries/handlers/getNumInvites.handler";
+import { GetNumSleepoversQueryHandler } from "./queries/handlers/getNumSleepovers.handler";
+import { GetCurfewTimeQueryHandler } from "./queries/handlers/getCurfewTime.handler";
+import { UpdateXPCommandHandler } from "./commands/handlers/updateXP.handler";
 
 @Module({
     imports: [
         forwardRef(() => {return AuthModule}),
         forwardRef(() => {return RewardsModule}),
         forwardRef(() => {return VisitorInviteModule}),
+        RestrictionsModule,
         CqrsModule,
         MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     ],
@@ -48,6 +54,11 @@ import { UpdatePrivilegesCommandHandler } from "./commands/handlers/updatePrivil
         AuthorizeUserCommandHandler,
         DeauthorizeUserAccountCommandHandler,
         IncreaseSuggestionsCommandHandler,
+        GetCurfewTimeQueryHandler,
+        GetNumInvitesQueryHandler,
+        GetNumSleepoversQueryHandler,
+        UpdateXPCommandHandler
+
     ],
     exports: [UserService],
 })

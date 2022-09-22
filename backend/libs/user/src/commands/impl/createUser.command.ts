@@ -7,10 +7,10 @@ export class CreateUserCommand {
         public readonly idDocType: string,
         public readonly name: string,
         public readonly badges: string,
-        public readonly numSleepovers: string,
-        public readonly numThemes: string,
-        public readonly numInvites: string,
-        public readonly curfewTime: string,
+        public readonly numSleepovers: number,
+        public readonly numThemes: number,
+        public readonly numInvites: number,
+        public readonly curfewTime: number,
         public readonly date: string
     ) {
     }

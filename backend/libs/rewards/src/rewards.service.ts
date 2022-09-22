@@ -16,8 +16,6 @@ export class RewardsService {
 
     async getProfileInfo(email: string) {
 
-        await this.userService.calculateBadges(email);
-
         let user = await this.userService.getUserByEmail(email);
         let allRewards = await this.getAllRewards();
         let allBadges = await this.getAllBadges();
@@ -29,10 +27,12 @@ export class RewardsService {
         pi.xp = user.xp;
         pi.badges = user.badges;
         let progress = (user.xp/maxRequirement)*100;
+
         if(progress > 100){
             progress = 100;
         }  
         pi.progress = progress;
+
         return pi;
     }
 

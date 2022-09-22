@@ -13,7 +13,6 @@ export class UpdatePrivilegesCommandHandler implements ICommandHandler {
     async execute(command: UpdatePrivilegesCommand) {
         const { sleepovers,themes,invites,curfew,email } = command;
         var num = curfew*100;
-
-        return this.userModel.updateOne({ email: email },[{$set:{curfewTime: {$mod: [{$add:["$curfewTime",num]},2400] },numSleepovers:{$add:["$numSleepovers",sleepovers]},numInvites:{$add:["$numInvites",invites]},numThemes:{$add:["$numThemes",themes]}}}]);
+        return this.userModel.updateOne({ email: email },[{$set:{curfewTime: {$add:["$curfewTime",curfew]},numSleepovers:{$add:["$numSleepovers",sleepovers]},numInvites:{$add:["$numInvites",invites]},numThemes:{$add:["$numThemes",themes]}}}]);
     }
 }

@@ -112,4 +112,22 @@ export class UserResolver {
     async getUsersByType(@Args("permission") permission: number) {
         return await this.userService.getUsersByType(permission);
     }
+
+    @UseGuards(GqlAuthGuard)
+    @Query((returns) => { return Number }, { name: "getNumInvites"})
+    async getNumInvites(@Args("email") email: string) {
+        return await this.userService.getNumInvites(email);
+    }
+
+    @UseGuards(GqlAuthGuard)
+    @Query((returns) => { return Number }, { name: "getNumSleepovers"})
+    async getNumSleepovers(@Args("email") email: string) {
+        return await this.userService.getNumSleepovers(email);
+    }
+
+    @UseGuards(GqlAuthGuard)
+    @Query((returns) => { return Number }, { name: "getCurfewTimeOfResident"})
+    async getCurfewTimeOfResident(@Args("email") email: string) {
+        return await this.userService.getCurfewTimeOfResident(email);
+    }
 }

@@ -98,7 +98,7 @@ const VisitorDashboard = () => {
     const curfewTimeQuery = useQuery(
         gql`
             query {
-                getCurfewTime(email: "${token.email}")
+                getCurfewTimeOfResident(email: "${token.email}")
             }
         `,
         { fetchPolicy: "network-only" }
@@ -241,7 +241,7 @@ const VisitorDashboard = () => {
 
     useEffect(() => {
         if (!curfewTimeQuery.loading && !curfewTimeQuery.error) {
-            let time = curfewTimeQuery.data.getCurfewTime.toString()
+            let time = curfewTimeQuery.data.getCurfewTimeOfResident.toString()
             while(time.length<3){
                 time = "0"+time;
             }

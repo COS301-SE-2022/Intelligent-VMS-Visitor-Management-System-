@@ -9,25 +9,24 @@ import { AuthorizeUserCommand } from "./commands/impl/authorizeUser.command";
 import { DeauthorizeUserAccountCommand } from "./commands/impl/deauthorizeUserAccount.command";
 import { GetUsersByTypeQuery } from "./queries/impl/getUsersByType.query";
 import { GetNumInvitesQuery } from "./queries/impl/getNumInvites.query";
-import { GetMaxInvitesPerResidentQuery } from "./queries/impl/getMaxInvitesPerResident.query";
-import { UpdateMaxInvitesCommand } from "./commands/impl/updateMaxInvites.command";
 import { RewardsService } from "@vms/rewards";
-import { Badge } from "@vms/rewards/models/badge.model";
 import { VisitorInviteService } from "@vms/visitor-invite";
 import { GetCurfewTimeQuery } from "./queries/impl/getCurfewTime.query";
-import { UpdateMaxCurfewTimeCommand } from "./commands/impl/updateMaxCurfewTime.command";
-import { GetMaxCurfewTimePerResidentQuery } from "./queries/impl/getMaxCurfewTimePerResident.query";
 import { UpdateUserCommand } from "./commands/impl/updateUser.command";
 import { GetDaysWithVMSQuery } from "./queries/impl/getDaysWithVMS.query";
 import { IncreaseSuggestionsCommand } from "./commands/impl/increaseSuggestions.command";
 import { GetNumSuggestionsQuery } from "./queries/impl/getNumSuggestions.query";
 import { UpdatePrivilegesCommand } from "./commands/impl/updatePrivileges.command";
+import { GetNumSleepoversQuery } from "./queries/impl/getNumSleepovers.query";
+import { RestrictionsService } from "@vms/restrictions";
+import { UpdateXPCommand } from "./commands/impl/updateXP.command";
 
 @Injectable()
 export class UserService{
     constructor(private queryBus: QueryBus, 
                 private commandBus: CommandBus, 
                 private rewardService: RewardsService,
+                private restrictionService: RestrictionsService,
                 @Inject(forwardRef(() => {return VisitorInviteService}))
                 private visitorInviteService: VisitorInviteService
                 ) {}
@@ -44,7 +43,7 @@ export class UserService{
         for(var i=0;i<badgeCount-1;i++){
             badges += "0";
         }
-        return this.commandBus.execute(new CreateUserCommand(email, password, permission, idNumber, idDocType, name, badges, typeCounts["sleepover"],typeCounts["theme"],typeCounts["invite"],typeCounts["curfew"], dateString));
+        return this.commandBus.execute(new CreateUserCommand(email, password, permission, idNumber, idDocType, name, badges, (-1*typeCounts["sleepover"]),(-1*typeCounts["theme"]),(-1*typeCounts["invite"]),(-100*typeCounts["curfew"]), dateString));
     }
 
     async searchUser(searchQuery: string) {
@@ -95,8 +94,28 @@ export class UserService{
         this.commandBus.execute(new UpdateUserCommand(email,badges,xp));
     }
 
-    async evaluateUser(){
+    async getNumSleepovers(email: string) {
+        const max = (await this.restrictionService.getMaxSleepovers()).value;
+        return (await this.queryBus.execute(new GetNumSleepoversQuery(email)))+max;
+    }
 
+    async getNumInvites(email: string) {
+        const max = (await this.restrictionService.getNumInvitesPerResident()).value;
+        return  (await this.queryBus.execute(new GetNumInvitesQuery(email)))+max;
+    }
+
+    async getCurfewTimeOfResident(email: string) {
+        const max = (await this.restrictionService.getCurfewTime()).value
+        const time = ((await this.queryBus.execute(new GetCurfewTimeQuery(email))))+max;
+        return  time%2400;
+    }
+
+    async evaluateUser(email:string){
+        const sleepovers = await this.visitorInviteService.getTotalNumberOfSleepoversThisMonthOfResident(email);
+        const max = await this.getNumSleepovers(email);
+        if(max<sleepovers){
+            this.commandBus.execute(UpdateXPCommand(email,-20));
+        }
     }
 
     async updatePrivileges(email:string,xpOld:number,xpCurrent:number){

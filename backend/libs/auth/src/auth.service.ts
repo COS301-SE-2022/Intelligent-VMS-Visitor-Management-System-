@@ -38,6 +38,7 @@ export class AuthService {
         const validUser = await this.validateUser(user.email, user.password);
 
         if (validUser !== null) {
+            this.userService.calculateBadges(user.email);
             const payload = {
                 email: user.email,
                 permission: validUser.permission,
