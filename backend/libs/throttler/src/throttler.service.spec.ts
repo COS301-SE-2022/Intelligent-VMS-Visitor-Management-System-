@@ -26,4 +26,12 @@ describe('ThrottlerService', () => {
     })
   })
 
+  describe('addRecord', () => {
+    it('should add record', async () => {
+      const response = await service.addRecord('a', 5);
+
+      expect(response).toBeUndefined();
+    })
+  })
+
 });
