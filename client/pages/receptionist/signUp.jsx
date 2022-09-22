@@ -9,7 +9,7 @@ import Layout from "../../components/Layout";
 
 import useAuth from "../../store/authStore";
 
-const signUp = () => {
+const SignUp = () => {
     const permission = useAuth((state) => {
         return state.permission;
     })();
@@ -298,4 +298,4 @@ const signUp = () => {
     );
 };
 
-export default signUp;
+export default SignUp;
