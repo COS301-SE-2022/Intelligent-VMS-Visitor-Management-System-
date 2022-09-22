@@ -2,10 +2,10 @@
 
  @ObjectType()
  export class BSIdata {
-     @Field((type) => {return Int})
-     signInCount: number;
+     @Field((type) => {return [String]})
+     signInData: string[];
 
-     @Field((type) => {return Int})
-     createCount: number;
+     @Field((type) => {return [String]})
+     createData: string[];
  }
 
