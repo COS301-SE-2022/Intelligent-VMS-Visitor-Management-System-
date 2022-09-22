@@ -104,5 +104,19 @@ describe("UserService", () => {
         })
     })
 
+    describe('searchUser', () => {
+        it('should search a user', async () => {
+            // Arrange
+            queryBusMock.execute.mockReturnValueOnce({ data: 'd' })
+
+            // Act
+            const response = await service.searchUser('searchquery')
+
+            // Assert
+            expect(response).toEqual({ data: 'd' })
+        })
+    })
+
+
     
 });
