@@ -142,6 +142,20 @@ describe("UserService", () => {
         })
     })
 
+    describe('deauthorizeUserAccount', () => {
+        it('should deauthorize a user', async () => {
+            // Arrange
+            commandBusMock.execute.mockReturnValueOnce({ modifiedCount: 2 })
+
+            // Act
+            const response = await service.deauthorizeUserAccount('email')
+
+            // Assert
+            expect(response).toBeTruthy()
+        })
+    })
+
+
 
     
 });
