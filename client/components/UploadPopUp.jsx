@@ -59,6 +59,7 @@ const UploadPopUp = ({ setShowUploadPopUp, refetch }) => {
                             </p>
                         </div>
                         <input
+                            data-testid="fileupload"
                             className="opacity-0"
                             type="file"
                             onChange={(event) => {

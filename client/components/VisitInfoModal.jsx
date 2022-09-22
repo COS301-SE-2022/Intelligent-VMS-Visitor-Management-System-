@@ -3,11 +3,10 @@ import { MdPassword } from "react-icons/md";
 import { AiFillCar } from "react-icons/ai";
 import { BsFillCalendarEventFill, BsFillPersonCheckFill } from "react-icons/bs";
 import { IoFileTrayFull } from "react-icons/io5";
-import { visit } from "graphql";
 
 const VisitInfoModal = ({ setCurrentVisitData, setShowVisitorModal, setShowSignOutModal, visitModalData }) => {
     if (!visitModalData) {
-        return <div className="progress"></div>;
+        return <div data-testid="visitinfoprogress" className="progress"></div>;
     }
     
     const transformStateString = (state) => {
