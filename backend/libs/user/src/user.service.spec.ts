@@ -116,7 +116,19 @@ describe("UserService", () => {
             expect(response).toEqual({ data: 'd' })
         })
     })
+    describe('deleteUserAccount', () => {
+        it('should delete a user', async () => {
+            // Arrange
+            commandBusMock.execute.mockReturnValueOnce({ modifiedCount: 2 })
 
+            // Act
+            const response = await service.deleteUserAccount('email')
+
+            // Assert
+            expect(response).toBeFalsy()
+        })
+    })
+    
 
     
 });
