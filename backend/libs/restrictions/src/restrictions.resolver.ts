@@ -15,7 +15,7 @@ export class RestrictionResolver {
     ) {}
     
     @UseGuards(GqlAuthGuard)
-    @Query((returns) => {return Restriction}, { name: "getMaxInvitesPerResident"})
+    @Query((returns) => {return Restriction}, { name: "getNumInvitesPerResident"})
     async getMaxInvitesPerResident() {
         return this.restrictionsService.getNumInvitesPerResident();
     }

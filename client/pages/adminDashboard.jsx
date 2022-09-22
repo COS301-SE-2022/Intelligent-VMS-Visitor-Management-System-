@@ -83,7 +83,7 @@ const AdminDashboard = () => {
     const [initialNumInvitesPerResident, setInitialNumInvitesPerResident] =
         useState(1);
 
-    const [initialCurfewTime, setInitialCurfewTime] = useState(2300);
+    const [initialSleepovers, setInitialSleepovers] = useState(0);
 
     const [initialNumParkingSpots, setInitialNumParkingSpots] = useState(0);
 
@@ -117,18 +117,31 @@ const AdminDashboard = () => {
 
     const numInvitesPerResidentQuery = useQuery(gql`
         query {
-            getMaxInvitesPerResident
+            getNumInvitesPerResident {
+                value
+            }
         }
     `);
 
     const CurfewTimeQuery = useQuery(gql`
         query {
-            getMaxCurfewTimePerResident
+            getCurfewTime {
+                value
+            }
+        }
+    `);
+
+    const maxSleepoversQuery = useQuery(gql`
+        query {
+            getMaxSleepovers {
+                value
+            }
         }
     `);
 
     // Number of invites per resident state
     const [numInvitesPerResident, setNumInvitesPerResident] = useState(1);
+    const [maxSleepovers, setMaxSleepovers] = useState(1);
     const [curfewTime, setCurfewTime] = useState(1);
 
     const [defaultHours, setDefaultHours] = useState(0);
@@ -182,7 +195,18 @@ const AdminDashboard = () => {
     const [setNumInvitesPerResidentMutation, { data, loading, error }] =
         useMutation(gql`
         mutation {
-          updateMaxInvites(difference: ${numInvitesPerResident - initialNumInvitesPerResident})
+        setNumInvitesPerResident(numInvites: ${numInvitesPerResident}) {
+            value
+        }
+        }
+    `);
+
+    const [setMaxSleepoversMutation, {}] =
+        useMutation(gql`
+        mutation {
+        setMaxSleepovers(sleepovers: ${maxSleepovers}) {
+            value
+        }
         }
     `);
 
@@ -194,22 +218,22 @@ const AdminDashboard = () => {
    `);
 
     const client = useApolloClient();
-    function curfewMutationFunc(difference) {
+    function curfewMutationFunc(CURFEW) {
 
         client.mutate({
             mutation: gql`
         mutation {
-          updateMaxCurfewTime(difference: ${difference})
+            setCurfewTime(curfewTime: ${CURFEW}) {
+            value
+            }
         }
     `});
     }
 
-
-
     const cancelRestrictions = () => {
         setNumInvitesPerResident(initialNumInvitesPerResident);
         setNumParkingSpotsAvailable(initialNumParkingSpots);
-        //setInitialCurfewTime(initialCurfewTime);
+        setInitialSleepovers(initialSleepovers);
         setRestrictionsChanged(false);
     };
 
@@ -218,6 +242,11 @@ const AdminDashboard = () => {
         if (numInvitesPerResident !== initialNumInvitesPerResident) {
             setInitialNumInvitesPerResident(numInvitesPerResident);
             setNumInvitesPerResidentMutation();
+        }
+
+        if (maxSleepovers !== initialSleepovers) {
+            setInitialSleepovers(maxSleepovers);
+            setMaxSleepoversMutation();
         }
 
         if (numParkingSpotsAvailable !== initialNumParkingSpots) {
@@ -261,7 +290,7 @@ const AdminDashboard = () => {
 
         if (numTemp !== 7777) {
             setInitialCurfewTime(curfewTime);  
-            curfewMutationFunc(numTemp - parseInt(defaultHours.toString()+defaultMins.toString()));   
+            curfewMutationFunc(numTemp);   
         }
 
         setDefaultHours(hoursMenu);
@@ -365,7 +394,7 @@ const AdminDashboard = () => {
             !numInvitesPerResidentQuery.error
         ) {
             setNumInvitesPerResident(
-                numInvitesPerResidentQuery.data.getMaxInvitesPerResident
+                numInvitesPerResidentQuery.data.getNumInvitesPerResident.value
             );
             setInitialNumInvitesPerResident(numInvitesPerResident);
         } else if (numInvitesPerResident.error) {
@@ -401,7 +430,7 @@ const AdminDashboard = () => {
 
     function populateCurfew(){
         if (!CurfewTimeQuery.loading && !CurfewTimeQuery.error) {
-            const curfew = CurfewTimeQuery.data.getMaxCurfewTimePerResident;
+            const curfew = CurfewTimeQuery.data.getCurfewTime.value;
             let tempH;
             let tempM;
             if (curfew == "0") {
@@ -819,17 +848,17 @@ const AdminDashboard = () => {
                                             id="numInvitesPerResident"
                                             className="text-4xl font-bold text-secondary"
                                         >
-                                            {/* {numInvitesPerResident} NUMBER OF SLEEPOVERS HERE */}
+                                            {maxSleepovers}
                                         </p>
                                         <button
                                             data-testid="decreaseInvites"
                                             className="btn btn-circle"
                                             onClick={() => {
-                                                // numInvitesPerResident > 1 &&
-                                                //     setNumInvitesPerResident(
-                                                //         numInvitesPerResident -
-                                                //         1
-                                                //     );
+                                                maxSleepovers > 1 &&
+                                                    setMaxSleepovers(
+                                                        maxSleepoversQuery -
+                                                        1
+                                                    );
                                                 setRestrictionsChanged(true);
                                             }}
                                         >

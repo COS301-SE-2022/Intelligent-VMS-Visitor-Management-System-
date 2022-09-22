@@ -129,7 +129,7 @@ type Query {
   searchUser(searchQuery: String!): [SearchUser!]!
   getUnauthorizedUsers: [User!]!
   getUsersByType(permission: Float!): [SearchUser!]!
-  getMaxInvitesPerResident: Restriction!
+  getMaxInvitesPerResident: Float!
   getNumInvites(email: String!): Float!
   getMaxSleepoversPerResident: Float!
   getNumSleepovers(email: String!): Float!
@@ -165,6 +165,7 @@ type Query {
   isParkingAvailable(startDate: String!): Boolean!
   getNumberOfReservations(startDate: String!): Float!
   getTotalParking: Float!
+  getNumInvitesPerResident: Restriction!
   getMaxSleepovers: Restriction!
   helloResident: String!
   helloReceptionist: String!
