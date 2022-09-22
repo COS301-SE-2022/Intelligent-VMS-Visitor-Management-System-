@@ -260,9 +260,9 @@ describe('SignInService', () => {
 
       // Act
       const response = await service.bulkSignIn('id;diinvite;id;di\nhello', 'user.email@email.com');
-
+    
       // Assert
-      expect(response).toEqual({ createCount: 0, signInCount: 1 })
+      expect(response).toEqual({"createData": [], "signInData": [undefined]})
     })
     it('should sign-in in bulk with "user"', async () => {
       // Arrange
@@ -274,7 +274,7 @@ describe('SignInService', () => {
       const response = await service.bulkSignIn(';user.email', 'user.email@email.com');
 
       // Assert
-      expect(response).toEqual({ createCount: 0, signInCount: 0 })
+      expect(response).toEqual({"createData": [], "signInData": []})
     })
     it('should sign-in in bulk without "user"', async () => {
       // Arrange
@@ -286,7 +286,7 @@ describe('SignInService', () => {
       const response = await service.bulkSignIn('name.email', 'user.email@email.com');
 
       // Assert
-      expect(response).toEqual({ createCount: 0, signInCount: 0 })
+      expect(response).toEqual({"createData": [], "signInData": []})
     })
     it('should sign-in in bulk with "name"', async () => {
       // Arrange
@@ -298,7 +298,7 @@ describe('SignInService', () => {
       const response = await service.bulkSignIn('name', 'user.email@email.com');
 
       // Assert
-      expect(response).toEqual({ createCount: 0, signInCount: 0 })
+      expect(response).toEqual({"createData": [], "signInData": []})
     })
     it('should sign-in in bulk with "date"', async () => {
       // Arrange
@@ -310,19 +310,7 @@ describe('SignInService', () => {
       const response = await service.bulkSignIn('date;', 'user.email@email.com');
 
       // Assert
-      expect(response).toEqual({ createCount: 0, signInCount: 0 })
-    })
-    it('should sign-in in bulk with "id and invite"', async () => {
-      // Arrange
-      jest.spyOn(inviteService, 'createInviteForBulkSignIn').mockReturnValueOnce(Promise.resolve('hello world'))
-      jest.spyOn(commandBusMock as any, 'execute').mockReturnValueOnce([1, 2, 3, 4])
-
-
-      // Act
-      const response = await service.bulkSignIn('id.invite\n;aa', 'user.email@email.com');
-
-      // Assert
-      expect(response).toEqual({ createCount: 0, signInCount: 1 })
+      expect(response).toEqual({"createData": [], "signInData": []})
     })
 
   });

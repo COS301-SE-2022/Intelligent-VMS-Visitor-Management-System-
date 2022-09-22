@@ -182,12 +182,15 @@ export class SignInService {
             }
            }
            
+           const createData: string[] = [];
+           const signInData: string[] = [];
            console.log(fileArray);
-           for(let i=0;i<fileArray.length-1;i++){
+           for(let i=1;i<fileArray.length;i++){
             lineArray = fileArray[i].split(";");
+            console.log(lineArray);
             if(lineArray[InviteIDIndex]!==""){
                 idArray[i-1] = lineArray[InviteIDIndex];
-                signInCount++;
+                signInData.push(lineArray[InviteIDIndex]);
             } else{
                     //TODO (Larisa): extend doc types
                     let residentEmail;
@@ -196,15 +199,15 @@ export class SignInService {
                     else
                         residentEmail = lineArray[ResidentEmailIndex];
                     idArray[i-1] = await this.inviteService.createInviteForBulkSignIn(0,residentEmail,lineArray[VisitorEmailIndex],lineArray[VisitorNameIndex],"RSA-ID",lineArray[VisitorIDIndex],lineArray[InviteDateIndex].replace(new RegExp('/','g'),'-'),false);
-                    createCount++;
+                    createData.push(lineArray[VisitorNameIndex]);
                 }
            }
 
             await this.commandBus.execute(new BulkSignInCommand(idArray));
 
             const bsiData = new BSIdata();
-            bsiData.createCount = createCount;
-            bsiData.signInCount = signInCount;
+            bsiData.signInData = signInData;
+            bsiData.createData = createData;
 
             return bsiData;
         }
