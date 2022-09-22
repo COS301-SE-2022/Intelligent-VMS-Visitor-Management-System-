@@ -211,8 +211,6 @@ const AdminDashboard = () => {
     `});
     }
 
-
-
     const cancelRestrictions = () => {
         setNumInvitesPerResident(initialNumInvitesPerResident);
         setNumParkingSpotsAvailable(initialNumParkingSpots);
@@ -324,6 +322,7 @@ const AdminDashboard = () => {
         } else if (numInviteInDateRangeQuery.error) {
             console.error(numInviteInDateRangeQuery.error);
         }
+
 
         // Num parking in range
         if (
