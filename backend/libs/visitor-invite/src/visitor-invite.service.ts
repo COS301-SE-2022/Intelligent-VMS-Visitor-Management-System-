@@ -338,7 +338,6 @@ export class VisitorInviteService  {
                 sleepovers++;
             }
         }
-        console.log("sleepovers : "+sleepovers);
         return sleepovers;
     }
 

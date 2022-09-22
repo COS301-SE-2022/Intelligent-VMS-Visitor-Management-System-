@@ -12,6 +12,8 @@ import { GetNumInvitesQueryHandler } from "./queries/handlers/getNumInvitesQuery
 import { SetCurfewTimeHandler } from "./commands/handlers/setCurfewTime.handler";
 import { GetCurfewTimeQueryHandler } from "./queries/handlers/getCurfewTimeQuery.handler";
 import { VisitorInviteModule } from '@vms/visitor-invite';
+import { SetMaxSleepoversCommandHandler } from './commands/handlers/setMaxSleepovers.handler';
+import { GetMaxSleepoversQueryHandler } from './queries/handlers/getMaxSleepoversQuery.handler';
 
 @Module({
     imports: [
@@ -25,7 +27,9 @@ import { VisitorInviteModule } from '@vms/visitor-invite';
               SetNumInvitesCommandHandler, 
               GetNumInvitesQueryHandler, 
               SetCurfewTimeHandler,
-              GetCurfewTimeQueryHandler],
+              GetCurfewTimeQueryHandler,
+              SetMaxSleepoversCommandHandler,
+              GetMaxSleepoversQueryHandler],
   exports: [RestrictionsService],
 })
 export class RestrictionsModule {}

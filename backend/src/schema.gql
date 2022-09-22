@@ -27,6 +27,11 @@ type ProfileInfo {
   progress: Float!
 }
 
+type Restriction {
+  name: String!
+  value: Int!
+}
+
 type Parking {
   visitorEmail: String!
   parkingNumber: String!
@@ -124,12 +129,12 @@ type Query {
   searchUser(searchQuery: String!): [SearchUser!]!
   getUnauthorizedUsers: [User!]!
   getUsersByType(permission: Float!): [SearchUser!]!
-  getMaxInvitesPerResident: Float!
+  getMaxInvitesPerResident: Restriction!
   getNumInvites(email: String!): Float!
   getMaxSleepoversPerResident: Float!
   getNumSleepovers(email: String!): Float!
   getMaxCurfewTimePerResident: Float!
-  getCurfewTime(email: String!): Float!
+  getCurfewTime: Restriction!
   getProfileInfo(email: String!): ProfileInfo!
   helloInvite: String!
   getInvites: [Invite!]!
@@ -160,6 +165,7 @@ type Query {
   isParkingAvailable(startDate: String!): Boolean!
   getNumberOfReservations(startDate: String!): Float!
   getTotalParking: Float!
+  getMaxSleepovers: Restriction!
   helloResident: String!
   helloReceptionist: String!
 }
@@ -183,6 +189,9 @@ type Mutation {
   createNParkingSpots(N: Float!): Boolean!
   adjustParking(numDisiredParkingTotal: Float!): Boolean!
   disableParkingSpace(parkingNumber: Float!): Parking!
+  setNumInvitesPerResident(numInvites: Float!): Restriction!
+  setCurfewTime(curfewTime: Float!): Restriction!
+  setMaxSleepovers(sleepovers: Float!): Restriction!
   signOut(inviteID: String!): Float!
   signIn(inviteID: String!, notes: String!, time: String!): Float!
   bulkSignIn(file: String!, userEmail: String!): BSIdata!
