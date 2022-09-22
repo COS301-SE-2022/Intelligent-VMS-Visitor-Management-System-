@@ -155,6 +155,18 @@ describe("UserService", () => {
         })
     })
 
+    describe('getUsersByType', () => {
+        it('should getUsersByType', async () => {
+            // Arrange
+            queryBusMock.execute.mockReturnValueOnce({ data: '' })
+
+            // Act
+            const response = await service.getUsersByType(1)
+
+            // Assert
+            expect(response).toEqual({ data: '' })
+        })
+    })
 
 
     
