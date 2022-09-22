@@ -15,4 +15,15 @@ describe('ThrottlerService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
+
+  describe('getRecord', () => {
+    it('should get record', async () => {
+      const storage = service.storage;
+
+      const response = await service.getRecord('a');
+
+      expect(response).toEqual([]);
+    })
+  })
+
 });
