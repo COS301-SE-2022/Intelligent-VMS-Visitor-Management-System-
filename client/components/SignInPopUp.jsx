@@ -14,6 +14,7 @@ import useAuth from "../store/authStore";
 
 const SignInPopUp = ({
     refetch,
+    showSignInModal,
     setShowSignInModal,
     setSearch,
 }) => {
@@ -28,7 +29,8 @@ const SignInPopUp = ({
     const client = useApolloClient();
     
     const getInvite = (inviteID) => {
-        client.query({
+        console.log(showSignInModal);
+        showSignInModal && client.query({
             query: gql`
                 query {
                     getInvite(inviteID: "${inviteID}") {
@@ -37,7 +39,8 @@ const SignInPopUp = ({
                         userEmail,
                         idDocType,
                         idNumber,
-                        inviteDate
+                        inviteDate,
+                        inviteState
                     }
                 }
             `
@@ -62,10 +65,10 @@ const SignInPopUp = ({
             }
         });
 
-        console.log(response.data);
         e.target.classList.remove("loading");
 
         if(response.data.trayNo) {
+           setShowVerify(false);
            setShowSignInModal(false);
            setSearch(false);
            setFile(null);
@@ -99,8 +102,11 @@ const SignInPopUp = ({
     };
 
     const onAddFace = (inviteID) => {
-        setShowVerify(true);
-        getInvite(inviteID);
+        console.log("HERE!")
+        if(showSignInModal) {
+            setShowVerify(true);
+            getInvite(inviteID);
+        }
     };
     
     const cancelAddFace = () => {
@@ -132,8 +138,8 @@ const SignInPopUp = ({
                 </div>
             </div>
 
-            <h1 className="mt-5 text-center text-3xl font-bold ">
-                Sign In
+            <h1 className="mt-5 text-center text-xl font-bold ">
+                Face Recognition to Sign In/Out Visitor
             </h1>
 
             { !showVerify ?

@@ -15,6 +15,9 @@ import json
 import joblib
 import time
 
+global predictionCache
+predictionCache = []
+
 global start_date
 visReg = joblib.load("VMS_visitor-reg-model.pkl")
 parkReg = joblib.load("VMS_parking-reg-model.pkl")
@@ -83,6 +86,7 @@ def createResData(month,dow,mn_dow,mdn_dow,min_dow,max_dow,mn_days,mn_month,mdn_
 
 #################################################################
 
+# Run this once per day, don't have it run each time
 # MON=0 SUN=7
 def calculateDaysPerDOW():
   totalDaysPerDOW = []
@@ -112,6 +116,7 @@ def calculateDaysPerDOW():
 
   return totalDaysPerDOW
 
+# Run this once per day, don't have it run each time
 def calculateWeeksPerWOY():
   totalWeeksPerWOY = []
   endDate = date.today() - timedelta(days=1)
@@ -203,6 +208,7 @@ def calculateMeans():
     resPerWOY = [0]*53
     resPerMonth = [0]*12
 
+    # Don't think we should have to call this, everytime we want a prediction
     groupInvites = list(groupInvitesCollection.find({"_id": {'$lt' : date.today().strftime("%Y-%m-%d") }}))
     for group in groupInvites:
       numVis = group['numVisitors']
@@ -212,6 +218,7 @@ def calculateMeans():
       visitorsPerDOW[currDate.weekday()]+= numVis
       visitorsPerWOY[currDate.isocalendar()[1]-1]+=numVis
 
+    # Same Here
     groupReservations = list(groupParkingReservationsCollection.find({"_id": {'$lt' : date.today().strftime("%Y-%m-%d") }}))
     for group in groupReservations:
       numParkings = group['numParkings']
@@ -221,9 +228,12 @@ def calculateMeans():
       resPerDOW[currDate.weekday()]+= numParkings
       resPerWOY[currDate.isocalendar()[1]-1]+= numParkings
 
+    # These values should already be available
     totalDaysPerDOW = calculateDaysPerDOW()
     totalWeeksPerWOY = calculateWeeksPerWOY()
     totalMonthsPerMonth = calculateMonthsPerMonth()
+
+    # Can't we use .median() from numpy here?
 
     #MN-DOW
     for i in range(7):
@@ -616,7 +626,7 @@ def predictMany(startingDate,endingDate):
   print(time.time()-startTime)
 
   print(output)
-  return json.dumps(output)
+  return output
 
 def train():
 
@@ -673,15 +683,25 @@ def train():
 
 
 def visitorFeatureAnalysis():
-
     imp = visReg.feature_importances_.tolist()
     print(imp)
 
     return json.dumps(imp)
 
 def parkingFeatureAnalysis():
-
     imp = parkReg.feature_importances_.tolist()
     print(imp)
 
     return json.dumps(imp)
+
+def createPredictionCache(startDate, endDate):
+    global predictionCache
+    predictionCache = predictMany(startDate, endDate)
+    return "done"
+
+def getCachedValues(startDate, endDate):
+    retVals = []
+    for prediction in predictionCache:
+        if prediction["date"] >= startDate and prediction["date"] <= endDate:
+            retVals.append(prediction)
+    return retVals

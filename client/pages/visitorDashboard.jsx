@@ -109,6 +109,7 @@ const VisitorDashboard = () => {
             `,
             })
             .then((res) => {
+                console.log("Iioeijojioe");
                 const otherInviteData = invites.filter((invite) => {
                     return invite.inviteID !== inviteID;
                 });
@@ -137,6 +138,7 @@ const VisitorDashboard = () => {
                 });
             })
             .catch((err) => {
+                console.log(err);
                 setShowErrorAlert(true);
                 setErrorMessage(err);
             });
@@ -200,7 +202,7 @@ const VisitorDashboard = () => {
                 return;
             }
         }
-    }, [loading, error, data, setStartDate, now, router, range]);
+    }, [loading, error, data, setStartDate, now, range]);
 
     useEffect(() => {
         if (!numInvitesQuery.loading && !numInvitesQuery.error) {
@@ -351,7 +353,7 @@ const VisitorDashboard = () => {
                                         {openInvites.map((visit, idx) => {
                                             return (
                                                 <OpenInviteCard
-                                                    key={idx}
+                                                    key={visit.inviteID}
                                                     name={visit.visitorName}
                                                     email={visit.visitorEmail}
                                                     inviteID={visit.inviteID}
@@ -392,6 +394,7 @@ const VisitorDashboard = () => {
                                         {historyInvites.map((visit, idx) => {
                                             return (
                                                 <tr
+                                                    data-testid="historyInvite"
                                                     onClick={() => {
                                                         setInviteModal({
                                                             show: true,
@@ -455,6 +458,7 @@ const VisitorDashboard = () => {
                 {inviteModal.data && (
                     <div className="modal-box relative">
                         <label
+                            data-testid="closeInviteModal"
                             onClick={() =>
                                 setInviteModal({ ...inviteModal, show: false })
                             }

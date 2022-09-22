@@ -138,6 +138,7 @@ const SignUp = () => {
                                 }
                             })
                             .catch((err) => {
+                                console.log(err);
                                 setError({
                                     message: err.message,
                                     showCondition: true,
