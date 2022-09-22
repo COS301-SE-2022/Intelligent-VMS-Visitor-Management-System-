@@ -39,7 +39,7 @@ export class User {
     curfewTime: number;
 
     @Prop()
-    sleepovers: number;
+    numSleepovers: number;
 
     @Prop()
     suggestions: number;

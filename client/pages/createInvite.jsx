@@ -211,7 +211,6 @@ const CreateInvite = ({ name, email, idNumber, idDocType }) => {
                     }}
                     onSubmit={(values, { setSubmitting }) => {
 
-                        alert(suggestion);
                         const CREATE_INVITE = gql`
                             mutation {
                                 createInvite(

@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable, OnModuleInit } from "@nestjs/common";
+import { ConsoleLogger, forwardRef, Inject, Injectable, OnModuleInit } from "@nestjs/common";
 import { QueryBus, CommandBus } from "@nestjs/cqrs";
 import { SearchUserQuery } from "./queries/impl/searchUser.query";
 import { GetUserQuery } from "./queries/impl/getUser.query";
@@ -22,6 +22,9 @@ import { GetDaysWithVMSQuery } from "./queries/impl/getDaysWithVMS.query";
 import { IncreaseSuggestionsCommand } from "./commands/impl/increaseSuggestions.command";
 import { GetNumSuggestionsQuery } from "./queries/impl/getNumSuggestions.query";
 import { UpdatePrivilegesCommand } from "./commands/impl/updatePrivileges.command";
+import { GetMaxSleepoversPerResidentQuery } from "./queries/impl/getMaxSleepoversPerResident.query";
+import { UpdateMaxSleepoversCommand } from "./commands/impl/updateMaxSleepovers.command";
+import { GetNumSleepoversQuery } from "./queries/impl/getNumSleepovers.query";
 
 @Injectable()
 export class UserService{
@@ -77,6 +80,19 @@ export class UserService{
         this.visitorInviteService.setCurfewDetails(difference);
         return this.commandBus.execute(new UpdateMaxCurfewTimeCommand(difference));
     }
+
+    async getMaxSleepoversPerResident() {
+        return this.queryBus.execute(new GetMaxSleepoversPerResidentQuery());
+    }
+
+    async getNumSleepovers(email: string) {
+        return this.queryBus.execute(new GetNumSleepoversQuery(email));
+    }
+
+    async updateMaxSleepoversTime(difference: number) {
+        this.visitorInviteService.setCurfewDetails(difference);
+        return this.commandBus.execute(new UpdateMaxSleepoversCommand(difference));
+    }
     
     async getUnAuthorizedUsers(permission: number) {
         return this.queryBus.execute(new GetUnAuthUsersQuery(permission === 0 ? -1 : -2));
@@ -114,6 +130,10 @@ export class UserService{
         this.commandBus.execute(new UpdateUserCommand(email,badges,xp));
     }
 
+    async evaluateUser(){
+
+    }
+
     async updatePrivileges(email:string,xpOld:number,xpCurrent:number){
         const allRewards = await this.rewardService.getAllRewards();
         var invites = 0;
@@ -122,7 +142,7 @@ export class UserService{
         var curfewHours = 0;
 
         for await ( let reward of allRewards){
-            if(reward.xp>=xpCurrent){
+            if(reward.xp<=xpCurrent){
                 switch(reward.type){
                     case "invite":
                         if(reward.xp>xpOld){
@@ -156,8 +176,8 @@ export class UserService{
             }
         }
 
-        if(sleepovers!=0 && themes!=0 && invites!=0 && curfewHours){
-            this.queryBus.execute(new UpdatePrivilegesCommand(email, sleepovers, themes, invites, curfewHours));
+        if(sleepovers!=0 || themes!=0 || invites!=0 || curfewHours!=0){
+            this.commandBus.execute(new UpdatePrivilegesCommand(email, sleepovers, themes, invites, curfewHours));
         }
 
     }
@@ -170,7 +190,7 @@ export class UserService{
         let variable:number;
         let change = false;
         let xp = 0;
-        for await ( let [i,badge] of allBadges){
+        for await ( let [i,badge] of allBadges.entries()){
             if(parseInt(badges.charAt(i))<badge.levels){
                 switch(badge.type){
                     case "invite":
@@ -206,7 +226,6 @@ export class UserService{
                 level++;
                 }   
         }
-        i++;
         }
 
         if(change){

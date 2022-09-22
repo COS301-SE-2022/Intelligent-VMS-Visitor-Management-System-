@@ -12,6 +12,6 @@ export class UpdateMaxCurfewTimeCommandHandler implements ICommandHandler {
 
     async execute(command: UpdateMaxCurfewTimeCommand) {
         const { difference } = command;
-        return await this.userModel.updateMany({},{$inc:{"curfewTime":difference}});
+        return await this.userModel.updateMany({$ne:{permission:1}},{$inc:{"curfewTime":difference}});
     }
 }

@@ -70,23 +70,23 @@ export class VisitorInviteService  {
                 private readonly parkingService: ParkingService,
                 private schedulerRegistry: SchedulerRegistry
                ) { 
-                    this.AI_BASE_CONNECTION = this.configService.get<string>("AI_API_CONNECTION");
-                    
-                    const job = new CronJob(`59 23 * * *`, () => {
-                        this.extendInvitesJob();
-                    })
-            
-                    this.schedulerRegistry.addCronJob("extendInvites", job);
-                    job.start();
+                    this.AI_BASE_CONNECTION = this.configService.get<string>("AI_API_CONNECTION");   
                }
+
+    //TODO needs to be called on admins first signUp
+    initialiseExtensionJob(curfewTime:number){
+        
+        const job = new CronJob(`59 23 * * *`, () => {
+            this.extendInvitesJob();
+        })
+
+        this.schedulerRegistry.addCronJob("extendInvites", job);
+        job.start();
+    }
 
     extendInvitesJob(){
         this.commandBus.execute(new ExtendInvitesCommand());  
         this.commandBus.execute(new CancelInvitesCommand());
-    }
-
-    async justAFunc(s:string){
-        console.log(s);
     }
             
      /*

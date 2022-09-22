@@ -165,6 +165,19 @@ export class UserResolver {
 
     @UseGuards(GqlAuthGuard, RolesGuard)
     @Roles("admin")
+    @Query((returns) => { return Number }, { name: "getMaxSleepoversPerResident"})
+    async getMaxSleepoversPerResident() {
+        return await this.userService.getMaxSleepoversPerResident();
+    }
+
+    @UseGuards(GqlAuthGuard)
+    @Query((returns) => { return Number }, { name: "getNumSleepovers"})
+    async getNumSleepovers(@Args("email") email: string) {
+        return await this.userService.getNumSleepovers(email);
+    }
+
+    @UseGuards(GqlAuthGuard, RolesGuard)
+    @Roles("admin")
     @Query((returns) => { return Number }, { name: "getMaxCurfewTimePerResident"})
     async getMaxCurfewTimePerResident() {
         return await this.userService.getMaxCurfewTimePerResident();
