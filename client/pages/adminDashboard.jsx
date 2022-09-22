@@ -576,7 +576,7 @@ const AdminDashboard = () => {
 
 
 
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
                         <div className="card bg-base-200">
                             <div className="card-body">
                                 <h2 className="card-title">
@@ -785,6 +785,56 @@ const AdminDashboard = () => {
                                             <option value="58">58</option>
                                             <option value="59">59</option>
                                         </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="card bg-base-200">
+                            <div className="card-body">
+                                <h2 className="card-title">
+                                    Sleepovers{" "}
+                                    <div className="badge badge-secondary">
+                                        Resident
+                                    </div>
+                                </h2>
+                                <p>
+                                    Number of sleepovers a resident is allowed per month
+                                </p>
+                                <div className="card-actions flex items-center justify-start">
+                                    <div className="flex items-center space-x-3">
+                                        <button
+                                            data-testid="increaseInvites"
+                                            className="btn btn-circle"
+                                            onClick={() => {
+                                                // setNumInvitesPerResident(
+                                                //     numInvitesPerResident + 1
+                                                // );
+                                                setRestrictionsChanged(true);
+                                            }}
+                                        >
+                                            <AiOutlinePlus className="text-xl md:text-2xl lg:text-3xl" />
+                                        </button>
+                                        <p
+                                            id="numInvitesPerResident"
+                                            className="text-4xl font-bold text-secondary"
+                                        >
+                                            {/* {numInvitesPerResident} NUMBER OF SLEEPOVERS HERE */}
+                                        </p>
+                                        <button
+                                            data-testid="decreaseInvites"
+                                            className="btn btn-circle"
+                                            onClick={() => {
+                                                // numInvitesPerResident > 1 &&
+                                                //     setNumInvitesPerResident(
+                                                //         numInvitesPerResident -
+                                                //         1
+                                                //     );
+                                                setRestrictionsChanged(true);
+                                            }}
+                                        >
+                                            <AiOutlineMinus className="text-xl md:text-2xl lg:text-3xl" />
+                                        </button>
                                     </div>
                                 </div>
                             </div>

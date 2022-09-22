@@ -8,7 +8,7 @@ const ReceptionistSignButton = ({ htmlFor, text, colour, onClick, key, signInTim
         >
             {text}
             {signInTime != null ? (
-                <div class="inline-flex absolute -top-2 -right-2 justify-center border-none bg-secondary items-center w-6 h-6 text-xs font-bold text-white rounded-full">{(new Date()).getDate()-(new Date(signInTime).getDate())}</div>
+                <div className="inline-flex absolute -top-2 -right-2 justify-center border-none bg-secondary items-center w-6 h-6 text-xs font-bold text-white rounded-full">{(new Date()).getDate()-(new Date(signInTime).getDate())}</div>
             ):(
                 <div></div>
             )}
