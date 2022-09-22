@@ -39,7 +39,7 @@ const SignUp = () => {
                     </p>
 
                     <div className="flex items-center space-x-3">
-                        <Link href="/residentSignUp"> 
+                        <Link href="/resident/signUp"> 
                             <a style={{textDecoration: "none"}}>
                                 <span className=" text-sm font-bold md:text-base">Resident</span>
                             </a>
@@ -47,7 +47,7 @@ const SignUp = () => {
                     </div>
 
                     <div className="flex items-center space-x-3">
-                        <Link href="/receptionistSignUp" > 
+                        <Link href="/receptionist/signUp" > 
                         <a style={{textDecoration: "none"}}>
                                 <span className=" text-sm font-bold md:text-base">Receptionist</span> 
                         </a>
