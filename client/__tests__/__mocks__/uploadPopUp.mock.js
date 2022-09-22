@@ -8,8 +8,8 @@ export const bulkSignInMutation = [{
                 file: "${encodeURI("hello")}", 
                 userEmail: "admin@mail.com"
                 ){
-                        signInData,
-                        createData
+                    signInData,
+                    createData
                 }
         }
         `
@@ -17,8 +17,8 @@ export const bulkSignInMutation = [{
     result: {
         data: {
             bulkSignIn: {
-                signInCount: [],
-                createCount: []
+                signInData: [],
+                createData: []
             }
         }
     }
