@@ -3,33 +3,39 @@ import { QrReader } from "react-qr-reader";
 import { gql, useApolloClient } from "@apollo/client";
 import { TiWarning } from "react-icons/ti";
 
-import useVideo from "../hooks/useVideo.hook";
-
 const QRScanner = ({
     setCurrentVisitData,
     setShowScanner,
     setShowSignInModal,
     setShowSignOutModal,
+    setShowVisitorModal,
     setVisitorData,
-    setSearch,
     todayString,
-    setErrorMessage,
     setShowErrorAlert,
+    showScanner,
 }) => {
     //ApolloClient
     const client = useApolloClient();
-
+    
     // QR Data State
     const [data, setData] = useState("");
 
     // Video state
     const [showVideo, setShowVideo] = useState(true);
+    
+    const [errorMessage, setErrorMessage] = useState(undefined);
+
+    const [searching, setSearching] = useState(false);
 
     //Search function that actually queries the database
     const search = (data) => {
-        //setting the searching variable to true in order to update the table heading
-        setSearch(true);
 
+        if(searching) {
+            return;
+        }
+
+        setSearching(true);
+        
         client
             .query({
                 query: gql`
@@ -47,33 +53,11 @@ const QRScanner = ({
             `,
             })
             .then((res) => {
-                var invites = res.data.getInvitesByIDForSearch;
-
-                //TODO (Larisa): this might be affected by the invite extension
-                if (invites.inviteDate !== todayString) {
-                    setErrorMessage("Invite is not scheduled for today.");
-                    setShowErrorAlert(true);
-                } else {
-                    if (invites.inviteState === "signedOut") {
-                        setErrorMessage("Invite already signed out!");
-                        setShowErrorAlert(true);
-                    } else {
-                        setShowScanner(false);
-                        setCurrentVisitData(res.data.getInvitesByIDForSearch);
-
-                        //creating an array of 1 element to send to VisitorData
-                        const visitor = [];
-                        visitor.push(res.data.getInvitesByIDForSearch);
-                        setVisitorData(visitor);
-
-                        console.log(invites.inviteState);
-                        if (invites.inviteState === "inActive") {
-                            setShowSignInModal(true);
-                        } else if (invites.inviteState === "signedIn") {
-                            setShowSignOutModal(true);
-                        }
-                    }
-                }
+                const invites = res.data.getInvitesByIDForSearch;
+                setShowScanner(false);
+                setCurrentVisitData(invites);
+                setShowVisitorModal(true);
+                setSearching(false);
             })
             .catch((err) => {
                 console.log(err);
@@ -92,7 +76,7 @@ const QRScanner = ({
 
     return (
         <div className="relative flex-col items-center justify-center text-center">
-            {showVideo ? (
+            {showVideo && showScanner ? (
                 <div>
                     <video
                         className="relative rounded-lg"
@@ -103,13 +87,13 @@ const QRScanner = ({
                         className="hidden"
                         videoId="videoElement"
                         onResult={(result, error) => {
-                            if (result) {
+                            if (result && showScanner) {
                                 try {
                                     const qrData = JSON.parse(result?.text);
                                     if (qrData.inviteID) {
                                         setData(qrData.inviteID);
                                         search(qrData.inviteID);
-                                    } else {
+                                    } else if(showScanner) {
                                         setErrorMessage("Invalid QR Code");
                                         setShowErrorAlert(true);
                                     }
@@ -137,7 +121,7 @@ const QRScanner = ({
                     <TiWarning size="lg" />
                 </span>
                 <p className="ml-2 font-bold text-error">
-                    Ensure that the QR Code is visible
+                    { !errorMessage ? "Ensure that the QR Code is visible" : errorMessage }
                 </p>
             </div>
         </div>

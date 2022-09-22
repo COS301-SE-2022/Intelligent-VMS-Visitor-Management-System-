@@ -3,13 +3,14 @@ import { useState, useEffect } from "react";
 import { gql, useQuery, useApolloClient } from "@apollo/client";
 import { useRouter } from "next/router";
 
-import { BiMailSend } from "react-icons/bi";
+import { BiMailSend, BiStats } from "react-icons/bi";
 import { AiFillAlert,AiFillClockCircle } from "react-icons/ai";
 import { FaBed } from "react-icons/fa";
 
 import Layout from "../components/Layout";
 import DownloadChart from "../components/DownloadChart";
 import LineChart from "../components/LineChart";
+import PieChart from "../components/PieChart";
 import VisitorCard from "../components/VisitorCard";
 import OpenInviteCard from "../components/OpenInviteCard";
 
@@ -49,6 +50,18 @@ const VisitorDashboard = () => {
     const [visitors, setVisitors] = useState([]);
     const [selectedVisitor, setSelectedVisitor] = useState(false);
     const now = getFormattedDateString(new Date());
+    const [numUsed, setNumUsed] = useState(0);
+    const [numCancelled, setNumCancelled] = useState(0);
+    const [numUnused, setNumUnused] = useState(0);
+    const [totalNumberInvites, setTotalNumberInvites] = useState(0);
+
+    const sum = (data) => {
+        let sum = 0;
+        data.forEach((val) => {
+            sum += val;
+        });
+        return sum;
+    };
 
     const [
         startDate,
@@ -139,6 +152,8 @@ const VisitorDashboard = () => {
 
                 setOpenInvites(newOpen);
                 setInvites(otherInviteData);
+                
+                setNumCancelled(numCancelled + 1);
 
                 otherInviteData.forEach((invite) => {
                     invite.inviteDate >= now &&
@@ -155,6 +170,7 @@ const VisitorDashboard = () => {
                 });
             })
             .catch((err) => {
+                console.log(err);
                 setShowErrorAlert(true);
                 setErrorMessage(err);
             });
@@ -163,10 +179,15 @@ const VisitorDashboard = () => {
     useEffect(() => {
         if (!loading && !error) {
             const invites = data.getInvites;
+            setTotalNumberInvites(invites.length);
             setInvites(invites);
 
             const tempInvites = [];
             const tempHistoryInvites = [];
+            let _numCancelled = 0;
+            let _numUsed = 0;
+            let _numUnused = 0;
+
             invites.forEach((invite) => {
                 if (invite.inviteDate >= now) {
                     dateMap.set(
@@ -183,6 +204,18 @@ const VisitorDashboard = () => {
                     tempHistoryInvites.push(invite);
                 }
 
+                if(invite.inviteState === "cancelled") {
+                    _numCancelled++;
+                }
+                
+                if(invite.inviteState === "inActive") {
+                    _numUnused++;
+                }
+
+                if(invite.inviteState === "signedIn" || invite.inviteState === "signedOut" || invite.inviteState === "extended") {
+                    _numUsed++;
+                }
+
                 if (
                     invite.inviteState === "inActive" &&
                     invite.inviteDate >= now
@@ -190,6 +223,11 @@ const VisitorDashboard = () => {
                     tempInvites.push(invite);
                 }
             });
+
+            setNumCancelled(_numCancelled);
+            setNumUnused(_numUnused);
+            setNumUsed(_numUsed);
+            
 
             tempHistoryInvites.sort((lhs, rhs) => {
                 return new Date(rhs.inviteDate) - new Date(lhs.inviteDate);
@@ -218,7 +256,7 @@ const VisitorDashboard = () => {
                 return;
             }
         }
-    }, [loading, error, data, setStartDate, now, router, range]);
+    }, [loading, error, data, setStartDate, now, range]);
 
     useEffect(() => {
         if (!numInvitesQuery.loading && !numInvitesQuery.error) {
@@ -281,33 +319,48 @@ const VisitorDashboard = () => {
                 <p>You have {todayInvites} visitors expected today.</p>
             </div>
             <div className="mb-10 grid grid-cols-1 gap-4 md:grid-cols-2">
-                <DownloadChart
-                    title={"User Invites For The Week"}
-                    filename={token.name + "-weekly.png"}
-                    Chart={LineChart}
-                    labelvals={visitorData.labels}
-                    datavals={[visitorData.data]}
-                    datalabels={["Visitors"]}
-                />
+                <div className="card bg-base-200 p-3">
+                <h2 className="card-title text-2xl">
+                    <BiStats className="text-3xl text-primary" />
+                    Invite Data
+                </h2>
+                <div className="p-14">
+                    <PieChart
+                        chartRef={null}
+                        datalabels={[
+                            "Invites",
+                        ]}
+                        labelvals={["Cancelled", "Unused Invites", "Used Invites"]}
+                        datavals={[
+                            numCancelled,
+                            numUnused,
+                            numUsed
+                        ]}
+                    />
+                </div>
+                </div>
                 <div className="col-span-2 grid grid-cols-1 gap-5 md:col-span-1">
-                    <div className="card h-full w-full bg-base-200 p-4 pb-1 shadow">
-                        <h2 className="card-title font-normal">
+                    <div className="card h-full w-full bg-base-200 p-5 shadow">
+                        <h2 className="card-title">
                             <span className="text-2xl text-primary">
                                 <BiMailSend />
                             </span>
                             Total Number Of Invites Sent
                         </h2>
                         <div className="card-body justify-center">
-                            <h1 className="text-4xl font-bold">
-                                {invites.length}
-                            </h1>
-                            <p>Invites Sent In Lifetime</p>
+                            <div className="flex items-center">
+                                <div className="flex flex-col">
+                                    <h1 className="text-4xl font-bold">
+                                        {totalNumberInvites}
+                                    </h1>
+                                    <p>Invites Sent In Lifetime</p>
+                                </div>
+                            </div>
                         </div>
                         <div className="card-actions"></div>
                     </div>
-
-                    <div className="card h-full w-full bg-base-200 p-4 pb-1 shadow">
-                        <h2 className="card-title font-normal">
+                    <div className="card h-full w-full bg-base-200 p-5 shadow">
+                        <h2 className="card-title">
                             <span className="text-2xl text-primary">
                                 <AiFillAlert />
                             </span>
@@ -338,7 +391,6 @@ const VisitorDashboard = () => {
                             </div>
                         </div>
                     </div>
-                    
                     <div className="flex flex-row w-full space-x-3">
                     <div className="card h-full w-1/2 bg-base-200 p-4 pb-1 shadow">
                         <h2 className="card-title font-normal">
@@ -372,7 +424,6 @@ const VisitorDashboard = () => {
                     </div>
 
                     </div>
-                
                 </div>
                 <div className="col-span-2 grid grid-cols-1 grid-rows-2 gap-4 md:grid-cols-2 md:grid-rows-1">
                     <div className="col-span-2 row-span-1">
@@ -421,7 +472,7 @@ const VisitorDashboard = () => {
                                         {openInvites.map((visit, idx) => {
                                             return (
                                                 <OpenInviteCard
-                                                    key={idx}
+                                                    key={visit.inviteID}
                                                     name={visit.visitorName}
                                                     email={visit.visitorEmail}
                                                     inviteID={visit.inviteID}
@@ -462,6 +513,7 @@ const VisitorDashboard = () => {
                                         {historyInvites.map((visit, idx) => {
                                             return (
                                                 <tr
+                                                    data-testid="historyInvite"
                                                     onClick={() => {
                                                         setInviteModal({
                                                             show: true,
@@ -525,6 +577,7 @@ const VisitorDashboard = () => {
                 {inviteModal.data && (
                     <div className="modal-box relative">
                         <label
+                            data-testid="closeInviteModal"
                             onClick={() =>
                                 setInviteModal({ ...inviteModal, show: false })
                             }

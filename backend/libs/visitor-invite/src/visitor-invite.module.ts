@@ -36,6 +36,9 @@ import { GetMostUsedInviteDataQueryHandler } from "./queries/handlers/getMostUse
 import { GetInvitesForUsersQueryHandler } from "./queries/handlers/getInvitesForUsers.handler";
 import { ExtendInvitesCommandHandler } from "./commands/handlers/extendInvitesCommand.handler";
 import { GetInviteForSignInDataQueryHandler } from "./queries/handlers/getInviteForSignInData.handler";
+import { GetInviteForSignOutDataQueryHandler } from "./queries/handlers/getInviteForSignOutData.handler";
+import { GetInviteForSignHandler } from "./queries/handlers/getInviteForSign.handler";
+import { CancelInvitesCommandHandler } from "./commands/handlers/cancelInvitesCommand.handler";
 import { GetTotalNumberOfCancellationsOfResidentQueryHandler } from "./queries/handlers/getTotalNumberOfCancellationsOfResident.handler";
 import { GetTotalNumberOfVisitsOfResidentQueryHandler } from "./queries/handlers/getTotalNumberOfVisitsOfResident.handler";
 import { GetInvitesOfResidentQueryHandler } from "./queries/handlers/getInvitesOfResident.handler";
@@ -62,6 +65,7 @@ import { GetInvitesOfResidentQueryHandler } from "./queries/handlers/getInvitesO
         VisitorInviteResolver,
         CreateInviteCommandHandler,
         CancelInviteCommandHandler,
+        CancelInvitesCommandHandler,
         ExtendInvitesCommandHandler,
         GetInvitesQueryHandler,
         GetInviteQueryHandler,
@@ -83,6 +87,8 @@ import { GetInvitesOfResidentQueryHandler } from "./queries/handlers/getInvitesO
         GetVisitorVisitsQueryHandler,
         getNumberOfVisitors,
         GetInviteForSignInDataQueryHandler,
+        GetInviteForSignOutDataQueryHandler,
+        GetInviteForSignHandler,
         GetInvitesOfResidentQueryHandler,
     ],
     exports: [VisitorInviteService],

@@ -115,8 +115,8 @@ type LoginUser {
 }
 
 type BSIdata {
-  signInCount: Int!
-  createCount: Int!
+  signInData: [String!]!
+  createData: [String!]!
 }
 
 input UserInputType {

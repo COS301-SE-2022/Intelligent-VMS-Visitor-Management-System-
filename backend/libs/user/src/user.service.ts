@@ -114,7 +114,7 @@ export class UserService{
         const sleepovers = await this.visitorInviteService.getTotalNumberOfSleepoversThisMonthOfResident(email);
         const max = await this.getNumSleepovers(email);
         if(max<sleepovers){
-            this.commandBus.execute(UpdateXPCommand(email,-20));
+            this.commandBus.execute(new UpdateXPCommand(email,-20));
         }
     }
 

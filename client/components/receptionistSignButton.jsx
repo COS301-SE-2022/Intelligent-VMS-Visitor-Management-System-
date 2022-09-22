@@ -3,7 +3,7 @@ const ReceptionistSignButton = ({ htmlFor, text, colour, onClick, key, signInTim
         <div className="float-left flex flex-wrap">
         <label
             key={key}
-            className={` inline-flex relative modal-button btn max-w-md border-0 ${colour} text-white`}
+            className={`btn-sm inline-flex relative modal-button btn max-w-md border-0 ${colour} text-white`}
             onClick={onClick}
         >
             {text}

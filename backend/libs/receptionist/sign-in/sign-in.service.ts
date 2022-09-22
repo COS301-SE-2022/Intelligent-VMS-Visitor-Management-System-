@@ -35,7 +35,7 @@ export class SignInService {
             const d = new Date(date);
             let month = '' + (d.getMonth() + 1);
             let day = '' + d.getDate();
-            let year = d.getFullYear();
+            const year = d.getFullYear();
 
             if (month.length < 2) {
                 month = '0' + month;
@@ -77,10 +77,9 @@ export class SignInService {
         }
 
         async signInFace(
-            idNumber: string,
+            invite: any
         ){
             const today = new Date();
-            const invite = await this.inviteService.getInviteForSignInData(idNumber, this.formatDate(today));
 
             if(!invite){
                 return {"error": "Invite not found"};
@@ -139,35 +138,13 @@ export class SignInService {
         } 
 
 
-        async compareFaceFile(file: Express.Multer.File, idNumber: string) {
-            if(!idNumber) {
-                return {
-                    "error": "No id-number provided"
-                }
-            }
-
-            const formData = new FormData();
-            formData.append('file', file.buffer, { filename: file.originalname });
-        
-            const response = await firstValueFrom(
-                this.httpService.post(
-                    `${this.FACE_REC_CONNECTION}/compareFaces`,
-                    formData,
-                    { headers: formData.getHeaders() }
-                )
-            );
-
-            if(response.data && response.data.result) {
-                return await this.signInFace(idNumber);
-            } 
-
-            return response.data;
+        async compareFaceFile(invite: any) {
+            return await this.signInFace(invite);
         }
-
 
         async generateTray(inviteID: string,containsResidentID: boolean,containsVisitorID: boolean):Promise<Tray>{
             //console.log("generating tray");
-            return this.commandBus.execute(new generateTrayCommand(await 0, inviteID, containsResidentID, containsVisitorID));
+            return this.commandBus.execute(new generateTrayCommand(0, inviteID, containsResidentID, containsVisitorID));
         }
         
         async bulkSignIn(file:string, userEmail:string):Promise<BSIdata>{
@@ -205,12 +182,15 @@ export class SignInService {
             }
            }
            
+           const createData: string[] = [];
+           const signInData: string[] = [];
            console.log(fileArray);
-           for(let i=0;i<fileArray.length-1;i++){
+           for(let i=1;i<fileArray.length;i++){
             lineArray = fileArray[i].split(";");
+            console.log(lineArray);
             if(lineArray[InviteIDIndex]!==""){
                 idArray[i-1] = lineArray[InviteIDIndex];
-                signInCount++;
+                signInData.push(lineArray[InviteIDIndex]);
             } else{
                     //TODO (Larisa): extend doc types
                     let residentEmail;
@@ -219,15 +199,15 @@ export class SignInService {
                     else
                         residentEmail = lineArray[ResidentEmailIndex];
                     idArray[i-1] = await this.inviteService.createInviteForBulkSignIn(0,residentEmail,lineArray[VisitorEmailIndex],lineArray[VisitorNameIndex],"RSA-ID",lineArray[VisitorIDIndex],lineArray[InviteDateIndex].replace(new RegExp('/','g'),'-'),false);
-                    createCount++;
+                    createData.push(lineArray[VisitorNameIndex]);
                 }
            }
 
             await this.commandBus.execute(new BulkSignInCommand(idArray));
 
             const bsiData = new BSIdata();
-            bsiData.createCount = createCount;
-            bsiData.signInCount = signInCount;
+            bsiData.signInData = signInData;
+            bsiData.createData = createData;
 
             return bsiData;
         }

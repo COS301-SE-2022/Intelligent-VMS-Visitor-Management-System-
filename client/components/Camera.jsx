@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { MdFaceUnlock, MdLoop } from "react-icons/md"; 
 
-const Camera = ({ children, onPicture, addNewFace, buttonText, options, setOptions, setError, setShowAddFace }) => {
+const Camera = ({ onPicture, addNewFace, buttonText, options, setOptions, setError }) => {
 
     const canvasRef = useRef(null);
     const videoRef = useRef(null);
@@ -20,6 +20,7 @@ const Camera = ({ children, onPicture, addNewFace, buttonText, options, setOptio
     };
 
     const handleVideoError = (err) => {
+        console.log(err);
     };
     
     const tryAgain = () => {
