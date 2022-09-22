@@ -128,7 +128,20 @@ describe("UserService", () => {
             expect(response).toBeFalsy()
         })
     })
-    
+
+    describe('authorizeUserAccount', () => {
+        it('should authorize a user', async () => {
+            // Arrange
+            commandBusMock.execute.mockReturnValueOnce({ modifiedCount: 2 })
+
+            // Act
+            const response = await service.authorizeUserAccount('email')
+
+            // Assert
+            expect(response).toBeTruthy()
+        })
+    })
+
 
     
 });
