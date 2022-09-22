@@ -131,6 +131,14 @@ const AdminDashboard = () => {
         }
     `);
 
+    const numSleepoversPerResidentQuery = useQuery(gql`
+        query {
+            getMaxSleepovers {
+                value
+            }
+        }
+    `);
+
     const maxSleepoversQuery = useQuery(gql`
         query {
             getMaxSleepovers {
@@ -158,6 +166,8 @@ const AdminDashboard = () => {
             getTotalAvailableParking
         }
     `);
+
+
 
     const numInviteInDateRangeQuery = useQuery(
         gql`
@@ -400,6 +410,17 @@ const AdminDashboard = () => {
         } else if (numInvitesPerResident.error) {
         }
 
+        if (
+            !numSleepoversPerResidentQuery.loading &&
+            !numSleepoversPerResidentQuery.error
+        ) {
+            setMaxSleepovers(
+                numSleepoversPerResidentQuery.data.getMaxSleepovers.value
+            );
+            setInitialSleepovers(maxSleepovers);
+        } else if (numSleepoversPerResidentQuery.error) {
+        }
+
 
     }, [
         numInvitesQuery,
@@ -409,6 +430,7 @@ const AdminDashboard = () => {
         setParkingVals,
         setNumParkingSpotsAvailable,
         numInvitesPerResidentQuery,
+        numSleepoversPerResidentQuery,
 
     ]);
 
