@@ -367,7 +367,7 @@ const CreateInvite = ({ name, email, idNumber, idDocType }) => {
                                         whileHover="animate"
                                         className="label-text overflow-x-hidden pr-3"
                                     >
-                                        {values.reserveParking?  <span className='mr-3 font-bold text-secondary'>Parking Reserved</span>:<span className='font-bold mr-3'>Reserve Parking </span> }
+                                        {values.reserveParking?  <span className='mr-3 font-bold text-base text-secondary'>Parking Reserved</span>:<span className='font-bold text-base mr-3'>Reserve Parking </span> }
                                         <motion.span
                                             initial={false}
                                             className="inline-block"
