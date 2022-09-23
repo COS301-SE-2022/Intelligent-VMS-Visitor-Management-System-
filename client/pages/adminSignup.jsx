@@ -6,9 +6,10 @@ import { motion } from "framer-motion";
 
 import Layout from "../components/Layout";
 
+
 import useAuth from "../store/authStore";
 
-const AdminSignup = () => {
+const SignUp = () => {
     const permission = useAuth((state) => {
         return state.permission;
     })();
@@ -105,7 +106,7 @@ const AdminSignup = () => {
                                 "Password needs minimum of 8 characters with one number and one special character";
                         } else if (values.confirmPassword !== values.password) {
                             errors.confirmPassword = "Passwords do not match";
-                        }
+                         }
 
                         return errors;
                     }}
@@ -117,6 +118,7 @@ const AdminSignup = () => {
                                     signup(
                                         email: "${values.email}", 
                                         password: "${values.password}", 
+                                        confirmationPin:"00000",
                                         type: "admin", 
                                         idNumber: "${values.idNumber}",
                                         IDDocType: "${values.idDoc}",
@@ -249,7 +251,7 @@ const AdminSignup = () => {
                                 </span>
 
                                 <p className="text-sm md:text-lg lg:text-xl">
-                                    You are signing up as a admin user
+                                    You are signing up as an admin
                                 </p>
 
                                 <motion.button
@@ -273,10 +275,10 @@ const AdminSignup = () => {
                         );
                     }}
                 </Formik>
-                
+
             </div>
         </Layout>
     );
 };
 
-export default AdminSignup;
+export default SignUp;
