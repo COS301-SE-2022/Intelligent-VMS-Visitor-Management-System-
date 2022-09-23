@@ -62,7 +62,7 @@ export class AuthService {
                 } else if(user.type === "receptionist") {
                     permission = -1;
                 } else if(user.type === "admin") {
-                    permission = 5;
+                    permission = -3;
                 } else {
                     throw new SignUpFailed("Invalid User Type Provided");
                 }
