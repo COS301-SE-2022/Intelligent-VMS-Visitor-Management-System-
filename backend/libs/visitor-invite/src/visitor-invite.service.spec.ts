@@ -326,6 +326,24 @@ describe("VisitorInviteService", () => {
             expect(response).toEqual(30)
 
         })
+        it('should throw no invite given error', async () => {
+            //jest.spyOn(queryBusMock as any, 'execute').mockReturnValueOnce(30)
+            try {
+                const response = await service.getInvite("");
+            } catch (error) {
+                expect(error).toBeDefined();
+                expect(error.message).toEqual("No invite given");
+            }
+        })
+        it('should throw no invite with that id error', async () => {
+            //jest.spyOn(queryBusMock as any, 'execute').mockReturnValueOnce(30)
+            try {
+                const response = await service.getInvite("12");
+            } catch (error) {
+                expect(error).toBeDefined();
+                expect(error.message).toEqual("Invite not found with id");
+            }
+        })
     })
 
     describe('getInvites', () => {
@@ -335,6 +353,8 @@ describe("VisitorInviteService", () => {
             expect(response).toEqual(30)
 
         })
+
+        
     })
 
 
