@@ -97,7 +97,7 @@ describe("UserService", () => {
     describe('createUser', () => {
         it('should create a user', async () => {
             // Act
-            const response = await service.createUser('email', 'password', 0, 'id', 'id', 'name')
+            const response = await service.createUser('email', 'password', 0, 'id', 'id', 'name', "", "")
 
             // Assert
             expect(response).toEqual({})

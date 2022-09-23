@@ -3,6 +3,8 @@ import { useRouter } from "next/router";
 import { gql, useQuery, useApolloClient } from "@apollo/client";
 import { Field, Formik } from "formik";
 import { motion } from "framer-motion";
+import { alert } from "react-custom-alert";
+import axios from "axios";
 
 import Layout from "../../components/Layout";
 
@@ -20,11 +22,6 @@ const SignUp = () => {
         return state.verified;
     });
 
-    const [error, setError] = useState({
-        message: "Error",
-        showCondition: false,
-    });
-
     const flyEmojiAway = {
         initial: {
             y: 0,
@@ -40,7 +37,7 @@ const SignUp = () => {
         },
     };
 
-    const client = useApolloClient();
+    const BACKEND_URL = process.env.BACKEND_URL;
     const router = useRouter();
 
     useEffect(() => {
@@ -50,6 +47,37 @@ const SignUp = () => {
             router.push("/");
         }
     }, [router, verified, permission]);
+    
+    const submitData = async (signupData, setSubmitting) => {
+        const formData = new FormData();
+        formData.append("file", signupData.file);
+        formData.append("name", signupData.name);
+        formData.append("email", signupData.email);
+        formData.append("type", "receptionist");
+        formData.append("confirmationPin", signupData.confirmationPin);
+        formData.append("idNumber", signupData.idNumber);
+        formData.append("idDoc", signupData.idDoc);
+        formData.append("password", signupData.password);
+
+        const response = await axios.post(`${BACKEND_URL}/user/signup`, formData, {
+            headers: {
+                'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
+            }
+        });
+
+        if(response.data.result) {
+            verify();
+            router.push("/verify");
+        } else {
+            alert({
+                message: response.data.error,
+                type: "error"
+            });
+        }
+
+        setSubmitting(false);
+    };
+
 
     return (
         <Layout>
@@ -65,6 +93,7 @@ const SignUp = () => {
                 <Formik
                     initialValues={{
                         email: "",
+                        file: undefined,
                         password: "",
                         confirmPassword: "",
                         confirmationPin:"",
@@ -109,43 +138,14 @@ const SignUp = () => {
                             errors.confirmPassword = "Passwords do not match";
                          }else if(!/^[0-9]{5}$/i.test(values.confirmationPin) ){
                             errors.pin="Pin needs to be a 5 digit number"
+                         } else if(!values.file) {
+                            errors.file = "Required";
                          }
 
                         return errors;
                     }}
                     onSubmit={(values, { setSubmitting }) => {
-                        client
-                            .mutate({
-                                mutation: gql`
-                                mutation {
-                                    signup(
-                                        email: "${values.email}", 
-                                        password: "${values.password}", 
-                                        confirmationPin: "${values.confirmationPin}",
-                                        type: "receptionist", 
-                                        idNumber: "${values.idNumber}",
-                                        IDDocType: "${values.idDoc}",
-                                        name: "${values.name}"
-                                    )
-                                }
-                            `,
-                            })
-                            .then((res) => {
-                                if (res.data.signup === true) {
-                                    verify();
-                                    router.push("/verify");
-                                    setSubmitting(false);
-                                } else {
-                                    console.log(res);
-                                }
-                            })
-                            .catch((err) => {
-                                setError({
-                                    message: err.message,
-                                    showCondition: true,
-                                });
-                                setSubmitting(false);
-                            });
+                        submitData(values, setSubmitting);
                     }}
                 >
                     {({
@@ -154,6 +154,7 @@ const SignUp = () => {
                         touched,
                         handleChange,
                         handleBlur,
+                        setFieldValue,
                         handleSubmit,
                         isSubmitting,
                     }) => {
@@ -267,9 +268,17 @@ const SignUp = () => {
                                         touched.confirmationPin &&
                                         errors.pin}
                                 </span>
-                                <p className="text-sm md:text-lg lg:text-xl">
-                                    You are signing up as a receptionist
-                                </p>
+
+                                <p>Add image of yourself</p>
+                                <input accept="image/png, image/jpeg" id="file" name="file" type="file" onChange={(event) => {
+                                  setFieldValue("file", event.currentTarget.files[0]);
+                                }} />
+
+                                <span className="text-sm text-error md:text-base">
+                                    {errors.file &&
+                                        touched.file &&
+                                        errors.file}
+                                </span>
 
                                 <motion.button
                                     className="btn btn-primary space-x-4 overflow-y-hidden"

@@ -5,7 +5,9 @@ export class CreateUserCommand {
         public readonly permission: number,
         public readonly idNumber: string,
         public readonly idDocType: string,
-        public readonly name: string
+        public readonly name: string,
+        public readonly pinNumber: string,
+        public readonly file: string
     ) {
     }
 }

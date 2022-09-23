@@ -3,9 +3,8 @@ from flask import request, redirect, url_for
 from threading import Thread
 import json
 
-from app.faceRec.faceRecLib import loadImage, faceRecognition, storeFace, getFaceEncodingsFromImage, getFacesLocationData, getLargestFace, compareFaces, addFaceEncoding
+from app.faceRec.faceRecLib import loadImage, faceRecognition, storeFace, getFaceEncodingsFromImage, getFacesLocationData, getLargestFace, compareFaces, addFaceEncoding, getNumFaces
 from app.classifier.knnClassifier import predict, train
-
 
 def updateClassifier():
     global knnClassifier
@@ -31,6 +30,26 @@ def createResponse(data):
 @app.route("/")
 def home():
     return "facial recognition api"
+
+@app.route("/getNumFaces", methods=['POST'])
+def getNumberOfFaces():
+    if request.method == "POST":
+        if 'file' not in request.files:
+            return createResponse({"error": "No file in request"})
+
+        # Get file data from request
+        file = request.files['file']
+
+        # Check if file is selected
+        if file.filename == '':
+            return createResponse({"error": "No file selected"})
+
+        if file and allowedFile(file.filename):
+            imgData = loadImage(file)
+            num = getNumFaces(imgData)
+
+            return createResponse({"result": num})
+
 
 # Compare faces endpoint
 @app.route("/compareFaces", methods=['POST'])
