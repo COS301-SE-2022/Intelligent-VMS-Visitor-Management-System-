@@ -26,7 +26,7 @@ const getFormattedDateString = (date) => {
     }
 };
 
-const initialize = () => {
+const Initialize = () => {
     // NextJS Page Router
     const router = useRouter();
 
@@ -577,4 +577,4 @@ const initialize = () => {
 //     };
 // }
 
-export default initialize;
+export default Initialize;
