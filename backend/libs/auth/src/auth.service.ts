@@ -70,6 +70,7 @@ export class AuthService {
                 await this.cacheManager.set(user.email, {
                     email: user.email,
                     password: hashPass,
+                    confirmationPin:user.confirmationPin,
                     permission: permission,
                     idNumber: user.idNumber,
                     name: user.name,
