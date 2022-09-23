@@ -50,6 +50,10 @@ def getLargestFace(faceLocations):
             maxSurfaceIdx = idx
     return maxSurfaceIdx
 
+def getNumFaces(imageData):
+    facesLocationData = getFacesLocationData(imageData)
+    return len(facesLocationData)
+
 def compareFaces(faceEncodings, idNumber):
     knownEncodingsForName = faceEncodingsCollection.find_one({ "idNumber": idNumber })
 
