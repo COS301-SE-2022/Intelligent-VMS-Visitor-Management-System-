@@ -17,6 +17,9 @@ import { SchedulerRegistry } from "@nestjs/schedule";
 import { ExtendInvitesCommand } from "./commands/impl/extendInvites.command";
 import { CronJob } from "cron";
 import { RewardsService } from "@vms/rewards";
+import { GetNumberOfCancellationsOfResidentQuery } from "./queries/impl/getNumberOfCancellationsOfResident.query";
+import { GetInvitesOfResidentQuery } from "./queries/impl/getInvitesOfResident.query";
+import { GetInvitesInRangeByEmailQuery } from "./queries/impl/getInvitesInRangeByEmail.query";
 
 describe("VisitorInviteService", () => {
     let service: VisitorInviteService;
@@ -82,6 +85,24 @@ describe("VisitorInviteService", () => {
             } else if (query instanceof GetNumberOfInvitesOfResidentQuery) {
                 if (query.email === "admin@mail.com") {
                     return 2;
+                } else {
+                    return 0;
+                }
+            }else if (query instanceof GetNumberOfCancellationsOfResidentQuery) {
+                if (query.email === "admin@mail.com") {
+                    return 2;
+                } else {
+                    return 0;
+                }
+            }else if (query instanceof GetInvitesOfResidentQuery) {
+                if (query.email === "admin@mail.com") {
+                    return [{inviteState:"extended"},{inviteState:"extended"}];
+                } else {
+                    return 0;
+                }
+            }else if (query instanceof GetInvitesInRangeByEmailQuery) {
+                if (query.email === "admin@mail.com") {
+                    return [{inviteState:"extended"},{inviteState:"extended"}];
                 } else {
                     return 0;
                 }
@@ -241,6 +262,25 @@ describe("VisitorInviteService", () => {
         it("should return the number of invites per resident", async () => {
             const numInvites = await service.getTotalNumberOfInvitesOfResident("admin@mail.com");
             expect(numInvites).toEqual(2);
+        });
+    });
+
+    describe("getTotalNumberOfCancellationsOfResident", () => {
+        it("should return the number of invites cancelled by resident", async () => {
+            const numCancels = await service.getTotalNumberOfCancellationsOfResident("admin@mail.com");
+            expect(numCancels).toEqual(2);
+        });
+    });
+     describe("getTotalNumberOfSleepoversOfResident", () => {
+        it("should return the number of sleepovers of the resident", async () => {
+            const numSleepovers = await service.getTotalNumberOfSleepoversOfResident("admin@mail.com");
+            expect(numSleepovers).toEqual(2);
+        });
+    });
+    describe("getTotalNumberOfSleepoversThisMonthOfResident", () => {
+        it("should return the number of sleepovers of the resident for this month", async () => {
+            const numSleepovers = await service.getTotalNumberOfSleepoversThisMonthOfResident("admin@mail.com");
+            expect(numSleepovers).toEqual(2);
         });
     });
 
