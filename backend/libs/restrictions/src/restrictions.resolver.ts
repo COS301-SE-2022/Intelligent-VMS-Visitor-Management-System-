@@ -46,8 +46,8 @@ export class RestrictionResolver {
         return this.restrictionsService.getMaxSleepovers();
     }
 
-    @UseGuards(GqlAuthGuard, RolesGuard)
-    @Roles("admin")
+    // @UseGuards(GqlAuthGuard, RolesGuard)
+    // @Roles("admin")
     @Mutation((returns) => {return Restriction}, { name: "setMaxSleepovers"})
     async setMaxSleepovers(@Args("sleepovers") sleepovers: number) {
         return this.restrictionsService.setMaxSleepovers(sleepovers);

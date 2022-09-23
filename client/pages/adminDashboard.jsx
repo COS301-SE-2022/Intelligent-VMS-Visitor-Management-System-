@@ -44,6 +44,9 @@ const AdminDashboard = () => {
     const [hoursMenu, setHours] = useState(0);
     const [minutesMenu, setMinutes] = useState(0);
 
+    const hours = ["00","01","02","03","04","05","06","07","08","09","10","11"];
+    const mins = ["00","01","02","03","04","05","06","07","08","09","10","11"]
+
     // Visitor invite data object for chart
     const [visitorVals, setVisitorVals] = useState({
         data: [],
@@ -267,45 +270,44 @@ const AdminDashboard = () => {
             );
         }
 
-        if (minutesMenu == "1") {
-            minutesMenu = "0" + minutesMenu;
-        } else if (minutesMenu == "2") {
-            minutesMenu = "0" + minutesMenu;
-        } else if (minutesMenu == "3") {
-            minutesMenu = "0" + minutesMenu;
-        } else if (minutesMenu == "4") {
-            minutesMenu = "0" + minutesMenu;
-        } else if (minutesMenu == "5") {
-            minutesMenu = "0" + minutesMenu;
-        } else if (minutesMenu == "6") {
-            minutesMenu = "0" + minutesMenu;
-        } else if (minutesMenu == "7") {
-            minutesMenu = "0" + minutesMenu;
-        } else if (minutesMenu == "8") {
-            minutesMenu = "0" + minutesMenu;
-        } else if (minutesMenu == "9") {
-            minutesMenu = "0" + minutesMenu;
-        } else if (minutesMenu == "0") {
-            minutesMenu = "0" + minutesMenu;
-        }
+        // if (minutesMenu == "1") {
+        //     minutesMenu = "0" + minutesMenu;
+        // } else if (minutesMenu == "2") {
+        //     minutesMenu = "0" + minutesMenu;
+        // } else if (minutesMenu == "3") {
+        //     minutesMenu = "0" + minutesMenu;
+        // } else if (minutesMenu == "4") {
+        //     minutesMenu = "0" + minutesMenu;
+        // } else if (minutesMenu == "5") {
+        //     minutesMenu = "0" + minutesMenu;
+        // } else if (minutesMenu == "6") {
+        //     minutesMenu = "0" + minutesMenu;
+        // } else if (minutesMenu == "7") {
+        //     minutesMenu = "0" + minutesMenu;
+        // } else if (minutesMenu == "8") {
+        //     minutesMenu = "0" + minutesMenu;
+        // } else if (minutesMenu == "9") {
+        //     minutesMenu = "0" + minutesMenu;
+        // } else if (minutesMenu == "0") {
+        //     minutesMenu = "0" + minutesMenu;
+        // }
 
-        if (hoursMenu == "0") {
-            hoursMenu = "0" + hoursMenu;
-        }
+        // if (hoursMenu == "0") {
+        //     hoursMenu = "0" + hoursMenu;
+        // }
 
         let temp = hoursMenu + minutesMenu;
         
         let numTemp = parseInt(temp);
         setCurfewTime(numTemp);
 
-        if (numTemp !== 7777) {
+        if (parseInt(hoursMenu) != defaultHours || parseInt(minutesMenu)!=defaultMins) {
             //setInitialCurfewTime(curfewTime);  
             curfewMutationFunc(numTemp);   
+            setDefaultHours(hoursMenu);
+            setDefaultMins(minutesMenu);    
         }
 
-        setDefaultHours(hoursMenu);
-        setDefaultMins(minutesMenu);
-        
         setRestrictionsChanged(false);
     };
 
@@ -469,6 +471,8 @@ const AdminDashboard = () => {
             }
             setDefaultHours(tempH);
             setDefaultMins(tempM);
+            setHours(tempH);
+            setMinutes(tempM);
         }
     }
 
@@ -743,96 +747,26 @@ const AdminDashboard = () => {
                                             setHours(e.target.value);
                                             setRestrictionsChanged(true);
                                         }}>
-                                            <option value="0">00</option>
-                                            <option value="1">01</option>
-                                            <option value="2">02</option>
-                                            <option value="3">03</option>
-                                            <option value="4">04</option>
-                                            <option value="5">05</option>
-                                            <option value="6">06</option>
-                                            <option value="7">07</option>
-                                            <option value="8">08</option>
-                                            <option value="9">09</option>
-                                            <option value="10">10</option>
-                                            <option value="11">11</option>
-                                            <option value="12">12</option>
-                                            <option value="13">13</option>
-                                            <option value="14">14</option>
-                                            <option value="15">15</option>
-                                            <option value="16">16</option>
-                                            <option value="17">17</option>
-                                            <option value="18">18</option>
-                                            <option value="19">19</option>
-                                            <option value="20">20</option>
-                                            <option value="21">21</option>
-                                            <option value="22">22</option>
-                                            <option value="23">23</option>
+                                            {hours.map( (value,index) => (
+                                                value == defaultHours ? (
+                                                    <option selected value={value}>{value}</option> 
+                                                ):(
+                                                    <option value={value}>{value}</option> 
+                                                )
+                                            ))}
                                         </select>
                                         <h1>    :    </h1>
                                         <select className="select select-bordered select-secondary mx-5" name="minutes" id="minutes" onChange={(e) => {
                                             setMinutes(e.target.value);
                                             setRestrictionsChanged(true);
                                         }}>
-                                            <option value="00">00</option>
-                                            <option value="1">01</option>
-                                            <option value="2">02</option>
-                                            <option value="3">03</option>
-                                            <option value="4">04</option>
-                                            <option value="5">05</option>
-                                            <option value="6">06</option>
-                                            <option value="7">07</option>
-                                            <option value="8">08</option>
-                                            <option value="9">09</option>
-                                            <option value="10">10</option>
-                                            <option value="11">11</option>
-                                            <option value="12">12</option>
-                                            <option value="13">13</option>
-                                            <option value="14">14</option>
-                                            <option value="15">15</option>
-                                            <option value="16">16</option>
-                                            <option value="17">17</option>
-                                            <option value="18">18</option>
-                                            <option value="19">19</option>
-                                            <option value="20">20</option>
-                                            <option value="21">21</option>
-                                            <option value="22">22</option>
-                                            <option value="23">23</option>
-                                            <option value="24">24</option>
-                                            <option value="25">25</option>
-                                            <option value="26">26</option>
-                                            <option value="27">27</option>
-                                            <option value="28">28</option>
-                                            <option value="29">29</option>
-                                            <option value="30">30</option>
-                                            <option value="31">31</option>
-                                            <option value="32">32</option>
-                                            <option value="33">33</option>
-                                            <option value="34">34</option>
-                                            <option value="35">35</option>
-                                            <option value="36">36</option>
-                                            <option value="37">37</option>
-                                            <option value="38">38</option>
-                                            <option value="39">39</option>
-                                            <option value="40">40</option>
-                                            <option value="41">41</option>
-                                            <option value="42">42</option>
-                                            <option value="43">43</option>
-                                            <option value="44">44</option>
-                                            <option value="45">45</option>
-                                            <option value="46">46</option>
-                                            <option value="47">47</option>
-                                            <option value="48">48</option>
-                                            <option value="49">49</option>
-                                            <option value="50">50</option>
-                                            <option value="51">51</option>
-                                            <option value="52">52</option>
-                                            <option value="53">53</option>
-                                            <option value="54">54</option>
-                                            <option value="55">55</option>
-                                            <option value="56">56</option>
-                                            <option value="57">57</option>
-                                            <option value="58">58</option>
-                                            <option value="59">59</option>
+                                            {mins.map( (value,index) => (
+                                                value == defaultMins ? (
+                                                    <option selected value={value}>{value}</option> 
+                                                ):(
+                                                    <option value={value}>{value}</option> 
+                                                )
+                                            ))}
                                         </select>
                                     </div>
                                 </div>
@@ -857,7 +791,7 @@ const AdminDashboard = () => {
                                             className="btn btn-circle"
                                             onClick={() => {
                                                 setMaxSleepovers(
-                                                    maxSleepoversQuery +
+                                                    maxSleepovers +
                                                     1
                                                 );
                                                 setRestrictionsChanged(true);
@@ -877,7 +811,7 @@ const AdminDashboard = () => {
                                             onClick={() => {
                                                 maxSleepovers > 1 &&
                                                     setMaxSleepovers(
-                                                        maxSleepoversQuery -
+                                                        maxSleepovers -
                                                         1
                                                     );
                                                 setRestrictionsChanged(true);
