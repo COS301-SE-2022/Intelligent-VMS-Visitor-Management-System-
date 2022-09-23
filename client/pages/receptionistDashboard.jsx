@@ -20,7 +20,11 @@ const ReceptionistDashboard = () => {
 
     const [currentButton, setCurrentButton] = useState(() => {});
     const [currentParkingNumber, setCurrentParkingNumber] = useState(-1);
+
     const [visitorData, setVisitorData] = useState([]);
+    const [extendedInvites, setExtendedInvites] = useState([]);
+    const [inActiveInvites, setInactiveInvites] = useState([]);
+    const [signedInInvites, setSignedInInvites] = useState([]);
 
     const [trayNr, setTrayNr] = useState("");
 
@@ -111,13 +115,27 @@ const ReceptionistDashboard = () => {
         if (!loading && !error) {
             const invites = data.getInvitesByDate.filter((invite) => {
                 return (
-                    (invite.inviteDate >= todayString &&
+                    (
+                    invite.inviteDate >= todayString &&
                     invite.inviteState !== "signedOut" && 
                     invite.inviteState != "cancelled" && 
                     invite.inviteID) 
                     || invite.inviteState === "extended"
                 );
             });
+            for(const invite of invites){
+                switch(invite.inviteState){
+                    case "signedIn":
+                        setSignedInInvites(current=> [...current,invite])
+                        break;
+                    case "inActive":
+                        setInactiveInvites(current=> [...current,invite])
+                        break;
+                    case "extended":
+                        setExtendedInvites(current=> [...current,invite])
+                        break;
+                }
+            }
             setVisitorData(invites);
             setSearch(false);
         } else if (error) {
@@ -149,6 +167,19 @@ const ReceptionistDashboard = () => {
                         || invite.inviteState === "extended"
                     );
                 });
+                for(const invite of invites){
+                    switch(invite.inviteState){
+                        case "signedIn":
+                            setSignedInInvites(current=> [...current,invite])
+                            break;
+                        case "inActive":
+                            setInactiveInvites(current=> [...current,invite])
+                            break;
+                        case "extended":
+                            setExtendedInvites(current=> [...current,invite])
+                            break;
+                    }
+                }
                 setVisitorData(invites);
             }
         } else if (error) {

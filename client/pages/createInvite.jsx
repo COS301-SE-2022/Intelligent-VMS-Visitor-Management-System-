@@ -22,6 +22,7 @@ const getFormattedDateString = (date) => {
 };
 
 const CreateInvite = ({ name, email, idNumber, idDocType }) => {
+
     // Get Instance of NextJS router to redirect to different pages
     const router = useRouter();
     //let { name, email, idNumber, idDocType } = router.query;
@@ -43,6 +44,9 @@ const CreateInvite = ({ name, email, idNumber, idDocType }) => {
 
     // Whether or not parking is available
     const [isParkingAvailable, setIsParkingAvailable] = useState(true);
+
+    // Whether or not the suggestion used to generate invite data
+    const [suggestion, setSuggestion] = useState(false);
 
     const [now, setNow] = useState(getFormattedDateString(new Date()));
 
@@ -70,9 +74,7 @@ const CreateInvite = ({ name, email, idNumber, idDocType }) => {
 
     const numInvitesQuery = useQuery(gql`
         query {
-            getNumInvitesPerResident {
-                value
-            }
+            getMaxInvitesPerResident
         }
     `);
 
@@ -85,7 +87,7 @@ const CreateInvite = ({ name, email, idNumber, idDocType }) => {
     useEffect(() => {
         if (!numInvitesQuery.loading && !numInvitesQuery.error) {
             setNumInvitesAllowed(
-                numInvitesQuery.data.getNumInvitesPerResident.value
+                numInvitesQuery.data.getMaxInvitesPerResident
             );
         } else if (numInvitesQuery.error) {
             if (numInvitesQuery.error.message === "Unauthorized") {
@@ -198,6 +200,7 @@ const CreateInvite = ({ name, email, idNumber, idDocType }) => {
                         return errors;
                     }}
                     onSubmit={(values, { setSubmitting }) => {
+
                         const CREATE_INVITE = gql`
                             mutation {
                                 createInvite(
@@ -208,6 +211,7 @@ const CreateInvite = ({ name, email, idNumber, idDocType }) => {
                                     IDNumber: "${values.idValue}"
                                     inviteDate: "${values.visitDate}"
                                     requiresParking: ${values.reserveParking}
+                                    suggestion: ${suggestion}
                             )
                         }
                         `;
@@ -276,7 +280,7 @@ const CreateInvite = ({ name, email, idNumber, idDocType }) => {
                                 />
 
                                 {!values.name.length > 0 && !email && !idNumber && !idDocType ? (
-                                    <VisitorSuggestions date={now} />
+                                    <VisitorSuggestions date={now} setSuggestion={setSuggestion} />
                                 ):(
                                     <div></div>
                                 )}

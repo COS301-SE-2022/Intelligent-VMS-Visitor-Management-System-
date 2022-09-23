@@ -205,6 +205,6 @@ describe("VisitorDashboard", () => {
             await new Promise((resolve) => setTimeout(resolve, 30));
         });
         
-        expect(screen.getByText("You are allowed to send 3 in total"));
+        expect(screen.getByText("Maximum Invites Allowed"));
     })
 });

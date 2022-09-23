@@ -68,7 +68,7 @@ export class UserResolver {
             idNumber: idNumber,
             file: file,
             idDocType: idDocType,
-            name: name,
+            name: name
         }));
     }
 
@@ -117,4 +117,27 @@ export class UserResolver {
         return await this.userService.getUsersByType(permission);
     }
 
+    @UseGuards(GqlAuthGuard)
+    @Query((returns) => { return Number }, { name: "getNumInvites"})
+    async getNumInvites(@Args("email") email: string) {
+        return await this.userService.getNumInvites(email);
+    }
+
+    @UseGuards(GqlAuthGuard)
+    @Query((returns) => { return Number }, { name: "getNumThemes"})
+    async getNumThemes(@Args("email") email: string) {
+        return await this.userService.getNumThemes(email);
+    }
+
+    @UseGuards(GqlAuthGuard)
+    @Query((returns) => { return Number }, { name: "getNumSleepovers"})
+    async getNumSleepovers(@Args("email") email: string) {
+        return await this.userService.getNumSleepovers(email);
+    }
+
+    @UseGuards(GqlAuthGuard)
+    @Query((returns) => { return Number }, { name: "getCurfewTimeOfResident"})
+    async getCurfewTimeOfResident(@Args("email") email: string) {
+        return await this.userService.getCurfewTimeOfResident(email);
+    }
 }

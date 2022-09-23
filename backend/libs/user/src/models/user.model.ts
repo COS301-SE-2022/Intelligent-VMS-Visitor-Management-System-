@@ -9,6 +9,12 @@ export class User {
     permission: number;
 
     @Field((type) => {return String})
+    badges: string;
+
+    @Field((type) => {return String})
+    signUpDate: string;
+    
+    @Field((type) => {return String})
     name: string;
 
     @Field((type) => {return String})

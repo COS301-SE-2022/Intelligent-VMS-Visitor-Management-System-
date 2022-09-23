@@ -6,7 +6,8 @@ module.exports = {
   theme: {
     extend: {},
     fontFamily: {
-        "main": ["Poppins", "sans-serif"]
+        "main": ["Poppins", "sans-serif"],
+        "noto": ['Noto Serif', 'serif']
     }
   },
   plugins: [ require('@tailwindcss/typography'),require("daisyui")],

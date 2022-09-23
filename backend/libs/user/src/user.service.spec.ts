@@ -2,19 +2,54 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { QueryBus, IQuery, CommandBus } from "@nestjs/cqrs";
 import { Model } from "mongoose";
 import { getModelToken } from "@nestjs/mongoose";
+import { HttpModule } from "@nestjs/axios";
 
 import { UserService } from "./user.service";
 import { User, UserDocument } from "./schema/user.schema";
 import { GetUserQuery } from "./queries/impl/getUser.query";
 import { GetUnAuthUsersQuery } from "./queries/impl/getUnAuthUsers.query";
+import { RewardsService } from "@vms/rewards";
+import { RestrictionsService } from "@vms/restrictions";
+import { VisitorInviteService } from "@vms/visitor-invite";
+import { ConfigService } from "@nestjs/config";
+import { MailService } from "@vms/mail";
+import { CACHE_MANAGER } from "@nestjs/common";
+import { ParkingService } from "@vms/parking";
+import { SchedulerRegistry } from "@nestjs/schedule";
+import { GetRewardTypesCountQuery } from "@vms/rewards/queries/impl/getRewardTypesCount.query";
+import { GetAllBadgesQuery } from "@vms/rewards/queries/impl/getAllBadges.query";
+import { GetNumSuggestionsQuery } from "./queries/impl/getNumSuggestions.query";
 
 describe("UserService", () => {
     let service: UserService;
     let mockUserModel: Model<UserDocument>;
     const queryBusMock = {
         execute: jest.fn((query: IQuery) => {
-            if (query instanceof GetUserQuery) {
+            if ( query instanceof GetRewardTypesCountQuery){
+                return [
+                    {
+                    "_id": "invite",
+                    "count": 2
+                    },
+                    {
+                    "_id": "sleepover",
+                    "count": 2
+                    },
+                    {
+                    "_id": "theme",
+                    "count": 1
+                    },
+                    {
+                    "_id": "curfew",
+                    "count": 1
+                    },
+                ]
+            } else if (query instanceof GetAllBadgesQuery){
+                return [];
+            } else if (query instanceof GetUserQuery) {
                 return { data: "email" };
+            } else if (query instanceof GetNumSuggestionsQuery) {
+                return { data: "suggestedEmail" };
             } else if (query instanceof GetUnAuthUsersQuery) {
                 if (query.permission === -1) {
                     return [
@@ -42,17 +77,37 @@ describe("UserService", () => {
         })
     }
     const commandBusMock = {
-        execute: jest.fn(() => ({}))
+        execute: jest.fn(() => {return {}})
     }
+
+    const scheduleMock = {
+        addCronJob: jest.fn(()=>{return {}}),
+        deleteCronJob: jest.fn(()=>{return {}}),
+      };
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
+            imports: [HttpModule],
             providers: [
                 {
                     provide: getModelToken(User.name),
                     useValue: Model,
                 },
                 UserService,
+                RewardsService,
+                RestrictionsService,
+                VisitorInviteService,
+                ConfigService,
+                ParkingService,
+                {
+                    provide: CACHE_MANAGER,
+                    useValue: {
+                        get: () => {return 'any value'},
+                        set: () => {return jest.fn()},
+                    },
+                },
+                { provide: SchedulerRegistry, useValue: scheduleMock},
+                MailService,
                 { provide: QueryBus, useValue: queryBusMock },
                 { provide: CommandBus, useValue: commandBusMock }
             ],
@@ -79,6 +134,18 @@ describe("UserService", () => {
             expect(queryBusMock.execute).toHaveBeenCalledTimes(1);
         })
     });
+
+    describe("getNumSuggestions", () => {
+        it("should get Number suggestions", async () => {
+            // Act
+            const resp = await service.getNumSuggestions("tab@mail.com");
+            // Assert
+            expect(resp).toEqual({ data: 'suggestedEmail' });
+            expect(queryBusMock.execute).toHaveBeenCalledTimes(2);
+        })
+    });
+
+ 
 
     describe("getUnAuthorizedUsers", () => {
         it("should get unauthorized resident and receptionist when user is admin", async () => {

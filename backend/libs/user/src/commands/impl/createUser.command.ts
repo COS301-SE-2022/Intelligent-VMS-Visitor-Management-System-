@@ -6,6 +6,12 @@ export class CreateUserCommand {
         public readonly idNumber: string,
         public readonly idDocType: string,
         public readonly name: string,
+        public readonly badges: string,
+        public readonly numSleepovers: number,
+        public readonly numThemes: number,
+        public readonly numInvites: number,
+        public readonly curfewTime: number,
+        public readonly date: string,
         public readonly pinNumber: string,
         public readonly file: string
     ) {

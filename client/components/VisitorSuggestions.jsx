@@ -7,7 +7,7 @@ import { HiEmojiSad } from "react-icons/hi";
 import { AiOutlinePlus,AiOutlineMinus } from "react-icons/ai"
 import useAuth from "../store/authStore.js";
 
-const VisitorSuggestions = ({ date, setFieldValue }) => {
+const VisitorSuggestions = ({ date, setSuggestion }) => {
 
     const formikProps = useFormikContext();
     const [suggestionData, setSuggestionsData] = useState([]);
@@ -83,6 +83,7 @@ const VisitorSuggestions = ({ date, setFieldValue }) => {
                                         formikProps.setFieldValue('email', visitor._id); 
                                         formikProps.setFieldValue('idValue', visitor.idNumber); 
                                         formikProps.setFieldValue('idDocType', visitor.idDocType);
+                                        setSuggestion(true);
                                     } }>
                                         
                                         <div className="hover:bg-base-200 bg-base-100 shadow-xl mb-3 mx-3 rounded-lg flex">

@@ -19,10 +19,26 @@ import { CreateUserCommandHandler } from "./commands/handlers/createUser.handler
 import { DeleteUserCommandHandler } from "./commands/handlers/deleteUser.handler";
 import { AuthorizeUserCommandHandler } from "./commands/handlers/authorizeUser.handler";
 import { DeauthorizeUserAccountCommandHandler } from "./commands/handlers/deauthorizeUserAccount.handler";
+import { VisitorInviteModule } from "@vms/visitor-invite";
+import { RewardsModule } from "@vms/rewards";
+import { UpdateUserCommandHandler } from "./commands/handlers/updateUser.handler";
+import { GetDaysWithVMSQueryHandler } from "./queries/handlers/getDaysWithVMS.handler";
+import { IncreaseSuggestionsCommandHandler } from "./commands/handlers/increaseSuggestions.handler";
+import { GetNumSuggestionsQueryHandler } from "./queries/handlers/getNumSuggestions.handler";
+import { UpdatePrivilegesCommandHandler } from "./commands/handlers/updatePrivileges.handler";
+import { RestrictionsModule } from "@vms/restrictions";
+import { GetNumInvitesQueryHandler } from "./queries/handlers/getNumInvites.handler";
+import { GetNumSleepoversQueryHandler } from "./queries/handlers/getNumSleepovers.handler";
+import { GetCurfewTimeQueryHandler } from "./queries/handlers/getCurfewTime.handler";
+import { UpdateXPCommandHandler } from "./commands/handlers/updateXP.handler";
+import { GetNumThemesQueryHandler } from "./queries/handlers/getNumThemes.handler";
 
 @Module({
     imports: [
         forwardRef(() => {return AuthModule}),
+        forwardRef(() => {return RewardsModule}),
+        forwardRef(() => {return VisitorInviteModule}),
+        RestrictionsModule,
         ConfigModule,
         CqrsModule,
         HttpModule.register({
@@ -39,8 +55,19 @@ import { DeauthorizeUserAccountCommandHandler } from "./commands/handlers/deauth
         SearchUserQueryHandler,
         GetUsersByTypeQueryHandler,
         GetUnAuthUsersQueryHandler,
+        GetNumSuggestionsQueryHandler,
+        GetDaysWithVMSQueryHandler,
+        UpdateUserCommandHandler,
+        UpdatePrivilegesCommandHandler,
         AuthorizeUserCommandHandler,
-        DeauthorizeUserAccountCommandHandler
+        DeauthorizeUserAccountCommandHandler,
+        IncreaseSuggestionsCommandHandler,
+        GetCurfewTimeQueryHandler,
+        GetNumInvitesQueryHandler,
+        GetNumSleepoversQueryHandler,
+        UpdateXPCommandHandler,
+        GetNumThemesQueryHandler,
+
     ],
     controllers: [UserController],
     exports: [UserService],

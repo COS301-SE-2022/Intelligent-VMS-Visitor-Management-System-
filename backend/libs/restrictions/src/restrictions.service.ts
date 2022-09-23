@@ -6,6 +6,8 @@ import { GetNumInvitesQuery } from './queries/impl/getNumInvites.query';
 import { SetCurfewTimeCommand } from "./commands/impl/setCurfewTime.command";
 import { GetCurfewTimeQuery } from './queries/impl/getCurfewTime.query';
 import { VisitorInviteService } from '@vms/visitor-invite';
+import { SetMaxSleepoversCommand } from './commands/impl/setMaxSleepovers.command';
+import { GetMaxSleepoversQuery } from './queries/impl/getMaxSleepovers.query';
 
 @Injectable()
 export class RestrictionsService {
@@ -34,5 +36,15 @@ export class RestrictionsService {
     // Get the curfew
     async getCurfewTime() {
         return await this.queryBus.execute(new GetCurfewTimeQuery());
+    }
+
+    // Set the max sleepovers
+    async setMaxSleepovers(sleepovers: number) {
+        return this.commandBus.execute(new SetMaxSleepoversCommand(sleepovers));
+    }
+
+    // Get the max sleepovers
+    async getMaxSleepovers() {
+        return await this.queryBus.execute(new GetMaxSleepoversQuery());
     }
 }

@@ -16,7 +16,7 @@ export class RestrictionResolver {
     
     @UseGuards(GqlAuthGuard)
     @Query((returns) => {return Restriction}, { name: "getNumInvitesPerResident"})
-    async getNumInvitesPerResident() {
+    async getMaxInvitesPerResident() {
         return this.restrictionsService.getNumInvitesPerResident();
     }
 
@@ -38,6 +38,19 @@ export class RestrictionResolver {
     @Mutation((returns) => {return Restriction}, { name: "setCurfewTime"})
     async setCurfewTime(@Args("curfewTime") curfewTime: number) {
         return this.restrictionsService.setCurfewTime(curfewTime);
+    }
+
+    @UseGuards(GqlAuthGuard)
+    @Query((returns) => {return Restriction}, { name: "getMaxSleepovers"})
+    async getMaxSleepovers() {
+        return this.restrictionsService.getMaxSleepovers();
+    }
+
+    // @UseGuards(GqlAuthGuard, RolesGuard)
+    // @Roles("admin")
+    @Mutation((returns) => {return Restriction}, { name: "setMaxSleepovers"})
+    async setMaxSleepovers(@Args("sleepovers") sleepovers: number) {
+        return this.restrictionsService.setMaxSleepovers(sleepovers);
     }
 
 }

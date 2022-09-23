@@ -158,8 +158,8 @@ export class SignInService {
            let VisitorIDIndex;
            let ResidentEmailIndex;
 
-           let signInCount = 0;
-           let createCount = 0;
+           const signInCount = 0;
+           const createCount = 0;
 
            const idArray = [];
            let lineArray = fileArray[0].split(";");

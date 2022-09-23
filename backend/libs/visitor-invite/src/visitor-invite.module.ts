@@ -39,6 +39,9 @@ import { GetInviteForSignInDataQueryHandler } from "./queries/handlers/getInvite
 import { GetInviteForSignOutDataQueryHandler } from "./queries/handlers/getInviteForSignOutData.handler";
 import { GetInviteForSignHandler } from "./queries/handlers/getInviteForSign.handler";
 import { CancelInvitesCommandHandler } from "./commands/handlers/cancelInvitesCommand.handler";
+import { GetTotalNumberOfCancellationsOfResidentQueryHandler } from "./queries/handlers/getTotalNumberOfCancellationsOfResident.handler";
+import { GetTotalNumberOfVisitsOfResidentQueryHandler } from "./queries/handlers/getTotalNumberOfVisitsOfResident.handler";
+import { GetInvitesOfResidentQueryHandler } from "./queries/handlers/getInvitesOfResident.handler";
 
 @Module({
     imports: [
@@ -47,8 +50,8 @@ import { CancelInvitesCommandHandler } from "./commands/handlers/cancelInvitesCo
         HttpModule.register({
             maxRedirects: 5,
         }),
-        UserModule,
-        AuthModule,
+        forwardRef(() => {return UserModule}),
+        forwardRef(() => {return AuthModule}),
         forwardRef(() => {return ParkingModule}),
         MailModule,
         forwardRef(() => {return RestrictionsModule}),
@@ -74,6 +77,8 @@ import { CancelInvitesCommandHandler } from "./commands/handlers/cancelInvitesCo
         GetInvitesInRangeByEmailQueryHandler,
         GetTotalNumberOfInvitesOfResidentQueryHandler,
         GetTotalNumberOfInvitesVisitorQueryHandler,
+        GetTotalNumberOfCancellationsOfResidentQueryHandler,
+        GetTotalNumberOfVisitsOfResidentQueryHandler,
         CreateGroupInviteCommandHandler,
         GetNumberOfOpenInvitesQueryHandler,
         GetInvitesForUsersQueryHandler,
@@ -83,7 +88,8 @@ import { CancelInvitesCommandHandler } from "./commands/handlers/cancelInvitesCo
         getNumberOfVisitors,
         GetInviteForSignInDataQueryHandler,
         GetInviteForSignOutDataQueryHandler,
-        GetInviteForSignHandler
+        GetInviteForSignHandler,
+        GetInvitesOfResidentQueryHandler,
     ],
     exports: [VisitorInviteService],
 })

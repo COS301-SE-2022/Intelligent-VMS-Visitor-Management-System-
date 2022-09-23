@@ -44,6 +44,10 @@ const AdminDashboard = () => {
     const [hoursMenu, setHours] = useState(0);
     const [minutesMenu, setMinutes] = useState(0);
 
+    const hours = ["00","01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23"];
+    const mins = ["00","01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29"
+    ,"30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54","55","56","57","58","59"];
+
     // Visitor invite data object for chart
     const [visitorVals, setVisitorVals] = useState({
         data: [],
@@ -83,7 +87,7 @@ const AdminDashboard = () => {
     const [initialNumInvitesPerResident, setInitialNumInvitesPerResident] =
         useState(1);
 
-    const [initialCurfewTime, setInitialCurfewTime] = useState(1);
+    const [initialSleepovers, setInitialSleepovers] = useState(0);
 
     const [initialNumParkingSpots, setInitialNumParkingSpots] = useState(0);
 
@@ -131,8 +135,25 @@ const AdminDashboard = () => {
         }
     `);
 
+    const numSleepoversPerResidentQuery = useQuery(gql`
+        query {
+            getMaxSleepovers {
+                value
+            }
+        }
+    `);
+
+    const maxSleepoversQuery = useQuery(gql`
+        query {
+            getMaxSleepovers {
+                value
+            }
+        }
+    `);
+
     // Number of invites per resident state
     const [numInvitesPerResident, setNumInvitesPerResident] = useState(1);
+    const [maxSleepovers, setMaxSleepovers] = useState(1);
     const [curfewTime, setCurfewTime] = useState(1);
 
     const [defaultHours, setDefaultHours] = useState(0);
@@ -149,6 +170,8 @@ const AdminDashboard = () => {
             getTotalAvailableParking
         }
     `);
+
+
 
     const numInviteInDateRangeQuery = useQuery(
         gql`
@@ -186,11 +209,21 @@ const AdminDashboard = () => {
     const [setNumInvitesPerResidentMutation, { data, loading, error }] =
         useMutation(gql`
         mutation {
-          setNumInvitesPerResident(numInvites: ${numInvitesPerResident}) {
+        setNumInvitesPerResident(numInvites: ${numInvitesPerResident}) {
             value
-          }
+        }
         }
     `);
+
+    const [setMaxSleepoversMutation, {}] =
+        useMutation(gql`
+        mutation {
+        setMaxSleepovers(sleepovers: ${maxSleepovers}) {
+            value
+        }
+        }
+    `);
+
     const [adjustParkingMutation, { }] =
         useMutation(gql`
        mutation {
@@ -204,9 +237,9 @@ const AdminDashboard = () => {
         client.mutate({
             mutation: gql`
         mutation {
-          setCurfewTime(curfewTime: ${CURFEW}) {
+            setCurfewTime(curfewTime: ${CURFEW}) {
             value
-          }
+            }
         }
     `});
     }
@@ -214,7 +247,7 @@ const AdminDashboard = () => {
     const cancelRestrictions = () => {
         setNumInvitesPerResident(initialNumInvitesPerResident);
         setNumParkingSpotsAvailable(initialNumParkingSpots);
-        setInitialCurfewTime(initialCurfewTime);
+        setInitialSleepovers(initialSleepovers);
         setRestrictionsChanged(false);
     };
 
@@ -225,6 +258,11 @@ const AdminDashboard = () => {
             setNumInvitesPerResidentMutation();
         }
 
+        if (maxSleepovers !== initialSleepovers) {
+            setInitialSleepovers(maxSleepovers);
+            setMaxSleepoversMutation();
+        }
+
         if (numParkingSpotsAvailable !== initialNumParkingSpots) {
             setInitialNumParkingSpots(numParkingSpotsAvailable);
             adjustParkingMutation();
@@ -232,7 +270,6 @@ const AdminDashboard = () => {
                 numParkingSpotsAvailable - parkingDateMap.get(parkingStartDate)
             );
         }
-
 
         if (minutesMenu == "1") {
             minutesMenu = "0" + minutesMenu;
@@ -265,15 +302,12 @@ const AdminDashboard = () => {
         let numTemp = parseInt(temp);
         setCurfewTime(numTemp);
 
-
-        if (numTemp !== "7777") {
-            setInitialCurfewTime(curfewTime);
-            curfewMutationFunc(numTemp);
+        if (parseInt(hoursMenu) != defaultHours || parseInt(minutesMenu)!=defaultMins) {
+            //setInitialCurfewTime(curfewTime);  
+            curfewMutationFunc(numTemp);   
+            setDefaultHours(hoursMenu);
+            setDefaultMins(minutesMenu);    
         }
-
-        setDefaultHours(hoursMenu);
-        setDefaultMins(minutesMenu);
-        
 
         setRestrictionsChanged(false);
     };
@@ -380,6 +414,17 @@ const AdminDashboard = () => {
         } else if (numInvitesPerResident.error) {
         }
 
+        if (
+            !numSleepoversPerResidentQuery.loading &&
+            !numSleepoversPerResidentQuery.error
+        ) {
+            setMaxSleepovers(
+                numSleepoversPerResidentQuery.data.getMaxSleepovers.value
+            );
+            setInitialSleepovers(maxSleepovers);
+        } else if (numSleepoversPerResidentQuery.error) {
+        }
+
 
     }, [
         numInvitesQuery,
@@ -389,6 +434,7 @@ const AdminDashboard = () => {
         setParkingVals,
         setNumParkingSpotsAvailable,
         numInvitesPerResidentQuery,
+        numSleepoversPerResidentQuery,
 
     ]);
 
@@ -426,6 +472,8 @@ const AdminDashboard = () => {
             }
             setDefaultHours(tempH);
             setDefaultMins(tempM);
+            setHours(tempH);
+            setMinutes(tempM);
         }
     }
 
@@ -585,7 +633,7 @@ const AdminDashboard = () => {
 
 
 
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
                         <div className="card bg-base-200">
                             <div className="card-body">
                                 <h2 className="card-title">
@@ -700,97 +748,78 @@ const AdminDashboard = () => {
                                             setHours(e.target.value);
                                             setRestrictionsChanged(true);
                                         }}>
-                                            <option value="0">00</option>
-                                            <option value="1">01</option>
-                                            <option value="2">02</option>
-                                            <option value="3">03</option>
-                                            <option value="4">04</option>
-                                            <option value="5">05</option>
-                                            <option value="6">06</option>
-                                            <option value="7">07</option>
-                                            <option value="8">08</option>
-                                            <option value="9">09</option>
-                                            <option value="10">10</option>
-                                            <option value="11">11</option>
-                                            <option value="12">12</option>
-                                            <option value="13">13</option>
-                                            <option value="14">14</option>
-                                            <option value="15">15</option>
-                                            <option value="16">16</option>
-                                            <option value="17">17</option>
-                                            <option value="18">18</option>
-                                            <option value="19">19</option>
-                                            <option value="20">20</option>
-                                            <option value="21">21</option>
-                                            <option value="22">22</option>
-                                            <option value="23">23</option>
+                                            {hours.map( (value,index) => (
+                                                value == defaultHours ? (
+                                                    <option selected value={value}>{value}</option> 
+                                                ):(
+                                                    <option value={value}>{value}</option> 
+                                                )
+                                            ))}
                                         </select>
                                         <h1>    :    </h1>
                                         <select className="select select-bordered select-secondary mx-5" name="minutes" id="minutes" onChange={(e) => {
                                             setMinutes(e.target.value);
                                             setRestrictionsChanged(true);
                                         }}>
-                                            <option value="00">00</option>
-                                            <option value="1">01</option>
-                                            <option value="2">02</option>
-                                            <option value="3">03</option>
-                                            <option value="4">04</option>
-                                            <option value="5">05</option>
-                                            <option value="6">06</option>
-                                            <option value="7">07</option>
-                                            <option value="8">08</option>
-                                            <option value="9">09</option>
-                                            <option value="10">10</option>
-                                            <option value="11">11</option>
-                                            <option value="12">12</option>
-                                            <option value="13">13</option>
-                                            <option value="14">14</option>
-                                            <option value="15">15</option>
-                                            <option value="16">16</option>
-                                            <option value="17">17</option>
-                                            <option value="18">18</option>
-                                            <option value="19">19</option>
-                                            <option value="20">20</option>
-                                            <option value="21">21</option>
-                                            <option value="22">22</option>
-                                            <option value="23">23</option>
-                                            <option value="24">24</option>
-                                            <option value="25">25</option>
-                                            <option value="26">26</option>
-                                            <option value="27">27</option>
-                                            <option value="28">28</option>
-                                            <option value="29">29</option>
-                                            <option value="30">30</option>
-                                            <option value="31">31</option>
-                                            <option value="32">32</option>
-                                            <option value="33">33</option>
-                                            <option value="34">34</option>
-                                            <option value="35">35</option>
-                                            <option value="36">36</option>
-                                            <option value="37">37</option>
-                                            <option value="38">38</option>
-                                            <option value="39">39</option>
-                                            <option value="40">40</option>
-                                            <option value="41">41</option>
-                                            <option value="42">42</option>
-                                            <option value="43">43</option>
-                                            <option value="44">44</option>
-                                            <option value="45">45</option>
-                                            <option value="46">46</option>
-                                            <option value="47">47</option>
-                                            <option value="48">48</option>
-                                            <option value="49">49</option>
-                                            <option value="50">50</option>
-                                            <option value="51">51</option>
-                                            <option value="52">52</option>
-                                            <option value="53">53</option>
-                                            <option value="54">54</option>
-                                            <option value="55">55</option>
-                                            <option value="56">56</option>
-                                            <option value="57">57</option>
-                                            <option value="58">58</option>
-                                            <option value="59">59</option>
+                                            {mins.map( (value,index) => (
+                                                value == defaultMins ? (
+                                                    <option selected value={value}>{value}</option> 
+                                                ):(
+                                                    <option value={value}>{value}</option> 
+                                                )
+                                            ))}
                                         </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="card bg-base-200">
+                            <div className="card-body">
+                                <h2 className="card-title">
+                                    Sleepovers{" "}
+                                    <div className="badge badge-secondary">
+                                        Resident
+                                    </div>
+                                </h2>
+                                <p>
+                                    Number of sleepovers a resident is allowed per month
+                                </p>
+                                <div className="card-actions flex items-center justify-start">
+                                    <div className="flex items-center space-x-3">
+                                        <button
+                                            data-testid="increaseSleepovers"
+                                            className="btn btn-circle"
+                                            onClick={() => {
+                                                setMaxSleepovers(
+                                                    maxSleepovers +
+                                                    1
+                                                );
+                                                setRestrictionsChanged(true);
+                                            }}
+                                        >
+                                            <AiOutlinePlus className="text-xl md:text-2xl lg:text-3xl" />
+                                        </button>
+                                        <p
+                                            id="numInvitesPerResident"
+                                            className="text-4xl font-bold text-secondary"
+                                        >
+                                            {maxSleepovers}
+                                        </p>
+                                        <button
+                                            data-testid="decreaseInvites"
+                                            className="btn btn-circle"
+                                            onClick={() => {
+                                                maxSleepovers > 1 &&
+                                                    setMaxSleepovers(
+                                                        maxSleepovers -
+                                                        1
+                                                    );
+                                                setRestrictionsChanged(true);
+                                            }}
+                                        >
+                                            <AiOutlineMinus className="text-xl md:text-2xl lg:text-3xl" />
+                                        </button>
                                     </div>
                                 </div>
                             </div>
