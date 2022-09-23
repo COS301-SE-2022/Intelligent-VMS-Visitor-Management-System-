@@ -13,4 +13,13 @@ export class User {
 
     @Field((type) => {return String})
     signUpDate: string;
+    
+    @Field((type) => {return String})
+    name: string;
+
+    @Field((type) => {return String})
+    idNumber: string;
+
+    @Field((type) => {return String}, { nullable: true })
+    file: string;
 }

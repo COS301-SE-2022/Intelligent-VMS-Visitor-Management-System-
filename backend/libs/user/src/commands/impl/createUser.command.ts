@@ -11,7 +11,9 @@ export class CreateUserCommand {
         public readonly numThemes: number,
         public readonly numInvites: number,
         public readonly curfewTime: number,
-        public readonly date: string
+        public readonly date: string,
+        public readonly pinNumber: string,
+        public readonly file: string
     ) {
     }
 }

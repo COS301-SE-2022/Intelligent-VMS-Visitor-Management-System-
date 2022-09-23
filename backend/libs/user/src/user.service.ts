@@ -37,7 +37,7 @@ export class UserService{
         return this.queryBus.execute(new GetUserQuery(email));
     }
 
-    async createUser(email: string, password: string, permission: number, idNumber: string, idDocType: string, name: string) {
+    async createUser(email: string, password: string, permission: number, idNumber: string, idDocType: string, name: string, pinNumber: string, file: string) {
         const dateString = (new Date()).toLocaleDateString();
         const typeCounts = await this.rewardService.getTypeCounts();
         const badgeCount = (await this.rewardService.getAllBadges()).length;
@@ -45,7 +45,7 @@ export class UserService{
         for(let i=0;i<badgeCount-1;i++){
             badges += "0";
         }
-        return this.commandBus.execute(new CreateUserCommand(email, password, permission, idNumber, idDocType, name, badges, (-1*typeCounts["sleepover"]),(-1*typeCounts["theme"]),(-1*typeCounts["invite"]),(-100*typeCounts["curfew"]), dateString));
+        return this.commandBus.execute(new CreateUserCommand(email, password, permission, idNumber, idDocType, name, badges, (-1*typeCounts["sleepover"]),(-1*typeCounts["theme"]),(-1*typeCounts["invite"]),(-100*typeCounts["curfew"]), dateString, pinNumber, file));
     }
 
     async searchUser(searchQuery: string) {

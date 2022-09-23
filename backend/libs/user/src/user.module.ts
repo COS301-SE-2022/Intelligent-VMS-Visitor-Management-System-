@@ -1,12 +1,15 @@
 import { Module, forwardRef } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 import { CqrsModule } from "@nestjs/cqrs";
+import { ConfigModule } from "@nestjs/config";
+import { HttpModule } from "@nestjs/axios";
 
 import { AuthModule } from "@vms/auth";
 
 import { User, UserSchema } from "./schema/user.schema";
 import { UserService } from "./user.service";
 import { UserResolver } from "./user.resolver";
+import { UserController } from "./user.controller";
 import { GetUserQueryHandler } from "./queries/handlers/getUser.handler";
 import { SearchUserQueryHandler } from "./queries/handlers/searchUser.handler";
 import { GetUnAuthUsersQueryHandler } from "./queries/handlers/getUnAuthUsers.handler";
@@ -36,7 +39,11 @@ import { GetNumThemesQueryHandler } from "./queries/handlers/getNumThemes.handle
         forwardRef(() => {return RewardsModule}),
         forwardRef(() => {return VisitorInviteModule}),
         RestrictionsModule,
+        ConfigModule,
         CqrsModule,
+        HttpModule.register({
+            maxRedirects: 5,
+        }),
         MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     ],
     providers: [
@@ -62,6 +69,7 @@ import { GetNumThemesQueryHandler } from "./queries/handlers/getNumThemes.handle
         GetNumThemesQueryHandler,
 
     ],
+    controllers: [UserController],
     exports: [UserService],
 })
 export class UserModule {}

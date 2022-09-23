@@ -4,10 +4,19 @@
 
 directive @upper on FIELD_DEFINITION
 
+
 type Reward {
   type: String!
   xp: Int!
   desc: String!
+}
+
+type User {
+  email: String!
+  permission: Int!
+  name: String!
+  idNumber: String!
+  file: String
 }
 
 type Badge {
@@ -172,7 +181,7 @@ type Query {
 
 type Mutation {
   login(email: String!, password: String!): LoginUser!
-  signup(email: String!, password: String!, confirmationPin: String!, type: String!, IDDocType: String!, idNumber: String!, name: String!): Boolean!
+  signup(email: String!, password: String!, confirmationPin: String!, type: String!, IDDocType: String!, idNumber: String!, name: String!, file: String!): Boolean!
   verify(verifyID: String!, email: String!): Boolean!
   deleteUserAccount(email: String!): Boolean!
   authorizeUserAccount(email: String!): Boolean!

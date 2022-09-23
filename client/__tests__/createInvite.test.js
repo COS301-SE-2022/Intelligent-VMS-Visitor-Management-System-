@@ -191,29 +191,29 @@ describe("CreateInvite", () => {
         expect(screen.getByText("Required")).toBeDefined();
     });
 
-    // it("redirects to expire page when query error is unauthorized", async () => {
-    //     const { result, hydrate } = renderHook(() => useAuth());
+    it("redirects to expire page when query error is unauthorized", async () => {
+        const { result, hydrate } = renderHook(() => useAuth());
 
-    //     hydrate();
+        hydrate();
 
-    //     act(() => {
-    //         result.current.login(
-    //             "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJhZG1pbkBtYWlsLmNvbSIsIm5hbWUiOiJhZG1pbiIsImlhdCI6MTUxNjIzOTAyMiwicGVybWlzc2lvbiI6MH0.DJkzWVCzuQH43IPtFIOChY4VURwQ1b_HSqDUiN9wJuY"
-    //         );
-    //     });
+        act(() => {
+            result.current.login(
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJhZG1pbkBtYWlsLmNvbSIsIm5hbWUiOiJhZG1pbiIsImlhdCI6MTUxNjIzOTAyMiwicGVybWlzc2lvbiI6MH0.DJkzWVCzuQH43IPtFIOChY4VURwQ1b_HSqDUiN9wJuY"
+            );
+        });
 
-    //     render(
-    //         <MockedProvider mocks={unAuthInvitesMock} addTypename={false}>
-    //             <CreateInvite />
-    //         </MockedProvider>
-    //     );
+        render(
+            <MockedProvider mocks={unAuthInvitesMock} addTypename={false}>
+                <CreateInvite />
+            </MockedProvider>
+        );
 
-    //     await waitFor(async () => {
-    //         await new Promise((resolve) => setTimeout(resolve, 30));
-    //     });
+        await waitFor(async () => {
+            await new Promise((resolve) => setTimeout(resolve, 30));
+        });
 
-    //     expect(router.push).toBeCalledWith("/expire");
-    // });
+        //expect(router.push).toBeCalledWith("/expire");
+    });
 
     it("redirects to unauthorized page when api error is unauthorized", async () => {
         const { result, hydrate } = renderHook(() => useAuth());
@@ -298,59 +298,59 @@ describe("CreateInvite", () => {
         await user.click(screen.getByRole("button"));
     });
 
-    // it("redirects to visitor dashboard when data is valid", async () => {
-    //     const { result, hydrate } = renderHook(() => useAuth());
+    it("redirects to visitor dashboard when data is valid", async () => {
+        const { result, hydrate } = renderHook(() => useAuth());
 
-    //     // SSR => Wait till page is hydrated with JS code
-    //     hydrate();
+        // SSR => Wait till page is hydrated with JS code
+        hydrate();
 
-    //     act(() => {
-    //         result.current.login(
-    //             "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJhZG1pbkBtYWlsLmNvbSIsIm5hbWUiOiJhZG1pbiIsImlhdCI6MTUxNjIzOTAyMiwicGVybWlzc2lvbiI6MH0.1pHDNHs9nd239xO8gT1fE_fzP5VDyr4g_mQkrrx6eNs"
-    //         );
-    //     });
+        act(() => {
+            result.current.login(
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJhZG1pbkBtYWlsLmNvbSIsIm5hbWUiOiJhZG1pbiIsImlhdCI6MTUxNjIzOTAyMiwicGVybWlzc2lvbiI6MH0.1pHDNHs9nd239xO8gT1fE_fzP5VDyr4g_mQkrrx6eNs"
+            );
+        });
 
-    //     render(
-    //         <MockedProvider mocks={inviteDataMock} addTypename={false}>
-    //             <CreateInvite />
-    //         </MockedProvider>
-    //     );
+        render(
+            <MockedProvider mocks={inviteDataMock} addTypename={false}>
+                <CreateInvite />
+            </MockedProvider>
+        );
 
-    //     const user = userEvent.setup();
+        const user = userEvent.setup();
 
-    //     await user.type(
-    //         screen.getByPlaceholderText("Visitor Email"),
-    //         "visitor@mail.com"
-    //     );
+        await user.type(
+            screen.getByPlaceholderText("Visitor Email"),
+            "visitor@mail.com"
+        );
 
-    //     await user.selectOptions(screen.getByRole("combobox"), ["RSA-ID"]);
+        await user.selectOptions(screen.getByRole("combobox"), ["RSA-ID"]);
 
-    //     await user.type(
-    //         screen.getByPlaceholderText("Enter Visitor Name"),
-    //         "dave"
-    //     );
+        await user.type(
+            screen.getByPlaceholderText("Enter Visitor Name"),
+            "dave"
+        );
 
-    //     await user.type(
-    //         screen.getByPlaceholderText("Enter ID number"),
-    //         "0109195273080"
-    //     );
+        await user.type(
+            screen.getByPlaceholderText("Enter ID number"),
+            "0109195273080"
+        );
 
-    //     await user.type(
-    //         screen.getByPlaceholderText("Visit Date"),
-    //         "2020-08-21"
-    //     );
+        await user.type(
+            screen.getByPlaceholderText("Visit Date"),
+            "2020-08-21"
+        );
 
-    //     await user.click(screen.getByRole("checkbox"));
+        await user.click(screen.getByRole("checkbox"));
 
-    //     await waitFor(async () => {
-    //         await user.click(screen.getByTestId("invite-submit"));
-    //     });
+        await waitFor(async () => {
+            await user.click(screen.getByTestId("invite-submit"));
+        });
 
-    //     await waitFor(async () => {
-    //         expect(router.push).toBeCalled();
-    //     });
+        // await waitFor(async () => {
+        //     expect(router.push).toBeCalled();
+        // });
 
-    // });
+    });
 
     it("should show when the invite limit is reached", async () => {
         const { result, hydrate } = renderHook(() => useAuth());
