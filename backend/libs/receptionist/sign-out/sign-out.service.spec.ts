@@ -13,6 +13,9 @@ import { RestrictionsService } from "@vms/restrictions";
 import { SignOutService } from './sign-out.service';
 import { ReceptionistService } from '@vms/receptionist';
 import { SchedulerRegistry } from '@nestjs/schedule';
+import { getModelToken } from '@nestjs/mongoose';
+import { User, UserDocument } from '@vms/user/schema/user.schema';
+import { Model } from 'mongoose';
 
 describe('SignOutService', () => {
   let service: SignOutService;
@@ -59,7 +62,10 @@ describe('SignOutService', () => {
     deleteCronJob: jest.fn(()=>({})),
   };
 
+
   beforeEach(async () => {
+
+    let mockUserModel: Model<UserDocument>;
     
     const module: TestingModule = await Test.createTestingModule({
       imports: [HttpModule],
@@ -79,6 +85,10 @@ describe('SignOutService', () => {
           provide: ReceptionistService, useValue: receptionistService 
         },
         {
+          provide: getModelToken(User.name),
+          useValue: Model,
+      },
+        {
             provide: CACHE_MANAGER,
             useValue: {
                 get: () => {return 'any value'},
@@ -92,6 +102,9 @@ describe('SignOutService', () => {
 
     service = module.get<SignOutService>(SignOutService);
     inviteService = module.get<VisitorInviteService>(VisitorInviteService);
+    mockUserModel = module.get<Model<UserDocument>>(
+      getModelToken(User.name),
+  );
   });
 
   it('should be defined', () => {

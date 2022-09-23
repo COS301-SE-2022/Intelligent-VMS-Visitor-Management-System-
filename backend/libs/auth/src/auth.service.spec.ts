@@ -78,10 +78,10 @@ describe("AuthService", () => {
                     provide: QueryBus,
                     useValue: queryBusMock
                 },
-                {
-                    provide: getModelToken(User.name),
-                    useValue: Model,
-                },
+                // {
+                //     provide: getModelToken(User.name),
+                //     useValue: Model,
+                // },
                 {
                     provide: CACHE_MANAGER,
                     useValue: cacheMock,
@@ -109,7 +109,7 @@ describe("AuthService", () => {
         queryBus = module.get<QueryBus>(QueryBus);
         userService = module.get<UserService>(UserService);
         jwtService = module.get<JwtService>(JwtService);
-        mockUserModel = module.get<Model<UserDocument>>(getModelToken(User.name));
+        //mockUserModel = module.get<Model<UserDocument>>(getModelToken(User.name));
         cache = module.get<Cache>(CACHE_MANAGER);
     });
 
@@ -117,7 +117,7 @@ describe("AuthService", () => {
         expect(service).toBeDefined();
         expect(jwtService).toBeDefined();
         expect(queryBus).toBeDefined();
-        expect(mockUserModel).toBeDefined();
+        //expect(mockUserModel).toBeDefined();
     });
 
     describe("Login", () => {
