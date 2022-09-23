@@ -77,7 +77,8 @@ const useAuth = create(
                 } else {
                     return [
                         { content: "Login", path: "/login" },
-                        { content: "Signup", path: "/signUp"}
+                        { content: "Sign up", path: "/signUp"}
+
                     ];
                 }
 

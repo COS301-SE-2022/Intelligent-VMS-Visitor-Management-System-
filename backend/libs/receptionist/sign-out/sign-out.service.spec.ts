@@ -13,6 +13,10 @@ import { RestrictionsService } from "@vms/restrictions";
 import { SignOutService } from './sign-out.service';
 import { ReceptionistService } from '@vms/receptionist';
 import { SchedulerRegistry } from '@nestjs/schedule';
+import { getModelToken } from '@nestjs/mongoose';
+import { User, UserDocument } from '@vms/user/schema/user.schema';
+import { Model } from 'mongoose';
+import { RewardsService } from '@vms/rewards';
 
 describe('SignOutService', () => {
   let service: SignOutService;
@@ -55,9 +59,10 @@ describe('SignOutService', () => {
   /*eslint-enable*/
 
   const scheduleMock = {
-    addCronJob: jest.fn(()=>({})),
-    deleteCronJob: jest.fn(()=>({})),
+    addCronJob: jest.fn(()=>{return {}}),
+    deleteCronJob: jest.fn(()=>{return {}}),
   };
+
 
   beforeEach(async () => {
     
@@ -69,6 +74,7 @@ describe('SignOutService', () => {
         UserService,
         ParkingService,
         ReceptionistService,
+        RewardsService,
         MailService,
         ConfigService,
         { provide: SchedulerRegistry, useValue: scheduleMock},
@@ -78,6 +84,10 @@ describe('SignOutService', () => {
         {
           provide: ReceptionistService, useValue: receptionistService 
         },
+        {
+          provide: getModelToken(User.name),
+          useValue: Model,
+      },
         {
             provide: CACHE_MANAGER,
             useValue: {

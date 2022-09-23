@@ -62,6 +62,8 @@ export class AuthService {
                     permission = -2;
                 } else if(user.type === "receptionist") {
                     permission = -1;
+                } else if(user.type === "admin") {
+                    permission = 5;
                 } else {
                     throw new SignUpFailed("Invalid User Type Provided");
                 }
@@ -71,6 +73,7 @@ export class AuthService {
                 await this.cacheManager.set(user.email, {
                     email: user.email,
                     password: hashPass,
+                    confirmationPin:user.confirmationPin,
                     permission: permission,
                     idNumber: user.idNumber,
                     name: user.name,

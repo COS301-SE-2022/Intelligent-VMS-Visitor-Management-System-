@@ -173,12 +173,7 @@ const CreateInvite = ({ name, email, idNumber, idDocType }) => {
                             )
                         ) {
                             errors.email = "Invalid email address";
-                        } else if (!values.name) {
-                            errors.name = "Required";
-                        } else if (!/[A-Za-z]+/i.test(values.name)) {
-                            errors.name =
-                                "Name contains non alphabetic characters";
-                        } else if (!values.idValue) {
+                        }  else if (!values.idValue) {
                             errors.idValue = "Required";
                         } else if (
                             (values.idDoc === "RSA-ID" ||
@@ -188,6 +183,11 @@ const CreateInvite = ({ name, email, idNumber, idDocType }) => {
                             )
                         ) {
                             errors.idValue = "Invalid RSA ID Number";
+                        } else if (!values.name) {
+                            errors.name = "Required";
+                        } else if (!/[A-Za-z]+/i.test(values.name)) {
+                            errors.name =
+                                "Name contains non alphabetic characters";
                         } else if (
                             values.idDoc === "UP-Student-ID" &&
                             !/^\d{8}$/i.test(values.idValue)
@@ -361,7 +361,7 @@ const CreateInvite = ({ name, email, idNumber, idDocType }) => {
                                         whileHover="animate"
                                         className="label-text overflow-x-hidden pr-3"
                                     >
-                                        Reserve Parking{" "}
+                                        {values.reserveParking?  <span className='mr-3 font-bold text-base text-secondary'>Parking Reserved</span>:<span className='font-bold text-base mr-3'>Reserve Parking </span> }
                                         <motion.span
                                             initial={false}
                                             className="inline-block"

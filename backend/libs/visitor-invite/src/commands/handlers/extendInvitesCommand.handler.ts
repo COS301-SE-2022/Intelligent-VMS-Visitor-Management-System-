@@ -11,7 +11,7 @@ export class ExtendInvitesCommandHandler implements ICommandHandler {
     ) {}
 
     async execute(command: ExtendInvitesCommand): Promise<any> {
-        let today = (new Date()).toLocaleDateString().replace(/\//g, '-');
+        const today = (new Date()).toLocaleDateString().replace(/\//g, '-');
         return await this.inviteModel.updateMany({$and: [ {inviteState: "signedIn"} , {inviteDate: today} ] }, [{$set: { inviteState: "extended"}}]);
     }
 }

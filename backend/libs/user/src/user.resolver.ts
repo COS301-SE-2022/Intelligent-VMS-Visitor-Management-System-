@@ -53,6 +53,7 @@ export class UserResolver {
     async signup(
         @Args("email") email: string,
         @Args("password") password: string,
+        @Args("confirmationPin") confirmationPin: string,
         @Args("type") type: string,
         @Args("IDDocType") idDocType: string,
         @Args("idNumber") idNumber: string,
@@ -61,6 +62,7 @@ export class UserResolver {
         return (await this.authService.signup({
             email: email,
             password: password,
+            confirmationPin:confirmationPin,
             type: type,
             idNumber: idNumber,
             idDocType: idDocType,

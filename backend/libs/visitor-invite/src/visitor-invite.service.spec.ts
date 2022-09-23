@@ -16,6 +16,7 @@ import { RestrictionsService } from "@vms/restrictions/restrictions.service";
 import { SchedulerRegistry } from "@nestjs/schedule";
 import { ExtendInvitesCommand } from "./commands/impl/extendInvites.command";
 import { CronJob } from "cron";
+import { RewardsService } from "@vms/rewards";
 
 describe("VisitorInviteService", () => {
     let service: VisitorInviteService;
@@ -89,19 +90,19 @@ describe("VisitorInviteService", () => {
     };
 
     const mailServiceMock = {
-        sendInvite: jest.fn(() => ({ messageId: 'id' })),
-        sendCancelNotice: jest.fn(() => ({ messageId: 'id' })),
+        sendInvite: jest.fn(() => {return { messageId: 'id' }}),
+        sendCancelNotice: jest.fn(() => {return { messageId: 'id' }}),
     };
 
     const parkingServiceMock = {
-        isParkingAvailable: jest.fn(() => true),
-        reserveParking: jest.fn(() => ({})),
-        unreserveParking: jest.fn(() => ({})),
+        isParkingAvailable: jest.fn(() => {return true}),
+        reserveParking: jest.fn(() => {return {}}),
+        unreserveParking: jest.fn(() => {return {}}),
     };
 
     const scheduleMock = {
-        addCronJob: jest.fn(()=>({})),
-        deleteCronJob: jest.fn(()=>({})),
+        addCronJob: jest.fn(()=>{return {}}),
+        deleteCronJob: jest.fn(()=>{return {}}),
     };
 
     // jest.mock('cron', () => {
@@ -123,6 +124,7 @@ describe("VisitorInviteService", () => {
                 ConfigService,
                 MailService,
                 RestrictionsService,
+                RewardsService,
                 UserService,
                 { provide: CronJob, useValue: {
                     start: ()=>{console.log("j")}

@@ -28,6 +28,7 @@ export class UserService{
                 private rewardService: RewardsService,
                 @Inject(forwardRef(() => {return VisitorInviteService}))
                 private visitorInviteService: VisitorInviteService,
+                @Inject(forwardRef(() => {return RestrictionsService}))
                 private restrictionService: RestrictionsService,
                 ) {}
 
@@ -40,7 +41,7 @@ export class UserService{
         const typeCounts = await this.rewardService.getTypeCounts();
         const badgeCount = (await this.rewardService.getAllBadges()).length;
         let badges ="1";
-        for(var i=0;i<badgeCount-1;i++){
+        for(let i=0;i<badgeCount-1;i++){
             badges += "0";
         }
         return this.commandBus.execute(new CreateUserCommand(email, password, permission, idNumber, idDocType, name, badges, (-1*typeCounts["sleepover"]),(-1*typeCounts["theme"]),(-1*typeCounts["invite"]),(-100*typeCounts["curfew"]), dateString));
@@ -120,12 +121,12 @@ export class UserService{
 
     async updatePrivileges(email:string,xpOld:number,xpCurrent:number){
         const allRewards = await this.rewardService.getAllRewards();
-        var invites = 0;
-        var sleepovers = 0;
-        var themes = 0;
-        var curfewHours = 0;
+        let invites = 0;
+        let sleepovers = 0;
+        let themes = 0;
+        let curfewHours = 0;
 
-        for await ( let reward of allRewards){
+        for await ( const reward of allRewards){
             if(reward.xp<=xpCurrent){
                 switch(reward.type){
                     case "invite":
@@ -174,7 +175,7 @@ export class UserService{
         let variable:number;
         let change = false;
         let xp = 0;
-        for await ( let [i,badge] of allBadges.entries()){
+        for await ( const [i,badge] of allBadges.entries()){
             if(parseInt(badges.charAt(i))<badge.levels){
                 switch(badge.type){
                     case "invite":
