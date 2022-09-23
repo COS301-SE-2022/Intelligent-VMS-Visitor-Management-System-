@@ -22,33 +22,36 @@ describe("UserService", () => {
     let mockUserModel: Model<UserDocument>;
     const queryBusMock = {
         execute: jest.fn((query: IQuery) => {
-            if(query instanceof GetUserQuery) {
+            if (query instanceof GetUserQuery) {
                 return { data: "email" };
-            } else if(query instanceof GetUnAuthUsersQuery) {
-                if(query.permission === -1) {
+            } else if (query instanceof GetUnAuthUsersQuery) {
+                if (query.permission === -1) {
                     return [
                         {
                             email: "unauthreceptionist@mail.com",
                             password: "hashed",
                             permission: -1,
-                        }, 
+                        },
                         {
                             email: "unauthreceptionist@mail.com",
                             password: "hashed",
                             permission: -2,
-                        }, 
+                        },
                     ];
-                } else if(query.permission === -2) {
+                } else if (query.permission === -2) {
                     return [
                         {
                             email: "unauthreceptionist@mail.com",
                             password: "hashed",
                             permission: -1,
-                        }, 
+                        },
                     ];
-                }                               
+                }
             }
         })
+    }
+    const commandBusMock = {
+        execute: jest.fn(() => ({}))
     }
 
     const scheduleMock = {
@@ -79,8 +82,8 @@ describe("UserService", () => {
                 },
                 { provide: SchedulerRegistry, useValue: scheduleMock},
                 MailService,
-                {provide: QueryBus, useValue: queryBusMock},
-                CommandBus
+                { provide: QueryBus, useValue: queryBusMock },
+                { provide: CommandBus, useValue: commandBusMock }
             ],
         }).compile();
 
@@ -101,10 +104,10 @@ describe("UserService", () => {
             // Act
             const resp = await service.findOne("tab@mail.com");
             // Assert
-            expect(resp).toEqual({data: 'email'});
+            expect(resp).toEqual({ data: 'email' });
             expect(queryBusMock.execute).toHaveBeenCalledTimes(1);
         })
-    });   
+    });
 
     describe("getUnAuthorizedUsers", () => {
         it("should get unauthorized resident and receptionist when user is admin", async () => {
@@ -119,5 +122,81 @@ describe("UserService", () => {
         });
 
     });
-    
+
+    describe('createUser', () => {
+        it('should create a user', async () => {
+            // Act
+            const response = await service.createUser('email', 'password', 0, 'id', 'id', 'name')
+
+            // Assert
+            expect(response).toEqual({})
+        })
+    })
+
+    describe('searchUser', () => {
+        it('should search a user', async () => {
+            // Arrange
+            queryBusMock.execute.mockReturnValueOnce({ data: 'd' })
+
+            // Act
+            const response = await service.searchUser('searchquery')
+
+            // Assert
+            expect(response).toEqual({ data: 'd' })
+        })
+    })
+
+    describe('deleteUserAccount', () => {
+        it('should delete a user', async () => {
+            // Arrange
+            commandBusMock.execute.mockReturnValueOnce({ modifiedCount: 2 })
+
+            // Act
+            const response = await service.deleteUserAccount('email')
+
+            // Assert
+            expect(response).toBeFalsy()
+        })
+    })
+
+    describe('authorizeUserAccount', () => {
+        it('should authorize a user', async () => {
+            // Arrange
+            commandBusMock.execute.mockReturnValueOnce({ modifiedCount: 2 })
+
+            // Act
+            const response = await service.authorizeUserAccount('email')
+
+            // Assert
+            expect(response).toBeTruthy()
+        })
+    })
+
+    describe('deauthorizeUserAccount', () => {
+        it('should deauthorize a user', async () => {
+            // Arrange
+            commandBusMock.execute.mockReturnValueOnce({ modifiedCount: 2 })
+
+            // Act
+            const response = await service.deauthorizeUserAccount('email')
+
+            // Assert
+            expect(response).toBeTruthy()
+        })
+    })
+
+    describe('getUsersByType', () => {
+        it('should getUsersByType', async () => {
+            // Arrange
+            queryBusMock.execute.mockReturnValueOnce({ data: '' })
+
+            // Act
+            const response = await service.getUsersByType(1)
+
+            // Assert
+            expect(response).toEqual({ data: '' })
+        })
+    })
+
+
 });
