@@ -21,6 +21,8 @@ const ReceptionistDashboard = () => {
     const [currentButton, setCurrentButton] = useState(() => {});
     const [currentParkingNumber, setCurrentParkingNumber] = useState(-1);
     const [visitorData, setVisitorData] = useState([]);
+    const [inActiveInvites, setInactiveInvites] = useState([]);
+    const [signedInInvites, setSignedInInvites] = useState([]);
 
     const [trayNr, setTrayNr] = useState("");
 
@@ -109,16 +111,25 @@ const ReceptionistDashboard = () => {
 
     const resetDefaultResults = () => {
         if (!loading && !error) {
-            const invites = data.getInvitesByDate.filter((invite) => {
+            const inActiveInvites = data.getInvitesByDate.filter((invite)=>{
                 return (
+                    invite.inviteDate === todayString &&
+                    invite.inviteID &&
+                    invite.inviteState === "inActive"
+                )
+            })
+            setInactiveInvites(inActiveInvites);
+            const signedInInvites =  data.getInvitesByDate.filter((invite)=>{
+                return (
+                    invite.inviteID &&
+                    (
                     (invite.inviteDate >= todayString &&
-                    invite.inviteState !== "signedOut" && 
-                    invite.inviteState != "cancelled" && 
-                    invite.inviteID) 
-                    || invite.inviteState === "extended"
-                );
-            });
-            setVisitorData(invites);
+                    invite.inviteState === "signedIn") ||
+                    invite.inviteState === "extended"
+                    )   
+                )
+            })
+            setSignedInInvites(signedInInvites);
             setSearch(false);
         } else if (error) {
             if (error.message === "Unauthorized") {
@@ -140,16 +151,25 @@ const ReceptionistDashboard = () => {
         invitesQuery();
         if (!loading && !error) {
             if (data) {
-                const invites = data.getInvitesByDate.filter((invite) => {
+                const inActiveInvites = data.getInvitesByDate.filter((invite)=>{
                     return (
+                        invite.inviteDate === todayString &&
+                        invite.inviteID &&
+                        invite.inviteState === "inActive"
+                    )
+                })
+                setInactiveInvites(inActiveInvites);
+                const signedInInvites =  data.getInvitesByDate.filter((invite)=>{
+                    return (
+                        invite.inviteID &&
+                        (
                         (invite.inviteDate >= todayString &&
-                        invite.inviteState !== "signedOut" && 
-                        invite.inviteState != "cancelled" && 
-                        invite.inviteID) 
-                        || invite.inviteState === "extended"
-                    );
-                });
-                setVisitorData(invites);
+                        invite.inviteState === "signedIn") ||
+                        invite.inviteState === "extended"
+                        )   
+                    )
+                })
+                setSignedInInvites(signedInInvites);
             }
         } else if (error) {
             if (error.message === "Unauthorized") {
@@ -244,6 +264,74 @@ const ReceptionistDashboard = () => {
                     <BiFace />
                     Recognize Face
                 </label>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-5 mx-3 h-auto">
+                <div className="card h-full bg-base-300 p-3">
+                    <div className="flex flex-col">
+                        <h2 className="ml-3 text-xl font-bold">
+                            IN-ACTIVE INVITES
+                        </h2>
+                        {loading ? (
+                                <progress className="progress progress-primary w-56">
+                                    progress
+                                </progress>
+                            ) : (
+                            <div className="flex flex-col justify-center gap-3 overflow-y-scroll p-3">
+                                {inActiveInvites.map((visit, idx) => {
+                                    return (
+                                        <div className="hover:bg-base-200 bg-base-100 shadow-xl m-1 p-5 rounded-lg flex flex-row items-center" key={visit.inviteID}
+                                            onClick={() => {
+                                                setCurrentVisitData(visit);
+                                                setShowVisitorModal(true);
+                                            }}>
+                                            <BsInfoCircle className="mr-5"/>
+
+                                            <div className="flex flex-col items-start">
+                                                <div className="text-lg font-bold capitalize">{visit.visitorName}</div>
+                                                <div className="text-md">{visit.idNumber}</div>
+                                            </div>
+
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                <div className="card h-full bg-base-300 p-3">
+                    <div className="flex flex-col">
+                        <h2 className="ml-3 text-xl font-bold">
+                            OPEN INVITES
+                        </h2>
+                        {loading ? (
+                                <progress className="progress progress-primary w-56">
+                                    progress
+                                </progress>
+                            ) : (
+                            <div className="flex flex-col justify-center gap-3 overflow-y-scroll p-3">
+                                {signedInInvites.map((visit, idx) => {
+                                    return (
+                                        <div className="hover:bg-base-200 bg-base-100 shadow-xl m-1 p-5 rounded-lg flex flex-row items-center" key={visit.inviteID}
+                                            onClick={() => {
+                                                setCurrentVisitData(visit);
+                                                setShowVisitorModal(true);
+                                            }}>
+                                            <BsInfoCircle className="mr-5"/>
+
+                                            <div className="flex flex-col items-start">
+                                                <div className="text-lg font-bold capitalize">{visit.visitorName}</div>
+                                                <div className="text-md">{visit.idNumber}</div>
+                                            </div>
+
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        )}
+                    </div>
+                </div>
             </div>
 
             <div className="flex h-full items-center justify-center overflow-x-auto p-3">
