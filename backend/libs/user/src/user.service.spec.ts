@@ -2,11 +2,20 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { QueryBus, IQuery, CommandBus } from "@nestjs/cqrs";
 import { Model } from "mongoose";
 import { getModelToken } from "@nestjs/mongoose";
+import { HttpModule } from "@nestjs/axios";
 
 import { UserService } from "./user.service";
 import { User, UserDocument } from "./schema/user.schema";
 import { GetUserQuery } from "./queries/impl/getUser.query";
 import { GetUnAuthUsersQuery } from "./queries/impl/getUnAuthUsers.query";
+import { RewardsService } from "@vms/rewards";
+import { RestrictionsService } from "@vms/restrictions";
+import { VisitorInviteService } from "@vms/visitor-invite";
+import { ConfigService } from "@nestjs/config";
+import { MailService } from "@vms/mail";
+import { CACHE_MANAGER } from "@nestjs/common";
+import { ParkingService } from "@vms/parking";
+import { SchedulerRegistry } from "@nestjs/schedule";
 
 describe("UserService", () => {
     let service: UserService;
@@ -42,14 +51,34 @@ describe("UserService", () => {
         })
     }
 
+    const scheduleMock = {
+        addCronJob: jest.fn(()=>({})),
+        deleteCronJob: jest.fn(()=>({})),
+      };
+
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
+            imports: [HttpModule],
             providers: [
                 {
                     provide: getModelToken(User.name),
                     useValue: Model,
                 },
                 UserService,
+                RewardsService,
+                RestrictionsService,
+                VisitorInviteService,
+                ConfigService,
+                ParkingService,
+                {
+                    provide: CACHE_MANAGER,
+                    useValue: {
+                        get: () => {return 'any value'},
+                        set: () => {return jest.fn()},
+                    },
+                },
+                { provide: SchedulerRegistry, useValue: scheduleMock},
+                MailService,
                 {provide: QueryBus, useValue: queryBusMock},
                 CommandBus
             ],
