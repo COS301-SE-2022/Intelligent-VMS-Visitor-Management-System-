@@ -42,7 +42,7 @@ const UserAnalytics = () => {
     const generateReport = (invites) => {
         const doc = jsPDF();
 
-        const tableColumn = ["User", "Visitor", "Date", "Status", "Sign In Time"];
+        const tableColumn = ["User", "Visitor", "Date", "Status", "Sign In Time", "Sign Out Time"];
         const tableRows = [];
 
         doc.text(`User Report For ${name} - (${reportStartDate} to ${reportEndDate})`, 10, 15);
@@ -52,7 +52,8 @@ const UserAnalytics = () => {
                 invite.visitorEmail,
                 invite.inviteDate,
                 invite.inviteState,
-                invite.signInTime ? invite.signInTime : "--"
+                invite.signInTime ? invite.signInTime : "--",
+                invite.signOutTime ? invite.signOutTime : "--"
             ];
 
             tableRows.push(inviteData);
@@ -173,7 +174,8 @@ const UserAnalytics = () => {
                 visitorName,
                 inviteDate,
                 inviteState,
-                signInTime
+                signInTime,
+                signOutTime
             }
         }
     `);
