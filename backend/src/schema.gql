@@ -4,20 +4,36 @@
 
 directive @upper on FIELD_DEFINITION
 
+
+type Reward {
+  type: String!
+  xp: Int!
+  desc: String!
+}
+
 type User {
   email: String!
   permission: Int!
-}
-
-type SearchUser {
-  email: String!
-  permission: Int!
   name: String!
+  idNumber: String!
+  file: String
 }
 
-type LoginUser {
-  email: String
-  access_token: String
+type Badge {
+  type: String!
+  levels: Int!
+  xp: [Int!]
+  desc: [String!]!
+  title: [String!]!
+  requirements: [Int!]!
+}
+
+type ProfileInfo {
+  xp: Int!
+  badges: String!
+  allBadges: [Badge!]!
+  allRewards: [Reward!]!
+  progress: Float!
 }
 
 type Restriction {
@@ -76,6 +92,13 @@ type SearchInvite {
   visitorName: String!
 }
 
+type User {
+  email: String!
+  permission: Int!
+  badges: String!
+  signUpDate: String!
+}
+
 type PredictedInviteData {
   date: String!
   visitors: Float!
@@ -87,6 +110,17 @@ type GroupInvite {
   numInvites: Float
   numVisitors: Float
   firstDate: String
+}
+
+type SearchUser {
+  email: String!
+  permission: Int!
+  name: String!
+}
+
+type LoginUser {
+  email: String
+  access_token: String
 }
 
 type BSIdata {
@@ -104,17 +138,11 @@ type Query {
   searchUser(searchQuery: String!): [SearchUser!]!
   getUnauthorizedUsers: [User!]!
   getUsersByType(permission: Float!): [SearchUser!]!
-  helloResident: String!
-  helloParking: String!
-  getTotalAvailableParking: Float!
-  getDisabledParking: [Parking!]!
-  getFreeParking: [Parking!]!
-  getReservations: ParkingReservation!
-  getInviteReservation(invitationID: String!): ParkingReservation!
-  getUsedParkingsInRange(startDate: String!, endDate: String!): [ParkingReservation!]!
-  isParkingAvailable(startDate: String!): Boolean!
-  getNumberOfReservations(startDate: String!): Float!
-  getTotalParking: Float!
+  getNumInvites(email: String!): Float!
+  getNumThemes(email: String!): Float!
+  getNumSleepovers(email: String!): Float!
+  getCurfewTimeOfResident(email: String!): Float!
+  getProfileInfo(email: String!): ProfileInfo!
   helloInvite: String!
   getInvites: [Invite!]!
   getInvitesWithEmail(email: String!): [Invite!]!
@@ -136,16 +164,33 @@ type Query {
   getSuggestions(date: String!, userEmail: String!): [Visitor!]!
   getNumInvitesPerResident: Restriction!
   getCurfewTime: Restriction!
+  getMaxSleepovers: Restriction!
+  helloParking: String!
+  getTotalAvailableParking: Float!
+  getDisabledParking: [Parking!]!
+  getFreeParking: [Parking!]!
+  getReservations: ParkingReservation!
+  getInviteReservation(invitationID: String!): ParkingReservation!
+  getUsedParkingsInRange(startDate: String!, endDate: String!): [ParkingReservation!]!
+  isParkingAvailable(startDate: String!): Boolean!
+  getNumberOfReservations(startDate: String!): Float!
+  getTotalParking: Float!
+  helloResident: String!
   helloReceptionist: String!
 }
 
 type Mutation {
   login(email: String!, password: String!): LoginUser!
-  signup(email: String!, password: String!, confirmationPin: String!, type: String!, IDDocType: String!, idNumber: String!, name: String!): Boolean!
+  signup(email: String!, password: String!, confirmationPin: String!, type: String!, IDDocType: String!, idNumber: String!, name: String!, file: String!): Boolean!
   verify(verifyID: String!, email: String!): Boolean!
   deleteUserAccount(email: String!): Boolean!
   authorizeUserAccount(email: String!): Boolean!
   deauthorizeUserAccount(email: String!): Boolean!
+  createInvite(userEmail: String!, visitorName: String!, visitorEmail: String!, IDDocType: String!, IDNumber: String!, inviteDate: String!, requiresParking: Boolean!, suggestion: Boolean!): String!
+  cancelInvite(inviteID: String!): Boolean!
+  setNumInvitesPerResident(numInvites: Float!): Restriction!
+  setCurfewTime(curfewTime: Float!): Restriction!
+  setMaxSleepovers(sleepovers: Float!): Restriction!
   assignParking(invitationID: String!): Parking!
   reserveParkingSpace(invitationID: String!, parkingNumber: Float!): ParkingReservation!
   reserveParking(invitationID: String!): ParkingReservation!
@@ -154,10 +199,6 @@ type Mutation {
   createNParkingSpots(N: Float!): Boolean!
   adjustParking(numDisiredParkingTotal: Float!): Boolean!
   disableParkingSpace(parkingNumber: Float!): Parking!
-  createInvite(userEmail: String!, visitorName: String!, visitorEmail: String!, IDDocType: String!, IDNumber: String!, inviteDate: String!, requiresParking: Boolean!): String!
-  cancelInvite(inviteID: String!): Boolean!
-  setNumInvitesPerResident(numInvites: Float!): Restriction!
-  setCurfewTime(curfewTime: Float!): Restriction!
   signOut(inviteID: String!): Float!
   signIn(inviteID: String!, notes: String!, time: String!): Float!
   bulkSignIn(file: String!, userEmail: String!): BSIdata!

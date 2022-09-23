@@ -36,9 +36,9 @@
     "@nestjs/schedule": "^2.1.0",
     "@types/bcrypt": "^5.0.0",
     "@types/cache-manager": "^3.4.3",
+    "@types/cron": "^2.0.0",
     "@types/graphql-upload": "^8.0.11",
     "@types/multer": "^1.4.7",
-    "@types/cron": "^2.0.0",
     "@types/nodemailer": "^6.4.4",
     "@types/passport-jwt": "^3.0.6",
     "@types/passport-local": "^1.0.34",
@@ -52,6 +52,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongodb-memory-server": "^8.6.0",
     "mongoose": "^6.3.1",
+    "multer": "^1.4.5-lts.1",
     "nest": "^0.1.6",
     "nodemailer": "^6.7.5",
     "passport": "^0.5.2",
@@ -151,7 +152,8 @@
       "^@vms/receptionist(|/.*)$": "<rootDir>/libs/receptionist/src/$1",
       "^@vms/restrictions(|/.*)$": "<rootDir>/libs/restrictions/src/$1",
       "^@vms/visitor-invite(|/.*)$": "<rootDir>/libs/visitor-invite/src/$1",
-      "^@vms/throttler(|/.*)$": "<rootDir>/libs/throttler/src/$1"
+      "^@vms/throttler(|/.*)$": "<rootDir>/libs/throttler/src/$1",
+      "^@vms/rewards(|/.*)$": "<rootDir>/libs/rewards/src/$1"
     }
   }
 }

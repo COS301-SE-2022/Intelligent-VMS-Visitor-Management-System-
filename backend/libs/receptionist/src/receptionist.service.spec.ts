@@ -12,6 +12,7 @@ import { RestrictionsService } from "@vms/restrictions";
 import { Tray } from './schema/tray.schema';
 import { CACHE_MANAGER } from '@nestjs/common';
 import { SchedulerRegistry } from '@nestjs/schedule';
+import { RewardsService } from '@vms/rewards';
 
 describe('ReceptionistService', () => {
   let service: ReceptionistService;
@@ -41,8 +42,8 @@ describe('ReceptionistService', () => {
   /*eslint-enable*/
 
   const scheduleMock = {
-    addCronJob: jest.fn(()=>({})),
-    deleteCronJob: jest.fn(()=>({})),
+    addCronJob: jest.fn(()=>{return {}}),
+    deleteCronJob: jest.fn(()=>{return {}}),
   };
 
   beforeEach(async () => {
@@ -56,6 +57,7 @@ describe('ReceptionistService', () => {
         ConfigService,
         UserService,
         RestrictionsService,
+        RewardsService,
         {
             provide: CACHE_MANAGER,
             useValue: {

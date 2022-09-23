@@ -91,6 +91,12 @@
       ],
       "@vms/throttler/*": [
         "libs/throttler/src/*"
+      ],
+      "@vms/rewards": [
+        "libs/rewards/src"
+      ],
+      "@vms/rewards/*": [
+        "libs/rewards/src/*"
       ]
     }
   }

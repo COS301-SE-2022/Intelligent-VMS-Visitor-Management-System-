@@ -11,7 +11,7 @@ export class CancelInvitesCommandHandler implements ICommandHandler {
     ) {}
 
     async execute(command: CancelInvitesCommand): Promise<any> {
-        let today = (new Date()).toLocaleDateString().replace(/\//g, '-');
+        const today = (new Date()).toLocaleDateString().replace(/\//g, '-');
         return await this.inviteModel.updateMany({$and: [ {inviteState: "inActive"} , {inviteDate: today} ] }, [{$set: { inviteState: "cancelled"}}]);
     }
 }

@@ -17,6 +17,7 @@ import { ParkingModule } from "@vms/parking";
 import { MailModule } from "@vms/mail";
 import { ReceptionistModule } from "@vms/receptionist";
 import { RestrictionsModule } from "@vms/restrictions";
+import { RewardsModule } from '@vms/rewards';
 
 @Module({
     imports: [
@@ -47,6 +48,7 @@ import { RestrictionsModule } from "@vms/restrictions";
         MailModule,
         ReceptionistModule,
         RestrictionsModule,
+        RewardsModule,
         VisitorInviteModule,
         
     ],

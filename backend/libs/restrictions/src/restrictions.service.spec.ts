@@ -6,7 +6,8 @@ import { SchedulerRegistry } from '@nestjs/schedule';
 import { Test, TestingModule } from '@nestjs/testing';
 import { MailService } from '@vms/mail';
 import { ParkingService } from "@vms/parking/parking.service";
-import { UserService } from '@vms/user';
+import { RewardsService } from '@vms/rewards';
+import { UserModule, UserService } from '@vms/user';
 import { VisitorInviteService } from '@vms/visitor-invite';
 import { SetCurfewTimeCommand } from './commands/impl/setCurfewTime.command';
 import { SetNumInvitesCommand } from './commands/impl/setNumInvites.command';
@@ -44,8 +45,8 @@ describe('RestrictionsService', () => {
   };
 
   const scheduleMock = {
-    addCronJob: jest.fn(()=>({})),
-    deleteCronJob: jest.fn(()=>({})),
+    addCronJob: jest.fn(()=>{return {}}),
+    deleteCronJob: jest.fn(()=>{return {}}),
   };
 
   beforeEach(async () => {
@@ -56,6 +57,7 @@ describe('RestrictionsService', () => {
             VisitorInviteService,
             ParkingService,
             MailService,
+            RewardsService,
             UserService,
             ConfigService,
             {

@@ -1,12 +1,40 @@
-import { useEffect } from "react";
-
+import { useEffect, useState } from "react";
+import useAuth from "../store/authStore.js";
 import { BsPalette2 } from "react-icons/bs";
+import { gql, useApolloClient, useLazyQuery } from "@apollo/client";
 
 import useTheme from "../store/themeStore";
 
 const ThemeSelector = () => {
-    const themes = ["dark", "business", "winter", "autumn", "random"];
+    // const client = useApolloClient();
+    // const allThemes = ["dark", "business", "winter", "autumn", "random"];
+    
+    // // Get Data From JWT Token
+    // const token = useAuth((state) => state.decodedToken)();
+    // let themes = []; 
 
+    // if(token){
+    //     if(token.permission === 2){
+
+    //         client.query({
+    //             query: gql`
+    //             query {
+    //                 getNumThemes( email: "${token.email}" )
+    //             }
+    //         `,
+    //         }).then((res) => {  
+    //             themes = allThemes.slice(0,(Number(res.data.getNumThemes))+4);
+    //         })
+             
+    //     } else {
+    //         themes = allThemes.slice(0,5);
+    //     }
+    // } else {
+    //     themes = allThemes.slice(0,2);
+    // }
+
+    const themes = ["dark", "business", "winter", "autumn", "random"];
+    
     const theme = useTheme((state) => state.theme);
     const setTheme = useTheme((state) => state.setTheme);
 
@@ -52,5 +80,11 @@ const ThemeSelector = () => {
         </div>
     );
 };
-
+export async function getStaticProps(context) {
+    return {
+        props: {
+            protected: true,
+        },
+    };
+}
 export default ThemeSelector;

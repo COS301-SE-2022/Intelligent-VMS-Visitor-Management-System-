@@ -86,7 +86,7 @@ export class SignInService {
             } else {
                 if(new Date(invite.inviteDate).getDate() == today.getDate()) {
                     await this.commandBus.execute(
-                        new SignInInviteCommand(invite.inviteID, invite.notes, today.toLocaleTimeString()));
+                        new SignInInviteCommand(invite.inviteID, invite.notes, today.toLocaleString("en-GB").replace(new RegExp("/", 'g'),"-")));
 
                     if(invite.requiresParking) {
                         await this.parkingService.assignParking(invite.inviteID);
@@ -132,7 +132,7 @@ export class SignInService {
             );
 
             return {
-                trayNo: await this.signIn(inviteID, "", new Date().toLocaleTimeString()),
+                trayNo: await this.signIn(inviteID, "", new Date().toLocaleString("en-GB").replace(new RegExp("/", 'g'),"-")),
                 name: invite.visitorName
             };
         } 
@@ -158,8 +158,8 @@ export class SignInService {
            let VisitorIDIndex;
            let ResidentEmailIndex;
 
-           let signInCount = 0;
-           let createCount = 0;
+           const signInCount = 0;
+           const createCount = 0;
 
            const idArray = [];
            let lineArray = fileArray[0].split(";");

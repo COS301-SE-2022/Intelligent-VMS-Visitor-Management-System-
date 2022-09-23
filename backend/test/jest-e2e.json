@@ -34,6 +34,8 @@
     "@vms/restrictions/(.*)": "<rootDir>/../libs/restrictions/src/$1",
     "@vms/restrictions": "<rootDir>/../libs/restrictions/src",
     "@vms/throttler/(.*)": "<rootDir>/../libs/throttler/src/$1",
-    "@vms/throttler": "<rootDir>/../libs/throttler/src"
+    "@vms/throttler": "<rootDir>/../libs/throttler/src",
+    "@vms/rewards/(.*)": "<rootDir>/../libs/rewards/src/$1",
+    "@vms/rewards": "<rootDir>/../libs/rewards/src"
   }
 }

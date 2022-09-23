@@ -16,6 +16,10 @@ import { RestrictionsService } from "@vms/restrictions/restrictions.service";
 import { SchedulerRegistry } from "@nestjs/schedule";
 import { ExtendInvitesCommand } from "./commands/impl/extendInvites.command";
 import { CronJob } from "cron";
+import { RewardsService } from "@vms/rewards";
+import { GetNumberOfCancellationsOfResidentQuery } from "./queries/impl/getNumberOfCancellationsOfResident.query";
+import { GetInvitesOfResidentQuery } from "./queries/impl/getInvitesOfResident.query";
+import { GetInvitesInRangeByEmailQuery } from "./queries/impl/getInvitesInRangeByEmail.query";
 
 describe("VisitorInviteService", () => {
     let service: VisitorInviteService;
@@ -84,24 +88,42 @@ describe("VisitorInviteService", () => {
                 } else {
                     return 0;
                 }
+            }else if (query instanceof GetNumberOfCancellationsOfResidentQuery) {
+                if (query.email === "admin@mail.com") {
+                    return 2;
+                } else {
+                    return 0;
+                }
+            }else if (query instanceof GetInvitesOfResidentQuery) {
+                if (query.email === "admin@mail.com") {
+                    return [{inviteState:"extended"},{inviteState:"extended"}];
+                } else {
+                    return 0;
+                }
+            }else if (query instanceof GetInvitesInRangeByEmailQuery) {
+                if (query.email === "admin@mail.com") {
+                    return [{inviteState:"extended"},{inviteState:"extended"}];
+                } else {
+                    return 0;
+                }
             }
         }),
     };
 
     const mailServiceMock = {
-        sendInvite: jest.fn(() => ({ messageId: 'id' })),
-        sendCancelNotice: jest.fn(() => ({ messageId: 'id' })),
+        sendInvite: jest.fn(() => {return { messageId: 'id' }}),
+        sendCancelNotice: jest.fn(() => {return { messageId: 'id' }}),
     };
 
     const parkingServiceMock = {
-        isParkingAvailable: jest.fn(() => true),
-        reserveParking: jest.fn(() => ({})),
-        unreserveParking: jest.fn(() => ({})),
+        isParkingAvailable: jest.fn(() => {return true}),
+        reserveParking: jest.fn(() => {return {}}),
+        unreserveParking: jest.fn(() => {return {}}),
     };
 
     const scheduleMock = {
-        addCronJob: jest.fn(()=>({})),
-        deleteCronJob: jest.fn(()=>({})),
+        addCronJob: jest.fn(()=>{return {}}),
+        deleteCronJob: jest.fn(()=>{return {}}),
     };
 
     // jest.mock('cron', () => {
@@ -123,6 +145,7 @@ describe("VisitorInviteService", () => {
                 ConfigService,
                 MailService,
                 RestrictionsService,
+                RewardsService,
                 UserService,
                 { provide: CronJob, useValue: {
                     start: ()=>{console.log("j")}
@@ -242,6 +265,25 @@ describe("VisitorInviteService", () => {
         });
     });
 
+    describe("getTotalNumberOfCancellationsOfResident", () => {
+        it("should return the number of invites cancelled by resident", async () => {
+            const numCancels = await service.getTotalNumberOfCancellationsOfResident("admin@mail.com");
+            expect(numCancels).toEqual(2);
+        });
+    });
+     describe("getTotalNumberOfSleepoversOfResident", () => {
+        it("should return the number of sleepovers of the resident", async () => {
+            const numSleepovers = await service.getTotalNumberOfSleepoversOfResident("admin@mail.com");
+            expect(numSleepovers).toEqual(2);
+        });
+    });
+    describe("getTotalNumberOfSleepoversThisMonthOfResident", () => {
+        it("should return the number of sleepovers of the resident for this month", async () => {
+            const numSleepovers = await service.getTotalNumberOfSleepoversThisMonthOfResident("admin@mail.com");
+            expect(numSleepovers).toEqual(2);
+        });
+    });
+
     describe('createInvite', () => {
         it('should create an invite where numInvitesSent < numInvitesAllowed', async () => {
             // Arrange
@@ -249,7 +291,7 @@ describe("VisitorInviteService", () => {
             jest.spyOn(commandBusMock as any, 'execute').mockReturnValueOnce(5)
 
             // Act
-            const response = await service.createInvite(2, 'email@email.com', 'visitor@email.com', 'visitor', 'id', '123123123123123', 'yesterday', true);
+            const response = await service.createInvite(2, 'email@email.com', 'visitor@email.com', 'visitor', 'id', '123123123123123', 'yesterday', true, false);
             // Assert
             expect(response).toEqual('id')
 
@@ -261,7 +303,7 @@ describe("VisitorInviteService", () => {
             jest.spyOn(commandBusMock as any, 'execute').mockReturnValueOnce(5)
             try {
                 // Act
-                const response = await service.createInvite(2, 'email@email.com', 'visitor@email.com', 'visitor', 'id', '123123123123123', 'yesterday', true);
+                const response = await service.createInvite(2, 'email@email.com', 'visitor@email.com', 'visitor', 'id', '123123123123123', 'yesterday', true, false);
             } catch (e) {
                 // Assert
                 expect(e.message).toEqual('Parking not available')
@@ -275,7 +317,7 @@ describe("VisitorInviteService", () => {
 
             // Act
             try {
-                const response = await service.createInvite(2, 'email@email.com', 'visitor@email.com', 'visitor', 'id', '123123123123123', 'yesterday', false);
+                const response = await service.createInvite(2, 'email@email.com', 'visitor@email.com', 'visitor', 'id', '123123123123123', 'yesterday', false, false);
                 expect(true).toEqual(false);
             }
             catch (e) {
@@ -324,6 +366,24 @@ describe("VisitorInviteService", () => {
             expect(response).toEqual(30)
 
         })
+        it('should throw no invite given error', async () => {
+            //jest.spyOn(queryBusMock as any, 'execute').mockReturnValueOnce(30)
+            try {
+                const response = await service.getInvite("");
+            } catch (error) {
+                expect(error).toBeDefined();
+                expect(error.message).toEqual("No invite given");
+            }
+        })
+        it('should throw no invite with that id error', async () => {
+            //jest.spyOn(queryBusMock as any, 'execute').mockReturnValueOnce(30)
+            try {
+                const response = await service.getInvite("12");
+            } catch (error) {
+                expect(error).toBeDefined();
+                expect(error.message).toEqual("Invite not found with id");
+            }
+        })
     })
 
     describe('getInvites', () => {
@@ -333,6 +393,8 @@ describe("VisitorInviteService", () => {
             expect(response).toEqual(30)
 
         })
+
+        
     })
 
 

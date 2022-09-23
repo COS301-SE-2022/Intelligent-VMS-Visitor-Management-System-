@@ -14,6 +14,7 @@ const AuthorizeUser = () => {
     const router = useRouter();
     const token = useAuth((state) => state.decodedToken)();
 
+    const [adminData, setAdminData] = useState([]);
     const [residentData, setResidentData] = useState([]);
     const [receptionistData, setReceptionistData] = useState([]);
     const [name, setName] = useState("");
@@ -85,6 +86,9 @@ const AuthorizeUser = () => {
             getUnauthorizedUsers {
                 email
                 permission
+                name
+                idNumber
+                file
             }
         }
     `);
@@ -94,23 +98,41 @@ const AuthorizeUser = () => {
             const userData = data.getUnauthorizedUsers;
             const newReceptionistData = [];
             const newResidentData = [];
+            const newAdminData = [];
             userData.forEach((data) => {
                 if (data.permission === -1 || data.permission === 1) {
                     newReceptionistData.push({
                         email: data.email,
+                        idNumber: data.idNumber,
                         type: "Receptionist",
+                        name: data.name,
+                        file: data.file,
                         authorized: data.permission === 1 ? true : false,
+                    });
+                } else if(data.permission === -3 || data.permission === 0) {
+                    newAdminData.push({
+                        email: data.email,
+                        type: "Admin",
+                        idNumber: data.idNumber,
+                        name: data.name,
+                        file: data.file,
+                        authorized: data.permission === 0 ? true : false,
                     });
                 } else {
                     newResidentData.push({
                         email: data.email,
+                        name: data.name,
+                        idNumber: data.idNumber,
+                        file: data.file,
                         type: "Resident",
                     });
                 }
             });
 
+            console.log(newAdminData);
             setReceptionistData(newReceptionistData);
             setResidentData(newResidentData);
+            setAdminData(newAdminData);
         } else if (!loading && error) {
             if (error.message === "Unauthorized") {
                 router.push("/expire");
@@ -120,7 +142,7 @@ const AuthorizeUser = () => {
 
     return (
         <Layout>
-            <div className="space-y-6 pl-3">
+            <div className="space-y-6 pl-3 mb-10">
                 <div className="mt-3 flex w-full items-center justify-between">
                     <div className="w-full">
                         <h1 className="text-lg font-bold md:text-xl lg:text-3xl">
@@ -150,6 +172,47 @@ const AuthorizeUser = () => {
                 </div>
                 {token.permission === 0 && (
                     <div className="divider text-base md:text-lg lg:text-2xl">
+                        Admin
+                    </div>
+                )}
+                {adminData.length > 0 ? (
+                    <div>
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                            {adminData.map((entry, idx) => {
+                                return (
+                                    <AuthCard
+                                        key={entry.email}
+                                        email={entry.email}
+                                        name={entry.name}
+                                        type={entry.type}
+                                        idNumber={entry.idNumber}
+                                        file={entry.file}
+                                        authorized={entry.authorized}
+                                        authorizeUserAccount={
+                                            authorizeUserAccount
+                                        }
+                                        deleteUserAccount={deleteUserAccount}
+                                        permission={token.permission}
+                                    />
+                                );
+                            })}
+                        </div>
+                    </div>
+                ) : (
+                    <div>
+                        {loading ? (
+                            <progress className="progress progress-primary fixed left-[50%] top-[50%] w-56 translate-x-[-50%] translate-y-[-50%]">
+                                Loading
+                            </progress>
+                        ) : token.permission === 0 ? (
+                            <p>Nothing to show...</p>
+                        ) : (
+                            <></>
+                        )}
+                    </div>
+                )}
+                {token.permission === 0 && (
+                    <div className="divider text-base md:text-lg lg:text-2xl">
                         Receptionists
                     </div>
                 )}
@@ -162,7 +225,10 @@ const AuthorizeUser = () => {
                                         key={idx}
                                         email={entry.email}
                                         type={entry.type}
+                                        idNumber={entry.idNumber}
+                                        name={entry.name}
                                         authorized={entry.authorized}
+                                        file={entry.file}
                                         authorizeUserAccount={
                                             authorizeUserAccount
                                         }
@@ -199,6 +265,9 @@ const AuthorizeUser = () => {
                                         key={idx}
                                         email={entry.email}
                                         type={entry.type}
+                                        file={entry.file}
+                                        idNumber={entry.idNumber}
+                                        name={entry.name}
                                         authorized={entry.authorized}
                                         deleteUserAccount={deleteUserAccount}
                                         authorizeUserAccount={

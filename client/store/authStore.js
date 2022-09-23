@@ -64,11 +64,12 @@ const useAuth = create(
                         case 2:
                             return [
                                 { content: "Create Invite", path: "/createInvite" },
+                                { content: "Profile Page", path: "/profilePage"},
                                 { content: "Your Dashboard", path: "/visitorDashboard" },
                                 { content: "Logout", path: "/", onClick: () => get().logout() },
                             ];
                     }
-                } else if(permission === -1 || permission === -2){
+                } else if(permission === -1 || permission === -2 || permission === -3){
                     return [
                         { content: "Authorize", path: "/authorize" },
                         { content: "Logout", path: "/", onClick: () => get().logout() },

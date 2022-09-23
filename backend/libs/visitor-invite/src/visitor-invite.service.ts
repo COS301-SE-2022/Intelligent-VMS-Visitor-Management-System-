@@ -44,15 +44,16 @@ import { UserService } from "@vms/user";
 import { GetInvitesForUsersQuery } from "./queries/impl/getInvitesForUsers.query";
 import { GetVisitorVisitsQuery } from "./queries/impl/getVisitorVisits.query";
 import { Visitor } from "./models/visitor.model";
+import { GetNumberOfCancellationsOfResidentQuery } from "./queries/impl/getNumberOfCancellationsOfResident.query";
+import { GetNumberOfVisitsOfResidentQuery } from "./queries/impl/getNumberOfVisitsOfResident.query";
 import { ExtendInvitesCommand } from "./commands/impl/extendInvites.command";
 import { CancelInvitesCommand } from "./commands/impl/cancelInvites.command";
+import { GetInvitesOfResidentQuery } from "./queries/impl/getInvitesOfResident.query"
 import { GetInviteForSignOutDataQuery } from "./queries/impl/getInviteForSignOutData.query";
 import { GetInviteForSignQuery } from "./queries/impl/getInviteForSign.query";
 
 @Injectable()
 export class VisitorInviteService  {
-    private curfewHour: number;
-    private curfewMinute: number;
 
     AI_BASE_CONNECTION: string;
 
@@ -63,47 +64,66 @@ export class VisitorInviteService  {
                 private readonly mailService: MailService,
                 @Inject(forwardRef(() => {return RestrictionsService}))
                 private readonly restrictionsService: RestrictionsService,
+                @Inject(forwardRef(() => {return UserService}))
                 private readonly userService: UserService,
                 @Inject(CACHE_MANAGER) private cacheManager: Cache,
                 @Inject(forwardRef(() => {return ParkingService}))
                 private readonly parkingService: ParkingService,
                 private schedulerRegistry: SchedulerRegistry
                ) { 
-                    this.AI_BASE_CONNECTION = this.configService.get<string>("AI_API_CONNECTION");
-                    
-                    const job = new CronJob(`30 23 * * *`, () => {
-                        this.commandBus.execute(new ExtendInvitesCommand());  
-                        this.commandBus.execute(new CancelInvitesCommand());
+                    this.AI_BASE_CONNECTION = this.configService.get<string>("AI_API_CONNECTION");   
+               
+                    const job = new CronJob(`59 23 * * *`, () => {
+                        this.extendInvitesJob();
                     })
             
                     this.schedulerRegistry.addCronJob("extendInvites", job);
                     job.start();
-               }
+                }
+
+    extendInvitesJob(){
+        this.commandBus.execute(new ExtendInvitesCommand());  
+        this.commandBus.execute(new CancelInvitesCommand());
+    }
             
      /*
         Update/synchronise curfew details and cron job
     */
-    async setCurfewDetails( curfewTime:number ){
+    async setCurfewDetails( curfew:number ){
 
-        const len = curfewTime.toString().length;
+        const curfewTime = Number(curfew);
+        const today = new Date();
+        let currMin = today.getMinutes().toString();
 
-        if(len>2){
-            this.curfewHour = Number(curfewTime.toString().slice(0,-2));  
-        }else{
-            this.curfewHour = 0
+        var curfewHour:String;
+        var curfewMinute:String;
+
+        if(currMin.length<2){
+            currMin = "0"+currMin;
         }
 
-        if(len==1){
-            this.curfewMinute = this.curfewMinute;
+        const currentTime = Number(today.getHours().toString().concat(currMin))
+
+        if(curfewTime < currentTime){
+            this.extendInvitesJob();
+        }
+
+        if(curfewTime.toString().length>2){
+            curfewHour = curfewTime.toString().slice(0,-2);  
         }else{
-            this.curfewMinute = Number(curfewTime.toString().slice(len-2,len));
+            curfewHour = "0";
+        }
+        
+        if(curfewTime.toString().length<=1){
+            curfewMinute = curfewTime.toString();
+        }else{
+            curfewMinute = curfewTime.toString().slice(-2);
         }
 
         this.schedulerRegistry.deleteCronJob("extendInvites");
 
-        const job = new CronJob(`${this.curfewMinute.toString()} ${this.curfewHour.toString()} * * *`, async() => {
-            this.commandBus.execute(new ExtendInvitesCommand()); 
-            this.commandBus.execute(new CancelInvitesCommand()); 
+        const job = new CronJob(`${curfewMinute} ${curfewHour} * * *`, async() => {
+            this.extendInvitesJob();
         })
 
         this.schedulerRegistry.addCronJob("extendInvites", job);
@@ -121,13 +141,14 @@ export class VisitorInviteService  {
         idDocType: string,
         idNumber: string,
         inviteDate: string,
-        requiresParking: boolean
+        requiresParking: boolean,
+        suggestion: boolean
     ) {
 
         // If permission level is that of resident check invite limit
         if(permission !== 0 && permission !== 1) {
             const numInvitesAllowed = await this.restrictionsService.getNumInvitesPerResident();
-            const numInvitesSent = await this.getTotalNumberOfInvitesOfResident(userEmail);
+            const numInvitesSent = await this.getNumberOfOpenInvites(userEmail);
 
             if(numInvitesSent >= numInvitesAllowed) {
                 throw new InviteLimitReachedError("Max Number of Invites Sent");
@@ -161,6 +182,11 @@ export class VisitorInviteService  {
         // Parking
         if(requiresParking) {
             await this.parkingService.reserveParking(inviteID);
+        }
+
+        //Suggestion count
+        if(suggestion){
+            await this.userService.increaseSuggestions(userEmail);
         }
 
         const info = await this.mailService.sendInvite(visitorEmail, userEmail, inviteID, idDocType, requiresParking, inviteDate);
@@ -304,6 +330,45 @@ export class VisitorInviteService  {
         return await this.queryBus.execute(new GetNumberOfInvitesOfResidentQuery(email)); 
     }
 
+    // Get Number of cancelled invites per resident
+    async getTotalNumberOfCancellationsOfResident(email: string) {
+        return await this.queryBus.execute(new GetNumberOfCancellationsOfResidentQuery(email)); 
+    }
+
+    // Get Number of sleepovers per resident
+    async getTotalNumberOfSleepoversOfResident(email: string) {
+        const invites = await this.queryBus.execute(new GetInvitesOfResidentQuery(email));
+        let sleepovers = 0; 
+        for(const invite of invites){
+
+            if(invite.signInTime && invite.signOutTime && (new Date(invite.signInTime.slice(0,10))).getDate() != (new Date(invite.signOutTime.slice(0,10))).getDate() || invite.inviteState == "extended"){
+                sleepovers++;
+            }
+        }
+        return sleepovers;
+    }
+
+    // Get Number of sleepovers per resident this month
+    async getTotalNumberOfSleepoversThisMonthOfResident(email: string) {
+        const today = new Date();
+        const monthStart = new Date(today.getFullYear(),today.getMonth(),1);
+        const monthEnd = new Date(today.getFullYear(),today.getMonth()+1,0);
+        const invites = await this.queryBus.execute(new GetInvitesInRangeByEmailQuery(monthStart.toLocaleDateString().replace(/\//g, '-'),monthEnd.toLocaleDateString().replace(/\//g, '-'),email));
+        let sleepovers = 0; 
+        for(const invite of invites){
+
+            if(invite.signInTime && invite.signOutTime && (new Date(invite.signInTime.slice(0,10))).getDate() != (new Date(invite.signOutTime.slice(0,10))).getDate() || invite.inviteState == "extended"){
+                sleepovers++;
+            }
+        }
+        return sleepovers;
+    }
+
+    // Get Number of cancelled invites per resident
+    async getTotalNumberOfVisitsOfResident(email: string) {
+        return await this.queryBus.execute(new GetNumberOfVisitsOfResidentQuery(email)); 
+    }
+
     // Get Number of invites per resident
     async getNumberOfOpenInvites(email: string) {
         const now = new Date();
@@ -393,9 +458,9 @@ export class VisitorInviteService  {
     // Get predicted number of invites in range
     async getPredictedInviteData(startDate: string, endDate: string) {
         const data = await firstValueFrom(this.httpService.get(`${this.AI_BASE_CONNECTION}/getCache?startDate=${startDate}&endDate=${endDate}`)); 
-        
+
         if(data.data.length === 0) {
-            this.httpService.get(`${this.AI_BASE_CONNECTION}/predictAsync?startDate=2022-01-01&endDate=2022-12-31`)
+            await firstValueFrom(this.httpService.get(`${this.AI_BASE_CONNECTION}/predictAsync?startDate=2022-01-01&endDate=2022-12-31`))
         }
 
         return data.data;
@@ -418,9 +483,9 @@ export class VisitorInviteService  {
     }
 
     async getSuggestions(date: string, userEmail: string){
-        let visitors:Visitor[] = JSON.parse(JSON.stringify(await this.queryBus.execute(new GetVisitorVisitsQuery(userEmail))));
-        let predDate = new Date(date);
-        let suggestions = [];
+        const visitors:Visitor[] = JSON.parse(JSON.stringify(await this.queryBus.execute(new GetVisitorVisitsQuery(userEmail))));
+        const predDate = new Date(date);
+        const suggestions = [];
         
         const today = new Date();
 
@@ -448,22 +513,21 @@ export class VisitorInviteService  {
                 }
             }
 
-            let monthTotal = this.getMonthsBetweenDates(firstInviteDate,today);
-            let dayTotal = this.getDaysBetweenDates(firstInviteDate,today);
-            let dowTotal = this.getWeekdayBetweenDates(firstInviteDate,today);
+            const monthTotal = this.getMonthsBetweenDates(firstInviteDate,today);
+            const dayTotal = this.getDaysBetweenDates(firstInviteDate,today);
+            const dowTotal = this.getWeekdayBetweenDates(firstInviteDate,today);
 
-            let pYes = monthCount/monthTotal * dowCount/dowTotal * visitors[i].numInvites/dayTotal
+            const pYes = monthCount/monthTotal * dowCount/dowTotal * visitors[i].numInvites/dayTotal
             //let pNo = (monthTotal-monthCount)/monthTotal * (dowTotal-dowCount)/dowTotal * (dayTotal-visitors[i].numInvites)/dayTotal
             
-            let suggestion = new Visitor()
+            const suggestion = new Visitor()
             suggestion.visitorName = visitors[i].visitorName;
             suggestion._id = visitors[i]._id;
             suggestion.idNumber = visitors[i].idNumber;
             suggestion.idDocType = visitors[i].idDocType;
             suggestion.prob = pYes;
             suggestions.push(suggestion);
-            
-                   
+           
         }
 
         const finalSuggestions =[];
@@ -472,8 +536,11 @@ export class VisitorInviteService  {
         suggestions.sort(function(a, b){return b.prob - a.prob});
 
         //find IQR
-        const q3Index = Math.round(1/4*(suggestions.length+1)) - 1;
-        const q1Index = Math.round(3/4*(suggestions.length+1)) - 1;
+        const q3Index = Math.round(1/4*(suggestions.length+1));
+        let q1Index = Math.round(3/4*(suggestions.length+1));
+        if(q1Index == suggestions.length){
+            q1Index -= 1;
+        }
         const iqr = suggestions[q3Index].prob - suggestions[q1Index].prob;
 
         const threshold = suggestions[suggestions.length-1].prob + iqr;

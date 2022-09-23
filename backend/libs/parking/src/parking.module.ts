@@ -40,7 +40,7 @@ import { ActivateReservationCommandHandler } from './commands/handlers/activateR
 @Module({
   imports: [
     CqrsModule,
-    AuthModule,
+    forwardRef(() => {return AuthModule}),
     forwardRef(() => {return VisitorInviteModule}),
     MongooseModule.forFeature([
       { name: Parking.name, schema: ParkingSchema },
