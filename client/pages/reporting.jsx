@@ -37,7 +37,7 @@ const Reporting = () => {
     const router = useRouter();
     const now = new Date();
     const [startDate, setStartDate] = useState(new Date());
-    const [range, setRange] = useState(7);
+    const [range, setRange] = useState(6);
     const [endDate, setEndDate] = useState(getEndDate(startDate, range));
     const [visitorData, setVisitorData] = useState({ data: [], labels: [] });
     const [inviteData, setInviteData] = useState({ data: [], labels: [] });
@@ -178,6 +178,7 @@ const Reporting = () => {
                 }
             });
             
+            console.log(Array.from(_inviteDateMap.values()).length);
 
             setActivity(Array.from(_activity.keys()).map((data) => {
                 return  {date: data, visitors: _activity.get(data)};
