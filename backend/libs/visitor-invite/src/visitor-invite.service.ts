@@ -54,8 +54,6 @@ import { GetInviteForSignQuery } from "./queries/impl/getInviteForSign.query";
 
 @Injectable()
 export class VisitorInviteService  {
-    private curfewHour: string;
-    private curfewMinute: string;
 
     AI_BASE_CONNECTION: string;
 
@@ -74,18 +72,14 @@ export class VisitorInviteService  {
                 private schedulerRegistry: SchedulerRegistry
                ) { 
                     this.AI_BASE_CONNECTION = this.configService.get<string>("AI_API_CONNECTION");   
-               }
-
-    //TODO needs to be called on admins first signUp
-    initialiseExtensionJob(curfewTime:number){
-        
-        const job = new CronJob(`59 23 * * *`, () => {
-            this.extendInvitesJob();
-        })
-
-        this.schedulerRegistry.addCronJob("extendInvites", job);
-        job.start();
-    }
+               
+                    const job = new CronJob(`59 23 * * *`, () => {
+                        this.extendInvitesJob();
+                    })
+            
+                    this.schedulerRegistry.addCronJob("extendInvites", job);
+                    job.start();
+                }
 
     extendInvitesJob(){
         this.commandBus.execute(new ExtendInvitesCommand());  
@@ -95,11 +89,14 @@ export class VisitorInviteService  {
      /*
         Update/synchronise curfew details and cron job
     */
-    async setCurfewDetails( difference:number ){
+    async setCurfewDetails( curfew:number ){
 
-        const curfewTime = Number(this.curfewHour.concat(this.curfewMinute))+difference;
+        const curfewTime = Number(curfew);
         const today = new Date();
         let currMin = today.getMinutes().toString();
+
+        var curfewHour:String;
+        var curfewMinute:String;
 
         if(currMin.length<2){
             currMin = "0"+currMin;
@@ -107,25 +104,25 @@ export class VisitorInviteService  {
 
         const currentTime = Number(today.getHours().toString().concat(currMin))
 
-        if(curfewTime< currentTime){
+        if(curfewTime < currentTime){
             this.extendInvitesJob();
         }
 
         if(curfewTime.toString().length>2){
-            this.curfewHour = curfewTime.toString().slice(0,-3);  
+            curfewHour = curfewTime.toString().slice(0,-2);  
         }else{
-            this.curfewHour = "0";
+            curfewHour = "0";
         }
         
         if(curfewTime.toString().length<=1){
-            this.curfewMinute = curfewTime.toString();
+            curfewMinute = curfewTime.toString();
         }else{
-            this.curfewMinute = curfewTime.toString().slice(-2);
+            curfewMinute = curfewTime.toString().slice(-2);
         }
 
         this.schedulerRegistry.deleteCronJob("extendInvites");
 
-        const job = new CronJob(`${this.curfewMinute} ${this.curfewHour} * * *`, async() => {
+        const job = new CronJob(`${curfewMinute} ${curfewHour} * * *`, async() => {
             this.extendInvitesJob();
         })
 
