@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { gql, useQuery, useApolloClient } from "@apollo/client";
 import { Field, Formik } from "formik";
 import { motion } from "framer-motion";
+import {alert} from "react-custom-alert";
 
 import Layout from "../components/Layout";
 
@@ -137,10 +138,10 @@ const SignUp = () => {
                                 }
                             })
                             .catch((err) => {
-                                setError({
+                                alert({
                                     message: err.message,
-                                    showCondition: true,
-                                });
+                                    type: "error"
+                                })
                                 setSubmitting(false);
                             });
                     }}

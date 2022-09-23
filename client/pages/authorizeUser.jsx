@@ -14,6 +14,7 @@ const AuthorizeUser = () => {
     const router = useRouter();
     const token = useAuth((state) => state.decodedToken)();
 
+    const [adminData, setAdminData] = useState([]);
     const [residentData, setResidentData] = useState([]);
     const [receptionistData, setReceptionistData] = useState([]);
     const [name, setName] = useState("");
@@ -94,12 +95,19 @@ const AuthorizeUser = () => {
             const userData = data.getUnauthorizedUsers;
             const newReceptionistData = [];
             const newResidentData = [];
+            const newAdminData = [];
             userData.forEach((data) => {
                 if (data.permission === -1 || data.permission === 1) {
                     newReceptionistData.push({
                         email: data.email,
                         type: "Receptionist",
                         authorized: data.permission === 1 ? true : false,
+                    });
+                } else if(data.permission === -3 || data.permission === 0) {
+                    newAdminData.push({
+                        email: data.email,
+                        type: "Admin",
+                        authorized: data.permission === 0 ? true : false,
                     });
                 } else {
                     newResidentData.push({
