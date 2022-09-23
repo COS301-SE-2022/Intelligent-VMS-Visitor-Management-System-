@@ -22,6 +22,7 @@ import { RestrictionsService } from "@vms/restrictions";
 import { SignInService } from './sign-in.service';
 import { async } from 'rxjs';
 import { SchedulerRegistry } from '@nestjs/schedule';
+import { RewardsService } from '@vms/rewards';
 
 describe('SignInService', () => {
   let service: SignInService;
@@ -182,6 +183,7 @@ describe('SignInService', () => {
         ParkingService,
         MailService,
         UserService,
+        RewardsService,
         ConfigService,
         RestrictionsService,
         {

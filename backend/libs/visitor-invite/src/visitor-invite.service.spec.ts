@@ -16,6 +16,7 @@ import { RestrictionsService } from "@vms/restrictions/restrictions.service";
 import { SchedulerRegistry } from "@nestjs/schedule";
 import { ExtendInvitesCommand } from "./commands/impl/extendInvites.command";
 import { CronJob } from "cron";
+import { RewardsService } from "@vms/rewards";
 
 describe("VisitorInviteService", () => {
     let service: VisitorInviteService;
@@ -123,6 +124,7 @@ describe("VisitorInviteService", () => {
                 ConfigService,
                 MailService,
                 RestrictionsService,
+                RewardsService,
                 UserService,
                 { provide: CronJob, useValue: {
                     start: ()=>{console.log("j")}

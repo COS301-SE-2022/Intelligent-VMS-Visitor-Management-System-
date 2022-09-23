@@ -16,6 +16,7 @@ import { SchedulerRegistry } from '@nestjs/schedule';
 import { getModelToken } from '@nestjs/mongoose';
 import { User, UserDocument } from '@vms/user/schema/user.schema';
 import { Model } from 'mongoose';
+import { RewardsService } from '@vms/rewards';
 
 describe('SignOutService', () => {
   let service: SignOutService;
@@ -64,8 +65,6 @@ describe('SignOutService', () => {
 
 
   beforeEach(async () => {
-
-    let mockUserModel: Model<UserDocument>;
     
     const module: TestingModule = await Test.createTestingModule({
       imports: [HttpModule],
@@ -75,6 +74,7 @@ describe('SignOutService', () => {
         UserService,
         ParkingService,
         ReceptionistService,
+        RewardsService,
         MailService,
         ConfigService,
         { provide: SchedulerRegistry, useValue: scheduleMock},
@@ -102,9 +102,6 @@ describe('SignOutService', () => {
 
     service = module.get<SignOutService>(SignOutService);
     inviteService = module.get<VisitorInviteService>(VisitorInviteService);
-    mockUserModel = module.get<Model<UserDocument>>(
-      getModelToken(User.name),
-  );
   });
 
   it('should be defined', () => {

@@ -28,6 +28,7 @@ export class UserService{
                 private rewardService: RewardsService,
                 @Inject(forwardRef(() => {return VisitorInviteService}))
                 private visitorInviteService: VisitorInviteService,
+                @Inject(forwardRef(() => {return RestrictionsService}))
                 private restrictionService: RestrictionsService,
                 ) {}
 

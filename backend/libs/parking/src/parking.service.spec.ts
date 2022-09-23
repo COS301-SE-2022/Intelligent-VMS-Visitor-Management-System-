@@ -38,6 +38,7 @@ import { getTotalParkingQuery } from './queries/impl/getTotalParking.query';
 
 import { CACHE_MANAGER } from '@nestjs/common';
 import { SchedulerRegistry } from '@nestjs/schedule';
+import { RewardsService } from '@vms/rewards';
 
 describe('ParkingService', () => {
   let parkingService: ParkingService;
@@ -322,6 +323,7 @@ describe('ParkingService', () => {
             MailService,
             RestrictionsService,
             UserService,
+            RewardsService,
             ConfigService,
             {
                 provide: CACHE_MANAGER,

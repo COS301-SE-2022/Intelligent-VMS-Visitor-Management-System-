@@ -18,6 +18,7 @@ import { ParkingService } from "@vms/parking";
 import { SchedulerRegistry } from "@nestjs/schedule";
 import { GetAllBadgesQuery } from "@vms/rewards/queries/impl/getAllBadges.query";
 import { Badge } from "@vms/rewards/schema/badge.schema";
+import { GetUserQuery } from "@vms/user/queries/impl/getUser.query";
 
 describe("AuthService", () => {
     let service: AuthService;
