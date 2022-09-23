@@ -252,15 +252,7 @@ const SignUp = () => {
                                         touched.confirmPassword &&
                                         errors.confirmPassword}
                                 </span>
-                                <input
-                                    type="password"
-                                    name="confirmationPin"
-                                    placeholder="5 digit Confirmation Pin"
-                                    className="input input-bordered w-full"
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    value={values.confirmationPin}
-                                ></input>
+                                
 
                                 <span className="max-w-xs text-sm text-error md:text-base">
                                     {errors.pin &&
