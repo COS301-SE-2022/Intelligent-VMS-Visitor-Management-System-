@@ -4,6 +4,10 @@ import { UserService } from "@vms/user";
 import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from "bcrypt";
 import { randomUUID } from "crypto";
+import { HttpService } from '@nestjs/axios';
+import { firstValueFrom } from "rxjs";
+import { ConfigService } from "@nestjs/config";
+import * as FormData from "form-data";
 
 import { LoginFailed } from "./errors/loginFailed.error";
 import { SignUpFailed } from "./errors/signupFailed.error";
@@ -12,12 +16,17 @@ import {VerificationFailed} from "./errors/verificationFailed.error";
 
 @Injectable()
 export class AuthService {
+    FACE_REC_CONNECTION: string;
     constructor(
         private userService: UserService,
         private jwtService: JwtService,
         private mailService: MailService,
+        private readonly configService: ConfigService,
+        private readonly httpService: HttpService,
         @Inject(CACHE_MANAGER) private cacheManager: Cache
-    ) {}
+    ) {
+        this.FACE_REC_CONNECTION = this.configService.get<string>("FACE_REC_API_CONNECTION");
+    }
 
     async validateUser(email: string, pass: string) {
         const user = await this.userService.findOne(email);
@@ -64,11 +73,31 @@ export class AuthService {
                 } else if(user.type === "admin") {
                     permission = -3;
                 } else {
-                    throw new SignUpFailed("Invalid User Type Provided");
+                    return {
+                        "error": "Invalid User Type Provided"
+                    };
+                }
+                
+                const formData = new FormData();
+                formData.append('file', user.file.buffer, { filename: user.file.originalname });
+
+                const response = await firstValueFrom(
+                    this.httpService.post(
+                        `${this.FACE_REC_CONNECTION}/getNumFaces`,
+                        formData,
+                        { headers: formData.getHeaders() }
+                        )
+                );
+
+                console.log(response.data.result);
+                if(response.data.result === 0) {
+                    return {
+                        "error": "No faces detected in uploaded file"
+                    };
                 }
 
                 const verifyID = randomUUID();
-                
+
                 await this.cacheManager.set(user.email, {
                     email: user.email,
                     password: hashPass,
@@ -76,19 +105,26 @@ export class AuthService {
                     permission: permission,
                     idNumber: user.idNumber,
                     name: user.name,
+                    file: user.file,
                     idDocType: user.idDocType,
                     verifyID: verifyID,
                 }, { ttl: 1000 });
 
-                this.mailService.sendVerify(user.email, verifyID);
+                await this.mailService.sendVerify(user.email, verifyID);
 
-                return true;
+                return {
+                    "result": true
+                };
             }
 
-            throw new SignUpFailed("User is already signed up");
+            return {
+                "error": "User is already signed up"
+            };
         }    
         
-        throw new SignUpFailed("User already exists");
+        return {
+            "error": "User already exists"
+        };
     }
 
     async verifyNewAccount(verifyID: string, email: string) {
@@ -97,7 +133,24 @@ export class AuthService {
             if(user !== undefined) {
                 if(user.verifyID === verifyID) {
                     await this.cacheManager.del(email);
-                    await this.userService.createUser(user.email, user.password, user.permission, user.idNumber, user.idDocType, user.name);
+                    let encodedData = await user.file.buffer.toString("base64");
+
+                    if(user.file.originalname.indexOf("jpeg") || user.file.originalname.indexOf("jpg")) {
+                        encodedData = "data:image/jpeg;base64," + encodedData;
+                    } else {
+                        encodedData = "data:image/png;base64," + encodedData;
+                    }
+
+                    await this.userService.createUser(
+                        user.email, 
+                        user.password, 
+                        user.permission, 
+                        user.idNumber, 
+                        user.idDocType, 
+                        user.name,
+                        user.confirmationPin ? user.confirmationPin : "",
+                        encodedData,
+                    );
                     return true;
                 }
                 throw new VerificationFailed("Invalid Verification ID given");

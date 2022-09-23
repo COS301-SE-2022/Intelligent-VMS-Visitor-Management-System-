@@ -17,8 +17,8 @@ export class UserService {
         return this.queryBus.execute(new GetUserQuery(email));
     }
 
-    async createUser(email: string, password: string, permission: number, idNumber: string, idDocType: string, name: string) {
-        return this.commandBus.execute(new CreateUserCommand(email, password, permission, idNumber, idDocType, name));
+    async createUser(email: string, password: string, permission: number, idNumber: string, idDocType: string, name: string, pinNumber: string, file: string) {
+        return this.commandBus.execute(new CreateUserCommand(email, password, permission, idNumber, idDocType, name, pinNumber, file));
     }
 
     async searchUser(searchQuery: string) {

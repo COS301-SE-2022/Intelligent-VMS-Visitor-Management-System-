@@ -23,6 +23,12 @@ export class User {
     @Prop()
     name: string;
 
+    @Prop()
+    pinNumber: string;
+
+    @Prop()
+    file: string;
+
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
