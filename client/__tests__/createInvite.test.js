@@ -20,7 +20,7 @@ import {
 
 // Setup router mock hook
 nextRouter.useRouter = jest.fn();
-nextRouter.useRouter.mockImplementation(() => ({ route: "/" }));
+nextRouter.useRouter.mockImplementation(() => ({ route: "/createInvite" }));
 
 describe("CreateInvite", () => {
     const authHook = renderHook(() => useAuth());
@@ -211,6 +211,8 @@ describe("CreateInvite", () => {
         await waitFor(async () => {
             await new Promise((resolve) => setTimeout(resolve, 30));
         });
+
+        expect(router.push).toBeCalledWith("/expire");
     });
 
     it("redirects to unauthorized page when api error is unauthorized", async () => {
@@ -304,7 +306,7 @@ describe("CreateInvite", () => {
 
         act(() => {
             result.current.login(
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJhZG1pbkBtYWlsLmNvbSIsIm5hbWUiOiJhZG1pbiIsImlhdCI6MTUxNjIzOTAyMiwicGVybWlzc2lvbiI6MH0.DJkzWVCzuQH43IPtFIOChY4VURwQ1b_HSqDUiN9wJuY"
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJhZG1pbkBtYWlsLmNvbSIsIm5hbWUiOiJhZG1pbiIsImlhdCI6MTUxNjIzOTAyMiwicGVybWlzc2lvbiI6MH0.1pHDNHs9nd239xO8gT1fE_fzP5VDyr4g_mQkrrx6eNs"
             );
         });
 
@@ -325,7 +327,7 @@ describe("CreateInvite", () => {
 
         await user.type(
             screen.getByPlaceholderText("Enter Visitor Name"),
-            "Dave"
+            "dave"
         );
 
         await user.type(
@@ -340,11 +342,14 @@ describe("CreateInvite", () => {
 
         await user.click(screen.getByRole("checkbox"));
 
-        await user.click(screen.getByRole("button"));
+        await waitFor(async () => {
+            await user.click(screen.getByTestId("invite-submit"));
+        });
 
         await waitFor(async () => {
-            await new Promise((resolve) => setTimeout(resolve, 50));
+            expect(router.push).toBeCalled();
         });
+
     });
 
     it("should show when the invite limit is reached", async () => {
@@ -411,5 +416,30 @@ describe("CreateInvite", () => {
         await waitFor(async () => {
             await new Promise((resolve) => setTimeout(resolve, 30));
         });
+    });
+
+    it("should load data from api", async () => {
+        const { result, hydrate } = renderHook(() => useAuth());
+
+        hydrate();
+
+        act(() => {
+            result.current.login(
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJyZXNpZGVudEBtYWlsLmNvbSIsIm5hbWUiOiJhZG1pbiIsImlhdCI6MTUxNjIzOTAyMiwicGVybWlzc2lvbiI6MH0.9YXDzBFoNzfZJ0tw73f3RTcWmxEkJjcMcs9bwtSGykA"
+            );
+        });
+
+        render(
+            <MockedProvider mocks={inviteLimitReached} addTypename={false}>
+                <CreateInvite />
+            </MockedProvider>
+        );
+
+        await waitFor(async () => {
+            await new Promise((resolve) => setTimeout(resolve, 30));
+        });
+
+
+        
     });
 });

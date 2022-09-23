@@ -1,17 +1,16 @@
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import { gql, useApolloClient, useLazyQuery } from "@apollo/client";
-import { BiQrScan, BiLogIn } from "react-icons/bi";
+import { BiQrScan, BiLogIn, BiFace } from "react-icons/bi";
 import { FaMailBulk } from "react-icons/fa";
 import { BsInfoCircle } from "react-icons/bs";
+import QRScanner from "../components/QRScanner";
 import Layout from "../components/Layout";
 import SignInPopUp from "../components/SignInPopUp";
 import SignOutPopUp from "../components/SignOutPopUp";
 import VisitInfoModal from "../components/VisitInfoModal";
 import ReceptionistSignButton from "../components/receptionistSignButton";
 import UploadPopUp from "../components/UploadPopUp";
-import SuccessAlert from "../components/SuccessAlert";
-import { warning } from "daisyui/src/colors";
 
 const ReceptionistDashboard = () => {
     const client = useApolloClient();
@@ -225,7 +224,7 @@ const ReceptionistDashboard = () => {
                     onClick={() => setShowScanner(true)}
                 >
                     <BiQrScan />
-                    Scan
+                    Scan Invite
                 </label>
 
                 <label
@@ -242,8 +241,8 @@ const ReceptionistDashboard = () => {
                     className="modal-button btn btn-primary btn-sm float-right mx-3 gap-2 md:btn-md"
                     onClick={() => setShowSignInModal(true)}
                 >
-                    <BiLogIn />
-                    Sign In
+                    <BiFace />
+                    Recognize Face
                 </label>
             </div>
 
@@ -290,19 +289,6 @@ const ReceptionistDashboard = () => {
                                                             key={visit.inviteID}
                                                             onClick={(e) => {
                                                                 e.stopPropagation();
-
-                                                                setCurrentVisitData(
-                                                                    visit
-                                                                );
-
-                                                                setCurrentButton(
-                                                                    e
-                                                                        .currentTarget
-                                                                        .classList
-                                                                );
-                                                                setShowSignInModal(
-                                                                    true
-                                                                );
                                                             }}
                                                             text="Not Signed In"
                                                             colour="bg-tertiary"
@@ -331,7 +317,7 @@ const ReceptionistDashboard = () => {
                                                                     true
                                                                 );
                                                             }}
-                                                            text="Signed In"
+                                                            text="Sign Out"
                                                             htmlFor="signOut-modal"
                                                             colour={visit.inviteState==="extended" ? "bg-warning " : "bg-error"}
                                                             signInTime={visit.inviteState==="extended" ? visit.signInTime : null}
@@ -358,10 +344,6 @@ const ReceptionistDashboard = () => {
                         )}
                     </table>
                 )}
-                <SuccessAlert
-                    message={successMessage}
-                    showConditon={showSuccessAlert}
-                />
             </div>
 
             <input
@@ -383,14 +365,10 @@ const ReceptionistDashboard = () => {
                         ✕
                     </label>
                     <SignInPopUp
-                        visitData={currentVisitData}
-                        setTrayNr={setTrayNr}
+                        showSignInModal={showSignInModal}
                         refetch={invitesQuery}
-                        todayString={todayString}
-                        currentButton={currentButton}
                         setShowSignInModal={setShowSignInModal}
                         setSearch={setSearch}
-                        trayNr={trayNr}
                     />
                 </div>
             </div>
@@ -449,10 +427,11 @@ const ReceptionistDashboard = () => {
                     >
                         ✕
                     </label>
-                    { /*
                     <QRScanner
+                        showScanner={showScanner}
                         setCurrentVisitData={setCurrentVisitData}
                         setShowScanner={setShowScanner}
+                        setShowVisitorModal={setShowVisitorModal}
                         setShowSignInModal={setShowSignInModal}
                         setShowSignOutModal={setShowSignOutModal}
                         setVisitorData={setVisitorData}
@@ -461,8 +440,6 @@ const ReceptionistDashboard = () => {
                         setErrorMessage={setErrorMessage}
                         setShowErrorAlert={setErrorMessage}
                     />
-                   */
-                   }
                 </div>
             </div>
 
@@ -483,8 +460,10 @@ const ReceptionistDashboard = () => {
                         ✕
                     </label>
                     <VisitInfoModal
-                        setShowInfo={setShowVisitorModal}
                         visitModalData={currentVisitData}
+                        setCurrentVisitData={setCurrentVisitData}
+                        setShowSignOutModal={setShowSignOutModal}
+                        setShowVisitorModal={setShowVisitorModal}
                         parkingNumber={currentParkingNumber}
                     />
                 </div>

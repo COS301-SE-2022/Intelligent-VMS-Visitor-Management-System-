@@ -12,7 +12,7 @@ import ResizeObserver from "./__mocks__/resizeObserver.mock";
 
 import AdminDashboard from "../pages/adminDashboard";
 import useAuth from "../store/authStore";
-import { useDateRange } from "../hooks/useDateRange.hook";
+import useDateRange from "../hooks/useDateRange.hook";
 
 nextRouter.useRouter = jest.fn();
 nextRouter.useRouter.mockImplementation(() => ({ route: "/" }));
@@ -69,4 +69,6 @@ describe("AdminDashboard", () => {
 
         user.click(screen.getByTestId("increaseInvites"));
     });
+
+
 });

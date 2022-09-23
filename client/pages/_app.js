@@ -41,6 +41,8 @@ function MyApp({ Component, pageProps }) {
             "/login",
             "/",
             "/expire",
+            "/resident/signUp",
+            "/receptionist/signUp",
             "/signUp",
             "/verify",
             "/authorize",

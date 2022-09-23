@@ -9,17 +9,18 @@ import * as nextRouter from "next/router";
 import { validSignup } from "./__mocks__/signup.mock";
 
 import useAuth from "../store/authStore";
+import ReceptionistSignUp from "../pages/receptionist/signUp";
 import SignUp from "../pages/signUp";
 
 // Setup router mock hook
 nextRouter.useRouter = jest.fn();
 nextRouter.useRouter.mockImplementation(() => ({ route: "/signup" }));
 
-describe("Sign-up", () => {
+describe("Receptionist-Sign-up", () => {
     it("renders a heading", () => {
         render(
             <MockedProvider>
-                <SignUp />
+                <ReceptionistSignUp />
             </MockedProvider>
         );
 
@@ -29,7 +30,7 @@ describe("Sign-up", () => {
     it("shows an error message when no email is provided", async () => {
         render(
             <MockedProvider>
-                <SignUp />
+                <ReceptionistSignUp />
             </MockedProvider>
         );
 
@@ -48,7 +49,7 @@ describe("Sign-up", () => {
     it("shows an error message with invalid email", async () => {
         render(
             <MockedProvider>
-                <SignUp />
+                <ReceptionistSignUp />
             </MockedProvider>
         );
 

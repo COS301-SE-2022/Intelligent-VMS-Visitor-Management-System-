@@ -19,11 +19,11 @@ const DownloadChart = ({
     const [loading, setLoading] = useState(false);
 
     const downloadGraph = () => {
-        setLoading(true);
+        //setLoading(true);
         if (chartRef.current) {
             downloadLinkRef.current.href = chartRef.current.toBase64Image();
         }
-        setLoading(false);
+        //setLoading(false);
     };
 
     return (
@@ -43,6 +43,7 @@ const DownloadChart = ({
                         ref={downloadLinkRef}
                         onClick={downloadGraph}
                         download={filename}
+                        data-testid="download"
                         className={`btn btn-primary ${loading && "loading"}`}
                     >
                         <FiDownload className="text-xl text-primary-content" />
@@ -68,6 +69,7 @@ const DownloadChart = ({
                 </div>
                 {setRange && (
                     <select
+                        data-testid="range-select"
                         onChange={(e) => {
                             const range = e.target.value;
                             setRange(range === "30-day" ? 30 : 7);

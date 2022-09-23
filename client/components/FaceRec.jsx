@@ -52,7 +52,7 @@ const FaceRec = ({ onSuccess, onAddFace, setFile }) => {
         }
 
     };
-    
+
     const onPicture = async (imageData, target) => {
         await submitFaceImage(imageData);
         target.classList.remove("loading");
@@ -70,21 +70,23 @@ const FaceRec = ({ onSuccess, onAddFace, setFile }) => {
                 Camera not available
             </Camera>
                 <div>
+                {showAddFace &&
+                <div>
                 <QrReader className="hidden" videoId="faceRecVideo" onResult={(result, error) => {
-                        if(result) {
+                        if(result && showAddFace) {
                             try {
                                 const qrData = JSON.parse(result?.text);
                                 if(qrData.inviteID) {
                                     onAddFace(qrData.inviteID);
                                 }
                             } catch(error) {
+                                setError(error);
                             }
                         } else if(error) {
-                            
                         }
                     }}/>
-                    {showAddFace &&
-                        <p>Present QR Code from Invite</p>
+                    <p>Present QR Code from Invite</p>
+                </div>
                     }
                 </div>
             <div>
