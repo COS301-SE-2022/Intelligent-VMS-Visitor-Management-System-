@@ -55,9 +55,9 @@ export class ParkingService {
     async addParking() {
         const parking = await this.commandBus.execute(new AddParkingCommand());
 
-        if (parking) return parking;
-        //for testing purposes
-        else throw new ExternalError("Error outside the parking.service");
+        //if (parking) 
+        return parking;
+        // else throw new ExternalError("Error outside the parking.service");
     }
 
     /*
@@ -85,8 +85,9 @@ export class ParkingService {
             new FreeParkingCommand(parkingNumber),
         );
 
-        if (parking) return parking;
-        else throw new ExternalError("Error outside the parking.service");
+        //if (parking) 
+        return parking;
+        // else throw new ExternalError("Error outside the parking.service");
     }
 
         /*
@@ -189,8 +190,9 @@ export class ParkingService {
             )
         )
 
-        if (parking) return parking;
-        else throw new ExternalError("Error outside the parking.service");
+        //if (parking) 
+        return parking;
+        //else throw new ExternalError("Error outside the parking.service");
     }
 
     /*
@@ -296,8 +298,9 @@ export class ParkingService {
             ),
         );
 
-        if (parkingReservation) return parkingReservation;
-        else throw new ExternalError("Error outside the parking.service");
+        //if (parkingReservation) 
+        return parkingReservation;
+        //else throw new ExternalError("Error outside the parking.service");
     }
 
     /*
@@ -423,8 +426,9 @@ export class ParkingService {
             new CreateNParkingSpotsCommand(N),
         );
 
-        if (parking) return true;
-        else throw new ExternalError("Error outside the parking.service.");
+        //if (parking) 
+        return true;
+        //else throw new ExternalError("Error outside the parking.service.");
     }
 
     /*
@@ -452,8 +456,9 @@ export class ParkingService {
             new EnableParkingSpaceCommand(parkingNumber),
         );
 
-        if (parking) return parking;
-        else throw new ExternalError("Error outside the parking.service.");
+        //if (parking) 
+        return parking;
+        //else throw new ExternalError("Error outside the parking.service.");
     }
 
     /*
@@ -481,8 +486,9 @@ export class ParkingService {
             new DisableParkingSpaceCommand(parkingNumber),
         );
 
-        if (parking) return parking;
-        else throw new ExternalError("Error outside the parking.service.");
+        //if (parking) 
+        return parking;
+        //else throw new ExternalError("Error outside the parking.service.");
     }
 
     //////////////////////////////////////QUERIES
@@ -507,9 +513,10 @@ export class ParkingService {
             } else {
                 throw new ParkingNotFound("No Free parkings.");
             }
-        } else {
+        } 
+        /*else {
             throw new ExternalError("Error outside the parking.service.");
-        }
+        }*/
     }
 
     /*
@@ -529,7 +536,8 @@ export class ParkingService {
         if (parkings) {
             if (parkings.length > 0) return parkings;
             else throw new ReservationNotFound("No Reserved parkings");
-        } else throw new ExternalError("Error outside the parking.service");
+        } 
+        //else throw new ExternalError("Error outside the parking.service");
     }
 
     /*
@@ -565,7 +573,8 @@ export class ParkingService {
                 throw new ParkingNotFound(
                     `No reservations for parking number ${parkingNumber}`,
                 );
-        } else throw new ExternalError("Error outside the parking.service");
+        } 
+        //else throw new ExternalError("Error outside the parking.service");
     }
 
     /*
@@ -615,22 +624,21 @@ export class ParkingService {
                 new getTotalAvailableParkingQuery()
             )
     
-            if(amount)
+            //if(amount)
                 return amount;
-            else
-                throw new ExternalError("Error outside the parking.service");
+            //else throw new ExternalError("Error outside the parking.service");
         }
-        async getTotalParking(
-            ){
-                const amount = this.queryBus.execute(
-                    new getTotalParkingQuery()
-                )
-        
-                if(amount)
-                    return amount;
-                else
-                    throw new ExternalError("Error outside the parking.service");
-            }
+
+    async getTotalParking(
+        ){
+            const amount = this.queryBus.execute(
+                new getTotalParkingQuery()
+            )
+    
+            //if(amount)
+                return amount;
+            //else throw new ExternalError("Error outside the parking.service");
+        }
         
     /*
     */
@@ -640,10 +648,9 @@ export class ParkingService {
                 new getAvailableParkingQuery()
             )
     
-            if(parking)
+            //if(parking)
                 return parking;
-            else
-                throw new ExternalError("Error outside the parking.service");
+            //else throw new ExternalError("Error outside the parking.service");
         }
 
     async getDisabledParking(
@@ -652,10 +659,9 @@ export class ParkingService {
                 new getDisabledParkingQuery()
             )
     
-            if(parking)
+            //if(parking)
                 return parking;
-            else
-                throw new ExternalError("Error outside the parking.service");
+            //else throw new ExternalError("Error outside the parking.service");
         }
 
   
@@ -672,6 +678,7 @@ export class ParkingService {
     Status: 
     */
     async getParkingReservationInRange(startDate: string, endDate: string) {
+        
         //Validate Input
         const start = Date.parse(startDate);
         const end = Date.parse(endDate);
