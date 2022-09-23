@@ -16,13 +16,36 @@ import { MailService } from "@vms/mail";
 import { CACHE_MANAGER } from "@nestjs/common";
 import { ParkingService } from "@vms/parking";
 import { SchedulerRegistry } from "@nestjs/schedule";
+import { GetRewardTypesCountQuery } from "@vms/rewards/queries/impl/getRewardTypesCount.query";
+import { GetAllBadgesQuery } from "@vms/rewards/queries/impl/getAllBadges.query";
 
 describe("UserService", () => {
     let service: UserService;
     let mockUserModel: Model<UserDocument>;
     const queryBusMock = {
         execute: jest.fn((query: IQuery) => {
-            if (query instanceof GetUserQuery) {
+            if ( query instanceof GetRewardTypesCountQuery){
+                return [
+                    {
+                    "_id": "invite",
+                    "count": 2
+                    },
+                    {
+                    "_id": "sleepover",
+                    "count": 2
+                    },
+                    {
+                    "_id": "theme",
+                    "count": 1
+                    },
+                    {
+                    "_id": "curfew",
+                    "count": 1
+                    },
+                ]
+            } else if (query instanceof GetAllBadgesQuery){
+                return [];
+            } else if (query instanceof GetUserQuery) {
                 return { data: "email" };
             } else if (query instanceof GetUnAuthUsersQuery) {
                 if (query.permission === -1) {
