@@ -44,8 +44,9 @@ const AdminDashboard = () => {
     const [hoursMenu, setHours] = useState(0);
     const [minutesMenu, setMinutes] = useState(0);
 
-    const hours = ["00","01","02","03","04","05","06","07","08","09","10","11"];
-    const mins = ["00","01","02","03","04","05","06","07","08","09","10","11"]
+    const hours = ["00","01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23"];
+    const mins = ["00","01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29"
+    ,"30","31","32","33","34","35"]
 
     // Visitor invite data object for chart
     const [visitorVals, setVisitorVals] = useState({
@@ -270,31 +271,31 @@ const AdminDashboard = () => {
             );
         }
 
-        // if (minutesMenu == "1") {
-        //     minutesMenu = "0" + minutesMenu;
-        // } else if (minutesMenu == "2") {
-        //     minutesMenu = "0" + minutesMenu;
-        // } else if (minutesMenu == "3") {
-        //     minutesMenu = "0" + minutesMenu;
-        // } else if (minutesMenu == "4") {
-        //     minutesMenu = "0" + minutesMenu;
-        // } else if (minutesMenu == "5") {
-        //     minutesMenu = "0" + minutesMenu;
-        // } else if (minutesMenu == "6") {
-        //     minutesMenu = "0" + minutesMenu;
-        // } else if (minutesMenu == "7") {
-        //     minutesMenu = "0" + minutesMenu;
-        // } else if (minutesMenu == "8") {
-        //     minutesMenu = "0" + minutesMenu;
-        // } else if (minutesMenu == "9") {
-        //     minutesMenu = "0" + minutesMenu;
-        // } else if (minutesMenu == "0") {
-        //     minutesMenu = "0" + minutesMenu;
-        // }
+        if (minutesMenu == "1") {
+            minutesMenu = "0" + minutesMenu;
+        } else if (minutesMenu == "2") {
+            minutesMenu = "0" + minutesMenu;
+        } else if (minutesMenu == "3") {
+            minutesMenu = "0" + minutesMenu;
+        } else if (minutesMenu == "4") {
+            minutesMenu = "0" + minutesMenu;
+        } else if (minutesMenu == "5") {
+            minutesMenu = "0" + minutesMenu;
+        } else if (minutesMenu == "6") {
+            minutesMenu = "0" + minutesMenu;
+        } else if (minutesMenu == "7") {
+            minutesMenu = "0" + minutesMenu;
+        } else if (minutesMenu == "8") {
+            minutesMenu = "0" + minutesMenu;
+        } else if (minutesMenu == "9") {
+            minutesMenu = "0" + minutesMenu;
+        } else if (minutesMenu == "0") {
+            minutesMenu = "0" + minutesMenu;
+        }
 
-        // if (hoursMenu == "0") {
-        //     hoursMenu = "0" + hoursMenu;
-        // }
+        if (hoursMenu == "0") {
+            hoursMenu = "0" + hoursMenu;
+        }
 
         let temp = hoursMenu + minutesMenu;
         
