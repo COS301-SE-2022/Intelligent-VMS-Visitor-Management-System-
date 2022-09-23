@@ -36,6 +36,9 @@ export class User {
     numInvites: number;
 
     @Prop()
+    numThemes: number;
+
+    @Prop()
     curfewTime: number;
 
     @Prop()

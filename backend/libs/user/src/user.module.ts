@@ -28,6 +28,7 @@ import { GetNumInvitesQueryHandler } from "./queries/handlers/getNumInvites.hand
 import { GetNumSleepoversQueryHandler } from "./queries/handlers/getNumSleepovers.handler";
 import { GetCurfewTimeQueryHandler } from "./queries/handlers/getCurfewTime.handler";
 import { UpdateXPCommandHandler } from "./commands/handlers/updateXP.handler";
+import { GetNumThemesQueryHandler } from "./queries/handlers/getNumThemes.handler";
 
 @Module({
     imports: [
@@ -57,7 +58,8 @@ import { UpdateXPCommandHandler } from "./commands/handlers/updateXP.handler";
         GetCurfewTimeQueryHandler,
         GetNumInvitesQueryHandler,
         GetNumSleepoversQueryHandler,
-        UpdateXPCommandHandler
+        UpdateXPCommandHandler,
+        GetNumThemesQueryHandler,
 
     ],
     exports: [UserService],

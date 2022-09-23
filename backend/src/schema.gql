@@ -130,6 +130,7 @@ type Query {
   getUnauthorizedUsers: [User!]!
   getUsersByType(permission: Float!): [SearchUser!]!
   getNumInvites(email: String!): Float!
+  getNumThemes(email: String!): Float!
   getNumSleepovers(email: String!): Float!
   getCurfewTimeOfResident(email: String!): Float!
   getProfileInfo(email: String!): ProfileInfo!

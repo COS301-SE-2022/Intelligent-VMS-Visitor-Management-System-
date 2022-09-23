@@ -122,6 +122,12 @@ export class UserResolver {
     }
 
     @UseGuards(GqlAuthGuard)
+    @Query((returns) => { return Number }, { name: "getNumThemes"})
+    async getNumThemes(@Args("email") email: string) {
+        return await this.userService.getNumThemes(email);
+    }
+
+    @UseGuards(GqlAuthGuard)
     @Query((returns) => { return Number }, { name: "getNumSleepovers"})
     async getNumSleepovers(@Args("email") email: string) {
         return await this.userService.getNumSleepovers(email);
