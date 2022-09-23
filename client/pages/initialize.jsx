@@ -334,7 +334,7 @@ const initialize = () => {
                         <span className="mr-3 text-xl text-primary md:text-3xl">
                             <MdBlock />
                         </span>{" "}
-                        System Restrictions
+                        First things first, let's set a few rules
                         <div className="flex items-center">
                             {restrictionsChanged && (
                                 <div className="flex space-x-1">
