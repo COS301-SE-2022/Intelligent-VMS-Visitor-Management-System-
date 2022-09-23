@@ -7,11 +7,8 @@ import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import { Model } from "mongoose";
 import { getModelToken } from "@nestjs/mongoose";
 import { CACHE_MANAGER } from "@nestjs/common";
-
-import { LoginFailed } from "./errors/loginFailed.error";
 import * as bcrypt from "bcrypt";
 import { User, UserDocument } from "@vms/user/schema/user.schema";
-import { GetUserQuery } from "@vms/user/queries/impl/getUser.query";
 import { MailService } from "@vms/mail";
 
 describe("AuthService", () => {
@@ -220,7 +217,7 @@ describe("AuthService", () => {
             const findOneMock = jest.spyOn(userService, 'findOne').mockReturnValueOnce(Promise.resolve(null))
             // Act
             try {
-                const response = await service.signup({ email: 'mail', password: 'password', type: 'receptionist', idNumber: 2323 })
+                const response = await service.signup({ email: 'mail', password: 'password',confirmationPin:'00000', type: 'receptionist', idNumber: 2323 })
                 expect(response).toEqual(true)
             }
             catch (e) {
@@ -234,7 +231,7 @@ describe("AuthService", () => {
             const findOneMock = jest.spyOn(userService, 'findOne').mockReturnValueOnce(Promise.resolve(null))
             // Act
             try {
-                const response = await service.signup({ email: 'mail', password: 'password', type: 'other', idNumber: 2323 })
+                const response = await service.signup({ email: 'mail', password: 'password',confirmationPin:'00000', type: 'other', idNumber: 2323 })
                 expect(response).toEqual({})
             }
             catch (e) {

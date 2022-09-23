@@ -624,7 +624,7 @@ describe('ParkingService', () => {
 
         it("should throw an exception if a date is of the wrong format", async () => {
             try {
-                await parkingService.getUsedParkingInRangeByDate("01-03-2022","2022-04-05");
+                await parkingService.getParkingReservationInRange("01-03-2022","2022-04-05");
             } catch (error) {
                 expect(error).toBeDefined();
                 expect(error.message).toEqual("Given dates must be of the form yyyy-mm-dd")
@@ -633,7 +633,7 @@ describe('ParkingService', () => {
 
         it("should throw an exception if the start date is greater than the end date", async () => {
             try {
-                await parkingService.getUsedParkingInRangeByDate("2022-04-06","2022-04-05");
+                await parkingService.getParkingReservationInRange("2022-04-06","2022-04-05");
             } catch (error) {
                 expect(error).toBeDefined();
                 expect(error.message).toEqual("Start date can not be later than the end date")

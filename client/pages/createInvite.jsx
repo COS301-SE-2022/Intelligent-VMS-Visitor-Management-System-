@@ -7,11 +7,7 @@ import { motion } from "framer-motion";
 import useAuth from "../store/authStore.js";
 
 import Layout from "../components/Layout";
-import ErrorAlert from "../components/ErrorAlert";
 import VisitorSuggestions from "../components/VisitorSuggestions.jsx";
-
-import AlertGroup from "../components/AlertGroup";
-import Alert from "../components/Alert";
 
 const getFormattedDateString = (date) => {
     if (date instanceof Date) {
@@ -100,33 +96,6 @@ const CreateInvite = ({ name, email, idNumber, idDocType }) => {
         }
 
         if (
-            !numInvitesOfResidentQuery.loading &&
-            !numInvitesOfResidentQuery.error &&
-            numInvitesAllowed !== 0
-        ) {
-            const numSent =
-                numInvitesOfResidentQuery.data
-                    .getTotalNumberOfInvitesOfResident;
-            if (numSent >= numInvitesAllowed && jwtTokenData.permission === 2) {
-                setErrorMessage("Invite Limit Reached");
-                setLimitReached(true);
-                setShowErrorAlert(true);
-            } else {
-                setLimitReached(false);
-                setShowErrorAlert(false);
-            }
-        } else if (
-            !numInvitesOfResidentQuery.loading &&
-            numInvitesOfResidentQuery.error
-        ) {
-            if (numInvitesOfResidentQuery.error.message === "Unauthorized") {
-                router.push("/expire");
-            }
-            setErrorMessage(numInvitesOfResidentQuery.error.message);
-            setShowErrorAlert(true);
-        }
-
-        if (
             !isParkingAvailableQuery.loading &&
             !isParkingAvailableQuery.error
         ) {
@@ -145,22 +114,43 @@ const CreateInvite = ({ name, email, idNumber, idDocType }) => {
         }
     }, [
         numInvitesQuery,
-        numInvitesOfResidentQuery,
         numInvitesAllowed,
         limitReached,
         isParkingAvailableQuery,
         setNow,
     ]);
 
+    useEffect(() => {
+        if (
+            !numInvitesOfResidentQuery.loading &&
+            !numInvitesOfResidentQuery.error &&
+            numInvitesAllowed !== 0
+        ) {
+            const numSent =
+                numInvitesOfResidentQuery.data
+                    .getNumberOfOpenInvites;
+            if (numSent >= numInvitesAllowed && jwtTokenData.permission === 2) {
+                setErrorMessage("Invite Limit Reached");
+                setLimitReached(true);
+                setShowErrorAlert(true);
+            } else {
+                setLimitReached(false);
+                setShowErrorAlert(false);
+            }
+        } else if (
+            !numInvitesOfResidentQuery.loading &&
+            numInvitesOfResidentQuery.error
+        ) {
+            if (numInvitesOfResidentQuery.error.message === "Unauthorized") {
+                router.push("/expire");
+            }
+            setErrorMessage(numInvitesOfResidentQuery.error.message);
+            setShowErrorAlert(true);
+        }
+    }, [numInvitesOfResidentQuery, numInvitesAllowed, jwtTokenData.permission, router])
+
     return (
         <Layout>
-            <AlertGroup>
-                <Alert
-                    message={errorMessage}
-                    showAlert={showErrorAlert}
-                    error
-                />
-            </AlertGroup>
             <div className="relative flex h-full min-h-[80vh] w-full flex-col items-center justify-center overflow-hidden pb-3">
                 <Formik
                     initialValues={{
@@ -406,6 +396,7 @@ const CreateInvite = ({ name, email, idNumber, idDocType }) => {
                                 </motion.label>
 
                                 <button
+                                    data-testid="invite-submit"
                                     className="btn btn-primary"
                                     type="submit"
                                     disabled={isSubmitting || limitReached}

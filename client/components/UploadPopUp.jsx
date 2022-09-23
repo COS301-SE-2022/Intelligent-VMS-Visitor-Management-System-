@@ -2,12 +2,16 @@ import { gql, useMutation } from "@apollo/client";
 import React, { useEffect, useRef, useState, setState } from "react";
 import useAuth from "../store/authStore.js";
 import { alert } from "react-custom-alert";
+import { FaSignInAlt } from "react-icons/fa";
+import { MdOutlineCreateNewFolder } from "react-icons/md";
 
 const UploadPopUp = ({ setShowUploadPopUp, refetch }) => {
     const [file, setFile] = useState(null);
     const [fileAsString, setFileAsString] = useState("");
     const [text, setText] = useState("Upload a csv file");
     const [signInButton, setSignInButton] = useState(true);
+    const [bulkData, setBulkData] = useState(undefined);
+    const [showData, setShowData] = useState(false);
 
     // Get Data From JWT Token
     const jwtTokenData = useAuth((state) => {
@@ -20,8 +24,8 @@ const UploadPopUp = ({ setShowUploadPopUp, refetch }) => {
                 file: "${encodeURI(fileAsString)}", 
                 userEmail: "${jwtTokenData.email}"
                 ){
-                        signInCount,
-                        createCount
+                        signInData,
+                        createData
                 }
         }
     `);
@@ -29,6 +33,7 @@ const UploadPopUp = ({ setShowUploadPopUp, refetch }) => {
     return (
         <div className="mt-2 w-full">
             <div className="m-4">
+                { !showData &&
                 <div className="flex w-full items-center justify-center">
                     <label className="h-50 group flex w-full flex-col rounded-lg border-2 border-dashed border-blue-200 pt-10 hover:border-primary">
                         <div className="flex flex-col items-center justify-center ">
@@ -59,6 +64,7 @@ const UploadPopUp = ({ setShowUploadPopUp, refetch }) => {
                             </p>
                         </div>
                         <input
+                            data-testid="fileupload"
                             className="opacity-0"
                             type="file"
                             onChange={(event) => {
@@ -80,8 +86,10 @@ const UploadPopUp = ({ setShowUploadPopUp, refetch }) => {
                         />
                     </label>
                 </div>
+                }
             </div>
             <div className="flex justify-center py-2 px-4">
+                { !showData &&
                 <button
                     className="btn w-full border-0 bg-secondary text-white shadow-xl"
                     disabled={signInButton}
@@ -91,10 +99,12 @@ const UploadPopUp = ({ setShowUploadPopUp, refetch }) => {
                         reader.readAsText(file, "UTF-8");
                         reader.onload = async (evt) => {
                             setFileAsString(evt.target.result);
-                            setShowUploadPopUp(false);
+                            //setShowUploadPopUp(false);
                             bulkSignInMutation().then((res) => {
+                                setBulkData(res.data.bulkSignIn); 
+                                setShowData(true);
                                 alert({
-                                    message: `Invites created: ${res.data.bulkSignIn.createCount} \r Invites signed in: ${res.data.bulkSignIn.signInCount} `,
+                                    message: "Bulk Sign In Done",
                                     type: "success",
                                 });
                                 refetch();
@@ -104,7 +114,53 @@ const UploadPopUp = ({ setShowUploadPopUp, refetch }) => {
                 >
                     Sign-In
                 </button>
+                }
             </div>
+            { showData &&
+                <div>
+                    <h1 className="text-2xl font-bold text-center">Bulk Sign-In Done</h1>
+                    <div className="flex justify-between mx-4">
+                        <div>
+                            <p className="flex items-center">
+                                <FaSignInAlt className="text-xl mr-3"/>
+                                {bulkData.signInData.length}
+                            </p>
+                        </div>
+                        <div>
+                            <p className="flex items-center">
+                                <MdOutlineCreateNewFolder className="text-2xl mr-3"/>
+                                {bulkData.createData.length}
+                            </p>
+                        </div>
+                    </div>
+                    <div>
+                        <div className="divider">Created</div>
+                        <div>
+                            {bulkData.createData.map((create,idx) => {
+                                return (
+                                    <p key={idx}>
+                                      + Created invite for {create}  
+                                    </p>
+                                )
+                            })}
+                        </div>
+                        <div className="divider">Signed In</div>
+                        <div>
+                            {bulkData.signInData.map((signIn,idx) => {
+                                return (
+                                    <p key={idx}>
+                                        * Signed-In invite with ID <span className="text-xs">{signIn}</span> 
+                                    </p>
+                                )
+                            })}
+                        </div>
+                    </div>
+                    <button className="btn btn-primary mt-3" onClick={() => {
+                        setShowData(false);
+                        setBulkData(undefined);
+                    }}>Clear</button>
+                </div>
+            }
         </div>
     );
 };

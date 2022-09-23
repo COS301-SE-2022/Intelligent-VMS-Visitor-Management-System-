@@ -211,8 +211,6 @@ const AdminDashboard = () => {
     `});
     }
 
-
-
     const cancelRestrictions = () => {
         setNumInvitesPerResident(initialNumInvitesPerResident);
         setNumParkingSpotsAvailable(initialNumParkingSpots);
@@ -324,6 +322,7 @@ const AdminDashboard = () => {
         } else if (numInviteInDateRangeQuery.error) {
             console.error(numInviteInDateRangeQuery.error);
         }
+
 
         // Num parking in range
         if (
@@ -698,9 +697,7 @@ const AdminDashboard = () => {
                                     <div className="flex items-center justify-center">
 
                                         <select className="select select-bordered select-secondary mx-5" name="hours" id="hours" onChange={(e) => {
-                                            
                                             setHours(e.target.value);
-
                                             setRestrictionsChanged(true);
                                         }}>
                                             <option value="0">00</option>
@@ -708,7 +705,7 @@ const AdminDashboard = () => {
                                             <option value="2">02</option>
                                             <option value="3">03</option>
                                             <option value="4">04</option>
-                                            <option value="5" >05</option>
+                                            <option value="5">05</option>
                                             <option value="6">06</option>
                                             <option value="7">07</option>
                                             <option value="8">08</option>
@@ -730,7 +727,6 @@ const AdminDashboard = () => {
                                         </select>
                                         <h1>    :    </h1>
                                         <select className="select select-bordered select-secondary mx-5" name="minutes" id="minutes" onChange={(e) => {
-                                            
                                             setMinutes(e.target.value);
                                             setRestrictionsChanged(true);
                                         }}>

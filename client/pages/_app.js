@@ -41,9 +41,12 @@ function MyApp({ Component, pageProps }) {
             "/login",
             "/",
             "/expire",
+            "/resident/signUp",
+            "/receptionist/signUp",
             "/signUp",
             "/verify",
             "/authorize",
+            "/adminSignup",
         ];
         const path = url.split("?")[0];
         return publicPaths.includes(path);

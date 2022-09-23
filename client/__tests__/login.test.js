@@ -110,6 +110,7 @@ describe("Login", () => {
         await waitFor(async () => {
             await new Promise((resolve) => setTimeout(resolve, 50));
         });
+
     });
 
     it("should show an error message for any other API error", async () => {
@@ -127,5 +128,6 @@ describe("Login", () => {
         await waitFor(async () => {
             await new Promise((resolve) => setTimeout(resolve, 50));
         });
+
     });
 });
