@@ -18,6 +18,7 @@ import { ParkingService } from "@vms/parking";
 import { SchedulerRegistry } from "@nestjs/schedule";
 import { GetRewardTypesCountQuery } from "@vms/rewards/queries/impl/getRewardTypesCount.query";
 import { GetAllBadgesQuery } from "@vms/rewards/queries/impl/getAllBadges.query";
+import { GetNumSuggestionsQuery } from "./queries/impl/getNumSuggestions.query";
 
 describe("UserService", () => {
     let service: UserService;
@@ -47,6 +48,8 @@ describe("UserService", () => {
                 return [];
             } else if (query instanceof GetUserQuery) {
                 return { data: "email" };
+            } else if (query instanceof GetNumSuggestionsQuery) {
+                return { data: "suggestedEmail" };
             } else if (query instanceof GetUnAuthUsersQuery) {
                 if (query.permission === -1) {
                     return [
@@ -131,6 +134,18 @@ describe("UserService", () => {
             expect(queryBusMock.execute).toHaveBeenCalledTimes(1);
         })
     });
+
+    describe("getNumSuggestions", () => {
+        it("should get Number suggestions", async () => {
+            // Act
+            const resp = await service.getNumSuggestions("tab@mail.com");
+            // Assert
+            expect(resp).toEqual({ data: 'suggestedEmail' });
+            expect(queryBusMock.execute).toHaveBeenCalledTimes(2);
+        })
+    });
+
+ 
 
     describe("getUnAuthorizedUsers", () => {
         it("should get unauthorized resident and receptionist when user is admin", async () => {
