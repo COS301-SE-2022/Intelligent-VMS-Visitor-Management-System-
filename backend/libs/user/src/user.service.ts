@@ -20,6 +20,7 @@ import { UpdatePrivilegesCommand } from "./commands/impl/updatePrivileges.comman
 import { GetNumSleepoversQuery } from "./queries/impl/getNumSleepovers.query";
 import { RestrictionsService } from "@vms/restrictions";
 import { UpdateXPCommand } from "./commands/impl/updateXP.command";
+import { GetNumThemesQuery } from "./queries/impl/getNumThemes.query";
 
 @Injectable()
 export class UserService{
@@ -98,6 +99,10 @@ export class UserService{
     async getNumSleepovers(email: string) {
         const max = (await this.restrictionService.getMaxSleepovers()).value;
         return (await this.queryBus.execute(new GetNumSleepoversQuery(email)))+max;
+    }
+
+    async getNumThemes(email: string) {
+        return await this.queryBus.execute(new GetNumThemesQuery(email));
     }
 
     async getNumInvites(email: string) {
