@@ -4,10 +4,10 @@ import { gql, useQuery, useApolloClient } from "@apollo/client";
 import { Field, Formik } from "formik";
 import { motion } from "framer-motion";
 
-import Layout from "../../components/Layout";
+import Layout from "../components/Layout";
 
 
-import useAuth from "../../store/authStore";
+import useAuth from "../store/authStore";
 
 const SignUp = () => {
     const permission = useAuth((state) => {
