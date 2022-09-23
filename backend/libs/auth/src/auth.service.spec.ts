@@ -13,6 +13,14 @@ import * as bcrypt from "bcrypt";
 import { User, UserDocument } from "@vms/user/schema/user.schema";
 import { GetUserQuery } from "@vms/user/queries/impl/getUser.query";
 import { MailService } from "@vms/mail";
+import { RewardsService } from "@vms/rewards";
+import { VisitorInviteService } from "@vms/visitor-invite";
+import { RestrictionsService } from "@vms/restrictions";
+import { HttpModule } from "@nestjs/axios";
+import { ParkingService } from "@vms/parking";
+import { SchedulerRegistry } from "@nestjs/schedule";
+import { GetAllBadgesQuery } from "@vms/rewards/queries/impl/getAllBadges.query";
+import { Badge } from "@vms/rewards/schema/badge.schema";
 
 describe("AuthService", () => {
     let service: AuthService;
@@ -32,20 +40,40 @@ describe("AuthService", () => {
 
     const queryBusMock = {
         execute: jest.fn((query) => {
-            return {
+            if (query instanceof GetAllBadgesQuery) {
+                return [];
+            } else if (query instanceof GetUserQuery){
+                return{
+                    email: "resident@mail.com",
+                    password: "password",
+                    badges: "1000000",
+                    xp: 20
+                }
+            } else return {
                 email: "admin@mail.com",
                 password: "password"
             };
         })
     }
 
+    const scheduleMock = {
+        addCronJob: jest.fn(()=>({})),
+        deleteCronJob: jest.fn(()=>({})),
+      };
+
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
+            imports: [HttpModule],
             providers: [AuthService,
                 JwtService,
                 UserService,
                 ConfigService,
+                RewardsService,
+                VisitorInviteService,
+                RestrictionsService,
+                ParkingService,
                 CommandBus,
+                { provide: SchedulerRegistry, useValue: scheduleMock},
                 {
                     provide: QueryBus,
                     useValue: queryBusMock

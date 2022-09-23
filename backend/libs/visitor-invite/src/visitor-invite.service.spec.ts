@@ -249,7 +249,7 @@ describe("VisitorInviteService", () => {
             jest.spyOn(commandBusMock as any, 'execute').mockReturnValueOnce(5)
 
             // Act
-            const response = await service.createInvite(2, 'email@email.com', 'visitor@email.com', 'visitor', 'id', '123123123123123', 'yesterday', true);
+            const response = await service.createInvite(2, 'email@email.com', 'visitor@email.com', 'visitor', 'id', '123123123123123', 'yesterday', true, false);
             // Assert
             expect(response).toEqual('id')
 
@@ -261,7 +261,7 @@ describe("VisitorInviteService", () => {
             jest.spyOn(commandBusMock as any, 'execute').mockReturnValueOnce(5)
             try {
                 // Act
-                const response = await service.createInvite(2, 'email@email.com', 'visitor@email.com', 'visitor', 'id', '123123123123123', 'yesterday', true);
+                const response = await service.createInvite(2, 'email@email.com', 'visitor@email.com', 'visitor', 'id', '123123123123123', 'yesterday', true, false);
             } catch (e) {
                 // Assert
                 expect(e.message).toEqual('Parking not available')
@@ -275,7 +275,7 @@ describe("VisitorInviteService", () => {
 
             // Act
             try {
-                const response = await service.createInvite(2, 'email@email.com', 'visitor@email.com', 'visitor', 'id', '123123123123123', 'yesterday', false);
+                const response = await service.createInvite(2, 'email@email.com', 'visitor@email.com', 'visitor', 'id', '123123123123123', 'yesterday', false, false);
                 expect(true).toEqual(false);
             }
             catch (e) {

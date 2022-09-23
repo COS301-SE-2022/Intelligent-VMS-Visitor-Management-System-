@@ -26,9 +26,9 @@ export class UserService{
     constructor(private queryBus: QueryBus, 
                 private commandBus: CommandBus, 
                 private rewardService: RewardsService,
-                private restrictionService: RestrictionsService,
                 @Inject(forwardRef(() => {return VisitorInviteService}))
-                private visitorInviteService: VisitorInviteService
+                private visitorInviteService: VisitorInviteService,
+                private restrictionService: RestrictionsService,
                 ) {}
 
     async findOne(email: string) {

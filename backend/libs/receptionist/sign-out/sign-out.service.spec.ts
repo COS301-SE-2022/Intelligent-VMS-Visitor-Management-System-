@@ -65,12 +65,12 @@ describe('SignOutService', () => {
       imports: [HttpModule],
       providers: [SignOutService,
         VisitorInviteService,
+        RestrictionsService,
         UserService,
         ParkingService,
         ReceptionistService,
         MailService,
         ConfigService,
-        RestrictionsService,
         { provide: SchedulerRegistry, useValue: scheduleMock},
         {
           provide: QueryBus, useValue: queryBusMock

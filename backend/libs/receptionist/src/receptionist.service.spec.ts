@@ -12,6 +12,7 @@ import { RestrictionsService } from "@vms/restrictions";
 import { Tray } from './schema/tray.schema';
 import { CACHE_MANAGER } from '@nestjs/common';
 import { SchedulerRegistry } from '@nestjs/schedule';
+import { RewardsService } from '@vms/rewards';
 
 describe('ReceptionistService', () => {
   let service: ReceptionistService;
@@ -56,6 +57,7 @@ describe('ReceptionistService', () => {
         ConfigService,
         UserService,
         RestrictionsService,
+        RewardsService,
         {
             provide: CACHE_MANAGER,
             useValue: {
