@@ -6,7 +6,7 @@ import { SchedulerRegistry } from '@nestjs/schedule';
 import { Test, TestingModule } from '@nestjs/testing';
 import { MailService } from '@vms/mail';
 import { ParkingService } from "@vms/parking/parking.service";
-import { UserService } from '@vms/user';
+import { UserModule, UserService } from '@vms/user';
 import { VisitorInviteService } from '@vms/visitor-invite';
 import { SetCurfewTimeCommand } from './commands/impl/setCurfewTime.command';
 import { SetNumInvitesCommand } from './commands/impl/setNumInvites.command';
