@@ -14,7 +14,6 @@ import { MailService } from "@vms/mail";
 import { RewardsService } from "@vms/rewards";
 import { VisitorInviteService } from "@vms/visitor-invite";
 import { RestrictionsService } from "@vms/restrictions";
-import { HttpModule } from "@nestjs/axios";
 import { ParkingService } from "@vms/parking";
 import { SchedulerRegistry } from "@nestjs/schedule";
 import { GetAllBadgesQuery } from "@vms/rewards/queries/impl/getAllBadges.query";
