@@ -58,14 +58,14 @@ function MyApp({ Component, pageProps }) {
             return;
         } else if (
             !isPublicPath(router.asPath) &&
-            (permission === -1 || permission === -2)
+            (permission === -1 || permission === -2 || permission === -3)
         ) {
             router.push("/authorize");
             return;
         }
     }, [router, permission]);
 
-    if (pageProps.protected && (permission === -1 || permission === -2)) {
+    if (pageProps.protected && (permission === -1 || permission === -2 || permission === -3)) {
         return <Layout> Your account is not authorized yet. </Layout>;
     }
 

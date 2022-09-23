@@ -3,9 +3,10 @@ import { useRouter } from "next/router";
 import { gql, useQuery, useApolloClient } from "@apollo/client";
 import { Field, Formik } from "formik";
 import { motion } from "framer-motion";
+import { alert } from "react-custom-alert";
+import axios from "axios";
 
 import Layout from "../../components/Layout";
-
 
 import useAuth from "../../store/authStore";
 
@@ -20,10 +21,7 @@ const SignUp = () => {
         return state.verified;
     });
 
-    const [error, setError] = useState({
-        message: "Error",
-        showCondition: false,
-    });
+    const BACKEND_URL = process.env.BACKEND_URL;
 
     const flyEmojiAway = {
         initial: {
@@ -50,6 +48,35 @@ const SignUp = () => {
             router.push("/");
         }
     }, [router, verified, permission]);
+    
+    const submitData = async (signupData, setSubmitting) => {
+        const formData = new FormData();
+        formData.append("file", signupData.file);
+        formData.append("name", signupData.name);
+        formData.append("email", signupData.email);
+        formData.append("type", "resident");
+        formData.append("idNumber", signupData.idNumber);
+        formData.append("idDoc", signupData.idDoc);
+        formData.append("password", signupData.password);
+
+        const response = await axios.post(`${BACKEND_URL}/user/signup`, formData, {
+            headers: {
+                'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
+            }
+        });
+
+        if(response.data.result) {
+            verify();
+            router.push("/verify");
+        } else {
+            alert({
+                message: response.data.error,
+                type: "error"
+            });
+        }
+
+        setSubmitting(false);
+    };
 
     return (
         <Layout>
@@ -65,6 +92,7 @@ const SignUp = () => {
                 <Formik
                     initialValues={{
                         email: "",
+                        file: undefined,
                         password: "",
                         confirmPassword: "",
                         idDoc: "RSA-ID",
@@ -106,43 +134,14 @@ const SignUp = () => {
                                 "Password needs minimum of 8 characters with one number and one special character";
                         } else if (values.confirmPassword !== values.password) {
                             errors.confirmPassword = "Passwords do not match";
-                         }
+                        } else if(!values.file) {
+                            errors.file = "Required";
+                        }
 
                         return errors;
                     }}
                     onSubmit={(values, { setSubmitting }) => {
-                        client
-                            .mutate({
-                                mutation: gql`
-                                mutation {
-                                    signup(
-                                        email: "${values.email}", 
-                                        password: "${values.password}", 
-                                        confirmationPin:"00000",
-                                        type: "resident", 
-                                        idNumber: "${values.idNumber}",
-                                        IDDocType: "${values.idDoc}",
-                                        name: "${values.name}"
-                                    )
-                                }
-                            `,
-                            })
-                            .then((res) => {
-                                if (res.data.signup === true) {
-                                    verify();
-                                    router.push("/verify");
-                                    setSubmitting(false);
-                                } else {
-                                    console.log(res);
-                                }
-                            })
-                            .catch((err) => {
-                                setError({
-                                    message: err.message,
-                                    showCondition: true,
-                                });
-                                setSubmitting(false);
-                            });
+                        submitData(values, setSubmitting);
                     }}
                 >
                     {({
@@ -151,6 +150,7 @@ const SignUp = () => {
                         touched,
                         handleChange,
                         handleBlur,
+                        setFieldValue,
                         handleSubmit,
                         isSubmitting,
                     }) => {
@@ -248,6 +248,17 @@ const SignUp = () => {
                                     {errors.confirmPassword &&
                                         touched.confirmPassword &&
                                         errors.confirmPassword}
+                                </span>
+
+                                <p>Add image of yourself</p>
+                                <input accept="image/png, image/jpeg" id="file" name="file" type="file" onChange={(event) => {
+                                  setFieldValue("file", event.currentTarget.files[0]);
+                                }} />
+
+                                <span className="text-sm text-error md:text-base">
+                                    {errors.file &&
+                                        touched.file &&
+                                        errors.file}
                                 </span>
 
                                 <p className="text-sm md:text-lg lg:text-xl">

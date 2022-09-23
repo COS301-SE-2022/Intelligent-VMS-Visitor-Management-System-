@@ -458,9 +458,9 @@ export class VisitorInviteService  {
     // Get predicted number of invites in range
     async getPredictedInviteData(startDate: string, endDate: string) {
         const data = await firstValueFrom(this.httpService.get(`${this.AI_BASE_CONNECTION}/getCache?startDate=${startDate}&endDate=${endDate}`)); 
-        
+
         if(data.data.length === 0) {
-            this.httpService.get(`${this.AI_BASE_CONNECTION}/predictAsync?startDate=2022-01-01&endDate=2022-12-31`)
+            await firstValueFrom(this.httpService.get(`${this.AI_BASE_CONNECTION}/predictAsync?startDate=2022-01-01&endDate=2022-12-31`))
         }
 
         return data.data;

@@ -8,9 +8,12 @@ const AuthCard = ({
     email,
     authorized,
     type,
+    name,
     permission,
     deleteUserAccount,
+    idNumber,
     authorizeUserAccount,
+    file
 }) => {
     const [auth, setAuth] = useState(authorized === true ? true : false);
     const [showConfirm, setShowConfirm] = useState(false);
@@ -30,19 +33,27 @@ const AuthCard = ({
                 </div>
                 <div className="text-center">
                     <div className="avatar placeholder">
-                        <div className="w-24 rounded-full bg-neutral-focus text-neutral-content">
-                            <span className="text-3xl uppercase">
-                                {email[0]}
-                            </span>
-                        </div>
+                        { !file ?
+                            <div className="w-32 rounded-full bg-neutral-focus text-neutral-content">
+                                <span className="text-3xl uppercase">
+                                    {name[0]}
+                                </span>
+                            </div>
+                            :
+                            <div className="w-32 rounded-full bg-neutral-focus text-neutral-content">
+                                <img alt={`Image of ${name}`} src={file} />
+                            </div>
+                        }
                     </div>
                 </div>
                 <h2 className="card-title items-center">
-                    <span className="text-xs md:text-sm">{email}</span>
+                    <span className="text-xs md:text-base">{name}</span>
                     <span className="badge badge-secondary uppercase">
                         {auth === true ? "authorized" : "new"}
                     </span>
                 </h2>
+                <p className="text-sm">Email: {email}</p>
+                <p className="text-sm">RSA ID-Number: {idNumber}</p>
                 <div className="card-actions">
                     <div className="flex w-full items-center justify-between space-x-3">
                         <div className="badge badge-primary">{type}</div>

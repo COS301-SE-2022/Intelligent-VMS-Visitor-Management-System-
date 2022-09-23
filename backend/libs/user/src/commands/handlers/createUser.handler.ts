@@ -11,7 +11,7 @@ export class CreateUserCommandHandler implements ICommandHandler {
     ) {}
 
     async execute(command: CreateUserCommand) {
-        const { email, password, permission, name, idDocType, idNumber, badges, numSleepovers, numThemes, numInvites, curfewTime, date } = command;
+        const { email, password, permission, name, idDocType, idNumber, badges, numSleepovers, numThemes, numInvites, curfewTime, date, file, pinNumber } = command;
         await this.userModel.create({ email: email, 
                                       password: password, 
                                       permission: permission, 
@@ -25,7 +25,9 @@ export class CreateUserCommandHandler implements ICommandHandler {
                                       numSleepovers:numSleepovers, 
                                       numInvites:numInvites, 
                                       numThemes:numThemes, 
-                                      curfewTime:curfewTime});
+                                      curfewTime:curfewTime,
+                                      file: file,
+                                      pinNumber: pinNumber});
         
     }
 }

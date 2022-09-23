@@ -69,7 +69,7 @@ const useAuth = create(
                                 { content: "Logout", path: "/", onClick: () => get().logout() },
                             ];
                     }
-                } else if(permission === -1 || permission === -2){
+                } else if(permission === -1 || permission === -2 || permission === -3){
                     return [
                         { content: "Authorize", path: "/authorize" },
                         { content: "Logout", path: "/", onClick: () => get().logout() },

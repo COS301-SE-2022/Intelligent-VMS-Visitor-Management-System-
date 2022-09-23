@@ -128,6 +128,8 @@ const Login = () => {
                                     router.push("/receptionistDashboard");
                                 } else if (permission === 0) {
                                     router.push("/adminDashboard");
+                                } else {
+                                    router.push("/authorize");
                                 }
                             })
                             .catch((err) => {

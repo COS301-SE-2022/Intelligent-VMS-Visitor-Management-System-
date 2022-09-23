@@ -58,6 +58,7 @@ export class UserResolver {
         @Args("IDDocType") idDocType: string,
         @Args("idNumber") idNumber: string,
         @Args("name") name: string,
+        @Args("file") file: string,
     ) {
         return (await this.authService.signup({
             email: email,
@@ -65,6 +66,7 @@ export class UserResolver {
             confirmationPin:confirmationPin,
             type: type,
             idNumber: idNumber,
+            file: file,
             idDocType: idDocType,
             name: name
         }));

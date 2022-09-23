@@ -43,6 +43,13 @@ export class User {
 
     @Prop()
     suggestions: number;
+
+    @Prop()
+    pinNumber: string;
+
+    @Prop()
+    file: string;
+
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
