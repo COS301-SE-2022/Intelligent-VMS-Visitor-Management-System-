@@ -1,50 +1,38 @@
 import { useEffect, useState } from "react";
 import useAuth from "../store/authStore.js";
 import { BsPalette2 } from "react-icons/bs";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useApolloClient, useLazyQuery } from "@apollo/client";
 
 import useTheme from "../store/themeStore";
 
 const ThemeSelector = () => {
-
-    /*
-    const allThemes = ["dark", "business", "winter", "autumn", "random"];
-    const [numThemes,setNumThemes] = useState(2);
+    // const client = useApolloClient();
+    // const allThemes = ["dark", "business", "winter", "autumn", "random"];
     
-    // Get Data From JWT Token
-    const token = useAuth((state) => state.decodedToken)();
-    let themes = []; 
+    // // Get Data From JWT Token
+    // const token = useAuth((state) => state.decodedToken)();
+    // let themes = []; 
 
-    if(token){
-        if(token.permission === 2){
+    // if(token){
+    //     if(token.permission === 2){
 
-            const  themesQuery = useQuery(gql`
-                query {
-                    getNumThemes( email: "${token.email}" )
-                }
-            `,{ enabled: false });
+    //         client.query({
+    //             query: gql`
+    //             query {
+    //                 getNumThemes( email: "${token.email}" )
+    //             }
+    //         `,
+    //         }).then((res) => {  
+    //             themes = allThemes.slice(0,(Number(res.data.getNumThemes))+4);
+    //         })
+             
+    //     } else {
+    //         themes = allThemes.slice(0,5);
+    //     }
+    // } else {
+    //     themes = allThemes.slice(0,2);
+    // }
 
-            useEffect(() => {
-
-
-                    if (!themesQuery.loading && !themesQuery.error) {
-                        if (themesQuery.data) {
-                            setNumThemes(themesQuery.data.getNumThemes);
-                        }
-                    }
-                
-        
-    }, [numThemes]);
-
-            themes = allThemes.slice(0,numThemes+4);
-        } else {
-            themes = allThemes.slice(0,5);
-        }
-    } else {
-        themes = allThemes.slice(0,numThemes);
-    }
-    */
-    
     const themes = ["dark", "business", "winter", "autumn", "random"];
     
     const theme = useTheme((state) => state.theme);
