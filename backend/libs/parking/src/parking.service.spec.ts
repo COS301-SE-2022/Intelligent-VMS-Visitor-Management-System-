@@ -310,8 +310,8 @@ describe('ParkingService', () => {
   };
 
   const scheduleMock = {
-    addCronJob: jest.fn(()=>({})),
-    deleteCronJob: jest.fn(()=>({})),
+    addCronJob: jest.fn(()=>{return {}}),
+    deleteCronJob: jest.fn(()=>{return {}}),
   };
 
   beforeEach(async () => {

@@ -90,19 +90,19 @@ describe("VisitorInviteService", () => {
     };
 
     const mailServiceMock = {
-        sendInvite: jest.fn(() => ({ messageId: 'id' })),
-        sendCancelNotice: jest.fn(() => ({ messageId: 'id' })),
+        sendInvite: jest.fn(() => {return { messageId: 'id' }}),
+        sendCancelNotice: jest.fn(() => {return { messageId: 'id' }}),
     };
 
     const parkingServiceMock = {
-        isParkingAvailable: jest.fn(() => true),
-        reserveParking: jest.fn(() => ({})),
-        unreserveParking: jest.fn(() => ({})),
+        isParkingAvailable: jest.fn(() => {return true}),
+        reserveParking: jest.fn(() => {return {}}),
+        unreserveParking: jest.fn(() => {return {}}),
     };
 
     const scheduleMock = {
-        addCronJob: jest.fn(()=>({})),
-        deleteCronJob: jest.fn(()=>({})),
+        addCronJob: jest.fn(()=>{return {}}),
+        deleteCronJob: jest.fn(()=>{return {}}),
     };
 
     // jest.mock('cron', () => {

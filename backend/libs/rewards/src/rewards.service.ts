@@ -16,12 +16,12 @@ export class RewardsService {
 
     async getProfileInfo(email: string) {
 
-        let user = await this.userService.getUserByEmail(email);
-        let allRewards = await this.getAllRewards();
-        let allBadges = await this.getAllBadges();
-        let maxRequirement = await this.getMaxRequirement();
+        const user = await this.userService.getUserByEmail(email);
+        const allRewards = await this.getAllRewards();
+        const allBadges = await this.getAllBadges();
+        const maxRequirement = await this.getMaxRequirement();
         
-        let pi = new ProfileInfo();
+        const pi = new ProfileInfo();
         pi.allBadges = allBadges;
         pi.allRewards = allRewards;
         pi.xp = user.xp;
@@ -49,8 +49,8 @@ export class RewardsService {
     }
 
     async getTypeCounts(){
-        var counts = await this.queryBus.execute(new GetRewardTypesCountQuery());
-        var dict = {}
+        const counts = await this.queryBus.execute(new GetRewardTypesCountQuery());
+        const dict = {}
         for(const type of counts){
             dict[type._id] = type.count;
         }

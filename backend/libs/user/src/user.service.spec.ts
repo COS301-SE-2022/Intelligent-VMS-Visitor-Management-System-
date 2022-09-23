@@ -74,12 +74,12 @@ describe("UserService", () => {
         })
     }
     const commandBusMock = {
-        execute: jest.fn(() => ({}))
+        execute: jest.fn(() => {return {}})
     }
 
     const scheduleMock = {
-        addCronJob: jest.fn(()=>({})),
-        deleteCronJob: jest.fn(()=>({})),
+        addCronJob: jest.fn(()=>{return {}}),
+        deleteCronJob: jest.fn(()=>{return {}}),
       };
 
     beforeEach(async () => {

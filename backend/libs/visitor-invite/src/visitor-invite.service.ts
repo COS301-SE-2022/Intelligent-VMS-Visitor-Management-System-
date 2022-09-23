@@ -97,15 +97,15 @@ export class VisitorInviteService  {
     */
     async setCurfewDetails( difference:number ){
 
-        let curfewTime = Number(this.curfewHour.concat(this.curfewMinute))+difference;
-        let today = new Date();
+        const curfewTime = Number(this.curfewHour.concat(this.curfewMinute))+difference;
+        const today = new Date();
         let currMin = today.getMinutes().toString();
 
         if(currMin.length<2){
             currMin = "0"+currMin;
         }
 
-        let currentTime = Number(today.getHours().toString().concat(currMin))
+        const currentTime = Number(today.getHours().toString().concat(currMin))
 
         if(curfewTime< currentTime){
             this.extendInvitesJob();
@@ -342,7 +342,7 @@ export class VisitorInviteService  {
     async getTotalNumberOfSleepoversOfResident(email: string) {
         const invites = await this.queryBus.execute(new GetInvitesOfResidentQuery(email));
         let sleepovers = 0; 
-        for(let invite of invites){
+        for(const invite of invites){
 
             if(invite.signInTime && invite.signOutTime && (new Date(invite.signInTime.slice(0,10))).getDate() != (new Date(invite.signOutTime.slice(0,10))).getDate() || invite.inviteState == "extended"){
                 sleepovers++;
@@ -358,7 +358,7 @@ export class VisitorInviteService  {
         const monthEnd = new Date(today.getFullYear(),today.getMonth()+1,0);
         const invites = await this.queryBus.execute(new GetInvitesInRangeByEmailQuery(monthStart.toLocaleDateString().replace(/\//g, '-'),monthEnd.toLocaleDateString().replace(/\//g, '-'),email));
         let sleepovers = 0; 
-        for(let invite of invites){
+        for(const invite of invites){
 
             if(invite.signInTime && invite.signOutTime && (new Date(invite.signInTime.slice(0,10))).getDate() != (new Date(invite.signOutTime.slice(0,10))).getDate() || invite.inviteState == "extended"){
                 sleepovers++;
@@ -486,9 +486,9 @@ export class VisitorInviteService  {
     }
 
     async getSuggestions(date: string, userEmail: string){
-        let visitors:Visitor[] = JSON.parse(JSON.stringify(await this.queryBus.execute(new GetVisitorVisitsQuery(userEmail))));
-        let predDate = new Date(date);
-        let suggestions = [];
+        const visitors:Visitor[] = JSON.parse(JSON.stringify(await this.queryBus.execute(new GetVisitorVisitsQuery(userEmail))));
+        const predDate = new Date(date);
+        const suggestions = [];
         
         const today = new Date();
 
@@ -516,14 +516,14 @@ export class VisitorInviteService  {
                 }
             }
 
-            let monthTotal = this.getMonthsBetweenDates(firstInviteDate,today);
-            let dayTotal = this.getDaysBetweenDates(firstInviteDate,today);
-            let dowTotal = this.getWeekdayBetweenDates(firstInviteDate,today);
+            const monthTotal = this.getMonthsBetweenDates(firstInviteDate,today);
+            const dayTotal = this.getDaysBetweenDates(firstInviteDate,today);
+            const dowTotal = this.getWeekdayBetweenDates(firstInviteDate,today);
 
-            let pYes = monthCount/monthTotal * dowCount/dowTotal * visitors[i].numInvites/dayTotal
+            const pYes = monthCount/monthTotal * dowCount/dowTotal * visitors[i].numInvites/dayTotal
             //let pNo = (monthTotal-monthCount)/monthTotal * (dowTotal-dowCount)/dowTotal * (dayTotal-visitors[i].numInvites)/dayTotal
             
-            let suggestion = new Visitor()
+            const suggestion = new Visitor()
             suggestion.visitorName = visitors[i].visitorName;
             suggestion._id = visitors[i]._id;
             suggestion.idNumber = visitors[i].idNumber;
@@ -539,12 +539,12 @@ export class VisitorInviteService  {
         suggestions.sort(function(a, b){return b.prob - a.prob});
 
         //find IQR
-        let q3Index = Math.round(1/4*(suggestions.length+1));
+        const q3Index = Math.round(1/4*(suggestions.length+1));
         let q1Index = Math.round(3/4*(suggestions.length+1));
         if(q1Index == suggestions.length){
             q1Index -= 1;
         }
-        let iqr = suggestions[q3Index].prob - suggestions[q1Index].prob;
+        const iqr = suggestions[q3Index].prob - suggestions[q1Index].prob;
 
         const threshold = suggestions[suggestions.length-1].prob + iqr;
 

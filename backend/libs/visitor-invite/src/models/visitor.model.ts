@@ -21,5 +21,5 @@ export class Visitor {
     visits?: string[];
 
     @Field((type) => {return Number})
-    prob?: Number;
+    prob?: number;
 }
