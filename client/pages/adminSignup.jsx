@@ -4,10 +4,10 @@ import { gql, useQuery, useApolloClient } from "@apollo/client";
 import { Field, Formik } from "formik";
 import { motion } from "framer-motion";
 
-import Layout from "../components/Layout";
+import Layout from "../../components/Layout";
 
 
-import useAuth from "../store/authStore";
+import useAuth from "../../store/authStore";
 
 const SignUp = () => {
     const permission = useAuth((state) => {
@@ -67,7 +67,6 @@ const SignUp = () => {
                         email: "",
                         password: "",
                         confirmPassword: "",
-                        confirmationPin:"",
                         idDoc: "RSA-ID",
                         idNumber: "",
                         name: "",
@@ -107,8 +106,6 @@ const SignUp = () => {
                                 "Password needs minimum of 8 characters with one number and one special character";
                         } else if (values.confirmPassword !== values.password) {
                             errors.confirmPassword = "Passwords do not match";
-                         }else if(!/^[0-9]{5}$/i.test(values.confirmationPin) ){
-                            errors.pin="Pin needs to be a 5 digit number"
                          }
 
                         return errors;
@@ -252,15 +249,9 @@ const SignUp = () => {
                                         touched.confirmPassword &&
                                         errors.confirmPassword}
                                 </span>
-                                
 
-                                <span className="max-w-xs text-sm text-error md:text-base">
-                                    {errors.pin &&
-                                        touched.confirmationPin &&
-                                        errors.pin}
-                                </span>
                                 <p className="text-sm md:text-lg lg:text-xl">
-                                    You are signing up as an admin
+                                    You are signing up as an admin user
                                 </p>
 
                                 <motion.button
