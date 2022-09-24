@@ -20,11 +20,10 @@ const ReceptionistDashboard = () => {
 
     const [currentButton, setCurrentButton] = useState(() => {});
     const [currentParkingNumber, setCurrentParkingNumber] = useState(-1);
-
     const [visitorData, setVisitorData] = useState([]);
-    const [extendedInvites, setExtendedInvites] = useState([]);
     const [inActiveInvites, setInactiveInvites] = useState([]);
     const [signedInInvites, setSignedInInvites] = useState([]);
+    const [signedOutInvites, setSignedOutInvites] = useState([]);
 
     const [trayNr, setTrayNr] = useState("");
 
@@ -95,48 +94,60 @@ const ReceptionistDashboard = () => {
             `,
             })
             .then((res) => {
-                const visitors = res.data.getInvitesByNameForSearch.filter(
-                    (invite) => {
-                        return (
-                            (invite.inviteDate >= todayString &&
-                            invite.inviteState !== "signedOut" && 
-                            invite.inviteState != "cancelled" && 
-                            invite.inviteID) 
-                            || invite.inviteState === "extended"
-                        );
-                    }
-                );
-                setVisitorData(visitors);
+                const inActiveInvites = res.data.getInvitesByNameForSearch.filter((invite)=>{
+                    return (
+                        invite.inviteDate === todayString &&
+                        invite.inviteID &&
+                        invite.inviteState === "inActive"
+                    )
+                })
+                setInactiveInvites(inActiveInvites);
+                const signedInInvites =  res.data.getInvitesByNameForSearch.filter((invite)=>{
+                    return (
+                        invite.inviteID &&
+                        (
+                        (invite.inviteDate >= todayString &&
+                        invite.inviteState === "signedIn") ||
+                        invite.inviteState === "extended"
+                        )   
+                    )
+                }).sort((a,b)=>(a.inviteState=="signedIn" &&  b.inviteState=="extended") ? -1 : ((a.inviteState=="extended" &&  b.inviteState=="signedIn") ? 1 : 0));
+                setSignedInInvites(signedInInvites);
+                const signedOutInvites =  res.data.getInvitesByNameForSearch.filter((invite)=>{
+                    return (
+                        invite.inviteID &&
+                        (
+                        (invite.inviteDate === todayString &&
+                        invite.inviteState === "signedOut")
+                        )   
+                    )
+                })
+                setSignedOutInvites(signedOutInvites);
             })
             .catch((err) => {});
     };
 
     const resetDefaultResults = () => {
         if (!loading && !error) {
-            const invites = data.getInvitesByDate.filter((invite) => {
+            const inActiveInvites = data.getInvitesByDate.filter((invite)=>{
                 return (
+                    invite.inviteDate === todayString &&
+                    invite.inviteID &&
+                    invite.inviteState === "inActive"
+                )
+            })
+            setInactiveInvites(inActiveInvites);
+            const signedInInvites =  data.getInvitesByDate.filter((invite)=>{
+                return (
+                    invite.inviteID &&
                     (
-                    invite.inviteDate >= todayString &&
-                    invite.inviteState !== "signedOut" && 
-                    invite.inviteState != "cancelled" && 
-                    invite.inviteID) 
-                    || invite.inviteState === "extended"
-                );
-            });
-            for(const invite of invites){
-                switch(invite.inviteState){
-                    case "signedIn":
-                        setSignedInInvites(current=> [...current,invite])
-                        break;
-                    case "inActive":
-                        setInactiveInvites(current=> [...current,invite])
-                        break;
-                    case "extended":
-                        setExtendedInvites(current=> [...current,invite])
-                        break;
-                }
-            }
-            setVisitorData(invites);
+                    (invite.inviteDate >= todayString &&
+                    invite.inviteState === "signedIn") ||
+                    invite.inviteState === "extended"
+                    )   
+                )
+            }).sort((a,b)=>(a.inviteState=="signedIn" &&  b.inviteState=="extended") ? -1 : ((a.inviteState=="extended" &&  b.inviteState=="signedIn") ? 1 : 0));
+            setSignedInInvites(signedInInvites);
             setSearch(false);
         } else if (error) {
             if (error.message === "Unauthorized") {
@@ -158,29 +169,25 @@ const ReceptionistDashboard = () => {
         invitesQuery();
         if (!loading && !error) {
             if (data) {
-                const invites = data.getInvitesByDate.filter((invite) => {
+                const inActiveInvites = data.getInvitesByDate.filter((invite)=>{
                     return (
+                        invite.inviteDate === todayString &&
+                        invite.inviteID &&
+                        invite.inviteState === "inActive"
+                    )
+                })
+                setInactiveInvites(inActiveInvites);
+                const signedInInvites =  data.getInvitesByDate.filter((invite)=>{
+                    return (
+                        invite.inviteID &&
+                        (
                         (invite.inviteDate >= todayString &&
-                        invite.inviteState !== "signedOut" && 
-                        invite.inviteState != "cancelled" && 
-                        invite.inviteID) 
-                        || invite.inviteState === "extended"
-                    );
-                });
-                for(const invite of invites){
-                    switch(invite.inviteState){
-                        case "signedIn":
-                            setSignedInInvites(current=> [...current,invite])
-                            break;
-                        case "inActive":
-                            setInactiveInvites(current=> [...current,invite])
-                            break;
-                        case "extended":
-                            setExtendedInvites(current=> [...current,invite])
-                            break;
-                    }
-                }
-                setVisitorData(invites);
+                        invite.inviteState === "signedIn") ||
+                        invite.inviteState === "extended"
+                        )   
+                    )
+                }).sort((a,b)=>(a.inviteState=="signedIn" &&  b.inviteState=="extended") ? -1 : ((a.inviteState=="extended" &&  b.inviteState=="signedIn") ? 1 : 0));
+                setSignedInInvites(signedInInvites);
             }
         } else if (error) {
             if (error.message === "Unauthorized") {
@@ -277,104 +284,180 @@ const ReceptionistDashboard = () => {
                 </label>
             </div>
 
-            <div className="flex h-full items-center justify-center overflow-x-auto p-3">
-                {loading ? (
-                    <progress className="progress progress-primary w-56">
-                        progress
-                    </progress>
-                ) : (
-                    <table className="mb-5 table w-full">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>Visitor Name</th>
-                                <th>Visitor ID</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        {visitorData.length > 0 ? (
-                            <tbody>
-                                {visitorData.map((visit, idx) => {
-                                    return (
-                                        <tr
-                                            className=" hover relative z-0 cursor-pointer"
-                                            key={visit.inviteID}
-                                            onClick={() => {
-                                                setCurrentVisitData(visit);
-                                                setShowVisitorModal(true);
-                                            }}
-                                        >
-                                            <th>
-                                                <BsInfoCircle />
-                                            </th>
-                                            <td className="capitalize">
-                                                {visit.visitorName}
-                                            </td>
-                                            <td>{visit.idNumber}</td>
-                                            {!searching ||
-                                            visit.inviteDate === todayString ? (
-                                                visit.inviteState ===
-                                                "inActive" ? (
-                                                    <td key={visit.inviteID}>
-                                                        <ReceptionistSignButton
-                                                            key={visit.inviteID}
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                            }}
-                                                            text="Not Signed In"
-                                                            colour="bg-tertiary"
-                                                        />
-                                                    </td>
-                                                ) : (
-                                                    <td key={visit.inviteID}>
-                                                        <ReceptionistSignButton
-                                                            key={visit.inviteID}
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
+            <div className={`grid grid-cols-1 ${searching?( " md:grid-cols-3 " ): ( " md:grid-cols-2 " )} gap-3 mt-5 mx-3`}>
 
-                                                                setCurrentVisitData(
-                                                                    visit
-                                                                );
+                <div className="card h-fit bg-base-300 p-3">
+                    <div className="flex flex-col">
+                        <h2 className="ml-3 mb-3 text-xl font-bold">
+                            IN-ACTIVE INVITES
+                        </h2>
+                        {loading ? (
+                                <progress className="progress progress-primary w-56">
+                                    progress
+                                </progress>
+                            ) : (
+                            inActiveInvites.length >0 ? (
+                                <div className="flex flex-col gap-2 overflow-y-scroll p-2 h-80">
+                                    {inActiveInvites.map((visit, idx) => {
+                                        return (
+                                            <div className="hover:bg-base-200 bg-base-100 flex justify-between shadow-xl m-1 p-3 rounded-lg flex flex-row items-center" key={visit.inviteID}
+                                                onClick={() => {
+                                                    setCurrentVisitData(visit);
+                                                    setShowVisitorModal(true);
+                                                }}>
 
-                                                                setCurrentButton(
-                                                                    e
-                                                                        .currentTarget
-                                                                        .classList
-                                                                );
-                                                                setShowVisitorModal(
-                                                                    false
-                                                                );
-                                                                setShowSignOutModal(
-                                                                    true
-                                                                );
-                                                            }}
-                                                            text="Sign Out"
-                                                            htmlFor="signOut-modal"
-                                                            colour={visit.inviteState==="extended" ? "bg-warning " : "bg-error"}
-                                                            signInTime={visit.inviteState==="extended" ? visit.signInTime : null}
+                                                <div className="flex flex-row items-center justify-center">
+                                                    <BsInfoCircle className="mr-5 ml-2"/>
 
-                          
-                                                        />
-                                                    </td>
-                                                )
-                                            ) : (
-                                    
-                                                <td>--</td>
-                                                
-                                            )}
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                        ) : (
-                            <tbody>
-                                <tr>
-                                    <th>Nothing to show...</th>
-                                </tr>
-                            </tbody>
+                                                    <div className="flex flex-col items-start">
+                                                        <div className="text-md font-bold capitalize">{visit.visitorName}</div>
+                                                        <div className="text-sm">{visit.idNumber}</div>
+                                                    </div>
+                                                </div>
+
+                                                <ReceptionistSignButton
+                                                    key={visit.inviteID}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                    }}
+                                                    text="Not Signed In"
+                                                    colour="bg-tertiary"
+                                                />
+
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            ):(
+                                <h3 className="ml-3">Nothing to show..</h3>
+                            )
+                            
                         )}
-                    </table>
-                )}
+                    </div>
+                </div>
+
+                <div className="card h-fit bg-base-300 p-3">
+                    <div className="flex flex-col">
+                        <h2 className="ml-3 mb-3 text-xl font-bold">
+                            OPEN INVITES
+                        </h2>
+                        {loading ? (
+                                <progress className="progress progress-primary w-56">
+                                    progress
+                                </progress>
+                            ) : (
+                            signedInInvites.length>0?(
+                                <div className="flex flex-col gap-2 overflow-y-scroll p-2 h-80 ">
+                                    {signedInInvites.map((visit, idx) => {
+                                        return (
+                                            <div className="hover:bg-base-200 bg-base-100 flex justify-between shadow-xl m-1 p-3 rounded-lg flex flex-row items-center" key={visit.inviteID}
+                                                onClick={() => {
+                                                    setCurrentVisitData(visit);
+                                                    setShowVisitorModal(true);
+                                                }}>
+                                                <div className="flex flex-row items-center justify-center">
+                                                    <BsInfoCircle className="mr-5 ml-2"/>
+
+                                                    <div className="flex flex-col items-start">
+                                                        <div className="text-md font-bold capitalize">{visit.visitorName}</div>
+                                                        <div className="text-sm">{visit.idNumber}</div>
+                                                    </div>
+                                                </div>
+
+                                                <ReceptionistSignButton
+                                                    className="mx-5"
+                                                    key={visit.inviteID}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+
+                                                        setCurrentVisitData(
+                                                            visit
+                                                        );
+
+                                                        setCurrentButton(
+                                                            e
+                                                                .currentTarget
+                                                                .classList
+                                                        );
+                                                        setShowVisitorModal(
+                                                            false
+                                                        );
+                                                        setShowSignOutModal(
+                                                            true
+                                                        );
+                                                    }}
+                                                    text="Sign Out"
+                                                    htmlFor="signOut-modal"
+                                                    colour={visit.inviteState==="extended" ? "bg-warning " : "bg-error"}
+                                                    signInTime={visit.inviteState==="extended" ? visit.signInTime : null}
+                                                />
+
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            ):(
+                                <h3 className="ml-3">Nothing to show..</h3>
+                             )
+                            
+                        )}
+                    </div>
+
+                </div>
+
+                {searching? (
+                        <div className="card h-fit bg-base-300 p-3">
+                                <div className="flex flex-col">
+                                    <h2 className="ml-3 mb-3 text-xl font-bold">
+                                        SIGNED-OUT INVITES
+                                    </h2>
+                                    {loading ? (
+                                            <progress className="progress progress-primary w-56">
+                                                progress
+                                            </progress>
+                                        ) : (
+                                        signedOutInvites.length >0 ? (
+                                            <div className="flex flex-col gap-2 overflow-y-scroll p-2 h-80">
+                                                {signedOutInvites.map((visit, idx) => {
+                                                    return (
+                                                        <div className="hover:bg-base-200 bg-base-100 flex justify-between shadow-xl m-1 p-3 rounded-lg flex flex-row items-center" key={visit.inviteID}
+                                                            onClick={() => {
+                                                                setCurrentVisitData(visit);
+                                                                setShowVisitorModal(true);
+                                                            }}>
+
+                                                            <div className="flex flex-row items-center justify-center">
+                                                                <BsInfoCircle className="mr-5 ml-2"/>
+
+                                                                <div className="flex flex-col items-start">
+                                                                    <div className="text-md font-bold capitalize">{visit.visitorName}</div>
+                                                                    <div className="text-sm">{visit.idNumber}</div>
+                                                                </div>
+                                                            </div>
+
+                                                            <ReceptionistSignButton
+                                                                key={visit.inviteID}
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                }}
+                                                                text="Signed Out"
+                                                                colour="bg-tertiary"
+                                                            />
+
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        ):(
+                                            <h3 className="ml-3">Nothing to show..</h3>
+                                        )
+                                        
+                                    )}
+                                </div>
+                            </div>
+
+                            ):(<div></div>)}
+
             </div>
 
             <input
