@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ParkingModule } from '@vms/parking';
 import { VisitorInviteModule } from '@vms/visitor-invite';
 import { Invite, InviteSchema } from '@vms/visitor-invite/schema/invite.schema';
+import { UserModule } from "@vms/user";
 import { SignInService } from '../sign-in/sign-in.service';
 import { SignOutService } from '../sign-out/sign-out.service';
 import { SignInInviteCommandHandler, SignOutInviteCommandHandler } from './commands/handler';
@@ -25,6 +26,7 @@ import { ReceptionistController } from './receptionist.controller';
     CqrsModule,
     VisitorInviteModule,
     ParkingModule,
+    UserModule,
     HttpModule.register({
         maxRedirects: 5,
     }),

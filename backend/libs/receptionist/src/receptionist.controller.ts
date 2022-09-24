@@ -12,6 +12,7 @@ import { JwtAuthGuard } from '@vms/auth/guards/JwtAuthGuard.guard';
 import { SignInService } from '../sign-in/sign-in.service';
 import { SignOutService } from '../sign-out/sign-out.service';
 import { VisitorInviteService } from '@vms/visitor-invite';
+import { CurrentUser } from '@vms/auth/decorators/CurrentUserDecorator.decorator';
 
 @Controller('receptionist')
 export class ReceptionistController {
@@ -31,8 +32,8 @@ export class ReceptionistController {
     @Roles("receptionist")
     @Post("/signInAndAddFace")
     @UseInterceptors(FileInterceptor('file'))
-    async storeFace(@UploadedFile() file: Express.Multer.File, @Query("inviteID") inviteID: string) {
-        return await this.signInService.uploadFaceFile(file, inviteID);
+    async storeFace(@CurrentUser() user, @UploadedFile() file: Express.Multer.File, @Query("inviteID") inviteID: string, @Query("pin") pin: string) {
+        return await this.signInService.uploadFaceFile(file, inviteID, pin, user.email);
     }
 
     @UseGuards(JwtAuthGuard, HttpRolesGuard)

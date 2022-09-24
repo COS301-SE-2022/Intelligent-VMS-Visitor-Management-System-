@@ -4,19 +4,10 @@
 
 directive @upper on FIELD_DEFINITION
 
-
 type Reward {
   type: String!
   xp: Int!
   desc: String!
-}
-
-type User {
-  email: String!
-  permission: Int!
-  name: String!
-  idNumber: String!
-  file: String
 }
 
 type Badge {
@@ -97,6 +88,9 @@ type User {
   permission: Int!
   badges: String!
   signUpDate: String!
+  name: String!
+  idNumber: String!
+  file: String
 }
 
 type PredictedInviteData {

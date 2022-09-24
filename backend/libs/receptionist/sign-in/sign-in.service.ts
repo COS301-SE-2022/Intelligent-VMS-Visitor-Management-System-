@@ -1,6 +1,7 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { SignInInviteCommand } from '@vms/receptionist/commands/impl/signInInvite.command';
+import { UserService } from "@vms/user";
 import { VisitorInviteService } from '@vms/visitor-invite';
 import { generateTrayCommand } from '../src/commands/impl/Tray/generateTray.command';
 import { getTrayListQuery } from '@vms/receptionist/queries/impl/getTrayList.query';
@@ -23,6 +24,7 @@ export class SignInService {
     constructor(private commandBus: CommandBus, 
         private queryBus: QueryBus,
         private parkingService: ParkingService,
+        private readonly userService: UserService,
         private readonly httpService: HttpService,
         private readonly configService: ConfigService,
         private receptionistService: ReceptionistService,
@@ -104,12 +106,18 @@ export class SignInService {
             }
         }
 
-        async uploadFaceFile(file: Express.Multer.File, inviteID: string) {
-            console.log(inviteID);
+        async uploadFaceFile(file: Express.Multer.File, inviteID: string, pin: string, email: string) {
             if(!inviteID) {
                 return {
                     "error": "No invite id provided"
                 }
+            }
+
+            const user = await this.userService.getUserByEmail(email);
+            if(user.permission !== 1 && user.pinNumber !== pin) {
+                return {
+                    "error": "Invalid PIN"
+                };
             }
 
             const invite = await this.inviteService.getInvite(inviteID);
