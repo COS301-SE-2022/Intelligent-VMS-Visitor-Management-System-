@@ -52,7 +52,7 @@ describe("UserService", () => {
             } else if (query instanceof GetAllBadgesQuery){
                 return [];
             } else if (query instanceof GetUserQuery) {
-                return { data: "email" };
+                return {badges:"111111111111111111111111"};
             }else if (query instanceof GetDaysWithVMSQuery) {
                 return { data:"3" };
             } else if (query instanceof GetNumSuggestionsQuery) {
@@ -106,13 +106,17 @@ describe("UserService", () => {
         getCurfewTime: jest.fn((emailIn)=>{return {value:3}}),
       };
       const VisitorInviteServiceMock = {
-        getTotalNumberOfSleepoversThisMonthOfResident: jest.fn((emailIn)=>{return {value:3}}),
+        getTotalNumberOfSleepoversThisMonthOfResident: jest.fn((emailIn)=>{return {value:15}}),
+        getTotalNumberOfInvitesOfResident:jest.fn((emailIn)=>{return {value:20}}),
+        getTotalNumberOfCancellationsOfResident:jest.fn((emailIn)=>{return {value:20}}),
+        getTotalNumberOfSleepoversOfResident:jest.fn((emailIn)=>{return {value:20}}),
+        getTotalNumberOfVisitsOfResident:jest.fn((emailIn)=>{return {value:20}}),
         
       };
       const RewardServiceMock = {
-        getAllRewards: jest.fn((emailIn)=>{return [{value:3},{value:2}]}),
+        getAllRewards: jest.fn((emailIn)=>{return [{type:"invite",xp:3},{type:"invite",xp:1},{type:"sleepover",xp:3},{type:"sleepover",xp:1},{type:"theme",xp:3},{type:"theme",xp:1},{type:"curfew",xp:3},{type:"curfew",xp:1}]}),
         getTypeCounts: jest.fn((emailIn)=>{return {value:4}}),
-        getAllBadges: jest.fn((emailIn)=>{return {value:15}}),
+        getAllBadges: jest.fn((emailIn)=>{return [{type:"invite",xp:3,levels:"3",requirements:[1,1,1,1,1,1,1,1,1,1,1]},{type:"invite",xp:1,levels:"3",requirements:[1,1,1,1,1,1,1,1,1,1,1]},{type:"sleepover",xp:3,levels:"3",requirements:[1,1,1,1,1,1,1,1,1,1,1]},{type:"sleepover",xp:1,levels:"3",requirements:[1,1,1,1,1,1,1,1,1,1,1]},{type:"theme",xp:3,levels:"3",requirements:[1,1,1,1,1,1,1,1,1,1,1]},{type:"theme",xp:1,levels:"3",requirements:[1,1,1,1,1,1,1,1,1,1,1]},{type:"curfew",xp:3,levels:"3",requirements:[1,1,1,1,1,1,1,1,1,1,1]},{type:"curfew",xp:1,levels:"3",requirements:[1,1,1,1,1,1,1,1,1,1,1]},{type:"cancellation",xp:3,levels:"3",requirements:[1,1,1,1,1,1,1,1,1,1,1]},{type:"cancellation",xp:1,levels:"3",requirements:[1,1,1,1,1,1,1,1,1,1,1]},{type:"time",xp:3,levels:"3",requirements:[1,1,1,1,1,1,1,1,1,1,1]},{type:"time",xp:1,levels:"3",requirements:[1,1,1,1,1,1,1,1,1,1,1]},{type:"visits",xp:3,levels:"3",requirements:[1,1,1,1,1,1,1,1,1,1,1]},{type:"visits",xp:1,levels:"3",requirements:[1,1,1,1,1,1,1,1,1,1,1]},{type:"suggestion",xp:3,levels:"3",requirements:[1,1,1,1,1,1,1,1,1,1,1]},{type:"suggestion",xp:1,levels:"3",requirements:[1,1,1,1,1,1,1,1,1,1,1]}]}),
       };
       
 
@@ -175,7 +179,7 @@ describe("UserService", () => {
             // Act
             const resp = await service.findOne("tab@mail.com");
             // Assert
-            expect(resp).toEqual({ data: 'email' });
+            expect(resp).toBeTruthy;
             expect(queryBusMock.execute).toHaveBeenCalledTimes(1);
         })
     });
@@ -280,6 +284,18 @@ describe("UserService", () => {
             expect(response).toEqual({ data: '' })
         })
     })
+    describe('getUserByEmail', () => {
+        it('should getUsersByType', async () => {
+            // Arrange
+            queryBusMock.execute.mockReturnValueOnce({ data: '' })
+
+            // Act
+            const response = await service.getUserByEmail("mygottenuser")
+
+            // Assert
+            expect(response).toBeTruthy
+        })
+    })
 
     describe("getDaysWithVMS", () => {
         it("should find one", async () => {
@@ -287,7 +303,7 @@ describe("UserService", () => {
             const resp = await service.getDaysWithVMS("tab@mail.com");
             // Assert
             expect(resp).toEqual({ data: "3"});
-            expect(queryBusMock.execute).toHaveBeenCalledTimes(7);
+            expect(queryBusMock.execute).toHaveBeenCalledTimes(8);
         })
     });
     describe("getNumSleepovers", () => {
@@ -297,7 +313,7 @@ describe("UserService", () => {
             // Assert
             
             expect(resp).toBeTruthy;
-            expect(queryBusMock.execute).toHaveBeenCalledTimes(8);
+            expect(queryBusMock.execute).toHaveBeenCalledTimes(9);
         })
     });
     describe("getNumThemes", () => {
@@ -306,7 +322,7 @@ describe("UserService", () => {
             const resp = await service.getNumThemes("tab@mail.com");
             // Assert
             expect(resp).toEqual({ data: "3"});
-            expect(queryBusMock.execute).toHaveBeenCalledTimes(9);
+            expect(queryBusMock.execute).toHaveBeenCalledTimes(10);
         })
     });
     describe("getNumInvites", () => {
@@ -315,7 +331,7 @@ describe("UserService", () => {
             const resp = await service.getNumInvites("tab@mail.com");
             // Assert
             expect(resp).toBeTruthy;
-            expect(queryBusMock.execute).toHaveBeenCalledTimes(10);
+            expect(queryBusMock.execute).toHaveBeenCalledTimes(11);
         })
     });
     describe("getCurfewTimeOfResident", () => {
@@ -324,7 +340,7 @@ describe("UserService", () => {
             const resp = await service.getCurfewTimeOfResident("tab@mail.com");
             // Assert
             expect(resp).toBeTruthy;
-            expect(queryBusMock.execute).toHaveBeenCalledTimes(11);
+            expect(queryBusMock.execute).toHaveBeenCalledTimes(12);
         })
     });
 //=======================Commands
@@ -354,7 +370,7 @@ describe("UserService", () => {
         })
     })
     describe('evaluateUser', () => {
-        it('should increase the user suggestions', async () => {
+        it('should evaluate the user suggestions', async () => {
             // Arrange
             commandBusMock.execute.mockReturnValueOnce({ modifiedCount: 2 })
 
@@ -370,10 +386,24 @@ describe("UserService", () => {
             commandBusMock.execute.mockReturnValueOnce({ modifiedCount: 2 })
 
             // Act
-            const response = await service.updatePrivileges('email',2,3)
+            const response = await service.updatePrivileges('email',2,10)
             // Assert
             expect(response).toBeFalsy()
         })
     })
+    describe('calculateBadges', () => {
+        it('should update previlages', async () => {
+            
+      
+
+            // Act
+            const response = await service.calculateBadges('email')
+            // Assert
+            expect(response).toBeFalsy()
+        })
+    })
+
+
+
 
 });
