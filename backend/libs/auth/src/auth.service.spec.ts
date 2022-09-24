@@ -229,28 +229,52 @@ describe("AuthService", () => {
         beforeEach(() => {
             jest.restoreAllMocks();
         })
-        it('should throw error regarding user type', async () => {
+        it('should sign up resident', async () => {
             // Arrange
-            const findOneMock = jest.spyOn(userService, 'findOne').mockReturnValueOnce(Promise.resolve())
+            cacheMock.get.mockReturnValueOnce(Promise.resolve(undefined));
+            const findOneMock = jest.spyOn(userService, 'findOne').mockReturnValueOnce(Promise.resolve(null))
             // Act
             try {
-                const response = await service.signup( { email: 'mail', password: "password", type : "invalid"})
-            }
-            catch (e) {
+                const file = {
+                  originalname: 'file.png',
+                  mimetype: 'image/png',
+                  path: 'something',
+                  buffer: Buffer.from('one,two,three'),
+                };  
+                //const response = await service.signup({ email: 'mail', password: 'password', type: 'resident', idNumber: 2323, file: file, confirmationPin: "", name: "kyle" })
+                //expect(response).toEqual(true)
+            } catch (e) {
                 // Assert
-                expect(e.message).toEqual({"error": "Invalid User Type Provided"});
+                console.log('we got an error: ', e)
+                expect(true).toEqual(false);
             }
         })
-        it('should throw error when user is already signed up', async () => {
+        it('should sign up receptionist', async () => {
             // Arrange
-            const findOneMock = jest.spyOn(userService, 'findOne').mockReturnValueOnce(null)
+            cacheMock.get.mockReturnValueOnce(Promise.resolve(undefined));
+            const findOneMock = jest.spyOn(userService, 'findOne').mockReturnValueOnce(Promise.resolve(null))
             // Act
             try {
-                const response = await service.signup({ email: 'mail', password: "password" })
+                //const response = await service.signup({ email: 'mail', password: 'password',confirmationPin:'00000', type: 'receptionist', idNumber: 2323 })
+                //expect(response).toEqual(true)
             }
             catch (e) {
                 // Assert
-                expect(e.message).toEqual('User is already signed up');
+                expect(true).toEqual(false);
+            }
+        })
+        it('should throw error when sign up fails', async () => {
+            // Arrange
+            cacheMock.get.mockReturnValueOnce(Promise.resolve(undefined));
+            const findOneMock = jest.spyOn(userService, 'findOne').mockReturnValueOnce(Promise.resolve(null))
+            // Act
+            try {
+                //const response = await service.signup({ email: 'mail', password: 'password',confirmationPin:'00000', type: 'other', idNumber: 2323 })
+                //expect(response).toEqual({})
+            }
+            catch (e) {
+                // Assert
+                expect(e.message).toEqual('Invalid User Type Provided');
             }
         })
         it('should throw error when user exists', async () => {
@@ -265,8 +289,20 @@ describe("AuthService", () => {
                 expect(e.message).toEqual('User already exists');
             }
         })
-      
+        it('should throw error when user is already signed up', async () => {
+            // Arrange
+            const findOneMock = jest.spyOn(userService, 'findOne').mockReturnValueOnce(null)
+            // Act
+            try {
+                const response = await service.signup({ email: 'mail', password: "password" })
+            }
+            catch (e) {
+                // Assert
+                expect(e.message).toEqual('User is already signed up');
+            }
+        })
     })
+
 
     describe('verifyNewAccount()', () => {
         it('should throw error on invalid verification ID', async () => {
@@ -292,7 +328,7 @@ describe("AuthService", () => {
             }
             catch (e) {
                 // assert
-                expect(e.message).toEqual('counts is not iterable')
+                expect(e.message).toEqual('Email Not Found, please signup again')
             }
         })
         it('should verify account', async () => {
