@@ -99,6 +99,7 @@ export class SignInService {
                     return {
                         "trayNo": tray.trayID,
                         "name": invite.visitorName,
+                        "action": "Sign In"
                     }
                 } else {
                     return {"error": "Invite Date does not match"};

@@ -56,7 +56,8 @@ export class SignOutService {
         await this.commandBus.execute(new SignOutInviteCommand(invite.inviteID, (new Date()).toLocaleString(), trayID));
         return {
             "trayNo": trayID,
-            "name": invite.visitorName
+            "name": invite.visitorName,
+            "action": "Sign Out"
         };
     }
 
