@@ -62,14 +62,9 @@ The VMS is an intelligent visitor management system that provides a platform for
 
 <a href="https://docs.google.com/document/d/1vzGkBj-z6qehz3pOtaYuUYPNi2w1h8cGahX0uUgkSGk/edit?usp=sharing">📘 Testing Policy</a>
 
-<a href="https://docs.google.com/document/d/1EKpR3CEmGI7LoP-Xay-QMfZSxIZ8t2b5Zy8wEFhAIkY/edit?usp=sharing">📊 Quality Requirements Testing</a>
-
-<a href="https://docs.google.com/document/d/1vzGkBj-z6qehz3pOtaYuUYPNi2w1h8cGahX0uUgkSGk/edit?usp=sharing"> Testing Policy[work in progress]</a>
-
-<a href="https://docs.google.com/document/d/1YLsJSseVc8EUI0MPoKMe_InlRHobMgEgD7avqhEulSM/edit?usp=sharing">📊 User testing</a>
+<a href="https://docs.google.com/document/d/1EKpR3CEmGI7LoP-Xay-QMfZSxIZ8t2b5Zy8wEFhAIkY/edit?usp=sharing">📝 Quality Requirements Testing</a>
 
 <a href="https://docs.google.com/document/d/1V3HpPmDET7Qi9HQAEkKv3RmPfhWuLtyKRNrvhorMitw/edit?usp=sharing">📖 User Manual</a>
-
 
 <a href="https://docs.google.com/document/d/1YLsJSseVc8EUI0MPoKMe_InlRHobMgEgD7avqhEulSM/edit?usp=sharing">🧍 User testing</a>
 
