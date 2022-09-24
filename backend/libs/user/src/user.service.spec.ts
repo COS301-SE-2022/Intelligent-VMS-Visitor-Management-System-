@@ -109,6 +109,11 @@ describe("UserService", () => {
         getTotalNumberOfSleepoversThisMonthOfResident: jest.fn((emailIn)=>{return {value:3}}),
         
       };
+      const RewardServiceMock = {
+        getAllRewards: jest.fn((emailIn)=>{return [{value:3},{value:2}]}),
+        getTypeCounts: jest.fn((emailIn)=>{return {value:4}}),
+        getAllBadges: jest.fn((emailIn)=>{return {value:15}}),
+      };
       
 
     beforeEach(async () => {
@@ -141,6 +146,10 @@ describe("UserService", () => {
                 },
                 {
                     provide: VisitorInviteService, useValue:VisitorInviteServiceMock,
+                     
+                },
+                {
+                    provide: RewardsService, useValue:RewardServiceMock,
                      
                 },
                
@@ -278,7 +287,7 @@ describe("UserService", () => {
             const resp = await service.getDaysWithVMS("tab@mail.com");
             // Assert
             expect(resp).toEqual({ data: "3"});
-            expect(queryBusMock.execute).toHaveBeenCalledTimes(9);
+            expect(queryBusMock.execute).toHaveBeenCalledTimes(7);
         })
     });
     describe("getNumSleepovers", () => {
@@ -288,7 +297,7 @@ describe("UserService", () => {
             // Assert
             
             expect(resp).toBeTruthy;
-            expect(queryBusMock.execute).toHaveBeenCalledTimes(10);
+            expect(queryBusMock.execute).toHaveBeenCalledTimes(8);
         })
     });
     describe("getNumThemes", () => {
@@ -297,7 +306,7 @@ describe("UserService", () => {
             const resp = await service.getNumThemes("tab@mail.com");
             // Assert
             expect(resp).toEqual({ data: "3"});
-            expect(queryBusMock.execute).toHaveBeenCalledTimes(11);
+            expect(queryBusMock.execute).toHaveBeenCalledTimes(9);
         })
     });
     describe("getNumInvites", () => {
@@ -306,7 +315,7 @@ describe("UserService", () => {
             const resp = await service.getNumInvites("tab@mail.com");
             // Assert
             expect(resp).toBeTruthy;
-            expect(queryBusMock.execute).toHaveBeenCalledTimes(12);
+            expect(queryBusMock.execute).toHaveBeenCalledTimes(10);
         })
     });
     describe("getCurfewTimeOfResident", () => {
@@ -315,7 +324,7 @@ describe("UserService", () => {
             const resp = await service.getCurfewTimeOfResident("tab@mail.com");
             // Assert
             expect(resp).toBeTruthy;
-            expect(queryBusMock.execute).toHaveBeenCalledTimes(13);
+            expect(queryBusMock.execute).toHaveBeenCalledTimes(11);
         })
     });
 //=======================Commands
@@ -351,6 +360,17 @@ describe("UserService", () => {
 
             // Act
             const response = await service.evaluateUser('email')
+            // Assert
+            expect(response).toBeFalsy()
+        })
+    })
+    describe('updatePrivileges', () => {
+        it('should update previlages', async () => {
+            // Arrange
+            commandBusMock.execute.mockReturnValueOnce({ modifiedCount: 2 })
+
+            // Act
+            const response = await service.updatePrivileges('email',2,3)
             // Assert
             expect(response).toBeFalsy()
         })
