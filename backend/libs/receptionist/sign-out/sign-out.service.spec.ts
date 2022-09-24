@@ -123,4 +123,13 @@ describe('SignOutService', () => {
       expect( deleteTray[0].trayID).toEqual(2);
     });
   });
+  it('should format the given date', async () => {
+    // Act
+    const today = new Date("1998/01/01");
+    const response = await service.formatDate(today);
+    
+
+    // Assert
+    expect(response).toEqual('1998-01-01')
+  })
 });
