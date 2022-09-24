@@ -20,6 +20,10 @@ import { GetRewardTypesCountQuery } from "@vms/rewards/queries/impl/getRewardTyp
 import { GetAllBadgesQuery } from "@vms/rewards/queries/impl/getAllBadges.query";
 import { GetNumSuggestionsQuery } from "./queries/impl/getNumSuggestions.query";
 import { GetDaysWithVMSQuery } from "./queries/impl/getDaysWithVMS.query";
+import { GetNumSleepoversQuery } from "./queries/impl/getNumSleepovers.query";
+import { GetNumThemesQuery } from "./queries/impl/getNumThemes.query";
+import { GetNumInvitesQuery } from "./queries/impl/getNumInvites.query";
+import { GetCurfewTimeQuery } from "./queries/impl/getCurfewTime.query";
 
 describe("UserService", () => {
     let service: UserService;
@@ -50,9 +54,17 @@ describe("UserService", () => {
             } else if (query instanceof GetUserQuery) {
                 return { data: "email" };
             }else if (query instanceof GetDaysWithVMSQuery) {
-                return { Days:"3" };
+                return { data:"3" };
             } else if (query instanceof GetNumSuggestionsQuery) {
                 return { data: "suggestedEmail" };
+            } else if (query instanceof GetNumSleepoversQuery) {
+                return { data: "3" };
+            }else if (query instanceof GetNumThemesQuery) {
+                return { data: "3" };
+            }else if (query instanceof GetNumInvitesQuery) {
+                return { data: "3" };
+            }else if (query instanceof GetCurfewTimeQuery) {
+                return { data: "3" };
             } else if (query instanceof GetUnAuthUsersQuery) {
                 if (query.permission === -1) {
                     return [
@@ -88,6 +100,12 @@ describe("UserService", () => {
         deleteCronJob: jest.fn(()=>{return {}}),
       };
 
+      const restrictionMock = {
+        getMaxSleepovers: jest.fn((emailIn)=>{return {value:3}}),
+        getNumInvitesPerResident: jest.fn((emailIn)=>{return {value:3}}),
+        getCurfewTime: jest.fn((emailIn)=>{return {value:3}}),
+      };
+
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
             imports: [HttpModule],
@@ -111,8 +129,12 @@ describe("UserService", () => {
                 },
                 { provide: SchedulerRegistry, useValue: scheduleMock},
                 MailService,
+                CommandBus,
+                {
+                    provide: RestrictionsService, useValue: restrictionMock
+                },
                 { provide: QueryBus, useValue: queryBusMock },
-                { provide: CommandBus, useValue: commandBusMock }
+                { provide: CommandBus, useValue: commandBusMock, }
             ],
         }).compile();
 
@@ -244,17 +266,45 @@ describe("UserService", () => {
             // Act
             const resp = await service.getDaysWithVMS("tab@mail.com");
             // Assert
-            expect(resp).toEqual({ Days: "3"});
+            expect(resp).toEqual({ data: "3"});
             expect(queryBusMock.execute).toHaveBeenCalledTimes(9);
         })
     });
-    describe("getDaysWithVMS", () => {
-        it("should find one", async () => {
+    describe("getNumSleepovers", () => {
+        it("should get the number of sleepovers", async () => {
             // Act
-            const resp = await service.getDaysWithVMS("tab@mail.com");
+            const resp = await service.getNumSleepovers("tab@mail.com");
             // Assert
-            expect(resp).toEqual({ Days: "3"});
-            expect(queryBusMock.execute).toHaveBeenCalledTimes(9);
+            
+            expect(resp).toBeTruthy;
+            expect(queryBusMock.execute).toHaveBeenCalledTimes(10);
+        })
+    });
+    describe("getNumThemes", () => {
+        it("should get themes", async () => {
+            // Act
+            const resp = await service.getNumThemes("tab@mail.com");
+            // Assert
+            expect(resp).toEqual({ data: "3"});
+            expect(queryBusMock.execute).toHaveBeenCalledTimes(11);
+        })
+    });
+    describe("getNumInvites", () => {
+        it("should get themes", async () => {
+            // Act
+            const resp = await service.getNumInvites("tab@mail.com");
+            // Assert
+            expect(resp).toBeTruthy;
+            expect(queryBusMock.execute).toHaveBeenCalledTimes(12);
+        })
+    });
+    describe("getCurfewTimeOfResident", () => {
+        it("should get themes", async () => {
+            // Act
+            const resp = await service.getCurfewTimeOfResident("tab@mail.com");
+            // Assert
+            expect(resp).toBeTruthy;
+            expect(queryBusMock.execute).toHaveBeenCalledTimes(13);
         })
     });
 //=======================Commands
