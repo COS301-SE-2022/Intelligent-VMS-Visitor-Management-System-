@@ -24,10 +24,28 @@ import { async } from 'rxjs';
 import { SchedulerRegistry } from '@nestjs/schedule';
 import { RewardsService } from '@vms/rewards';
 
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
+
+import { SignInInviteCommand } from '@vms/receptionist/commands/impl/signInInvite.command';
+
+
+
+import { InviteNotFound } from '../src/errors/inviteNotFound.error';
+import { InvalidSignIn } from '../src/errors/invalidSignIn.error';
+
+import { BulkSignInCommand } from '@vms/receptionist/commands/impl/bulkSignIn.command';
+import { BSIdata } from '@vms/receptionist/models/BSIdata.model';
+import * as FormData from "form-data";
+import { HttpService } from '@nestjs/axios';
+
+import { firstValueFrom } from "rxjs";
+import { Readable } from 'stream';
+
 describe('SignInService', () => {
   let service: SignInService;
   let inviteService: VisitorInviteService;
   let receptionistService: ReceptionistService;
+  let userService: UserService;
 
   const commandBusMock = {
     execute: jest.fn((command) => {
@@ -56,6 +74,11 @@ describe('SignInService', () => {
         } else
           return null;
       } else if (command instanceof AssignParkingCommand) {
+        const parking = new Parking();
+        parking.parkingNumber = 0;
+        parking.visitorEmail = "larisabotha@icloud.com";
+        return parking;
+      }else if (command instanceof SignInInviteCommand) {
         const parking = new Parking();
         parking.parkingNumber = 0;
         parking.visitorEmail = "larisabotha@icloud.com";
@@ -205,6 +228,7 @@ describe('SignInService', () => {
     service = module.get<SignInService>(SignInService);
     inviteService = module.get<VisitorInviteService>(VisitorInviteService);
     receptionistService = module.get<ReceptionistService>(ReceptionistService);
+    userService = module.get<UserService>(UserService);
   });
 
   it('should be defined', () => {
@@ -313,8 +337,107 @@ describe('SignInService', () => {
 
       // Assert
       expect(response).toEqual({"createData": [], "signInData": []})
-    })
-
+    }) 
   });
+    it('should format the given date', async () => {
+      // Act
+      const today = new Date("1998/01/01");
+      const response = await service.formatDate(today);
+      
+
+      // Assert
+      expect(response).toEqual('1998-01-01')
+    })
+    describe('Upload Face', () => {
+      it('should give an error', async () => {
+        // Act
+        
+        const response = await service.signInFace(false);
+      
+        // Assert
+        expect(response).toEqual({"error": "Invite not found"})
+      })
+
+      it('should signInFace', async () => {
+        // Act
+        const today = new Date();
+        const invite={inviteDate:today,requiresParking:true,inviteID:"cb7c7938-1c41-427d-833e-2c6b77e0e26b",notes:"none"}
+        const response = await service.signInFace(invite);
+      
+        // Assert
+        expect(response).toBeTruthy
+      })
+    })
+    describe('Upload Face', () => {
+      it('should return error regarding ID provided', async () => {
+       
+        const today = new Date();
+        const tempReadable=  new Readable();
+        const tempBuffer=new Buffer("hi");
+        const testfile2={fieldname:"temp",filename:"test",originalname:"t",encoding:"7",mimetype:"temp",stream:tempReadable,size:7, destination:"temp", path:"temp", buffer:tempBuffer};
+        const invite={inviteDate:today,requiresParking:true,inviteID:"cb7c7938-1c41-427d-833e-2c6b77e0e26b",notes:"none"}
+
+        const response = await service.uploadFaceFile(testfile2,"","1","1");
+      
+        // Assert
+        expect(response).toEqual({"error": "No invite id provided"})
+      })
+
+      it('should return error regarding pin provided', async () => {
+      
+        const today = new Date();
+        const tempReadable=  new Readable();
+        const tempBuffer=new Buffer("hi");
+        const testfile2={fieldname:"temp",filename:"test",originalname:"t",encoding:"7",mimetype:"temp",stream:tempReadable,size:7, destination:"temp", path:"temp", buffer:tempBuffer};
+        const invite={inviteDate:today,requiresParking:true,inviteID:"cb7c7938-1c41-427d-833e-2c6b77e0e26b",notes:"none"}
+
+        jest.spyOn(userService, 'getUserByEmail').mockReturnValueOnce(Promise.resolve({permission:0,pin:3}))
+        const response = await service.uploadFaceFile(testfile2,"1","1","1");
+      
+        // Assert
+        expect(response).toEqual({ "error": "Invalid PIN"})
+      })
+      it('should return error regarding invite not found', async () => {
+      
+        const today = new Date();
+        const tempReadable=  new Readable();
+        const tempBuffer=new Buffer("hi");
+        const testfile2={fieldname:"temp",filename:"test",originalname:"t",encoding:"7",mimetype:"temp",stream:tempReadable,size:7, destination:"temp", path:"temp", buffer:tempBuffer};
+        const invite={inviteDate:today,requiresParking:true,inviteID:"cb7c7938-1c41-427d-833e-2c6b77e0e26b",notes:"none"}
+        jest.spyOn(inviteService, 'getInvite').mockReturnValueOnce(Promise.resolve(''))
+        jest.spyOn(userService, 'getUserByEmail').mockReturnValueOnce(Promise.resolve({permission:1,pin:5}))
+        const response = await service.uploadFaceFile(testfile2,"1","5","1");
+      
+        // Assert
+        expect(response).toEqual({"error": "Invite not found"})
+      })
+      it('should return error regarding invite in use', async () => {
+      
+        const today = new Date();
+        const tempReadable=  new Readable();
+        const tempBuffer=new Buffer("hi");
+        const testfile2={fieldname:"temp",filename:"test",originalname:"t",encoding:"7",mimetype:"temp",stream:tempReadable,size:7, destination:"temp", path:"temp", buffer:tempBuffer};
+        const invite={inviteDate:today,requiresParking:true,inviteID:"cb7c7938-1c41-427d-833e-2c6b77e0e26b",notes:"none"}
+        jest.spyOn(inviteService, 'getInvite').mockReturnValueOnce(Promise.resolve({inviteState : "signedIn"}))
+        jest.spyOn(userService, 'getUserByEmail').mockReturnValueOnce(Promise.resolve({permission:1,pin:5}))
+        const response = await service.uploadFaceFile(testfile2,"1","5","1");
+      
+        // Assert
+        expect(response).toEqual({"error": "Invite already used"})
+      })
+
+    })
+    describe('compare Face File', () => {
+
+
+      it('should compare a face file', async () => {
+        // Act
+        const today = new Date();
+        const invite={inviteDate:today,requiresParking:true,inviteID:"cb7c7938-1c41-427d-833e-2c6b77e0e26b",notes:"none"}
+        const response = await service.compareFaceFile(invite);
+
+        expect(response).toBeTruthy
+      })
+    })
 
 });

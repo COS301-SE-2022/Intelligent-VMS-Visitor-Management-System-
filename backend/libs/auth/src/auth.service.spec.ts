@@ -303,6 +303,7 @@ describe("AuthService", () => {
         })
     })
 
+
     describe('verifyNewAccount()', () => {
         it('should throw error on invalid verification ID', async () => {
             // arrange
@@ -317,7 +318,7 @@ describe("AuthService", () => {
             }
 
         })
-        it('should throw an error when inavlid ID given', async () => {
+        it('should throw an iterable error', async () => {
             // arrange
             (cacheMock as any).get.mockReturnValueOnce(Promise.resolve({ verifyID: 'b3eFcCe3-4CDa-CEB1-F0Df-daBEBE298a47', file: { buffer: ["hello"], originalname: "file.png", password: "" } }))
 
