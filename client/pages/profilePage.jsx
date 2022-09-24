@@ -1,6 +1,6 @@
 import React,{useEffect, useState} from 'react';
 import { useRouter } from "next/router";
-import Badge from '../components/Badge';
+import Badge from '../components/badge';
 import Layout from '../components/Layout';
 import {AiFillStar} from "react-icons/ai";
 import {FaFlagCheckered} from "react-icons/fa";
