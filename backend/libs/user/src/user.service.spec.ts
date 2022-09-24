@@ -19,6 +19,7 @@ import { SchedulerRegistry } from "@nestjs/schedule";
 import { GetRewardTypesCountQuery } from "@vms/rewards/queries/impl/getRewardTypesCount.query";
 import { GetAllBadgesQuery } from "@vms/rewards/queries/impl/getAllBadges.query";
 import { GetNumSuggestionsQuery } from "./queries/impl/getNumSuggestions.query";
+import { GetDaysWithVMSQuery } from "./queries/impl/getDaysWithVMS.query";
 
 describe("UserService", () => {
     let service: UserService;
@@ -48,6 +49,8 @@ describe("UserService", () => {
                 return [];
             } else if (query instanceof GetUserQuery) {
                 return { data: "email" };
+            }else if (query instanceof GetDaysWithVMSQuery) {
+                return { Days:"3" };
             } else if (query instanceof GetNumSuggestionsQuery) {
                 return { data: "suggestedEmail" };
             } else if (query instanceof GetUnAuthUsersQuery) {
@@ -233,6 +236,50 @@ describe("UserService", () => {
 
             // Assert
             expect(response).toEqual({ data: '' })
+        })
+    })
+
+    describe("getDaysWithVMS", () => {
+        it("should find one", async () => {
+            // Act
+            const resp = await service.getDaysWithVMS("tab@mail.com");
+            // Assert
+            expect(resp).toEqual({ Days: "3"});
+            expect(queryBusMock.execute).toHaveBeenCalledTimes(9);
+        })
+    });
+    describe("getDaysWithVMS", () => {
+        it("should find one", async () => {
+            // Act
+            const resp = await service.getDaysWithVMS("tab@mail.com");
+            // Assert
+            expect(resp).toEqual({ Days: "3"});
+            expect(queryBusMock.execute).toHaveBeenCalledTimes(9);
+        })
+    });
+//=======================Commands
+    describe('increaseSuggestions', () => {
+        it('should increase the user suggestions', async () => {
+            // Arrange
+            commandBusMock.execute.mockReturnValueOnce({ modifiedCount: 2 })
+
+            // Act
+            const response = await service.increaseSuggestions('email')
+
+            // Assert
+            expect(response).toBeFalsy()
+        })
+    })
+    describe('updateUser', () => {
+        it('should increase the user suggestions', async () => {
+            // Arrange
+            commandBusMock.execute.mockReturnValueOnce({ modifiedCount: 2 })
+
+            // Act
+            const response = await service.updateUser('email','badges',3)
+
+            // Assert
+            expect(response).toBeFalsy()
         })
     })
 
