@@ -100,11 +100,16 @@ describe("UserService", () => {
         deleteCronJob: jest.fn(()=>{return {}}),
       };
 
-      const restrictionMock = {
+      const RestrictionsServiceMock = {
         getMaxSleepovers: jest.fn((emailIn)=>{return {value:3}}),
         getNumInvitesPerResident: jest.fn((emailIn)=>{return {value:3}}),
         getCurfewTime: jest.fn((emailIn)=>{return {value:3}}),
       };
+      const VisitorInviteServiceMock = {
+        getTotalNumberOfSleepoversThisMonthOfResident: jest.fn((emailIn)=>{return {value:3}}),
+        
+      };
+      
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
@@ -131,8 +136,14 @@ describe("UserService", () => {
                 MailService,
                 CommandBus,
                 {
-                    provide: RestrictionsService, useValue: restrictionMock
+                    provide: RestrictionsService, useValue:  RestrictionsServiceMock,
+                     
                 },
+                {
+                    provide: VisitorInviteService, useValue:VisitorInviteServiceMock,
+                     
+                },
+               
                 { provide: QueryBus, useValue: queryBusMock },
                 { provide: CommandBus, useValue: commandBusMock, }
             ],
@@ -320,6 +331,7 @@ describe("UserService", () => {
             expect(response).toBeFalsy()
         })
     })
+   
     describe('updateUser', () => {
         it('should increase the user suggestions', async () => {
             // Arrange
@@ -332,6 +344,16 @@ describe("UserService", () => {
             expect(response).toBeFalsy()
         })
     })
+    describe('evaluateUser', () => {
+        it('should increase the user suggestions', async () => {
+            // Arrange
+            commandBusMock.execute.mockReturnValueOnce({ modifiedCount: 2 })
 
+            // Act
+            const response = await service.evaluateUser('email')
+            // Assert
+            expect(response).toBeFalsy()
+        })
+    })
 
 });
