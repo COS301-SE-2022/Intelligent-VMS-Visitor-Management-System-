@@ -24,6 +24,7 @@ const SignInPopUp = ({
     const [notes, setNotes] = useState("");
     const [showVerify, setShowVerify] = useState(false);
     const [file, setFile] = useState(null);
+    const [pin, setPin] = useState("");
     const [verifyData, setVerifyData] = useState(undefined);
     const time = new Date();
     const client = useApolloClient();
@@ -56,9 +57,19 @@ const SignInPopUp = ({
 
     const confirmVerify = async (e) => {
         e.currentTarget.classList.add("loading");
+
+        if(pin.length !== 5) {
+            alert({
+                message: "Pin must be a 5 digit number",
+                type: "error"
+            })
+            e.currentTarget.classList.remove("loading");
+            return;
+        }
+
         const formData = new FormData();
         formData.append("file", file);
-        const response = await axios.post(`${BACKEND_URL}/receptionist/signInAndAddFace?inviteID=${verifyData.inviteID}`, formData, {
+        const response = await axios.post(`${BACKEND_URL}/receptionist/signInAndAddFace?inviteID=${verifyData.inviteID}&pin=${pin}`, formData, {
             headers: {
                 'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
                 'Authorization': `Bearer ${token}`
@@ -102,7 +113,6 @@ const SignInPopUp = ({
     };
 
     const onAddFace = (inviteID) => {
-        console.log("HERE!")
         if(showSignInModal) {
             setShowVerify(true);
             getInvite(inviteID);
@@ -112,23 +122,6 @@ const SignInPopUp = ({
     const cancelAddFace = () => {
         setShowVerify(false);
     };
-
-    /*
-    useEffect(() => {
-        if (!loading && !error) {
-            if (data) {
-                refetch();
-                alert({
-                    message: `Tray Number For ${visitData.visitorName}: ${data.signIn}`,
-                    type: "info",
-                });
-                setSearch(false);
-            }
-        } else {
-        }
-
-    }, [loading, error, data]);
-    */
 
     return (
         <div className="relative flex-col items-center justify-center text-center">
@@ -158,6 +151,15 @@ const SignInPopUp = ({
 
                     <div className="flex flex-col space-y-4">
                         <VisitInfoModal visitModalData={verifyData} />
+                        <div className="border p-3 rounded-lg border-2">
+                            <p>
+                                Enter personal 5-digit verification pin to confirm identity of visitor
+                            </p>
+                            <input type="password" placeholder="Enter PIN" className="mt-3 input input-bordered w-full max-w-xs input-sm" onChange={(e) => {
+                                setPin(e.target.value);
+                            }}>
+                            </input>
+                        </div>
                         <div className="flex justify-center space-x-4">
                             <button className="btn btn-primary" onClick={confirmVerify}>
                                 <AiOutlineCheck className="text-xl mr-3" />
