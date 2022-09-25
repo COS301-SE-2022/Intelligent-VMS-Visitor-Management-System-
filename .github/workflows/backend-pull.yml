@@ -30,6 +30,10 @@ jobs:
         working-directory: ./backend
         run: yarn lint
         
-      - name: "🏁 Run tests backend"
+      - name: "🏁 Run unit tests backend"
         working-directory: ./backend
         run: yarn run test
+
+      - name: "⛓ Run integration tests backend"
+        working-directory: ./backend
+        run: yarn run test:int
