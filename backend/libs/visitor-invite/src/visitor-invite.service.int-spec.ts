@@ -19,14 +19,6 @@ describe('VisitorInviteService Int', () => {
         const moduleRef = await Test.createTestingModule({
           imports: [
             AppModule,
-            MongooseModule.forRootAsync({
-                imports: [ConfigModule],
-                useFactory: async (configService: ConfigService) => {return ({
-                    uri: "mongodb+srv://admin:f1restorm19091@vms-cluster.vdgmq.mongodb.net/vms-test?retryWrites=true&w=majority",
-                })},
-                inject: [ConfigService],
-            }),
-            
           ],
         }).compile();
 

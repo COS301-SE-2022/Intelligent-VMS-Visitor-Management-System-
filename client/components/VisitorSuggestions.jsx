@@ -62,9 +62,9 @@ const VisitorSuggestions = ({ date, setSuggestion }) => {
 
                     <span className="card-title ml-3 mt-2 mb-2">
                         {show? (
-                            <AiOutlineMinus className="" onClick={()=> setShow(!show)}/>
+                            <AiOutlineMinus data-testid="minsuggest" className="" onClick={()=> setShow(!show)}/>
                         ):(
-                            <AiOutlinePlus className="" onClick={()=> setShow(!show)}/>
+                            <AiOutlinePlus data-testid="plussuggest" className="" onClick={()=> setShow(!show)}/>
                         )}
                         
                         Suggestions
@@ -78,7 +78,7 @@ const VisitorSuggestions = ({ date, setSuggestion }) => {
 
                             if( idx < amount){
                                 return (
-                                    <button key={idx} className="" onClick={ () => {
+                                    <button data-testid="suggestbtn" key={idx} className="" onClick={ () => {
                                         formikProps.setFieldValue('name', visitor.visitorName); 
                                         formikProps.setFieldValue('email', visitor._id); 
                                         formikProps.setFieldValue('idValue', visitor.idNumber); 

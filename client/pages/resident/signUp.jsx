@@ -251,7 +251,7 @@ const SignUp = () => {
                                 </span>
 
                                 <p>Add image of yourself</p>
-                                <input accept="image/png, image/jpeg" id="file" name="file" type="file" onChange={(event) => {
+                                <input data-testid="fileupload" accept="image/png, image/jpeg" id="file" name="file" type="file" onChange={(event) => {
                                   setFieldValue("file", event.currentTarget.files[0]);
                                 }} />
 

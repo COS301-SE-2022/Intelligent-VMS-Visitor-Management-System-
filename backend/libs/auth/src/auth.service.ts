@@ -159,7 +159,19 @@ export class AuthService {
 
             throw new VerificationFailed("Email Not Found, please signup again");
         }
-
         throw new VerificationFailed("Invalid verification ID");
+    }
+
+    async resendVerifyEmail(email: string) {
+        if(email) {
+            const user: any = await this.cacheManager.get(email);
+
+            if(user) {
+                await this.mailService.sendVerify(email, user.verifyID);
+                return true;
+            }
+
+            return false;
+        }
     }
 }
