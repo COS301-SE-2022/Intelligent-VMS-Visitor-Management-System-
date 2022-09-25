@@ -19,6 +19,11 @@ import { SchedulerRegistry } from "@nestjs/schedule";
 import { GetRewardTypesCountQuery } from "@vms/rewards/queries/impl/getRewardTypesCount.query";
 import { GetAllBadgesQuery } from "@vms/rewards/queries/impl/getAllBadges.query";
 import { GetNumSuggestionsQuery } from "./queries/impl/getNumSuggestions.query";
+import { GetDaysWithVMSQuery } from "./queries/impl/getDaysWithVMS.query";
+import { GetNumSleepoversQuery } from "./queries/impl/getNumSleepovers.query";
+import { GetNumThemesQuery } from "./queries/impl/getNumThemes.query";
+import { GetNumInvitesQuery } from "./queries/impl/getNumInvites.query";
+import { GetCurfewTimeQuery } from "./queries/impl/getCurfewTime.query";
 
 describe("UserService", () => {
     let service: UserService;
@@ -47,9 +52,19 @@ describe("UserService", () => {
             } else if (query instanceof GetAllBadgesQuery){
                 return [];
             } else if (query instanceof GetUserQuery) {
-                return { data: "email" };
+                return {badges:"111111111111111111111111"};
+            }else if (query instanceof GetDaysWithVMSQuery) {
+                return { data:"3" };
             } else if (query instanceof GetNumSuggestionsQuery) {
                 return { data: "suggestedEmail" };
+            } else if (query instanceof GetNumSleepoversQuery) {
+                return { data: "3" };
+            }else if (query instanceof GetNumThemesQuery) {
+                return { data: "3" };
+            }else if (query instanceof GetNumInvitesQuery) {
+                return { data: "3" };
+            }else if (query instanceof GetCurfewTimeQuery) {
+                return { data: "3" };
             } else if (query instanceof GetUnAuthUsersQuery) {
                 if (query.permission === -1) {
                     return [
@@ -85,6 +100,26 @@ describe("UserService", () => {
         deleteCronJob: jest.fn(()=>{return {}}),
       };
 
+      const RestrictionsServiceMock = {
+        getMaxSleepovers: jest.fn((emailIn)=>{return {value:3}}),
+        getNumInvitesPerResident: jest.fn((emailIn)=>{return {value:3}}),
+        getCurfewTime: jest.fn((emailIn)=>{return {value:3}}),
+      };
+      const VisitorInviteServiceMock = {
+        getTotalNumberOfSleepoversThisMonthOfResident: jest.fn((emailIn)=>{return {value:15}}),
+        getTotalNumberOfInvitesOfResident:jest.fn((emailIn)=>{return {value:20}}),
+        getTotalNumberOfCancellationsOfResident:jest.fn((emailIn)=>{return {value:20}}),
+        getTotalNumberOfSleepoversOfResident:jest.fn((emailIn)=>{return {value:20}}),
+        getTotalNumberOfVisitsOfResident:jest.fn((emailIn)=>{return {value:20}}),
+        
+      };
+      const RewardServiceMock = {
+        getAllRewards: jest.fn((emailIn)=>{return [{type:"invite",xp:3},{type:"invite",xp:1},{type:"sleepover",xp:3},{type:"sleepover",xp:1},{type:"theme",xp:3},{type:"theme",xp:1},{type:"curfew",xp:3},{type:"curfew",xp:1}]}),
+        getTypeCounts: jest.fn((emailIn)=>{return {value:4}}),
+        getAllBadges: jest.fn((emailIn)=>{return [{type:"invite",xp:3,levels:"3",requirements:[1,1,1,1,1,1,1,1,1,1,1]},{type:"invite",xp:1,levels:"3",requirements:[1,1,1,1,1,1,1,1,1,1,1]},{type:"sleepover",xp:3,levels:"3",requirements:[1,1,1,1,1,1,1,1,1,1,1]},{type:"sleepover",xp:1,levels:"3",requirements:[1,1,1,1,1,1,1,1,1,1,1]},{type:"theme",xp:3,levels:"3",requirements:[1,1,1,1,1,1,1,1,1,1,1]},{type:"theme",xp:1,levels:"3",requirements:[1,1,1,1,1,1,1,1,1,1,1]},{type:"curfew",xp:3,levels:"3",requirements:[1,1,1,1,1,1,1,1,1,1,1]},{type:"curfew",xp:1,levels:"3",requirements:[1,1,1,1,1,1,1,1,1,1,1]},{type:"cancellation",xp:3,levels:"3",requirements:[1,1,1,1,1,1,1,1,1,1,1]},{type:"cancellation",xp:1,levels:"3",requirements:[1,1,1,1,1,1,1,1,1,1,1]},{type:"time",xp:3,levels:"3",requirements:[1,1,1,1,1,1,1,1,1,1,1]},{type:"time",xp:1,levels:"3",requirements:[1,1,1,1,1,1,1,1,1,1,1]},{type:"visits",xp:3,levels:"3",requirements:[1,1,1,1,1,1,1,1,1,1,1]},{type:"visits",xp:1,levels:"3",requirements:[1,1,1,1,1,1,1,1,1,1,1]},{type:"suggestion",xp:3,levels:"3",requirements:[1,1,1,1,1,1,1,1,1,1,1]},{type:"suggestion",xp:1,levels:"3",requirements:[1,1,1,1,1,1,1,1,1,1,1]}]}),
+      };
+      
+
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
             imports: [HttpModule],
@@ -108,8 +143,22 @@ describe("UserService", () => {
                 },
                 { provide: SchedulerRegistry, useValue: scheduleMock},
                 MailService,
+                CommandBus,
+                {
+                    provide: RestrictionsService, useValue:  RestrictionsServiceMock,
+                     
+                },
+                {
+                    provide: VisitorInviteService, useValue:VisitorInviteServiceMock,
+                     
+                },
+                {
+                    provide: RewardsService, useValue:RewardServiceMock,
+                     
+                },
+               
                 { provide: QueryBus, useValue: queryBusMock },
-                { provide: CommandBus, useValue: commandBusMock }
+                { provide: CommandBus, useValue: commandBusMock, }
             ],
         }).compile();
 
@@ -130,7 +179,7 @@ describe("UserService", () => {
             // Act
             const resp = await service.findOne("tab@mail.com");
             // Assert
-            expect(resp).toEqual({ data: 'email' });
+            expect(resp).toBeTruthy;
             expect(queryBusMock.execute).toHaveBeenCalledTimes(1);
         })
     });
@@ -235,6 +284,126 @@ describe("UserService", () => {
             expect(response).toEqual({ data: '' })
         })
     })
+    describe('getUserByEmail', () => {
+        it('should getUsersByType', async () => {
+            // Arrange
+            queryBusMock.execute.mockReturnValueOnce({ data: '' })
+
+            // Act
+            const response = await service.getUserByEmail("mygottenuser")
+
+            // Assert
+            expect(response).toBeTruthy
+        })
+    })
+
+    describe("getDaysWithVMS", () => {
+        it("should find one", async () => {
+            // Act
+            const resp = await service.getDaysWithVMS("tab@mail.com");
+            // Assert
+            expect(resp).toEqual({ data: "3"});
+            expect(queryBusMock.execute).toHaveBeenCalledTimes(8);
+        })
+    });
+    describe("getNumSleepovers", () => {
+        it("should get the number of sleepovers", async () => {
+            // Act
+            const resp = await service.getNumSleepovers("tab@mail.com");
+            // Assert
+            
+            expect(resp).toBeTruthy;
+            expect(queryBusMock.execute).toHaveBeenCalledTimes(9);
+        })
+    });
+    describe("getNumThemes", () => {
+        it("should get themes", async () => {
+            // Act
+            const resp = await service.getNumThemes("tab@mail.com");
+            // Assert
+            expect(resp).toEqual({ data: "3"});
+            expect(queryBusMock.execute).toHaveBeenCalledTimes(10);
+        })
+    });
+    describe("getNumInvites", () => {
+        it("should get themes", async () => {
+            // Act
+            const resp = await service.getNumInvites("tab@mail.com");
+            // Assert
+            expect(resp).toBeTruthy;
+            expect(queryBusMock.execute).toHaveBeenCalledTimes(11);
+        })
+    });
+    describe("getCurfewTimeOfResident", () => {
+        it("should get themes", async () => {
+            // Act
+            const resp = await service.getCurfewTimeOfResident("tab@mail.com");
+            // Assert
+            expect(resp).toBeTruthy;
+            expect(queryBusMock.execute).toHaveBeenCalledTimes(12);
+        })
+    });
+//=======================Commands
+    describe('increaseSuggestions', () => {
+        it('should increase the user suggestions', async () => {
+            // Arrange
+            commandBusMock.execute.mockReturnValueOnce({ modifiedCount: 2 })
+
+            // Act
+            const response = await service.increaseSuggestions('email')
+
+            // Assert
+            expect(response).toBeFalsy()
+        })
+    })
+   
+    describe('updateUser', () => {
+        it('should increase the user suggestions', async () => {
+            // Arrange
+            commandBusMock.execute.mockReturnValueOnce({ modifiedCount: 2 })
+
+            // Act
+            const response = await service.updateUser('email','badges',3)
+
+            // Assert
+            expect(response).toBeFalsy()
+        })
+    })
+    describe('evaluateUser', () => {
+        it('should evaluate the user suggestions', async () => {
+            // Arrange
+            commandBusMock.execute.mockReturnValueOnce({ modifiedCount: 2 })
+
+            // Act
+            const response = await service.evaluateUser('email')
+            // Assert
+            expect(response).toBeFalsy()
+        })
+    })
+    describe('updatePrivileges', () => {
+        it('should update previlages', async () => {
+            // Arrange
+            commandBusMock.execute.mockReturnValueOnce({ modifiedCount: 2 })
+
+            // Act
+            const response = await service.updatePrivileges('email',2,10)
+            // Assert
+            expect(response).toBeFalsy()
+        })
+    })
+    describe('calculateBadges', () => {
+        it('should update previlages', async () => {
+            
+      
+
+            // Act
+            const response = await service.calculateBadges('email')
+            // Assert
+            expect(response).toBeFalsy()
+        })
+    })
+
+
 
 
 });
