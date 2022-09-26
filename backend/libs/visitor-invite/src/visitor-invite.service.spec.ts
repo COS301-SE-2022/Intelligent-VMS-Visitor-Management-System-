@@ -23,18 +23,25 @@ import { GetInvitesInRangeByEmailQuery } from "./queries/impl/getInvitesInRangeB
 import { GetInviteForSignInDataQuery } from "./queries/impl/getInviteForSignInData.query";
 import { GetInviteForSignOutDataQuery } from "./queries/impl/getInviteForSignOutData.query";
 import { GetInviteForSignQuery } from "./queries/impl/getInviteForSign.query";
+import { GetNumberOfVisitsOfResidentQuery } from "./queries/impl/getNumberOfVisitsOfResident.query";
+import { GetInvitesForUsersQuery } from "./queries/impl/getInvitesForUsers.query";
+import { GetVisitorVisitsQuery } from "./queries/impl/getVisitorVisits.query";
+import { GetInvitesByDateQuery } from "./queries/impl/getInvitesByDate.query";
+import { CreateGroupInviteCommand } from "./commands/impl/createGroupInvite.command";
 
 describe("VisitorInviteService", () => {
     let service: VisitorInviteService;
-
+    let userService:UserService;
     const commandBusMock = {
         execute: jest.fn((command: ICommand) => {
             if(command instanceof ExtendInvitesCommand){
                 return 2300
+            }else if (command instanceof CreateGroupInviteCommand) {
+                return 0
             }
         }),
     };
-
+    
     const queryBusMock = {
         execute: jest.fn((query: IQuery) => {
             if (query instanceof GetInvitesQuery) {
@@ -97,9 +104,19 @@ describe("VisitorInviteService", () => {
                 } else {
                     return 0;
                 }
+            }else if (query instanceof GetInvitesForUsersQuery) {
+               
+                    return 12;
+                
             }else if (query instanceof GetInviteForSignInDataQuery) {
                 if (query.idNumber === "9911305129086") {
                     return 2;
+                } else {
+                    return 0;
+                }
+            }else if (query instanceof GetVisitorVisitsQuery) {
+                if (query.email === "Steffanny") {
+                    return [{visits:[['Sept 28, 22 13:20:18'],['Sept 29, 22 13:20:18']],visitorName:"dan",_id:"999",idNumber:"999",idDocType:"paper",numInvites:3},{visits:[['Sept 28, 22 13:20:18'],['Sept 29, 22 13:20:18']],visitorName:"dan",_id:"999",idNumber:"999",idDocType:"paper",numInvites:3}];
                 } else {
                     return 0;
                 }
@@ -115,12 +132,22 @@ describe("VisitorInviteService", () => {
                 } else {
                     return 0;
                 }
+            }else if (query instanceof GetNumberOfVisitsOfResidentQuery) {
+                if (query.email === "Joe@gmail.com") {
+                    return 6;
+                } else {
+                    return 0;
+                }
             }else if (query instanceof GetInvitesOfResidentQuery) {
                 if (query.email === "admin@mail.com") {
                     return [{inviteState:"extended"},{inviteState:"extended"}];
                 } else {
                     return 0;
                 }
+            }else if (query instanceof GetInvitesByDateQuery) {
+                
+                    return [{length:9,inviteState:"signedOut"}];
+                
             }else if (query instanceof GetInvitesInRangeByEmailQuery) {
                 if (query.email === "admin@mail.com") {
                     return [{inviteState:"extended"},{inviteState:"extended"}];
@@ -164,12 +191,12 @@ describe("VisitorInviteService", () => {
             imports: [HttpModule],
             providers: [
                 VisitorInviteService,
+                UserService,
                 ParkingService,
                 ConfigService,
                 MailService,
                 RestrictionsService,
                 RewardsService,
-                UserService,
                 { provide: CronJob, useValue: {
                     start: ()=>{console.log("j")}
                 }},
@@ -191,7 +218,7 @@ describe("VisitorInviteService", () => {
         }).compile();
 
         await module.init()
-
+        userService = module.get<UserService>(UserService);
         service = module.get<VisitorInviteService>(VisitorInviteService);
     });
 
@@ -568,9 +595,63 @@ describe("VisitorInviteService", () => {
         })
     })
     describe('getNumInvitesPerDateOfUser', () => {
-        it('should get the invite needed for sign in', async () => {
+        it('should get the visits for the day of the user', async () => {
             const response = await service.getNumInvitesPerDateOfUser("2022/09/22", "2022/09/23", "myman@male.com");
             expect(response).toEqual(5);
+        })
+    })
+    describe('getTotalNumberOfVisitsOfResident', () => {
+        it('should get the total number of visits the resident has had', async () => {
+            const response = await service.getTotalNumberOfVisitsOfResident( "Joe@gmail.com");
+            expect(response).toEqual(6);
+        })
+    })
+    describe('getInvitesForUserType', () => {
+        it('should get the total number of visits the resident has had', async () => {
+            const findOneMock=jest.spyOn(userService, "getUsersByType").mockReturnValueOnce(Promise.resolve( [{email:"dorithy"}]));
+            const response = await service.getInvitesForUserType( 3);
+            expect(response).toEqual(12);
+        })
+        it('should return an empty list', async () => {
+            const findOneMock=jest.spyOn(userService, "getUsersByType").mockReturnValueOnce(Promise.resolve( []));
+            const response = await service.getInvitesForUserType( 3);
+            expect(response).toEqual([]);
+        })
+    })
+    describe('getMonthsBetweenDates', () => {
+        it('should get the months between the two dates', async () => {
+            const date1 = new Date('Sept 24, 22 13:20:18')
+            const date2 = new Date('Sept 28, 22 13:20:18');
+            const response = await service.getMonthsBetweenDates(date1, date2);
+            expect(response).toEqual(0);
+        })
+    })
+    describe('getDaysBetweenDates', () => {
+        it('should get the days between the two dates', async () => {
+            const date1 = new Date('Sept 24, 22 13:20:18')
+            const date2 = new Date('Sept 28, 22 13:20:18');
+            const response = await service.getDaysBetweenDates(date1, date2);
+            expect(response).toEqual(4);
+        })
+    })
+    describe('getWeekdayBetweenDates', () => {
+        it('should get the days between the two dates', async () => {
+            const date1 = new Date('Sept 28, 22 13:20:18')
+            const date2 = new Date('Sept 28, 22 13:20:18');
+            const response = await service.getWeekdayBetweenDates(date1, date2);
+            expect(response).toEqual(0);
+        })
+    })
+    describe('getSuggestions', () => {
+        it('should get suggestions', async () => {
+            const response = await service.getSuggestions('Sept 28, 22 13:20:18', "Steffanny");
+            expect(response).toEqual([{"_id": "999", "idDocType": "paper", "idNumber": "999", "prob": -Infinity, "visitorName": "dan"}, {"_id": "999", "idDocType": "paper", "idNumber": "999", "prob": -Infinity, "visitorName": "dan"}]);
+        })
+    })
+    describe('groupInvites', () => {
+        it('should get all the group invites', async () => {
+            const response = await service.groupInvites();
+            expect(response).toBeFalsy;
         })
     })
     
