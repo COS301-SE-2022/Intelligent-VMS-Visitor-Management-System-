@@ -67,7 +67,7 @@ const SignUp = () => {
 
         if(response.data.result) {
             verify();
-            router.push("/verify");
+            router.push("/verify?email=" + signupData.email);
         } else {
             alert({
                 message: response.data.error,

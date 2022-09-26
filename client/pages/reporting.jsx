@@ -39,12 +39,16 @@ const Reporting = () => {
     const [startDate, setStartDate] = useState(new Date());
     const [range, setRange] = useState(6);
     const [endDate, setEndDate] = useState(getEndDate(startDate, range));
+    const [parkingRange, setParkingRange] = useState(6);
+    const [parkingStartDate, setParkingStartDate] = useState(new Date());
+    const [parkingEndDate, setParkingEndDate] = useState(getEndDate(parkingStartDate, parkingRange));
     const [visitorData, setVisitorData] = useState({ data: [], labels: [] });
     const [inviteData, setInviteData] = useState({ data: [], labels: [] });
     const [cancelData, setCancelData] = useState({ data: [], labels: [] });
     const [predictedData, setPredictedData] = useState({ data: [], labels: [], });
-    const [receptionistInvites, setReceptionistInvites] = useState([]);
-    const [activity, setActivity] = useState([]);
+    const [parkingData, setParkingData] = useState({ data: [], labels: [], });
+    const [activeParkingData, setActiveParkingData] = useState({ data: [], labels: []});
+    const [predictedParkingData, setPredictedParkingData] = useState({ data: [], labels: [] });
 
     const { loading, error, data } = useQuery(
         gql`
@@ -60,51 +64,34 @@ const Reporting = () => {
         `
     );
 
-    const predictedInvitesQuery = useQuery(gql`
-        query {
-          getPredictedInviteData(startDate: "${getFormattedDateString(startDate)}", endDate: "${getFormattedDateString(endDate)}") {
-            date,
-            parking,
-            visitors
-          }
-        }
-    `);
-
-    const receptionistInviteQuery = useQuery(
+    const parkingUsedQuery = useQuery(
         gql`
             query {
-                getInvitesForUserType(permission: 1) {
-                    _id
-                    numInvites
-                    numVisitors
-                    firstDate
-                }
+              getUsedParkingsInRange(startDate: "${getFormattedDateString(parkingStartDate)}", endDate: "${getFormattedDateString(parkingEndDate)}") {
+                reservationDate,
+                activated
+              }
             }
         `
     );
 
-    useEffect(() => {
-        if (
-            !receptionistInviteQuery.loading &&
-            !receptionistInviteQuery.error &&
-            receptionistInviteQuery.data
-        ) {
-            const receptionists = [];
-            receptionistInviteQuery.data.getInvitesForUserType.forEach(
-                (groupData) => {
-                    receptionists.push({
-                        email: groupData._id,
-                        numInvites: groupData.numInvites,
-                        numVisitors: groupData.numVisitors,
-                        firstDate: groupData.firstDate,
-                    });
-                }
-            );
-
-            setReceptionistInvites(receptionists);
-        } else if (receptionistInviteQuery.error) {
+    const predictedParkingQuery = useQuery(gql`
+        query {
+          getPredictedInviteData(startDate: "${getFormattedDateString(parkingStartDate)}", endDate: "${getFormattedDateString(parkingEndDate)}") {
+            date,
+            parking
+          }
         }
-    }, [receptionistInviteQuery]);
+    `);
+
+    const predictedInvitesQuery = useQuery(gql`
+        query {
+          getPredictedInviteData(startDate: "${getFormattedDateString(startDate)}", endDate: "${getFormattedDateString(endDate)}") {
+            date,
+            visitors
+          }
+        }
+    `);
 
     useEffect(() => {
         if (!loading && !error && data) {
@@ -113,7 +100,6 @@ const Reporting = () => {
             const _inviteDateMap = new Map();
             const _visitorDateMap = new Map();
             const _cancelMap = new Map();
-            const _activity = new Map();
 
             for (let i = 0; i < range; i++) {
                 const dateKey = new Date(startDate);
@@ -121,16 +107,6 @@ const Reporting = () => {
                 _inviteDateMap.set(getFormattedDateString(dateKey), 0);
                 _visitorDateMap.set(getFormattedDateString(dateKey), 0);
                 _cancelMap.set(getFormattedDateString(dateKey), 0);
-            }
-
-            let endActivity = new Date();
-            for(let i = 0; i < 5; i++) {
-                const dateKey = new Date(startDate);
-                dateKey.setDate(startDate.getDate() + i);
-                _activity.set(getFormattedDateString(dateKey), 0);
-                if(i === 4) {
-                    endActivity = dateKey;
-                }
             }
 
             invites.forEach((invite, idx) => {
@@ -160,14 +136,6 @@ const Reporting = () => {
                             : 1
                     );
 
-                    if(new Date(invite.inviteDate) <= endActivity) {
-                        _activity.set(
-                            invite.inviteDate,
-                            _activity.get(invite.inviteDate)
-                                ? _activity.get(invite.inviteDate) + 1
-                                : 1
-                        );
-                    }
                 } else if (invite.inviteState === "cancelled") {
                     _cancelMap.set(
                         invite.inviteDate,
@@ -177,12 +145,6 @@ const Reporting = () => {
                     );
                 }
             });
-            
-            console.log(Array.from(_inviteDateMap.values()).length);
-
-            setActivity(Array.from(_activity.keys()).map((data) => {
-                return  {date: data, visitors: _activity.get(data)};
-            }));
             
             setInviteData({
                 data: Array.from(_inviteDateMap.values()),
@@ -210,6 +172,51 @@ const Reporting = () => {
     }, [startDate, range]);
 
     useEffect(() => {
+        setParkingEndDate(getEndDate(parkingStartDate, parkingRange));
+    }, [parkingStartDate, parkingRange]);
+    
+    useEffect(() => {
+        if(!parkingUsedQuery.loading && !parkingUsedQuery.error) {
+            const reservations = parkingUsedQuery.data.getUsedParkingsInRange;
+            const _reservationsMap = new Map();
+            const _usedMap = new Map();
+            for (let i = 0; i < parkingRange; i++) {
+                const dateKey = new Date(parkingStartDate);
+                dateKey.setDate(parkingStartDate.getDate() + i);
+                _reservationsMap.set(getFormattedDateString(dateKey), 0);
+                _usedMap.set(getFormattedDateString(dateKey), 0);
+            }
+            
+            reservations.forEach((reservation) => {
+                    if(!reservation.activated) {
+                        _reservationsMap.set(
+                            reservation.reservationDate,
+                            _reservationsMap.get(reservation.reservationDate)
+                                ? _reservationsMap.get(reservation.reservationDate) + 1
+                                : 1
+                        );
+                    } else {
+                        _usedMap.set(
+                            reservation.reservationDate,
+                            _usedMap.get(reservation.reservationDate)
+                                ? _usedMap.get(reservation.reservationDate) + 1
+                                : 1
+                        );
+                    }
+                
+            });
+        
+            setParkingData({ data: Array.from(_reservationsMap.values()), labels: Array.from(_reservationsMap.keys())});
+            setActiveParkingData({ data: Array.from(_usedMap.values()), labels: Array.from(_usedMap.keys())});
+        } else if(parkingUsedQuery.error) {
+            if (parkingUsedQuery.error.message === "Unauthorized") {
+                router.push("/expire");
+            }
+        }
+
+    }, [parkingUsedQuery, parkingStartDate, parkingRange]);
+
+    useEffect(() => {
         if (!predictedInvitesQuery.loading && !predictedInvitesQuery.error) {
             const _predictedMap = new Map();
 
@@ -232,7 +239,32 @@ const Reporting = () => {
             });
         } else if (predictedInvitesQuery.error) {
         }
-    }, [predictedInvitesQuery]);
+    }, [predictedInvitesQuery, range]);
+
+    useEffect(() => {
+        if (!predictedParkingQuery.loading && !predictedParkingQuery.error) {
+            const _predictedMap = new Map();
+
+            for (let i = 0; i < parkingRange; i++) {
+                const dateKey = new Date(parkingStartDate);
+                dateKey.setDate(parkingStartDate.getDate() + i);
+                _predictedMap.set(getFormattedDateString(dateKey), 0);
+            }
+
+            const predictedData =
+                predictedParkingQuery.data.getPredictedInviteData;
+
+            predictedData.forEach((prediction) => {
+                _predictedMap.set(prediction.date, prediction.parking);
+            });
+
+            setPredictedParkingData({
+                data: Array.from(_predictedMap.values()),
+                labels: Array.from(_predictedMap.keys()),
+            });
+        } else if (predictedParkingQuery.error) {
+        }
+    }, [predictedParkingQuery, parkingStartDate, parkingRange]);
 
     const sum = (data) => {
         let sum = 0;
@@ -294,31 +326,47 @@ const Reporting = () => {
                         </div>
                     </div>
                 </div>
-                <div className="card col-span-2 bg-base-200 p-3 lg:col-span-1">
-                    <h2 className="card-title p-3">Traffic</h2>
-                    <div className="card-body w-full">
-                        {activity.length === 0 ? <div>Nothing to show...</div>
-                            : activity.map((row,idx) => {
-                                const date = new Date(row.date);
-                                return (
-                                    <div key={idx} className="flex flex-col w-full">
-                                        <div className="flex justify-between w-full">
-                                            <p>{date.getDate() + "-" + monthNames[date.getMonth()]}</p>
-                                            <p>{row.visitors} visitors</p>
-                                        </div>
-                                        <div className="divider"></div>
-                                    </div>
-                                );
-                            })
-                        }
+                <div className="card col-span-2 bg-base-200 p-1 md:p-3 lg:p-5 lg:col-span-1">
+                    <h2 className="card-title">Reservations vs Used</h2>
+                    <div className="card-body">
+                        <PieChart
+                            labelvals={["Parking Reservations", "Used Parking"]}
+                            datavals={[
+                                sum(parkingData.data),
+                                sum(activeParkingData.data),
+                            ]}
+                            datalabels={["Parking"]}
+                        />
+                    </div>
+                    <div className="mb-10">
+                        <div className="divider"></div>
+                        <p>
+                            For {getFormattedDateString(parkingStartDate)} to{" "}
+                            {getFormattedDateString(parkingEndDate)} we had{" "}
+                            {sum(parkingData.data)} parking spots reserved but not
+                            used.
+                        </p>
                     </div>
                 </div>
                 <div className="card col-span-2 bg-base-300 p-3 lg:col-span-2">
-                    <h2 className="card-title p-3">Team Usage</h2>
+                    <h2 className="card-title p-3">Parking Reservations</h2>
                     <div className="card-body relative w-full">
-                        <TeamCarousel
-                            slideContent={receptionistInvites}
-                            numToShowPerSlide={2}
+                        <DownloadChart
+                            Chart={LineChart}
+                            labelvals={parkingData.labels}
+                            datavals={[
+                                parkingData.data,
+                                predictedParkingData.data,
+                                activeParkingData.data
+                            ]}
+                            datalabels={[
+                                "Parking Reservations",
+                                "Predicted Parking Reservations",
+                                "Used Parking"
+                            ]}
+                            setStart={setParkingStartDate}
+                            setRange={setParkingRange}
+                            queryLoading={parkingUsedQuery.loading}
                         />
                     </div>
                 </div>
