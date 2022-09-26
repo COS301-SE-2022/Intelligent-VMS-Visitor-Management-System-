@@ -11,3 +11,15 @@ export const validVerify = [{
     result: {
     }
 }];
+
+export const resendEmail = [{
+    request: {
+        query: gql`
+            query {
+                resendEmail(email: "admin@mail.com")
+            }
+        `
+    },
+    result: {
+    }
+}];
