@@ -220,7 +220,7 @@ const ReceptionistDashboard = () => {
                         }
                     }}
                 />
-                <button onClick={search} className="btn btn-sm md:btn-md">
+                <button data-testid="searchbtn" onClick={search} className="btn btn-sm md:btn-md">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="h-6 w-6"
@@ -245,6 +245,7 @@ const ReceptionistDashboard = () => {
                     </h1>
                     {searching ? (
                         <label
+                            data-testid="resetsearch"
                             className="btn btn-circle btn-xs ml-2 border-none bg-error"
                             onClick={() => resetDefaultResults()}
                         >

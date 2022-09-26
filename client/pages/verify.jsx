@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useApolloClient, gql } from "@apollo/client";
+import { alert } from "react-custom-alert";
 
 import Layout from "../components/Layout.jsx";
 
@@ -33,6 +34,26 @@ const Verify = () => {
             console.error("Invalid ID");
         }
     }, [router, client]);
+    
+    const resendEmail = (e) => {
+        e.currentTarget.classList.add("loading");
+        const { email } = router.query;
+
+        if(email) {
+            client.query({
+                query: gql`
+                    query {
+                        resendEmail(email: "${email}")
+                    }
+                `
+            }).then((res) => {
+                e.target.classList.remove("loading");
+            }).catch((err) => {
+                e.target.classList.remove("loading");
+            });
+        }
+
+    };
 
     return (
         <Layout>
@@ -49,7 +70,7 @@ const Verify = () => {
                     <h1 className="text-xl font-bold md:text-2xl lg:text-3xl">
                         Please check your email to verify your account
                     </h1>
-                    <button className="btn btn-primary">Resend Email</button>
+                    <button onClick={resendEmail} className="btn btn-primary">Resend Email</button>
                 </div>
             </div>
         </Layout>

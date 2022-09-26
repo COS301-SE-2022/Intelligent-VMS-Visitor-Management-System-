@@ -140,4 +140,9 @@ export class UserResolver {
     async getCurfewTimeOfResident(@Args("email") email: string) {
         return await this.userService.getCurfewTimeOfResident(email);
     }
+
+    @Query((returns) => { return Boolean }, { name: "resendVerify" })
+    async resendVerify(@Args("email") email: string) {
+        return await this.authService.resendVerifyEmail(email);
+    }
 }

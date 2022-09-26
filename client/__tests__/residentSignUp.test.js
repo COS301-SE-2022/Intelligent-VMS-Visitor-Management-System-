@@ -3,29 +3,32 @@ import "@testing-library/jest-dom";
 import { renderHook, act } from "@testing-library/react-hooks/server";
 import userEvent from "@testing-library/user-event";
 import { MockedProvider } from "@apollo/client/testing";
+import axios from "axios";
+import AxiosMockAdapter from 'axios-mock-adapter';
 
 import * as nextRouter from "next/router";
 
-import { validSignup } from "./__mocks__/signup.mock";
-
 import useAuth from "../store/authStore";
 import ResidentSignUp from "../pages/resident/signUp";
-
+import SignUp from "../pages/signUp";
 
 // Setup router mock hook
 nextRouter.useRouter = jest.fn();
 nextRouter.useRouter.mockImplementation(() => ({ route: "/signup" }));
 
+const axiosMockInstance = axios.create();
+const axiosMockAdapterInstance= new AxiosMockAdapter(axiosMockInstance, { delayResponse: 0 });
 
-describe("Sign-up", () => {
-    const useRouter = jest.spyOn(require("next/router"), "useRouter");
-    const router = {
-        push: jest.fn().mockImplementation(() => Promise.resolve(true)),
-        prefetch: () => new Promise((resolve) => resolve),
-        query: { name: "", email: "", idNumber: "", idDocType: "" },
-    };
-    useRouter.mockReturnValue(router);
+axiosMockAdapterInstance
+   .onPost('http://localhost:3001/user/signup')
+   .reply(() => {
+    return [200, { data: {
+        result: true
+    }}]
+}
+);
 
+describe("Resident-Sign-up", () => {
     it("renders a heading", () => {
         render(
             <MockedProvider>
@@ -78,7 +81,7 @@ describe("Sign-up", () => {
         expect(screen.getByText("Invalid email address")).toBeVisible();
     });
 
-    it("shows an error message with invalid password", async () => {
+    it("shows a message when no name is provided", async () => {
         render(
             <MockedProvider>
                 <ResidentSignUp />
@@ -92,46 +95,18 @@ describe("Sign-up", () => {
         // Type in invalid email
         await user.type(
             screen.getByPlaceholderText("Your Email"),
-            "user@mail.com"
-        );
-
-        await user.type(screen.getByPlaceholderText("Enter Name"), "kyle");
-
-        await user.type(screen.getByPlaceholderText("Enter ID number"), "0109195273070");
-
-        // Take focus away from email input
-        await user.click(screen.getByRole("button"));
-
-        expect(screen.getByText("Required")).toBeVisible();
-    });
-
-
-    it("shows an error message with invalid name", async () => {
-        render(
-            <MockedProvider>
-                <ResidentSignUp />
-            </MockedProvider>
-        );
-
-        expect(screen.getByPlaceholderText("Your Email")).toBeInTheDocument();
-
-        const user = userEvent.setup();
-
-        // Type in invalid email
-        await user.type(
-            screen.getByPlaceholderText("Your Email"),
-            "user@mail.com"
+            "admin@mail.com"
         );
 
         // Take focus away from email input
-        await user.type(screen.getByPlaceholderText("Password"), "password1!");
-        
+        await user.type(screen.getByPlaceholderText("Password"), "dwdwd");
+
         await user.click(screen.getByRole("button"));
 
         expect(screen.getByText("Name required")).toBeVisible();
     });
 
-    it("shows an error with invalid id number", async () => {
+    it("shows a message when an invalid name is provided", async () => {
         render(
             <MockedProvider>
                 <ResidentSignUp />
@@ -145,48 +120,193 @@ describe("Sign-up", () => {
         // Type in invalid email
         await user.type(
             screen.getByPlaceholderText("Your Email"),
-            "user@mail.com"
+            "admin@mail.com"
         );
 
         // Take focus away from email input
-        await user.type(screen.getByPlaceholderText("Password"), "password1!");
+        await user.type(screen.getByPlaceholderText("Enter Name"), "1290190");
 
-        await user.type(screen.getByPlaceholderText("Enter Name"), "kyle");
-        
+        await user.click(screen.getByRole("button"));
+
+        expect(screen.getByText("Invalid name")).toBeVisible();
+    });
+
+    it("shows an error on invalid ID number", async () => {
+        render(
+            <MockedProvider>
+                <ResidentSignUp />
+            </MockedProvider>
+        );
+
+        expect(screen.getByPlaceholderText("Your Email")).toBeInTheDocument();
+
+        const user = userEvent.setup();
+
+        // Type in invalid email
+        await user.type(
+            screen.getByPlaceholderText("Your Email"),
+            "admin@mail.com"
+        );
+
+        // Take focus away from email input
+        await user.type(screen.getByPlaceholderText("Enter Name"), "Kyle");
+
         await user.click(screen.getByRole("button"));
 
         expect(screen.getByText("Invalid RSA ID Number")).toBeVisible();
     });
 
-    // it("redirects to verify on successful sign up", async () => {
-    //     render(
-    //         <MockedProvider mocks={validSignup} addTypename={false}>
-    //             <ResidentSignUp />
-    //         </MockedProvider>
-    //     );
-        
-    //     const user = userEvent.setup();
+    it("shows an error when no password is provided", async () => {
+        render(
+            <MockedProvider>
+                <ResidentSignUp />
+            </MockedProvider>
+        );
 
-    //     // Type in invalid email
-    //     await user.type(
-    //         screen.getByPlaceholderText("Your Email"),
-    //         "test@mail.com"
-    //     );
+        expect(screen.getByPlaceholderText("Your Email")).toBeInTheDocument();
 
-    //     await user.type(screen.getByPlaceholderText("Enter Name"), "kyle");
+        const user = userEvent.setup();
 
-    //     await user.type(screen.getByPlaceholderText("Enter ID number"), "0109195273070");
+        // Type in invalid email
+        await user.type(
+            screen.getByPlaceholderText("Your Email"),
+            "admin@mail.com"
+        );
 
-    //     await user.type(screen.getByPlaceholderText("Password"), "password1!")
+        // Take focus away from email input
+        await user.type(screen.getByPlaceholderText("Enter Name"), "Kyle");
 
-    //     await user.type(screen.getByPlaceholderText("Confirm Password"), "password1!");
+        await user.type(screen.getByPlaceholderText("Enter ID number"), "0109195283090");
 
-    //     //await user.click(screen.getByLabelText("resident"));
+        await user.click(screen.getByRole("button"));
 
-    //     await user.click(screen.getByRole("button"));
+        expect(screen.getByText("Required")).toBeVisible();
+    });
 
-    //     await waitFor(async () => {
-    //         expect(router.push).toBeCalled();
-    //     })
-    // });
+    it("shows an error when no confirm password is provided", async () => {
+        render(
+            <MockedProvider>
+                <ResidentSignUp />
+            </MockedProvider>
+        );
+
+        expect(screen.getByPlaceholderText("Your Email")).toBeInTheDocument();
+
+        const user = userEvent.setup();
+
+        // Type in invalid email
+        await user.type(
+            screen.getByPlaceholderText("Your Email"),
+            "admin@mail.com"
+        );
+
+        // Take focus away from email input
+        await user.type(screen.getByPlaceholderText("Enter Name"), "Kyle");
+
+        await user.type(screen.getByPlaceholderText("Enter ID number"), "0109195283090");
+
+        await user.type(screen.getByPlaceholderText("Password"), "password1!");
+
+        await user.click(screen.getByRole("button"));
+
+        expect(screen.getByText("Required")).toBeVisible();
+    });
+
+    it("shows an error when password is invalid", async () => {
+        render(
+            <MockedProvider>
+                <ResidentSignUp />
+            </MockedProvider>
+        );
+
+        expect(screen.getByPlaceholderText("Your Email")).toBeInTheDocument();
+
+        const user = userEvent.setup();
+
+        // Type in invalid email
+        await user.type(
+            screen.getByPlaceholderText("Your Email"),
+            "admin@mail.com"
+        );
+
+        // Take focus away from email input
+        await user.type(screen.getByPlaceholderText("Enter Name"), "Kyle");
+
+        await user.type(screen.getByPlaceholderText("Enter ID number"), "0109195283090");
+
+        await user.type(screen.getByPlaceholderText("Password"), "pas!");
+
+        await user.type(screen.getByPlaceholderText("Confirm Password"), "pas!");
+
+        await user.click(screen.getByRole("button"));
+
+        expect(screen.getByText("Password needs minimum of 8 characters with one number and one special character")).toBeVisible();
+    });
+
+    it("shows an error when password and confirm password is not same", async () => {
+        render(
+            <MockedProvider>
+                <ResidentSignUp />
+            </MockedProvider>
+        );
+
+        expect(screen.getByPlaceholderText("Your Email")).toBeInTheDocument();
+
+        const user = userEvent.setup();
+
+        // Type in invalid email
+        await user.type(
+            screen.getByPlaceholderText("Your Email"),
+            "admin@mail.com"
+        );
+
+        // Take focus away from email input
+        await user.type(screen.getByPlaceholderText("Enter Name"), "Kyle");
+
+        await user.type(screen.getByPlaceholderText("Enter ID number"), "0109195283090");
+
+        await user.type(screen.getByPlaceholderText("Password"), "password1!");
+
+        await user.type(screen.getByPlaceholderText("Confirm Password"), "password2!");
+
+        await user.click(screen.getByRole("button"));
+
+        expect(screen.getByText("Passwords do not match")).toBeVisible();
+    });
+
+    it("shows an error if an image with no face is uploaded", async () => {
+        render(
+            <MockedProvider>
+                <ResidentSignUp />
+            </MockedProvider>
+        );
+
+        expect(screen.getByPlaceholderText("Your Email")).toBeInTheDocument();
+
+        const user = userEvent.setup();
+
+        // Type in invalid email
+        await user.type(
+            screen.getByPlaceholderText("Your Email"),
+            "admin@mail.com"
+        );
+
+        // Take focus away from email input
+        await user.type(screen.getByPlaceholderText("Enter Name"), "Kyle");
+
+        await user.type(screen.getByPlaceholderText("Enter ID number"), "0109195283090");
+
+        await user.type(screen.getByPlaceholderText("Password"), "password1!");
+
+        await user.type(screen.getByPlaceholderText("Confirm Password"), "password1!");
+
+        const fakeFile = new File(['hello'], 'file.png', { type: "image/png" }); 
+
+        await userEvent.upload(screen.getByTestId("fileupload"), fakeFile);
+
+        await user.click(screen.getByRole("button"));
+
+    });
+
 });
+
