@@ -20,6 +20,9 @@ import { RewardsService } from "@vms/rewards";
 import { GetNumberOfCancellationsOfResidentQuery } from "./queries/impl/getNumberOfCancellationsOfResident.query";
 import { GetInvitesOfResidentQuery } from "./queries/impl/getInvitesOfResident.query";
 import { GetInvitesInRangeByEmailQuery } from "./queries/impl/getInvitesInRangeByEmail.query";
+import { GetInviteForSignInDataQuery } from "./queries/impl/getInviteForSignInData.query";
+import { GetInviteForSignOutDataQuery } from "./queries/impl/getInviteForSignOutData.query";
+import { GetInviteForSignQuery } from "./queries/impl/getInviteForSign.query";
 
 describe("VisitorInviteService", () => {
     let service: VisitorInviteService;
@@ -94,6 +97,24 @@ describe("VisitorInviteService", () => {
                 } else {
                     return 0;
                 }
+            }else if (query instanceof GetInviteForSignInDataQuery) {
+                if (query.idNumber === "9911305129086") {
+                    return 2;
+                } else {
+                    return 0;
+                }
+            }else if (query instanceof GetInviteForSignOutDataQuery) {
+                if (query.idNumber === "9911305129086") {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }else if (query instanceof GetInviteForSignQuery) {
+                if (query.idNumber === "9911305129086") {
+                    return 3;
+                } else {
+                    return 0;
+                }
             }else if (query instanceof GetInvitesOfResidentQuery) {
                 if (query.email === "admin@mail.com") {
                     return [{inviteState:"extended"},{inviteState:"extended"}];
@@ -103,6 +124,8 @@ describe("VisitorInviteService", () => {
             }else if (query instanceof GetInvitesInRangeByEmailQuery) {
                 if (query.email === "admin@mail.com") {
                     return [{inviteState:"extended"},{inviteState:"extended"}];
+                } else if (query.email === "myman@male.com") {
+                    return 5;
                 } else {
                     return 0;
                 }
@@ -511,5 +534,44 @@ describe("VisitorInviteService", () => {
             catch (e) { expect(e.message).toEqual('No Invites to make suggestion') }
         })
     })
+    describe('extendInvitesJob', () => {
+        it('should extend invites', async () => {
+           
 
+            const response = await service.extendInvitesJob();
+            expect(response).toBeTruthy;
+
+        })
+    })
+    describe('setCurfewDetails', () => {
+        it('should set Curfew Details', async () => {
+            const response = await service.setCurfewDetails(3);
+            expect(response).toBeTruthy;
+        })
+    })
+    describe('getInviteForSignInData', () => {
+        it('should get the invite needed for sign in', async () => {
+            const response = await service.getInviteForSignInData("9911305129086", "2022/09/22", "true");
+            expect(response).toEqual(2);
+        })
+    })
+    describe('getInviteForSignOutData', () => {
+        it('should get the invite needed for sign in', async () => {
+            const response = await service.getInviteForSignOutData("9911305129086");
+            expect(response).toEqual(1);
+        })
+    })
+    describe('getInviteForSign', () => {
+        it('should get the invite needed for sign in', async () => {
+            const response = await service.getInviteForSign("9911305129086");
+            expect(response).toEqual(3);
+        })
+    })
+    describe('getNumInvitesPerDateOfUser', () => {
+        it('should get the invite needed for sign in', async () => {
+            const response = await service.getNumInvitesPerDateOfUser("2022/09/22", "2022/09/23", "myman@male.com");
+            expect(response).toEqual(5);
+        })
+    })
+    
 });
