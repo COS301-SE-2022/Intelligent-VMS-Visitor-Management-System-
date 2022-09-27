@@ -57,7 +57,7 @@ export class SignOutService {
         return {
             "trayNo": trayID,
             "name": invite.visitorName,
-            "action": "Sign Out"
+            "action": "Signed Out"
         };
     }
 

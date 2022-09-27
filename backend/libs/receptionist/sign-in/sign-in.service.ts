@@ -99,7 +99,7 @@ export class SignInService {
                     return {
                         "trayNo": tray.trayID,
                         "name": invite.visitorName,
-                        "action": "Sign In"
+                        "action": "Signed In"
                     }
                 } else {
                     return {"error": "Invite Date does not match"};
@@ -142,6 +142,7 @@ export class SignInService {
 
             return {
                 trayNo: await this.signIn(inviteID, "", new Date().toLocaleString("en-GB").replace(new RegExp("/", 'g'),"-")),
+                action: "Signed In",
                 name: invite.visitorName
             };
         } 
