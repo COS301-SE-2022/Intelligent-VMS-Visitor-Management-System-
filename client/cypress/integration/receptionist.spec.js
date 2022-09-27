@@ -47,7 +47,7 @@ describe('Receptionist tests', () => {
 
         describe('Checking receptionist dashboard contents', () => {
             //checks for the relavant elements on the page
-            cy.contains('Welcome back, Kelly Williams');
+            cy.contains('Welcome back,');
             cy.contains('Total Number Of Invites Sent');
             cy.contains('Maximum Invites Allowed');
             cy.contains('Maximum Sleepovers');
@@ -78,20 +78,12 @@ describe('Receptionist tests', () => {
         })
 
         describe('checking that invite correctly displays on visitor dashboard', () => {
-            cy.get('table[class="table-compact m-2 mb-5 table w-full md:table-normal"]', { timeout: 8000 })
+            cy.get('[class="card h-full bg-base-300 p-5"]', { timeout: 20000 })
                 .children()
                 .should('contain', 'Stefan1234@mail.com')
                 .should('contain', '9910304129088')
                 .should('contain', today)
                 .should('contain', 'RSA-ID');
-        })
-
-        describe('canceling a personal invite', () => {
-            cy.contains('td', 'Stefan1234@mail.com')//find stafans column
-                .parent()                               //his row
-                .within(($tr) => {                        //search only within the row
-                    cy.get('td button').click()
-                })
         })
 
         describe('Navigate to receptionist invite user/confirm navigation success', () => {
@@ -121,31 +113,5 @@ describe('Receptionist tests', () => {
             cy.contains('Scan Invite');
             cy.contains('Bulk-SignIn');
         })
-
-        // describe('sign in a visitor', () => {
-        //     cy.contains('td', '9910304129088')      //find Stefans column
-        //         .parent()                               //his row
-        //         .within(($tr) => {                        //search only within the row
-        //             cy.get('td label').click()
-        //         })
-        //     cy.contains('Confirm sign-in of visitor with id');
-
-        //     cy.get('div[class="modal-box"]').within(($div) => {
-        //         cy.contains('Sign in').click();
-        //     });
-        // })
-        
-        // describe('sign out the visitor that was just signed in', () => {
-
-        //     cy.wait(4000);
-        //     cy.contains('td', '9910304129088')      //find Stefans column
-        //         .parent()                               //his row
-        //         .within(($tr) => {                        //search only within the row
-        //             cy.get('td label').click()
-        //         })
-        //     cy.get('div[class="modal-box"]').within(($div) => {
-        //         cy.contains('Sign out').click();
-        //     });
-        // })
     })
 })
