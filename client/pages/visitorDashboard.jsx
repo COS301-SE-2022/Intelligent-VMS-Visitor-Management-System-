@@ -330,10 +330,9 @@ const VisitorDashboard = () => {
                         datalabels={[
                             "Invites",
                         ]}
-                        labelvals={["Cancelled", "Unused Invites", "Used Invites"]}
+                        labelvals={["Cancelled", "Used Invites"]}
                         datavals={[
                             numCancelled,
-                            numUnused,
                             numUsed
                         ]}
                     />
