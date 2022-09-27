@@ -22,6 +22,7 @@ import {
 nextRouter.useRouter = jest.fn();
 nextRouter.useRouter.mockImplementation(() => ({ route: "/createInvite" }));
 
+jest.setTimeout(50000);
 describe("CreateInvite", () => {
     const authHook = renderHook(() => useAuth());
     authHook.hydrate();

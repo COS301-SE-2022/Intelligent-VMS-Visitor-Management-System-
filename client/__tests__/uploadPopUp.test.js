@@ -4,12 +4,21 @@ import { renderHook } from "@testing-library/react-hooks/server";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
 import { MockedProvider } from "@apollo/client/testing";
+import { transitions, positions, Provider as AlertProvider } from 'react-alert'
 
 import useAuth from "../store/authStore";
 
+import Alert from "../components/Alert";
 import UploadPopUp from "../components/UploadPopUp";
 
 import { bulkSignInMutation } from "./__mocks__/uploadPopUp.mock";
+
+const options = {
+    position: positions.TOP_CENTER,
+      timeout: 8000,
+      offset: '30px',
+      transition: transitions.SCALE
+    }
 
 describe("UploadPopUp", () => {
     const authHook = renderHook(() => useAuth());
@@ -23,12 +32,14 @@ describe("UploadPopUp", () => {
     it("should parse file", async () => {
        const refetch = jest.fn();
        render(
-            <MockedProvider mocks={bulkSignInMutation} addTypename={false}>
-                <UploadPopUp 
-                    setShowUploadPopUp={() => {}}
-                    refetch={refetch}
-                />
-            </MockedProvider>
+            <AlertProvider {...options} template={Alert}>
+                <MockedProvider mocks={bulkSignInMutation} addTypename={false}>
+                    <UploadPopUp 
+                        setShowUploadPopUp={() => {}}
+                        refetch={refetch}
+                    />
+                </MockedProvider>
+            </AlertProvider>
         ); 
         expect(screen.getByText("Sign-In")).toBeVisible();
         
@@ -48,12 +59,14 @@ describe("UploadPopUp", () => {
     it("should only allow csv file", async () => {
        const refetch = jest.fn();
        render(
+            <AlertProvider {...options} template={Alert}>
             <MockedProvider mocks={bulkSignInMutation} addTypename={false}>
                 <UploadPopUp 
                     setShowUploadPopUp={() => {}}
                     refetch={refetch}
                 />
             </MockedProvider>
+            </AlertProvider>
         ); 
         expect(screen.getByText("Sign-In")).toBeVisible();
         

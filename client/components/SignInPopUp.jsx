@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { gql, useMutation, useApolloClient } from "@apollo/client";
-import { alert } from "react-custom-alert";
 import { ImEnter } from "react-icons/im";
 import { AiOutlineCheck } from "react-icons/ai";
 import { GiCancel } from "react-icons/gi";
+import { useAlert } from "react-alert";
+import { transitions, positions, Provider as AlertProvider } from 'react-alert';
 
 import axios from "axios";
 
@@ -18,6 +19,7 @@ const SignInPopUp = ({
     setShowSignInModal,
     setSearch,
 }) => {
+    const alert = useAlert();
 
     const BACKEND_URL = process.env.BACKEND_URL;
     const token = useAuth((state) => state.access_token);
@@ -59,8 +61,7 @@ const SignInPopUp = ({
         e.currentTarget.classList.add("loading");
 
         if(pin.length !== 5) {
-            alert({
-                message: "Pin must be a 5 digit number",
+            alert.show("Pin must be a 5 digit number", {
                 type: "error"
             })
             e.currentTarget.classList.remove("loading");
@@ -83,16 +84,18 @@ const SignInPopUp = ({
            setShowSignInModal(false);
            setSearch(false);
            setFile(null);
-           alert({
-                message: `${response.data.action} => Tray Number For ${response.data.name}: ${response.data.trayNo}`,
+           alert.show(
+            `${response.data.action} ${response.data.name} their tray number is ${response.data.trayNo}`,
+               {
                 type: "info",
-            });
+              });
             refetch();
         } else {
             setShowVerify(false);
-           alert({
-                message: `Error: ${response.data.error}`,
-                type: "error",
+           alert.show(
+                `${response.data.error}`,
+               {
+                    type: "error",
             });
         }
     };
@@ -101,8 +104,9 @@ const SignInPopUp = ({
         if(data.trayNo) {
            setShowSignInModal(false);
            setSearch(false);
-           alert({
-                message: `${data.action} => Tray Number For ${data.name}: ${data.trayNo}`,
+           alert.show(
+            `${response.data.action} ${response.data.name} their tray number is ${response.data.trayNo}`,
+           {
                 type: "info",
             });
             refetch();

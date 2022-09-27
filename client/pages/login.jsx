@@ -3,7 +3,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Formik } from "formik";
 import { gql, useMutation } from "@apollo/client";
-import { alert } from "react-custom-alert";
+import { useAlert } from 'react-alert';
 
 import { AiOutlineKey, AiFillLock } from "react-icons/ai";
 
@@ -12,6 +12,8 @@ import useAuth from "../store/authStore";
 import Layout from "../components/Layout";
 
 const Login = () => {
+    const alert = useAlert();
+
     const login = useAuth((state) => {
         return state.login;
     });
@@ -134,7 +136,9 @@ const Login = () => {
                             })
                             .catch((err) => {
                                 setSubmitting(false);
-                                alert({ message: err.message, type: "error" });
+                                alert.show(String(err.message), {
+                                    type: "error"
+                                });
                             });
                     }}
                 >
