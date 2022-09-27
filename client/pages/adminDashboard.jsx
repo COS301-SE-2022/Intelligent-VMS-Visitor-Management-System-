@@ -801,7 +801,7 @@ const AdminDashboard = () => {
                                             <AiOutlinePlus className="text-xl md:text-2xl lg:text-3xl" />
                                         </button>
                                         <p
-                                            id="numInvitesPerResident"
+                                            id="numSleepoversPerResident"
                                             className="text-4xl font-bold text-secondary"
                                         >
                                             {maxSleepovers}

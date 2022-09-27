@@ -60,15 +60,21 @@ The VMS is an intelligent visitor management system that provides a platform for
 
 <a href="https://docs.google.com/document/d/1H1qph418MlRJAnXKmxjCJjcUdoOnHHgsy3m5uIQUpOw/edit?usp=sharing">📊 SRS Document</a>
 
+<a href="https://docs.google.com/document/d/1xGIGt2TF3m_zBTq8HFQvbrWQS1P7GJDmd-BllNjurzk/edit?usp=sharing">🏠 Architecture Requirements Document</a>
+
+<a href="https://docs.google.com/document/d/1cEvTOnoZmEXxylP1PYGmIJqaO40ZHLxCKjMB2wpL74I/edit?usp=sharing">🧶 Coding Standards Document</a>
+
+<a href="https://docs.google.com/document/d/1V3HpPmDET7Qi9HQAEkKv3RmPfhWuLtyKRNrvhorMitw/edit?usp=sharing">📖 User Manual</a>
+
+<a href="https://docs.google.com/document/d/124ubxwnVHgESve9ysGf2L5XBBt-JyZ_6pMC4tz4P6rE/edit?usp=sharing">📲 Technical Installation Manual</a>
+
 <a href="https://docs.google.com/document/d/1vzGkBj-z6qehz3pOtaYuUYPNi2w1h8cGahX0uUgkSGk/edit?usp=sharing">📘 Testing Policy</a>
 
 <a href="https://docs.google.com/document/d/1EKpR3CEmGI7LoP-Xay-QMfZSxIZ8t2b5Zy8wEFhAIkY/edit?usp=sharing">📝 Quality Requirements Testing</a>
 
-<a href="https://docs.google.com/document/d/1V3HpPmDET7Qi9HQAEkKv3RmPfhWuLtyKRNrvhorMitw/edit?usp=sharing">📖 User Manual</a>
-
 <a href="https://docs.google.com/document/d/1YLsJSseVc8EUI0MPoKMe_InlRHobMgEgD7avqhEulSM/edit?usp=sharing">🧍 User testing</a>
 
-
+<a href="#">🚧 Demo Video</a>
 
 
 ### 👏 The Team
@@ -160,6 +166,10 @@ I am good at devoting myself to a task and learning everything required to compl
 │   ├── libs // Subsystem components
 │   ├── src // Entry point and bundler
 │   ├── test // e2e and integration tests
+├── data-prep // prediction model
+│   ├── app // application logic
+├── face-rec // prediction model
+│   ├── app // application logic
 ```
 See Coding Guidelines Document for more in depth file structure.
 
