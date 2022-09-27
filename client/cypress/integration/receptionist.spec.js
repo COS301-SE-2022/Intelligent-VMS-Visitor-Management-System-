@@ -33,6 +33,7 @@
             cy.get('.menuIcon').click();
             cy.get('.dropdown-content').children().should('contain', 'Create Invite')//check for correct menu options.
                 .and('contain', 'Your Dashboard')
+                .and('contain', 'Your Profile')
                 .and('contain', 'Manage Residents')
                 .and('contain', 'Receptionist Dashboard')
                 .and('contain', 'Logout');
@@ -46,7 +47,7 @@
 
         describe('Checking receptionist dashboard contents', () => {
             //checks for the relavant elements on the page
-            cy.contains('Welcome back,Receptionist');
+            cy.contains('Welcome back, Kelly Williams');
             cy.contains('User Invites');
             cy.contains('Total Number Of Invites Sent');
             cy.contains('Maximum Invites Allowed');
