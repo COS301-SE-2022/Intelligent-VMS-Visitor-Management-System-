@@ -1,4 +1,4 @@
-/*describe('Receptionist tests', () => {
+describe('Receptionist tests', () => {
     it('tests various receptionist functions', () => {
         var today = new Date();
         var dd = String(today.getDate()).padStart(2, '0');
@@ -122,30 +122,30 @@
             cy.contains('Bulk-SignIn');
         })
 
-        describe('sign in a visitor', () => {
-            cy.contains('td', '9910304129088')      //find Stefans column
-                .parent()                               //his row
-                .within(($tr) => {                        //search only within the row
-                    cy.get('td label').click()
-                })
-            cy.contains('Confirm sign-in of visitor with id');
+        // describe('sign in a visitor', () => {
+        //     cy.contains('td', '9910304129088')      //find Stefans column
+        //         .parent()                               //his row
+        //         .within(($tr) => {                        //search only within the row
+        //             cy.get('td label').click()
+        //         })
+        //     cy.contains('Confirm sign-in of visitor with id');
 
-            cy.get('div[class="modal-box"]').within(($div) => {
-                cy.contains('Sign in').click();
-            });
-        })
+        //     cy.get('div[class="modal-box"]').within(($div) => {
+        //         cy.contains('Sign in').click();
+        //     });
+        // })
         
-        describe('sign out the visitor that was just signed in', () => {
+        // describe('sign out the visitor that was just signed in', () => {
 
-            cy.wait(4000);
-            cy.contains('td', '9910304129088')      //find Stefans column
-                .parent()                               //his row
-                .within(($tr) => {                        //search only within the row
-                    cy.get('td label').click()
-                })
-            cy.get('div[class="modal-box"]').within(($div) => {
-                cy.contains('Sign out').click();
-            });
-        })
+        //     cy.wait(4000);
+        //     cy.contains('td', '9910304129088')      //find Stefans column
+        //         .parent()                               //his row
+        //         .within(($tr) => {                        //search only within the row
+        //             cy.get('td label').click()
+        //         })
+        //     cy.get('div[class="modal-box"]').within(($div) => {
+        //         cy.contains('Sign out').click();
+        //     });
+        // })
     })
-})*/
+})
