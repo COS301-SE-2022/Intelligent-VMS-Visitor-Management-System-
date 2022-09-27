@@ -52,14 +52,8 @@
             cy.contains('Maximum Invites Allowed');
             cy.contains('Maximum Sleepovers');
             cy.contains('Visitor Curfew');
+            cy.contains('Popular Visitors');
             cy.contains('Open invites', { matchCase: false });
-
-            //check for table/correct table headings.
-            cy.get('.table-compact').children().should('contain', 'Email')
-                .and('contain', 'ID Document Type')
-                .and('contain', 'ID Number')
-                .and('contain', 'Date')
-                .and('contain', 'Cancel Invite');
 
             //check that the footer has rendered
             cy.contains('Team Firestorm').and('contain', 'Providing reliable tech since 2022');
