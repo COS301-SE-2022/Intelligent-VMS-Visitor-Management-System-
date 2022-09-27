@@ -86,19 +86,7 @@ describe('Receptionist tests', () => {
                 .should('contain', 'RSA-ID');
         })
 
-        describe('Navigate to receptionist invite user/confirm navigation success', () => {
-            cy.get('.menuIcon').click();
-            cy.contains('create invite', { matchCase: false }).click();
-            cy.url().should('include', '/createInvite');//confirm correct page
-        })
-
-        describe('Filling in a user invite', () => {
-            cy.get('input[name="email"]').type('Stefan1234@mail.com').should('have.value', 'Stefan1234@mail.com');
-            cy.get('input[name="idValue"]').type('9910304129088').should('have.value', '9910304129088');
-            cy.get('input[name="name"]').type('Steffany').should('have.value', 'Steffany');
-            cy.get('input[name="visitDate"]').type(today).should('have.value', today);
-            cy.get('button[type="submit"]').click();
-        })
+        
 
         describe('receptionistDashboard/confirm navigation success', () => {
             cy.contains('Open Invites', { timeout: 8000 })
