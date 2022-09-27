@@ -118,14 +118,8 @@
 
         describe('confirming all elements have loaded for receptionist dashboard', () => {
             cy.contains('Today\'s Invites');
-            cy.contains('Scan to Search');
+            cy.contains('Scan Invite');
             cy.contains('Bulk-SignIn');
-            cy.contains('Scan to Search');
-            cy.get('table[class="mb-5 table w-full"]')//Confirm table has loaded
-                .children()
-                .should('contain', 'Visitor Name')
-                .should('contain', 'Visitor ID')
-                .should('contain', 'Status')
         })
 
         describe('sign in a visitor', () => {
