@@ -48,9 +48,10 @@
         describe('Checking receptionist dashboard contents', () => {
             //checks for the relavant elements on the page
             cy.contains('Welcome back, Kelly Williams');
-            cy.contains('User Invites');
             cy.contains('Total Number Of Invites Sent');
             cy.contains('Maximum Invites Allowed');
+            cy.contains('Maximum Sleepovers');
+            cy.contains('Visitor Curfew');
             cy.contains('Open invites', { matchCase: false });
 
             //check for table/correct table headings.
