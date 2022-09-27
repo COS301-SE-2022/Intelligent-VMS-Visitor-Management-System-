@@ -40,7 +40,7 @@ const SignUp = () => {
 
                     <div className="flex items-center space-x-3">
                         <Link href="/resident/signUp"> 
-                            <a style={{textDecoration: "none"}}>
+                            <a >
                                 <span className=" text-sm font-bold md:text-base">Resident</span>
                             </a>
                         </Link>
@@ -48,7 +48,7 @@ const SignUp = () => {
 
                     <div className="flex items-center space-x-3">
                         <Link href="/receptionist/signUp" > 
-                        <a style={{textDecoration: "none"}}>
+                        <a >
                                 <span className=" text-sm font-bold md:text-base">Receptionist</span> 
                         </a>
                         </Link>
