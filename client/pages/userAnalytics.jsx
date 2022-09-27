@@ -42,13 +42,12 @@ const UserAnalytics = () => {
     const generateReport = (invites) => {
         const doc = jsPDF();
 
-        const tableColumn = ["User", "Visitor", "Date", "Status", "Sign In Time", "Sign Out Time"];
+        const tableColumn = ["Visitor", "Date", "Status", "Sign In Time", "Sign Out Time"];
         const tableRows = [];
 
         doc.text(`User Report For ${name} - (${reportStartDate} to ${reportEndDate})`, 10, 15);
         invites.forEach((invite) => {
             const inviteData = [
-                token.email,
                 invite.visitorEmail,
                 invite.inviteDate,
                 invite.inviteState,
@@ -74,8 +73,8 @@ const UserAnalytics = () => {
                 }
             },
         });
-        doc.save(`report_${name}.pdf`);
         setGeneratingReport(false);
+        doc.save(`report_${name}.pdf`);
     };
 
     const deleteUserAccount = (email, type) => {

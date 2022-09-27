@@ -73,7 +73,7 @@ type Invite {
   requiresParking: Boolean!
   inviteState: String!
   notes: String!
-  signOutTime: String!
+  signOutTime: String
   signInTime: String
   trayNumber: Float!
 }
