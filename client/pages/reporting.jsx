@@ -195,7 +195,7 @@ const Reporting = () => {
                                 ? _reservationsMap.get(reservation.reservationDate) + 1
                                 : 1
                         );
-                    } else {
+                    } else if(reservation.reservationDate <= now) {
                         _usedMap.set(
                             reservation.reservationDate,
                             _usedMap.get(reservation.reservationDate)
