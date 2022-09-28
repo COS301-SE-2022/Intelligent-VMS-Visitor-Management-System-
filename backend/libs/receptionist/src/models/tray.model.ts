@@ -4,16 +4,16 @@
 
  @ObjectType()
  export class Tray {
-     @Field((type) => Int)
+     @Field((type) => {return Int})
      trayID: number;
 
-     @Field((type) => String)
+     @Field((type) => {return String})
      inviteID: string;
 
-     @Field((type) => Boolean)
-     containsResidentID: Boolean;
+     @Field((type) => {return Boolean})
+     containsResidentID: boolean;
 
-     @Field((type) => Boolean)
-     containsVisitorID: Boolean;
+     @Field((type) => {return Boolean})
+     containsVisitorID: boolean;
  }
 

@@ -7,6 +7,7 @@ export enum InviteState{
     signedIn,
     inActive,
     signedOut,
+    cancelled
 }
 
 @Schema()
@@ -35,7 +36,6 @@ export class Invite {
     @Prop()
     notes?: string;
 
-    //TODO (Kyle) DEFAULT SHOULD BE INACTIVE
     @Prop()
     inviteState: string
 
@@ -43,10 +43,10 @@ export class Invite {
     visitorName: string;
     
     @Prop()
-    signOutTime: string;
+    signOutTime?: string;
 
     @Prop()
-    signInTime: string;
+    signInTime?: string;
 
     @Prop()
     creationTime: string;

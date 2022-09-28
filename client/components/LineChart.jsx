@@ -5,6 +5,7 @@ import {
     PointElement,
     LineElement,
     Title,
+    Filler,
     Tooltip,
     Legend,
 } from "chart.js";
@@ -17,13 +18,26 @@ ChartJS.register(
     PointElement,
     LineElement,
     Title,
+    Filler,
     Tooltip,
     Legend
 );
 
-const LineChart = ({ chartRef, labelvals, datavals }) => {
+const LineChart = ({ chartRef, labelvals, datavals, datalabels }) => {
     const options = {
         responsive: true,
+        scales: {
+            x: {
+                grid: {
+                    display: false,
+                },
+            },
+            y: {
+                grid: {
+                    display: false,
+                },
+            },
+        },
         plugins: {
             legend: {
                 position: "top",
@@ -31,23 +45,43 @@ const LineChart = ({ chartRef, labelvals, datavals }) => {
         },
     };
 
-    const labels = labelvals;
+    if (typeof window !== "undefined") {
+        const style = window.getComputedStyle(document.body);
+        const primary = style.getPropertyValue("--p");
+        const primaryContent = style.getPropertyValue("--pf");
+        const secondary = style.getPropertyValue("--s");
+        const secondaryContent = style.getPropertyValue("--sf");
+        const tertiary = style.getPropertyValue("--a");
+        const tertiaryContent = style.getPropertyValue("--af");
+        const fourth = style.getPropertyValue("--su");
 
-    const data = {
-        labels,
-        datasets: [
-            {
-                label: "Data",
-                lineTension: 0.2,
-                data: datavals,
-                borderColor: "white",
-                backgroundColor: "white",
+        const colours = [primary, secondary, tertiary, fourth];
+        const coloursBorders = [primaryContent, secondaryContent, tertiaryContent, fourth];
+
+        const labels = labelvals;
+
+        const datasets = datavals.map((dataSet, idx) => {
+            return {
+                label: `${datalabels ? datalabels[idx] : "Data Set " + (idx + 1)}`,
+                lineTension: 0.5,
+                data: dataSet,
+                borderColor: `hsl(${colours[idx]})`,
+                backgroundColor: `hsl(${
+                    coloursBorders[idx % coloursBorders.length]
+                })`,
                 borderWidth: 2,
-            },
-        ],
-    };
+            };
+        });
 
-    return <Line ref={chartRef} options={options} data={data} />;
+        const data = {
+            labels,
+            datasets: datasets,
+        };
+
+        return <Line ref={chartRef} options={options} data={data} />;
+    } else {
+        return <></>;
+    }
 };
 
 export default LineChart;

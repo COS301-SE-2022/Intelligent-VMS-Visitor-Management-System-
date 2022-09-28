@@ -18,11 +18,16 @@ const customJestConfig = {
   coveragePathIgnorePatterns: [
     "node_modules",
     "authStore.js",
+    "themeStore.js",
     "useVideo.hook.js",
-    "QRScanner.js"
+    "QRScanner.js",
+    "Camera.jsx",
+    "FaceRec.jsx",
+    "SignInPopUp.jsx"
   ],
   modulePathIgnorePatterns: [
       "__mocks__",
+      "cypress"
   ],
 }
 

@@ -3,7 +3,9 @@ import Layout from "../components/Layout";
 import useAuth from "../store/authStore";
 
 const Expire = () => {
-    const logout = useAuth((state) => {return state.logout});
+    const logout = useAuth((state) => {
+        return state.logout;
+    });
     logout();
 
     return (

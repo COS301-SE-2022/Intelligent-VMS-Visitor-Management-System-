@@ -1,5 +1,4 @@
 import { Field, ObjectType } from "@nestjs/graphql";
-import { InviteState } from "../schema/invite.schema";
 
 @ObjectType()
 export class Invite {
@@ -27,20 +26,19 @@ export class Invite {
     @Field((type) => {return Boolean})
     requiresParking: boolean;
 
-    //Graphql doesnt like enums
     @Field((type) => {return String})
     inviteState: string
 
     @Field((type) => {return String})
-    notes?: string
+    notes?: string;
 
-    @Field((type)=> String)
-    signOutTime?: Date
+    @Field((type)=> {return String},{nullable: true})
+    signOutTime?: Date;
 
-    @Field((type)=> String)
-    signInTime?: String
+    @Field((type)=> {return String},{nullable:true})
+    signInTime: string;
 
-    @Field((type)=> Number)
-    trayNumber?: number
+    @Field((type)=> {return Number})
+    trayNumber?: number;
 
 }

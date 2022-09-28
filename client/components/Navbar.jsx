@@ -1,12 +1,15 @@
 import Link from "next/link";
 
-import { motion } from "framer-motion";
-import { CgMenuRight } from "react-icons/cg";
-
+import ThemeSelector from "./ThemeSelector";
 import useAuth from "../store/authStore";
 
 const Navbar = () => {
-    const navlinks = useAuth((state) => {return state.navLinks})();
+    const navlinks = useAuth((state) => {
+        return state.navLinks;
+    })();
+    const token = useAuth((state) => {
+        return state.decodedToken;
+    })();
 
     return (
         <nav className="navbar w-full bg-neutral sm:rounded-xl">
@@ -41,7 +44,32 @@ const Navbar = () => {
                     </a>
                 </Link>
             </div>
-            <div className="navbar-end">
+            <div className="navbar-end space-x-5 text-xs text-neutral-content md:text-sm">
+                <div>
+                    <ThemeSelector />
+                </div>
+                {token && (
+                    <Link href="/visitorDashboard">
+                        <a>
+                            <div
+                                className={
+                                    "avatar placeholder rounded-full " +
+                                    (token.permission === 0
+                                        ? "bg-primary"
+                                        : token.permission === 1
+                                        ? "bg-secondary"
+                                        : "bg-accent")
+                                }
+                            >
+                                <div className="w-10 text-primary-content">
+                                    <span className="text-xl">
+                                        {token ? token.name[0] : ""}
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
+                    </Link>
+                )}
                 <div className="dropdown dropdown-end">
                     <label tabIndex="0" className="menuIcon btn btn-ghost">
                         <svg
@@ -78,7 +106,7 @@ const Navbar = () => {
                     </label>
                     <ul
                         tabIndex="0"
-                        className="dropdown-content menu rounded-box menu-compact mt-3 w-52 bg-neutral p-2 shadow"
+                        className="dropdown-content menu rounded-box menu-compact mt-3 w-52 bg-neutral p-2 text-neutral-content shadow"
                     >
                         {navlinks.map((link, idx) => {
                             return (

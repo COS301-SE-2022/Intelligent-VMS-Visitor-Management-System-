@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useState, useEffect, useRef } from "react";
-import { gql, useQuery, useMutation } from "@apollo/client";
+import { gql, useQuery, useMutation, useApolloClient } from "@apollo/client";
 
 import Layout from "../components/Layout";
 import AdminCard from "../components/AdminCard";
@@ -13,12 +13,17 @@ import useAuth from "../store/authStore";
 
 import { AiOutlinePlus, AiOutlineMinus, AiOutlineCar } from "react-icons/ai";
 import { BiBuildingHouse, BiMailSend } from "react-icons/bi";
-import { FaSearch } from "react-icons/fa";
-import { MdBlock, MdDataSaverOn, MdDataSaverOff } from "react-icons/md";
+import { FaSearch, FaCarSide, FaPeopleArrows } from "react-icons/fa";
+import {
+    MdBlock,
+    MdDataSaverOn,
+    MdDataSaverOff,
+    MdOutlineCancel,
+} from "react-icons/md";
 
 // Returns string in format yyyy-mm-dd given Date Object
 const getFormattedDateString = (date) => {
-    if(date instanceof Date) {
+    if (date instanceof Date) {
         const month = date.getMonth() + 1;
         const day = date.getDate();
         return [
@@ -30,27 +35,64 @@ const getFormattedDateString = (date) => {
 };
 
 const AdminDashboard = () => {
-
     // NextJS Page Router
     const router = useRouter();
 
     // Number of invites sent state
     const [numInvitesSent, setNumInvitesSent] = useState(0);
 
+    const [hoursMenu, setHours] = useState(0);
+    const [minutesMenu, setMinutes] = useState(0);
+
+    const hours = ["00","01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23"];
+    const mins = ["00","01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29"
+    ,"30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54","55","56","57","58","59"];
+
     // Visitor invite data object for chart
-    const [visitorVals, setVisitorVals] = useState({ data: [], labels: [] });
+    const [visitorVals, setVisitorVals] = useState({
+        data: [],
+        labels: [],
+        label: "Invites",
+    });
 
     // Parking data object for chart
-    const [parkingVals, setParkingVals] = useState({ data: [], labels: [] });
+    const [parkingVals, setParkingVals] = useState({
+        data: [],
+        labels: [],
+        label: "Parking",
+    });
+
+    // Predicted Visitor Values
+    const [predictedVisitorVals, setPredictedVisitorVals] = useState([]);
+    const [predictedParkingVals, setPredictedParkingVals] = useState([]);
 
     // Date Range Hook
-    const [startDate, endDate, dateMap, setDateMap, setStartDate] = useDateRange(getFormattedDateString(new Date(Date.now())), 7);
+    const [startDate, endDate, inviteDateMap, setDateMap] = useDateRange(
+        getFormattedDateString(new Date(Date.now())),
+        7
+    );
+
+    // Parking Date Range Hook
+    const [
+        parkingStartDate,
+        parkingEndDate,
+        parkingDateMap,
+        setParkingDateMap,
+    ] = useDateRange(getFormattedDateString(new Date(Date.now())), 7);
 
     // Start Date State
     const [start, setStart] = useState(startDate);
 
     // Initial number of invites per resident for fallback
-    const [initialNumInvitesPerResident, setInitialNumInvitesPerResident] = useState(1);
+    const [initialNumInvitesPerResident, setInitialNumInvitesPerResident] =
+        useState(1);
+
+    const [initialSleepovers, setInitialSleepovers] = useState(0);
+
+    const [initialNumParkingSpots, setInitialNumParkingSpots] = useState(0);
+
+    const [numParkingSpotsAvailableToday, setNumParkingSpotsAvailableToday] =
+        useState(0);
 
     // State to track whether the restrictions have changed
     const [restrictionsChanged, setRestrictionsChanged] = useState(false);
@@ -61,22 +103,61 @@ const AdminDashboard = () => {
     // Search visitor name state
     const [name, setName] = useState("");
 
+    // Average values for week
+    const [avgVisitors, setAvgVisitors] = useState(0);
+    const [avgParking, setAvgParking] = useState(0);
+
+    // Cancellations for the week
+    const [numCancel, setNumCancel] = useState(0);
+
+    const now = getFormattedDateString(new Date());
+
     const [numParkingSpotsAvailable, setNumParkingSpotsAvailable] = useState(0);
-    const updateParkingSpots = useAuth((state) => {return state.updateParkingSpots});
 
     // JWT Token data from Model
-    const decodedToken = useAuth((state) => {return state.decodedToken})();
-    
+    const decodedToken = useAuth((state) => {
+        return state.decodedToken;
+    })();
+
     const numInvitesPerResidentQuery = useQuery(gql`
         query {
             getNumInvitesPerResident {
                 value
-          }
+            }
         }
     `);
-    
+
+    const CurfewTimeQuery = useQuery(gql`
+        query {
+            getCurfewTime {
+                value
+            }
+        }
+    `);
+
+    const numSleepoversPerResidentQuery = useQuery(gql`
+        query {
+            getMaxSleepovers {
+                value
+            }
+        }
+    `);
+
+    const maxSleepoversQuery = useQuery(gql`
+        query {
+            getMaxSleepovers {
+                value
+            }
+        }
+    `);
+
     // Number of invites per resident state
     const [numInvitesPerResident, setNumInvitesPerResident] = useState(1);
+    const [maxSleepovers, setMaxSleepovers] = useState(1);
+    const [curfewTime, setCurfewTime] = useState(1);
+
+    const [defaultHours, setDefaultHours] = useState(0);
+    const [defaultMins, setDefaultMins] = useState(0);
 
     const numInvitesQuery = useQuery(gql`
         query {
@@ -84,46 +165,151 @@ const AdminDashboard = () => {
         }
     `);
 
-    const numInviteInDateRangeQuery = useQuery(gql`
+    const numParkingSpotsAvailableQuery = useQuery(gql`
+         query {
+            getTotalAvailableParking
+        }
+    `);
+
+
+
+    const numInviteInDateRangeQuery = useQuery(
+        gql`
         query {
             getNumInvitesPerDate(
                 dateStart: "${start}",
                 dateEnd: "${endDate}"
             ) {
                 inviteDate
+                inviteState
             }
         }
-    `, { fetchPolicy: "no-cache", });
+    `,
+        { fetchPolicy: "no-cache" }
+    );
 
     const numParkingInDateRangeQuery = useQuery(gql`
         query {
-            getUsedParkingsInRange(startDate: "${startDate}", endDate: "${endDate}")
+            getUsedParkingsInRange(startDate: "${parkingStartDate}", endDate: "${parkingEndDate}") {
+                reservationDate
+            }
         }
     `);
 
-    const numParkingSpotsAvailableQuery = useQuery(gql`
+    const predictedInvitesQuery = useQuery(gql`
         query {
-            getAvailableParking
-        }
-    `);
-
-    const [setNumInvitesPerResidentMutation, { data, loading, error }] = useMutation(gql`
-        mutation {
-          setNumInvitesPerResident(numInvites: ${numInvitesPerResident}) {
-            value
+          getPredictedInviteData(startDate: "${startDate}", endDate: "${endDate}") {
+            date
+            parking,
+            visitors
           }
         }
     `);
 
+    const [setNumInvitesPerResidentMutation, { data, loading, error }] =
+        useMutation(gql`
+        mutation {
+        setNumInvitesPerResident(numInvites: ${numInvitesPerResident}) {
+            value
+        }
+        }
+    `);
+
+    const [setMaxSleepoversMutation, {}] =
+        useMutation(gql`
+        mutation {
+        setMaxSleepovers(sleepovers: ${maxSleepovers}) {
+            value
+        }
+        }
+    `);
+
+    const [adjustParkingMutation, { }] =
+        useMutation(gql`
+       mutation {
+        adjustParking(numDisiredParkingTotal: ${numParkingSpotsAvailable}) 
+       }
+   `);
+
+    const client = useApolloClient();
+    function curfewMutationFunc(CURFEW) {
+
+        client.mutate({
+            mutation: gql`
+        mutation {
+            setCurfewTime(curfewTime: ${CURFEW}) {
+            value
+            }
+        }
+    `});
+    }
+
     const cancelRestrictions = () => {
         setNumInvitesPerResident(initialNumInvitesPerResident);
+        setNumParkingSpotsAvailable(initialNumParkingSpots);
+        setInitialSleepovers(initialSleepovers);
         setRestrictionsChanged(false);
     };
 
     const saveRestrictions = () => {
-       setInitialNumInvitesPerResident(numInvitesPerResident);
-       setNumInvitesPerResidentMutation();
-       setRestrictionsChanged(false); 
+
+        if (numInvitesPerResident !== initialNumInvitesPerResident) {
+            setInitialNumInvitesPerResident(numInvitesPerResident);
+            setNumInvitesPerResidentMutation();
+        }
+
+        if (maxSleepovers !== initialSleepovers) {
+            setInitialSleepovers(maxSleepovers);
+            setMaxSleepoversMutation();
+        }
+
+        if (numParkingSpotsAvailable !== initialNumParkingSpots) {
+            setInitialNumParkingSpots(numParkingSpotsAvailable);
+            adjustParkingMutation();
+            setNumParkingSpotsAvailableToday(
+                numParkingSpotsAvailable - parkingDateMap.get(parkingStartDate)
+            );
+        }
+
+        if (minutesMenu == "1") {
+            minutesMenu = "0" + minutesMenu;
+        } else if (minutesMenu == "2") {
+            minutesMenu = "0" + minutesMenu;
+        } else if (minutesMenu == "3") {
+            minutesMenu = "0" + minutesMenu;
+        } else if (minutesMenu == "4") {
+            minutesMenu = "0" + minutesMenu;
+        } else if (minutesMenu == "5") {
+            minutesMenu = "0" + minutesMenu;
+        } else if (minutesMenu == "6") {
+            minutesMenu = "0" + minutesMenu;
+        } else if (minutesMenu == "7") {
+            minutesMenu = "0" + minutesMenu;
+        } else if (minutesMenu == "8") {
+            minutesMenu = "0" + minutesMenu;
+        } else if (minutesMenu == "9") {
+            minutesMenu = "0" + minutesMenu;
+        } else if (minutesMenu == "0") {
+            minutesMenu = "0" + minutesMenu;
+        }
+
+        if (hoursMenu == "0") {
+            hoursMenu = "0" + hoursMenu;
+        }
+
+        let temp = hoursMenu + minutesMenu;
+        
+        let numTemp = parseInt(temp);
+        setCurfewTime(numTemp);
+
+        if (parseInt(hoursMenu) != defaultHours || parseInt(minutesMenu)!=defaultMins) {
+            //setInitialCurfewTime(curfewTime);  
+            curfewMutationFunc(numTemp);   
+            setDefaultHours(hoursMenu);
+            setDefaultMins(minutesMenu);    
+        }
+
+        setRestrictionsChanged(false);
     };
 
     useEffect(() => {
@@ -144,39 +330,61 @@ const AdminDashboard = () => {
             !numInviteInDateRangeQuery.error
         ) {
             const invites = numInviteInDateRangeQuery.data.getNumInvitesPerDate;
+            let numCancelled = 0;
             invites.forEach((invite) => {
-                if(!isNaN(dateMap.get(invite.inviteDate))) {
-                    dateMap.set(
+                if (invite.inviteState === "cancelled") {
+                    numCancelled++;
+                } else if (!isNaN(inviteDateMap.get(invite.inviteDate))) {
+                    inviteDateMap.set(
                         invite.inviteDate,
-                        dateMap.get(invite.inviteDate) + 1
+                        inviteDateMap.get(invite.inviteDate) + 1
                     );
                 }
             });
 
-            setDateMap(new Map(dateMap));
+            setNumCancel(numCancelled);
+            setAvgVisitors(invites.length / 7);
+
+            setDateMap(new Map(inviteDateMap));
             setVisitorVals({
-                data: Array.from(dateMap.values()),
-                labels: Array.from(dateMap.keys()),
+                data: Array.from(inviteDateMap.values()),
+                labels: Array.from(inviteDateMap.keys()),
+                label: "Invites",
             });
 
-            setTodayInvites(dateMap.get(startDate));
-
+            setTodayInvites(inviteDateMap.get(startDate));
         } else if (numInviteInDateRangeQuery.error) {
             console.error(numInviteInDateRangeQuery.error);
         }
-        
-        // Num parking in range
-        if(!numParkingInDateRangeQuery.loading &&
-           !numParkingInDateRangeQuery.error) {
-            const parkingNumbers = numParkingInDateRangeQuery.data.getUsedParkingsInRange;
 
-            setParkingVals({
-                labels: Array.from(dateMap.keys()),
-                data: Array.from(parkingNumbers) 
+
+        // Num parking in range
+        if (
+            !numParkingInDateRangeQuery.loading &&
+            !numParkingInDateRangeQuery.error
+        ) {
+            const parkingNumbers =
+                numParkingInDateRangeQuery.data.getUsedParkingsInRange;
+
+            parkingNumbers.forEach((parking) => {
+                if (!isNaN(parkingDateMap.get(parking.reservationDate))) {
+                    parkingDateMap.set(
+                        parking.reservationDate,
+                        parkingDateMap.get(parking.reservationDate) + 1
+                    );
+                }
             });
 
-        } else if(numInviteInDateRangeQuery.error) {
-            console.error(numInviteInDateRangeQuery.error);
+            setAvgParking(parkingNumbers.length / 7);
+
+            setParkingDateMap(new Map(parkingDateMap));
+            setParkingVals({
+                labels: Array.from(parkingDateMap.keys()),
+                data: Array.from(parkingDateMap.values()),
+                label: "Parking",
+            });
+        } else if (numParkingInDateRangeQuery.error) {
+            console.error(numParkingInDateRangeQuery.error);
         }
 
         // Parking spots available
@@ -185,31 +393,93 @@ const AdminDashboard = () => {
             !numParkingSpotsAvailableQuery.error
         ) {
             const numParkingspots =
-                numParkingSpotsAvailableQuery.data.getAvailableParking;
+                numParkingSpotsAvailableQuery.data.getTotalAvailableParking;
             setNumParkingSpotsAvailable(numParkingspots);
+            setInitialNumParkingSpots(numParkingspots);
+            setNumParkingSpotsAvailableToday(
+                numParkingSpotsAvailable - parkingDateMap.get(parkingStartDate)
+            );
         } else if (numParkingSpotsAvailableQuery.error) {
+            setNumParkingSpotsAvailable("Error");
         }
-        
-        if(
+
+        if (
             !numInvitesPerResidentQuery.loading &&
             !numInvitesPerResidentQuery.error
         ) {
-
-            setNumInvitesPerResident(numInvitesPerResidentQuery.data.getNumInvitesPerResident.value);
+            setNumInvitesPerResident(
+                numInvitesPerResidentQuery.data.getNumInvitesPerResident.value
+            );
             setInitialNumInvitesPerResident(numInvitesPerResident);
-        } else if(numInvitesPerResident.error) {
+        } else if (numInvitesPerResident.error) {
         }
+
+        if (
+            !numSleepoversPerResidentQuery.loading &&
+            !numSleepoversPerResidentQuery.error
+        ) {
+            setMaxSleepovers(
+                numSleepoversPerResidentQuery.data.getMaxSleepovers.value
+            );
+            setInitialSleepovers(maxSleepovers);
+        } else if (numSleepoversPerResidentQuery.error) {
+        }
+
 
     }, [
         numInvitesQuery,
         numInviteInDateRangeQuery,
+        numParkingInDateRangeQuery,
         numParkingSpotsAvailableQuery,
-        numParkingInDateRangeQuery,    
-        startDate,
         setParkingVals,
         setNumParkingSpotsAvailable,
-        numInvitesPerResidentQuery
+        numInvitesPerResidentQuery,
+        numSleepoversPerResidentQuery,
+
     ]);
+
+    useEffect(() => {
+        if (!predictedInvitesQuery.loading && !predictedInvitesQuery.error) {
+            const predictedVisitors = [];
+            const predictedParking = [];
+            predictedInvitesQuery.data.getPredictedInviteData.forEach(
+                (invite) => {
+                    predictedVisitors.push(invite.visitors);
+                    predictedParking.push(invite.parking);
+                }
+            );
+
+            setPredictedVisitorVals(predictedVisitors);
+            setPredictedParkingVals(predictedParking);
+        }
+    }, [predictedInvitesQuery]);
+
+    function populateCurfew(){
+        if (!CurfewTimeQuery.loading && !CurfewTimeQuery.error) {
+            const curfew = CurfewTimeQuery.data.getCurfewTime.value;
+            let tempH;
+            let tempM;
+            if (curfew == "0") {
+                tempH = "00";
+                tempM = "00";
+            } else {
+                let tempCurfew = String(curfew);
+                if (tempCurfew.length == 3) {
+                    tempCurfew = "0" + tempCurfew;
+                }
+                tempH = tempCurfew.substring(0, 2);
+                tempM = tempCurfew.substring(2, 4);
+            }
+            setDefaultHours(tempH);
+            setDefaultMins(tempM);
+            setHours(tempH);
+            setMinutes(tempM);
+        }
+    }
+
+    useEffect(() => {
+        populateCurfew();
+    }, [CurfewTimeQuery]);
 
     return (
         <Layout>
@@ -217,13 +487,14 @@ const AdminDashboard = () => {
                 <div className="flex flex-col items-center justify-between md:flex-row">
                     <div className="flex-col">
                         <h1 className="mt-4 mb-4 text-3xl font-bold">
-                            Hello{" "}
+                            <span className="">Hi</span>{" "}
                             <span className="text-secondary">
-                                {decodedToken.email}
+                                {decodedToken.name}
                             </span>
+                            <span>👋</span>
                         </h1>
-                        <p className="text-tertiary prose mb-4">
-                            Welcome Back!
+                        <p className="text-slate-500">
+                            View and Manage System State
                         </p>
                     </div>
 
@@ -253,120 +524,306 @@ const AdminDashboard = () => {
                             description="Total Number Of Invites For Today"
                             Icon={BiBuildingHouse}
                             dataval={todayInvites}
-                            unit="Total"
+                            unit="Today"
                         />
                         <AdminCard
                             description="Total Number Of Invites Sent"
                             Icon={BiMailSend}
                             dataval={numInvitesSent}
-                            unit="Total"
+                            unit="Today"
                         />
                         <AdminCard
-                            description="Total Number Of Parking Spots Available"
+                            description="Number Of Parking Spots Available"
                             Icon={AiOutlineCar}
-                            dataval={numParkingSpotsAvailable}
-                            unit="Total"
+                            dataval={numParkingSpotsAvailableToday}
+                            unit="Today"
                         />
                     </div>
 
                     <div className="grid grid-cols-1 gap-3 text-secondary-content md:grid-cols-2">
                         <DownloadChart
-                            title={"Visitors Forecast"}
+                            title={"Visitor Forecast For The Week"}
                             filename="visitor-forecast.png"
                             Chart={LineChart}
                             labelvals={visitorVals.labels}
-                            datavals={visitorVals.data}
-                            setStart={setStartDate}
+                            datavals={[
+                                visitorVals.data,
+                                predictedVisitorVals,
+                                parkingVals.data,
+                                predictedParkingVals
+                            ]}
+                            datalabels={[
+                                visitorVals.label,
+                                "Predicted Visitors",
+                                parkingVals.label,
+                                "Predicted Parking"
+                            ]}
                         />
-                        <DownloadChart
-                            title={"Parking Forecast"}
-                            filename="visitor-forecast.png"
-                            Chart={LineChart}
-                            labelvals={parkingVals.labels}
-                            datavals={parkingVals.data}
-                            setStart={setStartDate}
-                        />
+                        <div className="stats stats-vertical bg-base-200 shadow">
+                            <div className="stat">
+                                <div className="stat-figure">
+                                    <MdOutlineCancel className="text-2xl md:text-4xl" />
+                                </div>
+                                <div className="stat-title">Cancellations</div>
+                                <div className="stat-value">{numCancel}</div>
+                                <div className="stat-desc">
+                                    For week {startDate} - {endDate}
+                                </div>
+                            </div>
+                            <div className="stat">
+                                <div className="stat-figure">
+                                    <FaPeopleArrows className="text-2xl md:text-3xl" />
+                                </div>
+                                <div className="stat-title">
+                                    Average Visitors per day
+                                </div>
+                                <div className="stat-value">
+                                    {Math.ceil(avgVisitors)}
+                                </div>
+                                <div className="stat-desc">
+                                    For week {startDate} - {endDate}
+                                </div>
+                            </div>
+                            <div className="stat">
+                                <div className="stat-figure">
+                                    <FaCarSide className="text-2xl md:text-3xl" />
+                                </div>
+                                <div className="stat-title">
+                                    Average Parking Reservations per day
+                                </div>
+                                <div className="stat-value">
+                                    {Math.ceil(avgParking)}
+                                </div>
+                                <div className="stat-desc">
+                                    For week {startDate} - {endDate}
+                                </div>
+                            </div>
+                        </div>
                     </div>
-
-                    <h1 className="flex flex-col lg:flex-row items-center font-bold text-2xl space-x-3">
-                        <span className="text-primary mr-3 text-xl md:text-3xl"><MdBlock /></span> System Restrictions 
-                        <span>
-                            { restrictionsChanged && 
-                                <div className="space-x-5">
-                                    <button onClick={saveRestrictions} className="btn btn-sm lg:btn-md btn-primary space-x-3">
-                                        <span><MdDataSaverOn className="text-xl mr-3"/></span> Save Changes
+                    <h1 className="flex flex-col items-center justify-center space-x-3 text-2xl font-bold lg:flex-row">
+                        <span className="mr-3 text-xl text-primary md:text-3xl">
+                            <MdBlock />
+                        </span>{" "}
+                        System Restrictions
+                        <div className="flex items-center">
+                            {restrictionsChanged && (
+                                <div className="flex space-x-1">
+                                    <button
+                                        onClick={saveRestrictions}
+                                        className="btn btn-primary btn-sm space-x-3 lg:btn-md"
+                                    >
+                                        <span>
+                                            <MdDataSaverOn className="mr-3 text-xl" />
+                                        </span>{" "}
+                                        Save Changes
                                     </button>
-                                    <button onClick={cancelRestrictions} className="btn btn-sm lg:btn-md btn-secondary space-x-3">
-                                        <span><MdDataSaverOff className="text-xl mr-3"/></span> Cancel Changes
+                                    <button
+                                        onClick={cancelRestrictions}
+                                        className="btn btn-secondary btn-sm space-x-3 lg:btn-md"
+                                    >
+                                        <span>
+                                            <MdDataSaverOff className="mr-3 text-xl" />
+                                        </span>{" "}
+                                        Cancel Changes
                                     </button>
                                 </div>
-                            }
-                        </span>
+                            )}
+                        </div>
                     </h1>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="card bg-base-300">
+
+
+
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+                        <div className="card bg-base-200">
                             <div className="card-body">
-                                <h2 className="card-title">Invites Per Resident <div className="badge badge-secondary">Resident</div></h2>
-                                <p>Number of invites a resident is allowed to have open/sent at a time.</p>
-                                <div className="card-actions justify-start flex items-center">
+                                <h2 className="card-title">
+                                    Invites Per Resident{" "}
+                                    <div className="badge badge-secondary">
+                                        Resident
+                                    </div>
+                                </h2>
+                                <p>
+                                    Number of invites a resident is allowed to
+                                    have open/sent at a time.
+                                </p>
+                                <div className="card-actions flex items-center justify-start">
                                     <div className="flex items-center space-x-3">
-                                        <button data-testid="increaseInvites" className="btn btn-circle" onClick={() => {
-                                            setNumInvitesPerResident(numInvitesPerResident+1);
-                                            setRestrictionsChanged(true);
-                                        }}>
-                                            <AiOutlinePlus className="text-xl md:text-2xl lg:text-3xl"/>
+                                        <button
+                                            data-testid="increaseInvites"
+                                            className="btn btn-circle"
+                                            onClick={() => {
+                                                setNumInvitesPerResident(
+                                                    numInvitesPerResident + 1
+                                                );
+                                                setRestrictionsChanged(true);
+                                            }}
+                                        >
+                                            <AiOutlinePlus className="text-xl md:text-2xl lg:text-3xl" />
                                         </button>
-                                        <p className="text-secondary font-bold text-4xl">{numInvitesPerResident}</p>
-                                        <button data-testid="decreaseInvites" className="btn btn-circle" onClick={() => {
-                                            numInvitesPerResident > 1 && setNumInvitesPerResident(numInvitesPerResident-1);
-                                            setRestrictionsChanged(true);
-                                        }}>
-                                            <AiOutlineMinus className="text-xl md:text-2xl lg:text-3xl"/>
+                                        <p
+                                            id="numInvitesPerResident"
+                                            className="text-4xl font-bold text-secondary"
+                                        >
+                                            {numInvitesPerResident}
+                                        </p>
+                                        <button
+                                            data-testid="decreaseInvites"
+                                            className="btn btn-circle"
+                                            onClick={() => {
+                                                numInvitesPerResident > 1 &&
+                                                    setNumInvitesPerResident(
+                                                        numInvitesPerResident -
+                                                        1
+                                                    );
+                                                setRestrictionsChanged(true);
+                                            }}
+                                        >
+                                            <AiOutlineMinus className="text-xl md:text-2xl lg:text-3xl" />
                                         </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="card bg-base-300">
+                        <div className="card bg-base-200">
                             <div className="card-body">
-                                <h2 className="card-title">Parking Spots Available <div className="badge badge-secondary">User</div></h2>
-                                <p>Number of parking spots left in the building.</p>
-                                <div className="card-actions justify-start flex items-center">
+                                <h2 className="card-title">
+                                    Parking Spots Available{" "}
+                                    <div className="badge badge-secondary">
+                                        User
+                                    </div>
+                                </h2>
+                                <p>
+                                    Number of visitor parking spots in the
+                                    building.
+                                </p>
+                                <div className="card-actions flex items-center justify-start">
                                     <div className="flex items-center space-x-3">
-                                        <button className="btn btn-circle">
-                                            <AiOutlinePlus className="text-xl md:text-2xl lg:text-3xl"/>
+
+                                        <button className="btn btn-circle" onClick={() => {
+                                            setNumParkingSpotsAvailable(numParkingSpotsAvailable + 1);
+                                            setRestrictionsChanged(true);
+                                        }}>
+                                            <AiOutlinePlus className="text-xl md:text-2xl lg:text-3xl" />
+
                                         </button>
-                                        <p className="text-secondary font-bold text-4xl">{numParkingSpotsAvailable}</p>
-                                        <button className="btn btn-circle">
-                                            <AiOutlineMinus className="text-xl md:text-2xl lg:text-3xl"/>
+                                        <p
+                                            id="numParkingSpotsAvailable"
+                                            className="text-4xl font-bold text-secondary"
+                                        >
+                                            {numParkingSpotsAvailable}
+                                        </p>
+
+                                        <button className="btn btn-circle" onClick={() => {
+                                            if (numParkingSpotsAvailable > 0) {
+                                                setNumParkingSpotsAvailable(numParkingSpotsAvailable - 1);
+                                            }
+
+                                            setRestrictionsChanged(true);
+                                        }}>
+                                            <AiOutlineMinus className="text-xl md:text-2xl lg:text-3xl" />
+
                                         </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                </div>
-            </div>
+                        <div className="card bg-base-200">
+                            <div className="card-body">
+                                <h2 className="card-title">
+                                    Curfew Time{" "}
+                                    <div className="badge badge-secondary">
+                                        Visitor
+                                    </div>
+                                </h2>
+                                <p>
+                                    Current curfew: {defaultHours}:{defaultMins}
+                                </p>
 
-            <div className="modal" id="parking-modal">
-                <div className="modal-box space-y-2">
-                    <h3 className="text-md font-bold md:text-lg">
-                        Update Number of Parking Spots Available
-                    </h3>
-                    <input
-                        onChange={(e) =>
-                            {return updateParkingSpots(Number(e.target.value))}
-                        }
-                        className="input input-bordered w-full max-w-xs"
-                        type="number"
-                        placeholder={numParkingSpotsAvailable}
-                    />
-                    <div className="modal-action">
-                        <a href="#" className="btn">
-                            Update
-                        </a>
+                                <div className="card-actions flex items-center justify-start">
+                                    <div className="flex items-center justify-center">
+
+                                        <select className="select select-bordered select-secondary mx-5" name="hours" id="hours" onChange={(e) => {
+                                            setHours(e.target.value);
+                                            setRestrictionsChanged(true);
+                                        }}>
+                                            {hours.map( (value,index) => (
+                                                value == defaultHours ? (
+                                                    <option selected value={value}>{value}</option> 
+                                                ):(
+                                                    <option value={value}>{value}</option> 
+                                                )
+                                            ))}
+                                        </select>
+                                        <h1>    :    </h1>
+                                        <select className="select select-bordered select-secondary mx-5" name="minutes" id="minutes" onChange={(e) => {
+                                            setMinutes(e.target.value);
+                                            setRestrictionsChanged(true);
+                                        }}>
+                                            {mins.map( (value,index) => (
+                                                value == defaultMins ? (
+                                                    <option selected value={value}>{value}</option> 
+                                                ):(
+                                                    <option value={value}>{value}</option> 
+                                                )
+                                            ))}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="card bg-base-200">
+                            <div className="card-body">
+                                <h2 className="card-title">
+                                    Sleepovers{" "}
+                                    <div className="badge badge-secondary">
+                                        Resident
+                                    </div>
+                                </h2>
+                                <p>
+                                    Number of sleepovers a resident is allowed per month
+                                </p>
+                                <div className="card-actions flex items-center justify-start">
+                                    <div className="flex items-center space-x-3">
+                                        <button
+                                            data-testid="increaseSleepovers"
+                                            className="btn btn-circle"
+                                            onClick={() => {
+                                                setMaxSleepovers(
+                                                    maxSleepovers +
+                                                    1
+                                                );
+                                                setRestrictionsChanged(true);
+                                            }}
+                                        >
+                                            <AiOutlinePlus className="text-xl md:text-2xl lg:text-3xl" />
+                                        </button>
+                                        <p
+                                            id="numSleepoversPerResident"
+                                            className="text-4xl font-bold text-secondary"
+                                        >
+                                            {maxSleepovers}
+                                        </p>
+                                        <button
+                                            data-testid="decreaseInvites"
+                                            className="btn btn-circle"
+                                            onClick={() => {
+                                                maxSleepovers > 1 &&
+                                                    setMaxSleepovers(
+                                                        maxSleepovers -
+                                                        1
+                                                    );
+                                                setRestrictionsChanged(true);
+                                            }}
+                                        >
+                                            <AiOutlineMinus className="text-xl md:text-2xl lg:text-3xl" />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -382,7 +839,7 @@ const AdminDashboard = () => {
             />
             <label htmlFor="visitor-modal" className="modal cursor-pointer">
                 <label className="modal-box relative" htmlFor="">
-                    <VisitorSearchResults name={name} />
+                    <VisitorSearchResults query={name} />
                 </label>
             </label>
         </Layout>

@@ -1,6 +1,8 @@
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ConfigService } from "@nestjs/config";
+import { HttpModule } from '@nestjs/axios';
 import { Test, TestingModule } from '@nestjs/testing';
+import { UserService } from "@vms/user";
 import { MailService } from '@vms/mail';
 import { ParkingService } from '@vms/parking';
 import { VisitorInviteService } from '@vms/visitor-invite';
@@ -8,6 +10,9 @@ import { getTrayFromInviteQuery } from './queries/impl/getTrayFromInvite.query';
 import { ReceptionistService } from './receptionist.service';
 import { RestrictionsService } from "@vms/restrictions";
 import { Tray } from './schema/tray.schema';
+import { CACHE_MANAGER } from '@nestjs/common';
+import { SchedulerRegistry } from '@nestjs/schedule';
+import { RewardsService } from '@vms/rewards';
 
 describe('ReceptionistService', () => {
   let service: ReceptionistService;
@@ -36,14 +41,31 @@ describe('ReceptionistService', () => {
   };
   /*eslint-enable*/
 
+  const scheduleMock = {
+    addCronJob: jest.fn(()=>{return {}}),
+    deleteCronJob: jest.fn(()=>{return {}}),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [ReceptionistService,
+      imports: [HttpModule],
+      providers: [
+        ReceptionistService,
         VisitorInviteService,
         ParkingService,
         MailService,
         ConfigService,
+        UserService,
         RestrictionsService,
+        RewardsService,
+        {
+            provide: CACHE_MANAGER,
+            useValue: {
+                get: () => {return 'any value'},
+                set: () => {return jest.fn()},
+            },
+        },
+        { provide: SchedulerRegistry, useValue: scheduleMock},
         {
           provide: QueryBus, useValue: queryBusMock
         },

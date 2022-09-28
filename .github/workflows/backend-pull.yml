@@ -17,6 +17,16 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '16.x'
+
+      - name: create env file
+        run: |
+          touch .env
+          echo MONGO_DB_CONNECTION_STRING=${{ secrets.MONGO_DB_CONNECTION_STRING }} >> .env
+          echo JWT_SECRET=${{ secrets.JWT_SECRET }} >> .env
+          echo EMAIL=${{ secrets.EMAIL }} >> .env
+          echo EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }} >> .env
+          echo AI_API_CONNECTION=${{ secrets.AI_API_CONNECTION }} >> .env
+          echo AI_API_CONNECTION=${{ secrets.AI_API_CONNECTION }} >> .env
           
       - name: "📦 Install Dependencies"
         working-directory: ./backend
@@ -30,6 +40,6 @@ jobs:
         working-directory: ./backend
         run: yarn lint
         
-      - name: "🏁 Run tests backend"
+      - name: "🏁 Run unit tests backend"
         working-directory: ./backend
         run: yarn run test

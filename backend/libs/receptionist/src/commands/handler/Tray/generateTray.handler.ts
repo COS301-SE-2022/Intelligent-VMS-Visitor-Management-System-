@@ -11,7 +11,24 @@ export class generateTrayCommandHandler implements ICommandHandler {
     ) {}
 
     async execute(command: generateTrayCommand):Promise<Tray> {
-        const { trayID, inviteID, containsResidentID,containsVisitorID } = command;
-        return await this.trayModel.create({ trayID: trayID, inviteID: inviteID, containsResidentID: containsResidentID, containsVisitorID: containsVisitorID});
+        const{ inviteID, containsResidentID, containsVisitorID} = command;
+        let trayID = 0;
+        let tries = 0;
+        while((tries++!==100)){
+            trayID = trayIDGenerator();
+            const doesTrayExist = await this.trayModel.findOne({trayID});
+            if(doesTrayExist&& doesTrayExist.containsResidentID && doesTrayExist.containsVisitorID){
+                continue;
+
+            }
+            break;
+
+        }
+
+        return await this.trayModel.create({trayID:trayID, inviteID: inviteID, containsResidentID: containsResidentID, containsVisitorID:containsVisitorID});
+
     }
 }
+
+const trayIDGenerator = () => //returns a random integer from 0 to 100:
+{return Math.floor(Math.random()*101)};

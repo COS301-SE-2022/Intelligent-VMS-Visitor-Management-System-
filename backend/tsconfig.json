@@ -5,6 +5,8 @@
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "allowJs": true,
+    "maxNodeModuleJsDepth": 10,
     "allowSyntheticDefaultImports": true,
     "target": "es2017",
     "sourceMap": true,
@@ -83,6 +85,18 @@
       ],
       "@vms/restrictions/*": [
         "libs/restrictions/src/*"
+      ],
+      "@vms/throttler": [
+        "libs/throttler/src"
+      ],
+      "@vms/throttler/*": [
+        "libs/throttler/src/*"
+      ],
+      "@vms/rewards": [
+        "libs/rewards/src"
+      ],
+      "@vms/rewards/*": [
+        "libs/rewards/src/*"
       ]
     }
   }

@@ -1,22 +1,44 @@
 import React, { useEffect, useRef, useState } from "react";
 import { QrReader } from "react-qr-reader";
 import { gql, useApolloClient } from "@apollo/client";
+import { TiWarning } from "react-icons/ti";
 
-import useVideo from "../hooks/useVideo.hook";
-
-const QrScanner = ({ setShowScanner, setVisitorData, setSearch }) => {
+const QRScanner = ({
+    setCurrentVisitData,
+    setShowScanner,
+    setShowSignInModal,
+    setShowSignOutModal,
+    setShowVisitorModal,
+    setVisitorData,
+    todayString,
+    setShowErrorAlert,
+    showScanner,
+}) => {
     //ApolloClient
     const client = useApolloClient();
-
+    
     // QR Data State
     const [data, setData] = useState("");
 
+    // Video state
+    const [showVideo, setShowVideo] = useState(true);
+    
+    const [errorMessage, setErrorMessage] = useState(undefined);
+
+    const [searching, setSearching] = useState(false);
+
     //Search function that actually queries the database
     const search = (data) => {
-        //setting the searching variable to true in order to update the table heading
-        setSearch(true);
-        client.query({
-            query: gql`
+
+        if(searching) {
+            return;
+        }
+
+        setSearching(true);
+        
+        client
+            .query({
+                query: gql`
                 query{
                     getInvitesByIDForSearch( inviteID: "${data}" ) {
                         inviteID
@@ -24,20 +46,23 @@ const QrScanner = ({ setShowScanner, setVisitorData, setSearch }) => {
                         idNumber
                         visitorName
                         inviteState
+                        idDocType
+                        userEmail
                     }
                 }
             `,
-        }).then((res) => {
-                //creating an array of 1 element to send to VisitorData
-                const visitor = [];
-                visitor[0] = res.data.getInvitesByIDForSearch; 
-                setVisitorData(visitor);
-        }).catch((err) => {
-            console.log(err);
-        });
+            })
+            .then((res) => {
+                const invites = res.data.getInvitesByIDForSearch;
+                setShowScanner(false);
+                setCurrentVisitData(invites);
+                setShowVisitorModal(true);
+                setSearching(false);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     };
-
-    const [invalid,setInvalid] = useState(false);
 
     // DOM Reference to Video element
     const videoRef = useRef(null);
@@ -47,37 +72,60 @@ const QrScanner = ({ setShowScanner, setVisitorData, setSearch }) => {
 
     useEffect(() => {
         // Stop video on component unmount
-    
     }, []);
 
     return (
- <div className="relative flex-col justify-center items-center text-center">
-    <p></p>
-     <div>
-        <video className = "relative rounded-lg" ref={videoRef} id="videoElement" />
-                <QrReader className="hidden" videoId="videoElement"
+        <div className="relative flex-col items-center justify-center text-center">
+            {showVideo && showScanner ? (
+                <div>
+                    <video
+                        className="relative rounded-lg"
+                        ref={videoRef}
+                        id="videoElement"
+                    />
+                    <QrReader
+                        className="hidden"
+                        videoId="videoElement"
                         onResult={(result, error) => {
-                            if (result) {
+                            if (result && showScanner) {
                                 try {
                                     const qrData = JSON.parse(result?.text);
                                     if (qrData.inviteID) {
-                                        setData(qrData.inviteID); 
-                                        setShowScanner(false);
+                                        setData(qrData.inviteID);
                                         search(qrData.inviteID);
-                                    } else {
-                                        setInvalid(true);
+                                    } else if(showScanner) {
+                                        setErrorMessage("Invalid QR Code");
+                                        setShowErrorAlert(true);
                                     }
-                                } catch(error) {
-                                    setInvalid(true);
+                                } catch (error) {
+                                    setErrorMessage("Invalid QR Code");
+                                    setShowErrorAlert(true);
                                 }
-                            } else if(error){
-
+                            } else if (error) {
+                                if (error.name === "NotFoundError") {
+                                    setShowVideo(false);
+                                }
                             }
-                          }}
-                        />
+                        }}
+                    />
+                </div>
+            ) : (
+                <div className="w-full text-left">
+                    <p className="text-error">
+                        Camera not available, use search bar using visitor name.
+                    </p>
+                </div>
+            )}
+            <div className="mt-3 flex justify-center">
+                <span className="fill-bg-error h-full w-6 align-middle text-error">
+                    <TiWarning size="lg" />
+                </span>
+                <p className="ml-2 font-bold text-error">
+                    { !errorMessage ? "Ensure that the QR Code is visible" : errorMessage }
+                </p>
             </div>
-        </div>    
-        );
+        </div>
+    );
 };
 
-export default QrScanner;
+export default QRScanner;

@@ -1,4 +1,5 @@
 import { CacheModule, Module } from '@nestjs/common';
+import { ScheduleModule } from '@nestjs/schedule';
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { ConfigModule } from "@nestjs/config";
@@ -8,7 +9,6 @@ import { join } from "path";
 import { DirectiveLocation, GraphQLDirective } from "graphql";
 
 import { DatabaseModule } from "@vms/database";
-import { VisitorModule } from "@vms/visitor";
 import { AuthModule } from "@vms/auth";
 import { UserModule } from "@vms/user";
 import { VisitorInviteModule } from "@vms/visitor-invite";
@@ -17,10 +17,12 @@ import { ParkingModule } from "@vms/parking";
 import { MailModule } from "@vms/mail";
 import { ReceptionistModule } from "@vms/receptionist";
 import { RestrictionsModule } from "@vms/restrictions";
+import { RewardsModule } from '@vms/rewards';
 
 @Module({
     imports: [
         CacheModule.register(),
+        ScheduleModule.forRoot(),
         ConfigModule.forRoot({ isGlobal: true }),
         GraphQLModule.forRoot<ApolloDriverConfig>({
             driver: ApolloDriver,
@@ -39,15 +41,16 @@ import { RestrictionsModule } from "@vms/restrictions";
             },
         }),
         DatabaseModule,
-        VisitorModule,
         UserModule,
         AuthModule,
-        VisitorInviteModule,
         ResidentModule,
         ParkingModule,
         MailModule,
         ReceptionistModule,
         RestrictionsModule,
+        RewardsModule,
+        VisitorInviteModule,
+        
     ],
     controllers: [AppController],
     providers: [AppService],

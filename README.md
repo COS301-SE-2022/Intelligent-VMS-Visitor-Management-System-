@@ -9,13 +9,14 @@
 
 [![Backend](https://github.com/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-/actions/workflows/backend-deploy.yml/badge.svg)](https://github.com/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-/actions/workflows/backend-deploy.yml)
 [![Frontend](https://github.com/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-/actions/workflows/frontend-deploy.yml/badge.svg)](https://github.com/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-/actions/workflows/frontend-deploy.yml)
+[![Data Prep Deploy](https://github.com/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-/actions/workflows/data-prep-deploy.yml/badge.svg)](https://github.com/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-/actions/workflows/data-prep-deploy.yml)
 [![Codecov](https://codecov.io/gh/KyleSmith19091/Intelligent-VMS-Visitor-Management-System-/branch/develop/graph/badge.svg?token=1OQRUVN42B)](https://codecov.io/gh/KyleSmith19091/Intelligent-VMS-Visitor-Management-System-)
 [![System Status](https://img.shields.io/pingpong/status/sp_981b105d45824c28b3a90e5c9a5b951e)](https://vms-client.pingpong.host/)
 [![Requirements Status](https://requires.io/github/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-/requirements.svg?branch=feature%2Froles-guards)](https://requires.io/github/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-/requirements/?branch=feature%2Froles-guards)
 ![Issues](https://img.shields.io/github/issues/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-)
 
 ### 📐 The Project
-The VMS is an intelligent visitor management system that allows provides a platform for building residents to create invites for visitors, contractors or even prospective buyers. The visitor management platform will also allow the building management to view and analyse visiting data as they see fit. The system will also provide "smart" suggestions using a custom AI analytics engine.
+The VMS is an intelligent visitor management system that provides a platform for building residents to create invites for visitors, contractors or even prospective buyers. The visitor management platform will also allow the building management to view and analyse visiting data as they see fit. The system will also provide "smart" suggestions using a custom AI analytics engine.
 
 ### ⛓ Project Links - Demo 1
 <a href="https://github.com/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-/projects/1">📦 Project Board</a>
@@ -35,7 +36,46 @@ The VMS is an intelligent visitor management system that allows provides a platf
 
 <a href="https://docs.google.com/document/d/1W9P7WsLX_BxZKqAD-5wMAkKmHbwzmwEzTP8IroRCUY0/edit?usp=sharing">📖 User Manual</a>
 
+<a href="https://drive.google.com/file/d/1D55VZxvdi-mJtStBb4K84VwJk8p98H92/view?usp=sharing">🚧 Demo Video</a>
+
+### ⛓ Project Links - Demo 3
+<a href="https://github.com/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-/projects/1">📦 Project Board</a>
+
+<a href="https://docs.google.com/document/d/1M4QnatxC7YdU27eHqWQX2jrVJ8q5XLbrt2QyYriJ8hI/edit?usp=sharing">📊 SRS Document</a>
+
+<a href="https://docs.google.com/document/d/1xGIGt2TF3m_zBTq8HFQvbrWQS1P7GJDmd-BllNjurzk/edit?usp=sharing">🏠 Architecture Requirements Document</a>
+
+<a href="https://docs.google.com/document/d/1Kf-5MxLnLUtDd3b5bp-AUGTrLjr4tCdsoLqV4UA1I04/edit">🧶 Coding Standards Document</a>
+
+<a href="https://docs.google.com/document/d/1y0HffcN_IsIZRsBgDtSsn6qh53J1bAoKyN5Jm0LLbfU/edit?usp=sharing">🤖 Machine Learning Model Specification Document</a>
+
+<a href="https://docs.google.com/document/d/1637ZrDwwlbSIBvRUpCdEXrce-y0V8zIAZov3fYVaNbE/edit?usp=sharing">📖 User Manual</a>
+
+<a href="https://docs.google.com/document/d/1r5v45Qm858vFibcYgaT9LOrBdd3hvhhcjkNR2GwYMNw/edit?usp=sharing">📲 Technical Installation Manual</a>
+
+<a href="https://drive.google.com/file/d/1Gs3Fhuz9MPYUq6RUcyVRiOAr9ur-9bxx/view?usp=sharing">🚧 Demo Video</a>
+
+### ⛓ Project Links - Demo 4
+<a href="https://github.com/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-/projects/1">📦 Project Board</a>
+
+<a href="https://docs.google.com/document/d/1H1qph418MlRJAnXKmxjCJjcUdoOnHHgsy3m5uIQUpOw/edit?usp=sharing">📊 SRS Document</a>
+
+<a href="https://docs.google.com/document/d/1xGIGt2TF3m_zBTq8HFQvbrWQS1P7GJDmd-BllNjurzk/edit?usp=sharing">🏠 Architecture Requirements Document</a>
+
+<a href="https://docs.google.com/document/d/1cEvTOnoZmEXxylP1PYGmIJqaO40ZHLxCKjMB2wpL74I/edit?usp=sharing">🧶 Coding Standards Document</a>
+
+<a href="https://docs.google.com/document/d/1V3HpPmDET7Qi9HQAEkKv3RmPfhWuLtyKRNrvhorMitw/edit?usp=sharing">📖 User Manual</a>
+
+<a href="https://docs.google.com/document/d/124ubxwnVHgESve9ysGf2L5XBBt-JyZ_6pMC4tz4P6rE/edit?usp=sharing">📲 Technical Installation Manual</a>
+
+<a href="https://docs.google.com/document/d/1vzGkBj-z6qehz3pOtaYuUYPNi2w1h8cGahX0uUgkSGk/edit?usp=sharing">📘 Testing Policy</a>
+
+<a href="https://docs.google.com/document/d/1EKpR3CEmGI7LoP-Xay-QMfZSxIZ8t2b5Zy8wEFhAIkY/edit?usp=sharing">📝 Quality Requirements Testing</a>
+
+<a href="https://docs.google.com/document/d/1YLsJSseVc8EUI0MPoKMe_InlRHobMgEgD7avqhEulSM/edit?usp=sharing">🧍 User testing</a>
+
 <a href="#">🚧 Demo Video</a>
+
 
 ### 👏 The Team
 <hr />
@@ -126,6 +166,10 @@ I am good at devoting myself to a task and learning everything required to compl
 │   ├── libs // Subsystem components
 │   ├── src // Entry point and bundler
 │   ├── test // e2e and integration tests
+├── data-prep // prediction model
+│   ├── app // application logic
+├── face-rec // prediction model
+│   ├── app // application logic
 ```
 See Coding Guidelines Document for more in depth file structure.
 

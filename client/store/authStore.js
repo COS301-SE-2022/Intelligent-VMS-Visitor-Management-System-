@@ -44,15 +44,20 @@ const useAuth = create(
                         case 0:
                             return [
                                 { content: "Create Invite", path: "/createInvite" },
+                                { content: "Your Dashboard", path: "/visitorDashboard"},
                                 { content: "Admin Dashboard", path: "/adminDashboard"},
-                                { content: "Dashboard", path: "/visitorDashboard"},
+                                { content: "Your Profile", path: "/profilePage" },
+                                { content: "Reporting", path: "/reporting"},
+                                { content: "Manage Users", path: "/authorizeUser"},
                                 { content: "Logout", path: "/", onClick: () => get().logout() }
                             ]; 
 
                         case 1:
                             return [
                                 { content: "Create Invite", path: "/createInvite" },
-                                { content: "Visitor Dashboard", path: "/visitorDashboard" },
+                                { content: "Your Dashboard", path: "/visitorDashboard" },
+                                { content: "Your Profile", path: "/profilePage" },
+                                { content: "Manage Residents", path: "/authorizeUser"},
                                 { content: "Receptionist Dashboard", path: "/receptionistDashboard" },
                                 { content: "Logout", path: "/", onClick: () => get().logout() },
                             ];
@@ -61,11 +66,12 @@ const useAuth = create(
                         case 2:
                             return [
                                 { content: "Create Invite", path: "/createInvite" },
-                                { content: "Dashboard", path: "/visitorDashboard" },
+                                { content: "Profile Page", path: "/profilePage"},
+                                { content: "Your Dashboard", path: "/visitorDashboard" },
                                 { content: "Logout", path: "/", onClick: () => get().logout() },
                             ];
                     }
-                } else if(permission === -1 || permission === -2){
+                } else if(permission === -1 || permission === -2 || permission === -3){
                     return [
                         { content: "Authorize", path: "/authorize" },
                         { content: "Logout", path: "/", onClick: () => get().logout() },
@@ -73,26 +79,11 @@ const useAuth = create(
                 } else {
                     return [
                         { content: "Login", path: "/login" },
-                        { content: "Signup", path: "/signUp"}
+                        { content: "Sign up", path: "/signUp"}
+
                     ];
                 }
 
-            },
-            numParkingSpots: 22,
-            updateParkingSpots: (newVal) => {
-				set((state) => ({
-					numParkingSpots: newVal
-				}));
-            },
-            incParkingSpots: () => {
-                set((state) => ({
-                    numParkingSpots: get().numParkingSpots+1
-                }));
-            },
-            decParkingSpots: () => {
-                set((state) => ({
-                    numParkingSpots: get().numParkingSpots-1
-                }));
             },
             verified: false,
             setVerify: () => {

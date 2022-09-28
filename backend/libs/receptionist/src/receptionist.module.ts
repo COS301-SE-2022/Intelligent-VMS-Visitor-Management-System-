@@ -1,9 +1,11 @@
-import { forwardRef, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
+import { HttpModule } from "@nestjs/axios";
 import { CqrsModule } from '@nestjs/cqrs';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ParkingModule } from '@vms/parking';
 import { VisitorInviteModule } from '@vms/visitor-invite';
 import { Invite, InviteSchema } from '@vms/visitor-invite/schema/invite.schema';
+import { UserModule } from "@vms/user";
 import { SignInService } from '../sign-in/sign-in.service';
 import { SignOutService } from '../sign-out/sign-out.service';
 import { SignInInviteCommandHandler, SignOutInviteCommandHandler } from './commands/handler';
@@ -16,18 +18,24 @@ import { ReceptionistResolver } from './receptionist.resolver';
 import { ReceptionistService } from './receptionist.service';
 import { Tray,TraySchema } from './schema/tray.schema';
 import {RemoveTrayByInviteIDCommandHandler} from './commands/handler/Tray/removeTrayByInviteID.handler';
+import { BulkSignInCommandHandler } from './commands/handler/bulkSignInCommand.handler';
+import { ReceptionistController } from './receptionist.controller';
 
 @Module({
   imports: [
     CqrsModule,
     VisitorInviteModule,
     ParkingModule,
+    UserModule,
+    HttpModule.register({
+        maxRedirects: 5,
+    }),
     MongooseModule.forFeature([
       { name: Invite.name, schema: InviteSchema },
       { name: Tray.name, schema: TraySchema },
     ]),
-  
   ],
+  controllers: [ReceptionistController],
   providers: [
     ReceptionistService,
     SignInService,
@@ -35,6 +43,7 @@ import {RemoveTrayByInviteIDCommandHandler} from './commands/handler/Tray/remove
     ReceptionistResolver,
     SignInInviteCommandHandler,
     SignOutInviteCommandHandler,
+    BulkSignInCommandHandler,
     getTrayFromInviteQueryHandler,
     getTrayListQueryHandler,
     generateTrayCommandHandler,

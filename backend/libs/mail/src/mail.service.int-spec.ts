@@ -14,9 +14,9 @@ describe('MailService Int', () => {
     const module = await Test.createTestingModule({
       imports: [
         MongooseModule.forRootAsync({
-          useFactory: async () => ({
+          useFactory: async () => {return {
             uri: mongod.getUri(),
-          }),
+          }},
         }),
       ],
     }).compile();

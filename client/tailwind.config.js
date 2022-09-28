@@ -6,14 +6,15 @@ module.exports = {
   theme: {
     extend: {},
     fontFamily: {
-        "main": ["Poppins", "sans-serif"]
+        "main": ["Poppins", "sans-serif"],
+        "noto": ['Noto Serif', 'serif']
     }
   },
   plugins: [ require('@tailwindcss/typography'),require("daisyui")],
 
   daisyui: {
     styled: true,
-    themes: ["cupcake", "dark", "night"],
+    themes: ["dark","business","winter","autumn"],
     base: true,
     utils: true,
     logs: true,

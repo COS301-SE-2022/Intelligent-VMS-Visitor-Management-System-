@@ -10,6 +10,12 @@ export class ParkingReservation {
 
     @Prop()
     parkingNumber: number;
+
+    @Prop()
+    reservationDate: string;
+
+    @Prop()
+    activated: boolean;
 }
 
 
