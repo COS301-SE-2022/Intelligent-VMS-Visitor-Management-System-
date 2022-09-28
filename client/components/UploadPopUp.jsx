@@ -1,11 +1,12 @@
 import { gql, useMutation } from "@apollo/client";
 import React, { useEffect, useRef, useState, setState } from "react";
 import useAuth from "../store/authStore.js";
-import { alert } from "react-custom-alert";
 import { FaSignInAlt } from "react-icons/fa";
 import { MdOutlineCreateNewFolder } from "react-icons/md";
+import { useAlert } from "react-alert";
 
 const UploadPopUp = ({ setShowUploadPopUp, refetch }) => {
+    const alert = useAlert();
     const [file, setFile] = useState(null);
     const [fileAsString, setFileAsString] = useState("");
     const [text, setText] = useState("Upload a csv file");
@@ -77,8 +78,7 @@ const UploadPopUp = ({ setShowUploadPopUp, refetch }) => {
                                     setText(event.target.files[0].name);
                                     setSignInButton(false);
                                 } else {
-                                    alert({
-                                        message: "Invalid file extension",
+                                    alert.show("Invalid file extension", {
                                         type: "error",
                                     });
                                 }
@@ -103,8 +103,7 @@ const UploadPopUp = ({ setShowUploadPopUp, refetch }) => {
                             bulkSignInMutation().then((res) => {
                                 setBulkData(res.data.bulkSignIn); 
                                 setShowData(true);
-                                alert({
-                                    message: "Bulk Sign In Done",
+                                alert.show("Bulk Sign In Done", {
                                     type: "success",
                                 });
                                 refetch();

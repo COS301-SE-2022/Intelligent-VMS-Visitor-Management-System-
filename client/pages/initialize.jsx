@@ -33,6 +33,8 @@ const Initialize = () => {
     // Number of invites sent state
     const [numInvitesSent, setNumInvitesSent] = useState(0);
 
+    const [numTrays, setNumTrays] = useState(0);
+
     const [hoursMenu, setHours] = useState(0);
     const [minutesMenu, setMinutes] = useState(0);
 
@@ -335,35 +337,9 @@ const Initialize = () => {
                             <MdBlock />
                         </span>{" "}
                         First things first, let&apos;s set a few rules
-                        <div className="flex items-center">
-                            {restrictionsChanged && (
-                                <div className="flex space-x-1">
-                                    <button
-                                        onClick={saveRestrictions}
-                                        className="btn btn-primary btn-sm space-x-3 lg:btn-md"
-                                    >
-                                        <span>
-                                            <MdDataSaverOn className="mr-3 text-xl" />
-                                        </span>{" "}
-                                        Save Changes
-                                    </button>
-                                    <button
-                                        onClick={cancelRestrictions}
-                                        className="btn btn-secondary btn-sm space-x-3 lg:btn-md"
-                                    >
-                                        <span>
-                                            <MdDataSaverOff className="mr-3 text-xl" />
-                                        </span>{" "}
-                                        Cancel Changes
-                                    </button>
-                                </div>
-                            )}
-                        </div>
                     </h1>
 
-
-
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-1">
                         <div className="card bg-base-200">
                             <div className="card-body">
                                 <h2 className="card-title">
@@ -554,11 +530,81 @@ const Initialize = () => {
                                 </div>
                             </div>
                         </div>
+                        <div className="card bg-base-200">
+                            <div className="card-body">
+                                <h2 className="card-title">
+                                    Number of Trays{" "}
+                                    <div className="badge badge-secondary">
+                                        Visitor
+                                    </div>
+                                </h2>
+                                <p>
+                                    Number of trays for Visitor and Resident ID Documents
+                                </p>
+                                <div className="card-actions flex items-center justify-start">
+                                    <div className="flex items-center space-x-3">
+                                        <button
+                                            data-testid="increaseSleepovers"
+                                            className="btn btn-circle"
+                                            onClick={() => {
+                                                setNumTrays(
+                                                    numTrays +
+                                                    1
+                                                );
+                                                setRestrictionsChanged(true);
+                                            }}
+                                        >
+                                            <AiOutlinePlus className="text-xl md:text-2xl lg:text-3xl" />
+                                        </button>
+                                        <p
+                                            id="numInvitesPerResident"
+                                            className="text-4xl font-bold text-secondary"
+                                        >
+                                            {numTrays}
+                                        </p>
+                                        <button
+                                            data-testid="decreaseInvites"
+                                            className="btn btn-circle"
+                                            onClick={() => {
+                                                numTrays > 1 &&
+                                                    setNumTrays(
+                                                        numTrays -
+                                                        1
+                                                    );
+                                                setRestrictionsChanged(true);
+                                            }}
+                                        >
+                                            <AiOutlineMinus className="text-xl md:text-2xl lg:text-3xl" />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="flex items-center">
+                            {restrictionsChanged && (
+                                <div className="flex space-x-1">
+                                    <button
+                                        onClick={saveRestrictions}
+                                        className="btn btn-primary btn-sm space-x-3 lg:btn-md"
+                                    >
+                                        <span>
+                                            <MdDataSaverOn className="mr-3 text-xl" />
+                                        </span>{" "}
+                                        Save Changes
+                                    </button>
+                                    <button
+                                        onClick={cancelRestrictions}
+                                        className="btn btn-secondary btn-sm space-x-3 lg:btn-md"
+                                    >
+                                        <span>
+                                            <MdDataSaverOff className="mr-3 text-xl" />
+                                        </span>{" "}
+                                        Cancel Changes
+                                    </button>
+                                </div>
+                            )}
+                        </div>
 
-                        <div className="pl-4">Here we set the ammount of invites a resident is allowed to have open at any given time</div>
-                        <div className="pl-4">Here we set the ammount of parking spots our building has availiable</div>
-                        <div className="pl-4">Here we set the time by which visitors must leave the building before they are clasified as sleeping over</div>
-                        <div className="pl-4">Here we set the ammount of sleepovers a resident is allowed per month</div>
 
                     </div>
                 </div>

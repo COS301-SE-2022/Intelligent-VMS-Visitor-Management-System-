@@ -8,7 +8,6 @@ import axios from "axios";
 
 import Layout from "../../components/Layout";
 
-
 import useAuth from "../../store/authStore";
 
 const SignUp = () => {
@@ -67,7 +66,7 @@ const SignUp = () => {
 
         if(response.data.result) {
             verify();
-            router.push("/verify");
+            router.push("/verify?email=" + signupData.email);
         } else {
             alert({
                 message: response.data.error,
@@ -270,7 +269,7 @@ const SignUp = () => {
                                 </span>
 
                                 <p>Add image of yourself</p>
-                                <input accept="image/png, image/jpeg" id="file" name="file" type="file" onChange={(event) => {
+                                <input data-testid="fileupload" accept="image/png, image/jpeg" id="file" name="file" type="file" onChange={(event) => {
                                   setFieldValue("file", event.currentTarget.files[0]);
                                 }} />
 

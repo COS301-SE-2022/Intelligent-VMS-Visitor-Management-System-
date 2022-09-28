@@ -73,7 +73,7 @@ type Invite {
   requiresParking: Boolean!
   inviteState: String!
   notes: String!
-  signOutTime: String!
+  signOutTime: String
   signInTime: String
   trayNumber: Float!
 }
@@ -136,6 +136,7 @@ type Query {
   getNumThemes(email: String!): Float!
   getNumSleepovers(email: String!): Float!
   getCurfewTimeOfResident(email: String!): Float!
+  resendVerify(email: String!): Boolean!
   getProfileInfo(email: String!): ProfileInfo!
   helloInvite: String!
   getInvites: [Invite!]!

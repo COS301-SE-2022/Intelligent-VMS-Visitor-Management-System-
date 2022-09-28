@@ -3,6 +3,8 @@ import "@testing-library/jest-dom";
 import { renderHook, act } from "@testing-library/react-hooks/server";
 import userEvent from "@testing-library/user-event";
 import { MockedProvider } from "@apollo/client/testing";
+import { transitions, positions, Provider as AlertProvider } from 'react-alert'
+import { useAlert } from 'react-alert';
 
 import * as nextRouter from "next/router";
 
@@ -10,26 +12,40 @@ import { validLogin, errorMock } from "./__mocks__/login.mock";
 
 import useAuth from "../store/authStore";
 import Login from "../pages/login";
+import Alert from "../components/Alert";
 
 // Setup router mock hook
 nextRouter.useRouter = jest.fn();
 nextRouter.useRouter.mockImplementation(() => ({ route: "/" }));
 
+const options = {
+      position: positions.TOP_CENTER,
+      timeout: 8000,
+      offset: '30px',
+      transition: transitions.SCALE
+}
+
 describe("Login", () => {
     it("renders a heading", () => {
+        const { result } = renderHook(() => useAlert());
         render(
-            <MockedProvider>
-                <Login />
-            </MockedProvider>
+            <AlertProvider>
+                <MockedProvider>
+                    <Login />
+                </MockedProvider>
+            </AlertProvider>
         );
         expect(screen.getByText("Welcome Back")).toBeInTheDocument();
     });
 
     it("shows an error message when no email is provided", async () => {
+        const { result } = renderHook(() => useAlert());
         render(
-            <MockedProvider>
-                <Login />
-            </MockedProvider>
+            <AlertProvider>
+                <MockedProvider>
+                    <Login />
+                </MockedProvider>
+            </AlertProvider>
         );
 
         expect(screen.getByPlaceholderText("Email")).toBeInTheDocument();
@@ -45,10 +61,13 @@ describe("Login", () => {
     });
 
     it("shows an error message with invalid email", async () => {
+    const { result } = renderHook(() => useAlert());
         render(
-            <MockedProvider>
-                <Login />
-            </MockedProvider>
+            <AlertProvider>
+                <MockedProvider>
+                    <Login />
+                </MockedProvider>
+            </AlertProvider>
         );
 
         expect(screen.getByPlaceholderText("Email")).toBeInTheDocument();
@@ -65,10 +84,13 @@ describe("Login", () => {
     });
 
     it("shows an error message when no password is provided", async () => {
+        const { result } = renderHook(() => useAlert());
         render(
+            <AlertProvider>
             <MockedProvider>
                 <Login />
             </MockedProvider>
+            </AlertProvider>
         );
 
         expect(screen.getByPlaceholderText("Email")).toBeInTheDocument();
@@ -85,6 +107,7 @@ describe("Login", () => {
     });
 
     it("should redirect page to create invite page on succesful login", async () => {
+        const { _result } = renderHook(() => useAlert());
         const { result, hydrate } = renderHook(() => useAuth());
 
         hydrate();
@@ -97,9 +120,11 @@ describe("Login", () => {
         useRouter.mockReturnValue(router);
 
         render(
-            <MockedProvider mocks={validLogin} addTypename={false}>
-                <Login />
-            </MockedProvider>
+            <AlertProvider {...options} template={Alert}>
+                <MockedProvider mocks={validLogin} addTypename={false}>
+                    <Login />
+                </MockedProvider>
+            </AlertProvider>
         );
 
         const user = userEvent.setup();
@@ -114,10 +139,13 @@ describe("Login", () => {
     });
 
     it("should show an error message for any other API error", async () => {
+        const { result } = renderHook(() => useAlert());
         render(
+            <AlertProvider {...options} template={Alert}>
             <MockedProvider mocks={errorMock} addTypename={false}>
                 <Login />
             </MockedProvider>
+            </AlertProvider>
         );
 
         const user = userEvent.setup();

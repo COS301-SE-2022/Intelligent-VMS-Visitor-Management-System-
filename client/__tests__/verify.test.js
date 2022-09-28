@@ -61,4 +61,31 @@ describe("Verify", () => {
             expect(router.push).toHaveBeenCalledWith("/authorize");
         });
     });
+
+    it("sends the verify email when button clicked", async () => {
+        const useRouter = jest.spyOn(require("next/router"), "useRouter");
+        const router = {
+            push: jest.fn().mockImplementation(() => Promise.resolve(true)),
+            prefetch: () => new Promise((resolve) => resolve),
+            query: {
+                email: "admin@mail.com",
+            },
+        };
+        useRouter.mockReturnValue(router);
+
+        render(
+            <MockedProvider mocks={validVerify} addTypename={false}>
+                <Verify />
+            </MockedProvider>
+        );
+
+        const user = userEvent.setup();
+
+        await user.click(screen.getByText("Resend Email"));
+
+        await waitFor(async () => {
+            await new Promise((resolve) => setTimeout(resolve, 50));
+            expect(screen.getByText("Resend Email")).toBeEnabled();
+        });
+    });
 });

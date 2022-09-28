@@ -4,9 +4,20 @@ import { renderHook } from "@testing-library/react-hooks/server";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
 import { MockedProvider } from "@apollo/client/testing";
+import { transitions, positions, Provider as AlertProvider } from 'react-alert';
+
+import Alert from "../components/Alert";
 import SignInPopUp from "../components/SignInPopUp";
 
 import useAuth from "../store/authStore";
+
+const options = {
+    position: positions.TOP_CENTER,
+      timeout: 8000,
+      offset: '30px',
+      transition: transitions.SCALE
+}
+
 
 describe("SignInPopUp", () => {
     const authHook = renderHook(() => useAuth());
@@ -19,14 +30,16 @@ describe("SignInPopUp", () => {
 
     it("Renders the camera when verify is false", async () => {
         render(
-            <MockedProvider>
-                <SignInPopUp 
-                    refetch={() => {}}
-                    showSignInModal={true}
-                    setShowSignInModal={() => {}}
-                    setSearch={() => {}}
-                />
-            </MockedProvider>
+            <AlertProvider {...options} template={Alert}>
+                <MockedProvider>
+                    <SignInPopUp 
+                        refetch={() => {}}
+                        showSignInModal={true}
+                        setShowSignInModal={() => {}}
+                        setSearch={() => {}}
+                    />
+                </MockedProvider>
+            </AlertProvider>
         );
 
         await waitFor(() => screen.getByText("Camera not available"));

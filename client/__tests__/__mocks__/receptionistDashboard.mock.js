@@ -15,15 +15,19 @@ const getFormattedDateString = (date) => {
 export const todayInvites = [{
     request: {
         query: gql`
-            query {
-                getInvitesByDate( date: "${getFormattedDateString(new Date())}" ) {
-                    inviteID
-                    inviteDate
-                    idNumber
-                    visitorName
-                    inviteState
-                }
+        query {
+            getInvitesByDate( date: "${getFormattedDateString(new Date())}" ) {
+                inviteID
+                inviteDate
+                idNumber
+                visitorName
+                inviteState
+                idDocType
+                userEmail
+                signInTime
             }
+        }
+
         `
     },
     result: {
@@ -31,12 +35,82 @@ export const todayInvites = [{
             getInvitesByDate: [
                 {
                     inviteID: "5e23016c-d2bf-499e-a018-6086a94df70a",
-                    inviteDate: "2001-09-01",
+                    inviteDate: getFormattedDateString(new Date()),
                     idNumber: "0109235273090",
                     visitorName: "kyle",
-                    inviteState: "inActive"
+                    inviteState: "inActive",
+                    idDocType: "RSA-ID",
+                    userEmail: "admin@mail.com",
                 }
             ]
         }
     }
 }];
+
+export const todayInvitesAndSearch = [{
+    request: {
+        query: gql`
+        query {
+            getInvitesByDate( date: "${getFormattedDateString(new Date())}" ) {
+                inviteID
+                inviteDate
+                idNumber
+                visitorName
+                inviteState
+                idDocType
+                userEmail
+                signInTime
+            }
+        }
+
+        `
+    },
+    result: {
+        data: {
+            getInvitesByDate: [
+                {
+                    inviteID: "5e23016c-d2bf-499e-a018-6086a94df70a",
+                    inviteDate: getFormattedDateString(new Date()),
+                    idNumber: "0109235273090",
+                    visitorName: "kyle",
+                    inviteState: "inActive",
+                    idDocType: "RSA-ID",
+                    userEmail: "admin@mail.com",
+                }
+            ]
+        }
+    }
+},
+{
+    request: {
+        query: gql`
+            query{
+                    getInvitesByNameForSearch( name: "kyle") {
+                        inviteID
+                        inviteDate
+                        idNumber
+                        visitorName
+                        inviteState
+                        idDocType
+                        userEmail
+                    }
+                }
+        `
+    },
+    result: {
+        data: {
+            getInvitesByNameForSearch: [
+                {
+                    inviteID: "5e23016c-d2bf-499e-a018-6086a94df70a",
+                    inviteDate: getFormattedDateString(new Date()),
+                    idNumber: "0109235273090",
+                    visitorName: "kyle",
+                    inviteState: "inActive",
+                    idDocType: "RSA-ID",
+                    userEmail: "admin@mail.com",
+                }
+            ]
+        }
+    }
+},
+];

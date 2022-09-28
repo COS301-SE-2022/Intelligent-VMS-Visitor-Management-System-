@@ -2,8 +2,10 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
-import { AlertContainer } from "react-custom-alert";
+import { transitions, positions, Provider as AlertProvider } from 'react-alert'
+import AlertTemplate from 'react-alert-template-basic';
 
+import Alert from "../components/Alert";
 import Layout from "../components/Layout";
 
 import useAuth from "../store/authStore";
@@ -14,11 +16,12 @@ import "react-custom-alert/dist/index.css";
 function MyApp({ Component, pageProps }) {
     const router = useRouter();
 
-    const alertStyle = {
-        boxShadow: "none",
-        background: "hsl(var(--nc))",
-        color: "white",
-    };
+    const options = {
+      position: positions.TOP_CENTER,
+      timeout: 10000,
+      offset: '30px',
+      transition: transitions.SCALE
+    }
 
     const access_token = useAuth((state) => {
         return state.access_token;
@@ -78,15 +81,16 @@ function MyApp({ Component, pageProps }) {
 
     return (
         <ApolloProvider client={client}>
-            <Head>
-                <title>VMS</title>
-                <meta
-                    name="viewport"
-                    content="width=device-width, initial-scale=1.0, user-scalable = no"
-                />
-            </Head>
-            <Component {...pageProps} />
-            <AlertContainer floatingTime={5000} alertStyle={alertStyle} />
+            <AlertProvider template={Alert} {...options}>
+                <Head>
+                    <title>VMS</title>
+                    <meta
+                        name="viewport"
+                        content="width=device-width, initial-scale=1.0, user-scalable = no"
+                    />
+                </Head>
+                <Component {...pageProps} />
+            </AlertProvider>
         </ApolloProvider>
     );
 }

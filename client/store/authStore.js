@@ -46,6 +46,7 @@ const useAuth = create(
                                 { content: "Create Invite", path: "/createInvite" },
                                 { content: "Your Dashboard", path: "/visitorDashboard"},
                                 { content: "Admin Dashboard", path: "/adminDashboard"},
+                                { content: "Your Profile", path: "/profilePage" },
                                 { content: "Reporting", path: "/reporting"},
                                 { content: "Manage Users", path: "/authorizeUser"},
                                 { content: "Logout", path: "/", onClick: () => get().logout() }
@@ -55,6 +56,7 @@ const useAuth = create(
                             return [
                                 { content: "Create Invite", path: "/createInvite" },
                                 { content: "Your Dashboard", path: "/visitorDashboard" },
+                                { content: "Your Profile", path: "/profilePage" },
                                 { content: "Manage Residents", path: "/authorizeUser"},
                                 { content: "Receptionist Dashboard", path: "/receptionistDashboard" },
                                 { content: "Logout", path: "/", onClick: () => get().logout() },

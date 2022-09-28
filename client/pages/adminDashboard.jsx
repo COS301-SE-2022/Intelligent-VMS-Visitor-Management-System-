@@ -694,7 +694,7 @@ const AdminDashboard = () => {
                                     </div>
                                 </h2>
                                 <p>
-                                    Number of parking spots left in the
+                                    Number of visitor parking spots in the
                                     building.
                                 </p>
                                 <div className="card-actions flex items-center justify-start">
@@ -801,7 +801,7 @@ const AdminDashboard = () => {
                                             <AiOutlinePlus className="text-xl md:text-2xl lg:text-3xl" />
                                         </button>
                                         <p
-                                            id="numInvitesPerResident"
+                                            id="numSleepoversPerResident"
                                             className="text-4xl font-bold text-secondary"
                                         >
                                             {maxSleepovers}
@@ -824,31 +824,10 @@ const AdminDashboard = () => {
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
 
-            <div className="modal" id="parking-modal">
-                <div className="modal-box space-y-2">
-                    <h3 className="text-md font-bold md:text-lg">
-                        Update Number of Parking Spots Available
-                    </h3>
-                    <input
-                        onChange={(e) => {
-                            return updateParkingSpots(Number(e.target.value));
-                        }}
-                        className="input input-bordered w-full max-w-xs"
-                        type="number"
-                        placeholder={numParkingSpotsAvailable}
-                    />
-                    <div className="modal-action">
-                        <a href="#" className="btn">
-                            Update
-                        </a>
-                    </div>
-                </div>
-            </div>
             <input
                 type="checkbox"
                 id="visitor-modal"

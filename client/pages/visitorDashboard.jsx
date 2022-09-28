@@ -330,10 +330,9 @@ const VisitorDashboard = () => {
                         datalabels={[
                             "Invites",
                         ]}
-                        labelvals={["Cancelled", "Unused Invites", "Used Invites"]}
+                        labelvals={["Cancelled", "Used Invites"]}
                         datavals={[
                             numCancelled,
-                            numUnused,
                             numUsed
                         ]}
                     />
@@ -397,7 +396,7 @@ const VisitorDashboard = () => {
                             <span className="text-2xl text-primary">
                                 <FaBed />
                             </span>
-                            Maximum Sleepovers
+                            Maximum Sleepovers Allowed
                         </h2>
                         <div className="card-body justify-center">
                             <h1 className="text-4xl font-bold">

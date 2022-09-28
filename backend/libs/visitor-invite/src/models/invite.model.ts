@@ -32,10 +32,10 @@ export class Invite {
     @Field((type) => {return String})
     notes?: string;
 
-    @Field((type)=> {return String})
+    @Field((type)=> {return String},{nullable: true})
     signOutTime?: Date;
 
-    @Field((type)=> {return String} , {nullable:true})
+    @Field((type)=> {return String},{nullable:true})
     signInTime: string;
 
     @Field((type)=> {return Number})
