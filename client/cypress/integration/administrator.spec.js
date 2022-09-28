@@ -1,4 +1,4 @@
-/*var myObj = { inText: 0, numberAllowed: 0, numberSent: 0 };
+var myObj = { inText: 0, numberAllowed: 0, numberSent: 0 };
 describe('Receptionist tests', () => {
     it('tests various administrator functions', () => {
         var today = new Date();
@@ -59,17 +59,16 @@ describe('Receptionist tests', () => {
                     myObj.numberSent = myObj.inText.slice(19, 21);
                     myObj.numberAllowed = parseInt(myObj.numberAllowed);
                     myObj.numberSent = parseInt(myObj.numberSent);
-
+                    cy.wait(3000);  
                     cy.get('div[class="radial-progress text-base-content"]').within(($tr) => {                        //search only within the row
                         cy.contains(Math.trunc((myObj.numberSent / myObj.numberAllowed) * 100));//for rounding
                     })
 
                     describe('canceling the personal invite', () => {
-                        cy.contains('td', 'Stefan1234@mail.com')//find stafans column
-                            .parent()                               //his row
-                            .within(($tr) => {                        //search only within the row
-                                cy.get('td button').click()
-                            })
+                        cy.get('p[ class="text-sm text-neutral-content"]').parent().parent().parent().then(()=>{
+                            cy.get('button[class="btn btn-circle btn-sm absolute top-[-0.5em] right-[-0.5em] text-lg"]').click();
+                        })
+                        
                     })
 
                     describe('confirming that the Invites sent has correctly updated', () => {
@@ -103,7 +102,7 @@ describe('Receptionist tests', () => {
                 cy.log(myObj.inText);
                 cy.get('button[data-testid="increaseInvites"]').click();
                 cy.get('button[class="btn btn-primary btn-sm space-x-3 lg:btn-md"]').click();
-
+                cy.wait(3000);
                 describe('Navigate to visitor dashboard/confirm navigation success', () => {
                     cy.get('.menuIcon').click();
                     cy.contains('your Dashboard', { matchCase: false }).click({ force: true });
@@ -113,16 +112,17 @@ describe('Receptionist tests', () => {
                 cy.contains('p', 'You are allowed to send ')        //find Stefans column
                     .parent().then(($span) => {
                         let myText = $span.text();
+                        cy.log(myText);
                         let temp = myText.search("send");
                         temp = parseInt(temp);
                         let myallowed = myText.slice(temp + 5, temp + 7);
-                        cy.log(myallowed);
+                         cy.log(myallowed);
                         cy.log(myObj.inText);
                         myObj.inText = parseInt(myObj.inText);
                         myallowed = parseInt(myallowed);
-                        if (myallowed != (myObj.inText + 1)) {
+                        if (myallowed != (myObj.inText)-4) {
                             throw new Error("Error, 'number of allowed invites does not update correctly");
-                        }
+                       }
                     })
             })
         })
@@ -132,10 +132,12 @@ describe('Receptionist tests', () => {
             cy.contains('admin dashboard', { matchCase: false }).click({ force: true });
             cy.url().should('include', '/adminDashboard');      //confirm correct page
             cy.wait(3000);
-            cy.get('button[data-testid="decreaseInvites"]').click();
+            cy.contains("Number of invites a resident is").parent().within(($tr) => { 
+                cy.get('button[data-testid="decreaseInvites"]').click();
+            }) 
+            
             cy.get('button[class="btn btn-primary btn-sm space-x-3 lg:btn-md"]').click();
         })
 
     })
 })
-*/
