@@ -39,16 +39,16 @@ const SignUp = () => {
                     </p>
 
                     <div className="flex items-center space-x-3">
-                        <Link href="/resident/signUp"> 
-                            <a className="link" style={{textDecoration: "none"}}>
+                        <Link className="underline" href="/resident/signUp"> 
+                            <a className="underline">
                                 <span className=" text-sm font-bold md:text-base">Resident</span>
                             </a>
                         </Link>
                     </div>
 
                     <div className="flex items-center space-x-3">
-                        <Link href="/receptionist/signUp" > 
-                        <a className="link" style={{textDecoration: "none"}}>
+                        <Link className="underline" href="/receptionist/signUp" > 
+                        <a className="underline">
                                 <span className=" text-sm font-bold md:text-base">Receptionist</span> 
                         </a>
                         </Link>

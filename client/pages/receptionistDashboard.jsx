@@ -301,7 +301,7 @@ const ReceptionistDashboard = () => {
                                 <div className="flex flex-col gap-2 overflow-y-scroll p-2 h-80">
                                     {inActiveInvites.map((visit, idx) => {
                                         return (
-                                            <div className="hover:bg-base-200 bg-base-100 flex justify-between shadow-xl m-1 p-3 rounded-lg flex flex-row items-center" key={visit.inviteID}
+                                            <div className="hover:bg-base-200 cursor-pointer bg-base-100 flex justify-between shadow-xl m-1 p-3 rounded-lg flex flex-row items-center" key={visit.inviteID}
                                                 onClick={() => {
                                                     setCurrentVisitData(visit);
                                                     setShowVisitorModal(true);
@@ -351,7 +351,7 @@ const ReceptionistDashboard = () => {
                                 <div className="flex flex-col gap-2 overflow-y-scroll p-2 h-80 ">
                                     {signedInInvites.map((visit, idx) => {
                                         return (
-                                            <div className="hover:bg-base-200 bg-base-100 flex justify-between shadow-xl m-1 p-3 rounded-lg flex flex-row items-center" key={visit.inviteID}
+                                            <div className="hover:bg-base-200 cursor-pointer bg-base-100 flex justify-between shadow-xl m-1 p-3 rounded-lg flex flex-row items-center" key={visit.inviteID}
                                                 onClick={() => {
                                                     setCurrentVisitData(visit);
                                                     setShowVisitorModal(true);
@@ -366,7 +366,7 @@ const ReceptionistDashboard = () => {
                                                 </div>
 
                                                 <ReceptionistSignButton
-                                                    className="mx-5"
+                                                    className="mx-5 cursor-default"
                                                     key={visit.inviteID}
                                                     onClick={(e) => {
                                                         e.stopPropagation();
@@ -383,12 +383,8 @@ const ReceptionistDashboard = () => {
                                                         setShowVisitorModal(
                                                             false
                                                         );
-                                                        setShowSignOutModal(
-                                                            true
-                                                        );
                                                     }}
                                                     text="Sign Out"
-                                                    htmlFor="signOut-modal"
                                                     colour={visit.inviteState==="extended" ? "bg-warning " : "bg-error"}
                                                     signInTime={visit.inviteState==="extended" ? visit.signInTime : null}
                                                 />
