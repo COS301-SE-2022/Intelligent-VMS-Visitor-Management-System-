@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { gql, useQuery, useApolloClient } from "@apollo/client";
 import { Field, Formik } from "formik";
 import { motion } from "framer-motion";
-import { alert } from "react-custom-alert";
+import { useAlert } from "react-alert";
 import axios from "axios";
 
 import Layout from "../../components/Layout";
@@ -11,6 +11,7 @@ import Layout from "../../components/Layout";
 import useAuth from "../../store/authStore";
 
 const SignUp = () => {
+    const alert = useAlert();
     const permission = useAuth((state) => {
         return state.permission;
     })();
@@ -69,8 +70,9 @@ const SignUp = () => {
             verify();
             router.push("/verify?email=" + signupData.email);
         } else {
-            alert({
-                message: response.data.error,
+            alert.show(
+            response.data.error,
+            {
                 type: "error"
             });
         }
