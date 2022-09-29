@@ -5,6 +5,8 @@ import userEvent from "@testing-library/user-event";
 import { MockedProvider } from "@apollo/client/testing";
 import axios from "axios";
 import AxiosMockAdapter from 'axios-mock-adapter';
+import { transitions, positions, Provider as AlertProvider } from 'react-alert'
+import { useAlert } from 'react-alert';
 
 import * as nextRouter from "next/router";
 
@@ -19,6 +21,13 @@ nextRouter.useRouter.mockImplementation(() => ({ route: "/signup" }));
 const axiosMockInstance = axios.create();
 const axiosMockAdapterInstance= new AxiosMockAdapter(axiosMockInstance, { delayResponse: 0 });
 
+const options = {
+      position: positions.TOP_CENTER,
+      timeout: 8000,
+      offset: '30px',
+      transition: transitions.SCALE
+}
+
 axiosMockAdapterInstance
    .onPost('http://localhost:3001/user/signup')
    .reply(() => {
@@ -30,20 +39,26 @@ axiosMockAdapterInstance
 
 describe("Resident-Sign-up", () => {
     it("renders a heading", () => {
+        const { result } = renderHook(() => useAlert());
         render(
+            <AlertProvider>
             <MockedProvider>
                 <ResidentSignUp />
             </MockedProvider>
+            </AlertProvider>
         );
 
         expect(screen.getByText("Tell Us About Yourself")).toBeInTheDocument();
     });
 
     it("shows an error message when no email is provided", async () => {
+        const { result } = renderHook(() => useAlert());
         render(
+            <AlertProvider>
             <MockedProvider>
                 <ResidentSignUp />
             </MockedProvider>
+            </AlertProvider>
         );
 
         expect(screen.getByPlaceholderText("Your Email")).toBeInTheDocument();
@@ -59,10 +74,13 @@ describe("Resident-Sign-up", () => {
     });
 
     it("shows an error message with invalid email", async () => {
+        const { result } = renderHook(() => useAlert());
         render(
+            <AlertProvider>
             <MockedProvider>
                 <ResidentSignUp />
             </MockedProvider>
+            </AlertProvider>
         );
 
         expect(screen.getByPlaceholderText("Your Email")).toBeInTheDocument();
@@ -82,10 +100,13 @@ describe("Resident-Sign-up", () => {
     });
 
     it("shows a message when no name is provided", async () => {
+        const { result } = renderHook(() => useAlert());
         render(
+            <AlertProvider>
             <MockedProvider>
                 <ResidentSignUp />
             </MockedProvider>
+            </AlertProvider>
         );
 
         expect(screen.getByPlaceholderText("Your Email")).toBeInTheDocument();
@@ -107,10 +128,13 @@ describe("Resident-Sign-up", () => {
     });
 
     it("shows a message when an invalid name is provided", async () => {
+        const { result } = renderHook(() => useAlert());
         render(
+            <AlertProvider>
             <MockedProvider>
                 <ResidentSignUp />
             </MockedProvider>
+            </AlertProvider>
         );
 
         expect(screen.getByPlaceholderText("Your Email")).toBeInTheDocument();
@@ -132,10 +156,13 @@ describe("Resident-Sign-up", () => {
     });
 
     it("shows an error on invalid ID number", async () => {
+        const { result } = renderHook(() => useAlert());
         render(
+            <AlertProvider>
             <MockedProvider>
                 <ResidentSignUp />
             </MockedProvider>
+            </AlertProvider>
         );
 
         expect(screen.getByPlaceholderText("Your Email")).toBeInTheDocument();
@@ -157,10 +184,13 @@ describe("Resident-Sign-up", () => {
     });
 
     it("shows an error when no password is provided", async () => {
+        const { result } = renderHook(() => useAlert());
         render(
+            <AlertProvider>
             <MockedProvider>
                 <ResidentSignUp />
             </MockedProvider>
+            </AlertProvider>
         );
 
         expect(screen.getByPlaceholderText("Your Email")).toBeInTheDocument();
@@ -184,10 +214,13 @@ describe("Resident-Sign-up", () => {
     });
 
     it("shows an error when no confirm password is provided", async () => {
+        const { result } = renderHook(() => useAlert());
         render(
+            <AlertProvider>
             <MockedProvider>
                 <ResidentSignUp />
             </MockedProvider>
+            </AlertProvider>
         );
 
         expect(screen.getByPlaceholderText("Your Email")).toBeInTheDocument();
@@ -213,10 +246,13 @@ describe("Resident-Sign-up", () => {
     });
 
     it("shows an error when password is invalid", async () => {
+        const { result } = renderHook(() => useAlert());
         render(
+            <AlertProvider>
             <MockedProvider>
                 <ResidentSignUp />
             </MockedProvider>
+            </AlertProvider>
         );
 
         expect(screen.getByPlaceholderText("Your Email")).toBeInTheDocument();
@@ -244,10 +280,13 @@ describe("Resident-Sign-up", () => {
     });
 
     it("shows an error when password and confirm password is not same", async () => {
+        const { result } = renderHook(() => useAlert());
         render(
+            <AlertProvider>
             <MockedProvider>
                 <ResidentSignUp />
             </MockedProvider>
+            </AlertProvider>
         );
 
         expect(screen.getByPlaceholderText("Your Email")).toBeInTheDocument();
@@ -275,10 +314,13 @@ describe("Resident-Sign-up", () => {
     });
 
     it("shows an error if an image with no face is uploaded", async () => {
+        const { result } = renderHook(() => useAlert());
         render(
+            <AlertProvider>
             <MockedProvider>
                 <ResidentSignUp />
             </MockedProvider>
+            </AlertProvider>
         );
 
         expect(screen.getByPlaceholderText("Your Email")).toBeInTheDocument();
