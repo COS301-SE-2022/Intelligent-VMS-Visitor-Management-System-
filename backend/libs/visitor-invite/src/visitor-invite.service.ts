@@ -357,11 +357,13 @@ export class VisitorInviteService  {
         let sleepovers = 0; 
         for(const invite of invites){
 
-            var signInDate = new Date(invite.signInTime.slice(0,10));
-            var signOutDate = new Date(invite.signOutTime.slice(0,10));
+            if(invite.signInTime && invite.signOutTime){
+                var signInDate = new Date(invite.signInTime.slice(0,10));
+                var signOutDate = new Date(invite.signOutTime.slice(0,10));
 
-            if(invite.signInTime && invite.signOutTime && signInDate.getDate() != signOutDate.getDate() || invite.inviteState == "extended"){
-                sleepovers += Math.ceil((signOutDate.getTime() - signInDate.getTime()) / (1000 * 3600 * 24));
+                if(signInDate.getDate() != signOutDate.getDate() || invite.inviteState == "extended"){
+                    sleepovers += Math.ceil((signOutDate.getTime() - signInDate.getTime()) / (1000 * 3600 * 24));
+                }
             }
         }
         return sleepovers;
