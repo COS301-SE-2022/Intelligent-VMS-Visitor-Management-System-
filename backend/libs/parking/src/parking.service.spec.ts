@@ -220,8 +220,6 @@ describe('ParkingService', () => {
                 reservation.reservationDate = "2022-03-06";
                 reservations[1]=reservation;
                 return reservations;
-            } else if(query instanceof GetNumberOfReservationsQuery) {
-                return 0;
             }
             
       }), 
