@@ -27,6 +27,12 @@ def predictAsync():
     workerThread.start()
     return "done"
 
+@app.route("/trainAsync")
+def trainAsync():
+    workerThread = Thread(target=train)
+    workerThread.start()
+    return "done"
+
 @app.route("/getCache")
 def getCache():
     startDate = request.args.get('startDate')
