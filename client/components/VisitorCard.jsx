@@ -22,7 +22,7 @@ const VisitorCard = ({ name, email, numInvites }) => {
                 const { idNumber, visitorName, idDocType, visitorEmail } =
                     data.getMostUsedInviteData;
                 router.push(
-                    `/createInvite?name=${visitorName}&email=${visitorEmail}&idNumber=${idNumber}&idDocType=${idDocType}`
+                    `/createInvite?name=${name}&email=${visitorEmail}&idNumber=${idNumber}&idDocType=${idDocType}`
                 );
             }
         } else if (error) {

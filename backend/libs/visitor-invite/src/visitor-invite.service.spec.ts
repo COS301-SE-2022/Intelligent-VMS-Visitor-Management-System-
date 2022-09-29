@@ -645,7 +645,7 @@ describe("VisitorInviteService", () => {
     describe('getSuggestions', () => {
         it('should get suggestions', async () => {
             const response = await service.getSuggestions('Sept 28, 22 13:20:18', "Steffanny");
-            expect(response).toEqual([{"_id": "999", "idDocType": "paper", "idNumber": "999", "prob": Infinity, "visitorName": "dan"}, {"_id": "999", "idDocType": "paper", "idNumber": "999", "prob": -Infinity, "visitorName": "dan"}]);
+            expect(response).toEqual([{"_id": "999", "idDocType": "paper", "idNumber": "999", "prob": Infinity, "visitorName": "dan"}, {"_id": "999", "idDocType": "paper", "idNumber": "999", "prob": Infinity, "visitorName": "dan"}]);
         })
     })
     describe('groupInvites', () => {
