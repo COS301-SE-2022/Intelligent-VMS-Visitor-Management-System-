@@ -357,8 +357,11 @@ export class VisitorInviteService  {
         let sleepovers = 0; 
         for(const invite of invites){
 
-            if(invite.signInTime && invite.signOutTime && (new Date(invite.signInTime.slice(0,10))).getDate() != (new Date(invite.signOutTime.slice(0,10))).getDate() || invite.inviteState == "extended"){
-                sleepovers++;
+            var signInDate = new Date(invite.signInTime.slice(0,10));
+            var signOutDate = new Date(invite.signOutTime.slice(0,10));
+
+            if(invite.signInTime && invite.signOutTime && signInDate.getDate() != signOutDate.getDate() || invite.inviteState == "extended"){
+                sleepovers += Math.ceil((signOutDate.getTime() - signInDate.getTime()) / (1000 * 3600 * 24));
             }
         }
         return sleepovers;
@@ -638,6 +641,12 @@ export class VisitorInviteService  {
         if(data.data.length === 1) {
             return [];
         }
+    }
+
+    @Cron("15 0 * * *")
+    async trainForecastingModels() {
+        const baseURL = this.configService.get<string>("AI_API_CONNECTION");
+        this.httpService.get(`${baseURL}/trainAsync`); 
     }
 
 }

@@ -175,7 +175,10 @@ describe('ParkingService', () => {
                                 
             } else if(query instanceof GetReservationsQuery){
                 return [];
-
+            } else if(query instanceof getDisabledParkingQuery){
+                return [];
+            } else if(query instanceof GetNumberOfReservationsQuery){
+                return 4;
             } else if(query instanceof GetFreeParkingQuery){
                     const parkings = [];
                     let parking = new Parking();
@@ -406,6 +409,33 @@ describe('ParkingService', () => {
         } catch(error){}
         expect(parking).toBeDefined();
       });
+  });
+
+  describe("getDisabledParking", () => {
+    it("should return a all disabled parking", async () => {
+        expect(await parkingService.getDisabledParking()).toEqual([]);
+      });
+  });
+
+  describe("isParkingAvailable", () => {
+    it("should return true if available parking is more than the number of reserved parking", async () => {
+        expect(await parkingService.isParkingAvailable()).toEqual(true);
+      });
+  });
+
+  describe("getNumberOfReservations", () => {
+    it("should return number of reservations", async () => {
+        expect(await parkingService.getNumberOfReservations("2022-05-04")).toEqual(4);
+      });
+
+    it("should throw an exception if a date is of the wrong format", async () => {
+        try {
+            await parkingService.getNumberOfReservations("01-03-2022");
+        } catch (error) {
+            expect(error).toBeDefined();
+            expect(error.message).toEqual("Given dates must be of the form yyyy-mm-dd")
+        }
+    });
   });
   
   describe("createNParking", () => {
