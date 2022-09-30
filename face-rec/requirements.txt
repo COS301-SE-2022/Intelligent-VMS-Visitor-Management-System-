@@ -21,3 +21,4 @@ boost-py
 gunicorn==20.0.4
 python-dotenv
 dnspython
+APScheduler
