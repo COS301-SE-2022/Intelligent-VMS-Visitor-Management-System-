@@ -330,7 +330,7 @@ describe("VisitorInviteService", () => {
     describe("getTotalNumberOfSleepoversThisMonthOfResident", () => {
         it("should return the number of sleepovers of the resident for this month", async () => {
             const numSleepovers = await service.getTotalNumberOfSleepoversThisMonthOfResident("admin@mail.com");
-            expect(numSleepovers).toEqual(2);
+            expect(numSleepovers).toEqual(0);
         });
     });
 

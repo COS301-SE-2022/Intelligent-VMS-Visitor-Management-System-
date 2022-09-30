@@ -1,3 +1,4 @@
+from calendar import c
 from tokenize import group
 import joblib
 from sklearn import ensemble
@@ -5,7 +6,8 @@ from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
 from datetime import date, timedelta, datetime
 from dateutil.relativedelta import relativedelta
-import math
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.cron import CronTrigger
 import numpy as np
 
 from app.database import invitesCollection,groupInvitesCollection,parkingReservationCollection,groupParkingReservationsCollection
@@ -24,6 +26,12 @@ parkReg = joblib.load("VMS_parking-reg-model.pkl")
 
 allGroupInvites = groupInvitesCollection.find()
 allGroupParking = groupParkingReservationsCollection.find()
+
+sched = BackgroundScheduler()
+sched.start()
+trigger = CronTrigger(
+        year="*", month="*", day="*", hour="0", minute="1", second="0"
+    )
 
 invite = invitesCollection.find_one({})
 if(invite):
@@ -188,6 +196,26 @@ def calculateMonthsPerMonth():
 
   return totalMonthsPerMonth
 
+global daysPerDOW
+global weeksPerWOY
+global monthsPerMonth
+
+def calculationJob():
+    global daysPerDOW
+    daysPerDOW = calculateDaysPerDOW()
+    global weeksPerWOY
+    weeksPerWOY = calculateWeeksPerWOY()
+    global monthsPerMonth
+    monthsPerMonth = calculateMonthsPerMonth()
+
+calculationJob()
+
+job =  sched.add_job(
+        calculationJob,
+        trigger=trigger,
+        name="calculationJob",
+    )
+
 ##################################################Calculations
 
 def calculateMeans():
@@ -229,9 +257,9 @@ def calculateMeans():
       resPerWOY[currDate.isocalendar()[1]-1]+= numParkings
 
     # These values should already be available
-    totalDaysPerDOW = calculateDaysPerDOW()
-    totalWeeksPerWOY = calculateWeeksPerWOY()
-    totalMonthsPerMonth = calculateMonthsPerMonth()
+    totalDaysPerDOW = daysPerDOW
+    totalWeeksPerWOY = weeksPerWOY
+    totalMonthsPerMonth = monthsPerMonth
 
     # Can't we use .median() from numpy here?
 
@@ -288,20 +316,38 @@ def calculateRecentReservationAverages(invDate):
 def calculateVisitorMinMaxAndMedians():
   groupInvites = list(allGroupInvites)
 
-  temp = []
+  perDay = []
+  perMonth = [0]*12
+  perWeekDay = [0]*7
   for day in groupInvites:
-      temp.append(day["numInvites"])
+      cDate = datetime.strptime(day['_id'], '%Y-%m-%d').date()
+      currMonthIndex = cDate.month-1
+      currDayIndex = cDate.weekday()
+      numInvites = day["numInvites"]
 
-  return np.min(np.array(temp)),np.max(np.array(temp)),np.median(np.array(temp))
+      perDay.append(numInvites)
+      perMonth[currMonthIndex]+= numInvites
+      perWeekDay[currDayIndex]+= numInvites
+
+  return np.min(np.array(perDay)),np.max(np.array(perDay)),np.median(np.array(perDay)),np.min(np.array(perMonth)),np.max(np.array(perMonth)),np.median(np.array(perMonth)),np.min(np.array(perWeekDay)),np.max(np.array(perWeekDay)),np.median(np.array(perWeekDay))
 
 def calculateParkingMinMaxAndMedians():
   groupParking = list(allGroupParking)
 
-  temp = []
+  perDay = []
+  perMonth = [0]*12
+  perWeekDay = [0]*7
   for day in groupParking:
-      temp.append(day["numParking"])
+      cDate = datetime.strptime(day['_id'], '%Y-%m-%d').date()
+      currMonthIndex = cDate.month-1
+      currDayIndex = cDate.weekday()
+      numParkings = day["numParkings"]
 
-  return np.min(np.array(temp)),np.max(np.array(temp)),np.median(np.array(temp))
+      perDay.append(numParkings)
+      perMonth[currMonthIndex]+= numParkings
+      perWeekDay[currDayIndex]+= numParkings
+
+  return np.min(np.array(perDay)),np.max(np.array(perDay)),np.median(np.array(perDay)),np.min(np.array(perMonth)),np.max(np.array(perMonth)),np.median(np.array(perMonth)),np.min(np.array(perWeekDay)),np.max(np.array(perWeekDay)),np.median(np.array(perWeekDay))
   
 ##################
 
@@ -588,7 +634,7 @@ def predictMany(startingDate,endingDate):
           )
         ])
   
-    print(visPred)
+    #print(visPred)
 
     #Reason for redoing all the data is because the statistics could have other effects on parking
     parkPred = parkReg.predict([
@@ -619,38 +665,38 @@ def predictMany(startingDate,endingDate):
 
     loopDate+=delta
 
-    print(parkPred)
+    #print(parkPred)
 
     output.append({'date': loopDate.strftime("%Y-%m-%d"), 'visitors': visPred[0], 'parking': parkPred[0]})
 
-  print(time.time()-startTime)
+  #print(time.time()-startTime)
 
-  print(output)
+  #print(output)
   return output
 
 def train():
 
-  startTime = time.time()
+  #startTime = time.time()
 
   #Global parameters
   VisParams = { 
-      "n_estimators": 400,
+      "n_estimators": 20000,
       "max_depth": 5,
       "min_samples_split": 5,
       "criterion": "friedman_mse",
       "learning_rate": 0.05,
       "loss": "squared_error",
-      "verbose": True
+      #"verbose": True
   }
 
   ParkParams = { 
-      "n_estimators": 400,
+      "n_estimators": 20000,
       "max_depth": 5,
       "min_samples_split": 8,
       "criterion": "friedman_mse",
       "learning_rate": 0.05,
       "loss": "absolute_error",
-      "verbose": True
+      #"verbose": True
   }
 
   #Create regressor
@@ -669,28 +715,28 @@ def train():
 
   #Test model
   visMSE = mean_squared_error(y_testVis, visReg.predict(X_testVis))
-  print("Visitor MSE:" + str(visMSE))
+  #print("Visitor MSE:" + str(visMSE))
   parkMSE = mean_squared_error(y_testRes, parkReg.predict(X_testRes))
-  print("Parking MSE:" + str(parkMSE))
+  #print("Parking MSE:" + str(parkMSE))
 
   #Export model
   joblib.dump(visReg, "VMS_visitor-reg-model.pkl")
   joblib.dump(parkReg, "VMS_parking-reg-model.pkl")
 
-  print(time.time()-startTime)
+  #print(time.time()-startTime)
 
   return json.dumps({'Visitor MSE': visMSE , 'Parking MSE': parkMSE})
 
 
 def visitorFeatureAnalysis():
     imp = visReg.feature_importances_.tolist()
-    print(imp)
+    #print(imp)
 
     return json.dumps(imp)
 
 def parkingFeatureAnalysis():
     imp = parkReg.feature_importances_.tolist()
-    print(imp)
+    #print(imp)
 
     return json.dumps(imp)
 
