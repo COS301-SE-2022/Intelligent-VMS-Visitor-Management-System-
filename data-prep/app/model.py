@@ -634,7 +634,7 @@ def predictMany(startingDate,endingDate):
           )
         ])
   
-    #print(visPred)
+    print(visPred)
 
     #Reason for redoing all the data is because the statistics could have other effects on parking
     parkPred = parkReg.predict([
