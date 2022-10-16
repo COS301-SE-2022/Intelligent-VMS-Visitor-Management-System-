@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { motion } from "framer-motion";
 import { BiRightArrowAlt } from "react-icons/bi";
+import { BsChevronDoubleDown } from "react-icons/bs";
 
 import useAuth from "../store/authStore";
 
@@ -43,7 +44,7 @@ const Hero = () => {
     };
 
     return (
-        <div className="hero min-h-[80vh]">
+        <div className="relative hero min-h-[80vh] mb-24">
             <div className="hero-content">
                 <motion.div className="max-w-md overflow-y-hidden">
                     <motion.h1 className="text-4xl font-bold">
@@ -83,6 +84,9 @@ const Hero = () => {
                         </motion.button>
                     </Link>
                 </motion.div>
+            </div>
+            <div className="absolute bottom-[10px] left-auto mx-auto z-1">
+                <BsChevronDoubleDown className="text-xl md:text-xl lg:text-2xl"/>
             </div>
         </div>
     );

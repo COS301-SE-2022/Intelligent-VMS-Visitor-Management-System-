@@ -6354,6 +6354,11 @@ slice-ansi@^4.0.0:
     astral-regex "^2.0.0"
     is-fullwidth-code-point "^3.0.0"
 
+solid-toast@^0.3.5:
+  version "0.3.5"
+  resolved "https://registry.yarnpkg.com/solid-toast/-/solid-toast-0.3.5.tgz#64c2aecd2ce322f24fb0a00f227baad28bbe1eec"
+  integrity sha512-m4PX2ESex9nSwt9d9XTr3r+Kp3vjSoViDWj3gj6Xxgz21IKYODMKhACXurlZCztz56NQBnfX2m4es4I8JgXGQQ==
+
 source-map-js@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/source-map-js/-/source-map-js-1.0.2.tgz#adbc361d9c62df380125e7f161f71c826f1e490c"

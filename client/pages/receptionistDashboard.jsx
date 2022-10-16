@@ -298,7 +298,7 @@ const ReceptionistDashboard = () => {
                                 </progress>
                             ) : (
                             inActiveInvites.length >0 ? (
-                                <div className="flex flex-col gap-2 overflow-y-scroll p-2 h-80">
+                                <div className="flex flex-col gap-2 overflow-y-scroll p-2 h-[30rem]">
                                     {inActiveInvites.map((visit, idx) => {
                                         return (
                                             <div className="hover:bg-base-200 cursor-pointer bg-base-100 flex justify-between shadow-xl m-1 p-3 rounded-lg flex flex-row items-center" key={visit.inviteID}
@@ -348,7 +348,7 @@ const ReceptionistDashboard = () => {
                                 </progress>
                             ) : (
                             signedInInvites.length>0?(
-                                <div className="flex flex-col gap-2 overflow-y-scroll p-2 h-80 ">
+                                <div className="flex flex-col gap-2 overflow-y-scroll p-2 h-[30rem] ">
                                     {signedInInvites.map((visit, idx) => {
                                         return (
                                             <div className="hover:bg-base-200 cursor-pointer bg-base-100 flex justify-between shadow-xl m-1 p-3 rounded-lg flex flex-row items-center" key={visit.inviteID}
@@ -384,11 +384,10 @@ const ReceptionistDashboard = () => {
                                                             false
                                                         );
                                                     }}
-                                                    text="Sign Out"
-                                                    colour={visit.inviteState==="extended" ? "bg-warning " : "bg-error"}
+                                                    text="Signed In"
+                                                    colour={visit.inviteState==="extended" ? "bg-warning " : "bg-success"}
                                                     signInTime={visit.inviteState==="extended" ? visit.signInTime : null}
                                                 />
-
                                             </div>
                                         );
                                     })}

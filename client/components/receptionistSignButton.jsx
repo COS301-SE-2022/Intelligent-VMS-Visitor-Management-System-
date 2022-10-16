@@ -1,3 +1,10 @@
+const calculateDiff = (signInTime) => {
+        const today = (new Date()).getTime();
+        const other = new Date(signInTime.replace(/\-/g, '/')).getTime();
+        const diff = today - other;
+        return Math.floor(diff / (1000 * 3600 * 24));
+}
+
 const ReceptionistSignButton = ({ htmlFor, text, colour, onClick, key, signInTime }) => {
     return (
         <div className="float-left flex flex-wrap">
@@ -8,7 +15,7 @@ const ReceptionistSignButton = ({ htmlFor, text, colour, onClick, key, signInTim
         >
             {text}
             {signInTime != null ? (
-                <div className="inline-flex absolute -top-2 -right-2 justify-center border-none bg-secondary items-center w-6 h-6 text-xs font-bold text-white rounded-full">{(new Date()).getDate()-(new Date(signInTime.replace(/\-/g, '/')).getDate())}</div>
+                <div className="inline-flex absolute -top-2 -right-2 justify-center border-none bg-secondary items-center w-6 h-6 text-xs font-bold text-white rounded-full">{calculateDiff(signInTime)}</div>
             ):(
                 <div></div>
             )}
