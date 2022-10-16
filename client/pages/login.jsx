@@ -10,6 +10,7 @@ import { AiOutlineKey, AiFillLock } from "react-icons/ai";
 import useAuth from "../store/authStore";
 
 import Layout from "../components/Layout";
+import useTheme from "../store/themeStore";
 
 const Login = () => {
     const alert = useAlert();
@@ -25,6 +26,9 @@ const Login = () => {
     });
     const decodedToken = useAuth((state) => {
         return state.decodedToken;
+    });
+    const addTheme = useTheme((state) => {
+        return state.addTheme;
     });
     const router = useRouter();
 
@@ -121,6 +125,8 @@ const Login = () => {
 
                                 // Add token to store
                                 login(token);
+
+                                addTheme();
 
                                 const permission = decodedToken().permission;
 
