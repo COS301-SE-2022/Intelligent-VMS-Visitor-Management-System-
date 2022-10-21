@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { motion } from "framer-motion";
 import { BiRightArrowAlt } from "react-icons/bi";
+import { BsChevronDoubleDown } from "react-icons/bs";
 
 import useAuth from "../store/authStore";
 
@@ -10,14 +11,28 @@ const Hero = () => {
         return state.decodedToken;
     })();
 
-    const heroContainer = {
-        animate: {
+    const scrollArrow = {
+        initial: {
             transition: {
-                staggerChildren: 0.8,
+                ease: "easeInOut",
+            }
+        },
+        animate: {
+            y: [0, 10, 0],
+            transition: {
                 ease: "linear",
+                repeat: Infinity,
+                duration: 1
+            }
+        },
+        hover: {
+            y: 10,
+            transition: {
+                ease: "linear",
+                duration: 0.4,
             },
         },
-    };
+    }; 
 
     const spinArrow = {
         initial: {
@@ -43,7 +58,7 @@ const Hero = () => {
     };
 
     return (
-        <div className="hero min-h-[80vh]">
+        <div className="relative hero min-h-[80vh] mb-24">
             <div className="hero-content">
                 <motion.div className="max-w-md overflow-y-hidden">
                     <motion.h1 className="text-4xl font-bold">
@@ -84,6 +99,9 @@ const Hero = () => {
                     </Link>
                 </motion.div>
             </div>
+            <motion.div variants={scrollArrow} initial="initial" whileHover="hover" animate="animate" className="absolute bottom-[30px] md:bottom-[10px] left-[47%] mx-auto z-1">
+                <BsChevronDoubleDown className="text-xl md:text-xl lg:text-2xl"/>
+            </motion.div>
         </div>
     );
 };

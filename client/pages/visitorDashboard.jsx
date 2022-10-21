@@ -319,24 +319,24 @@ const VisitorDashboard = () => {
                 <p>You have {todayInvites} visitors expected today.</p>
             </div>
             <div className="mb-10 grid grid-cols-1 gap-4 md:grid-cols-2">
-                <div className="card bg-base-200 p-3">
-                <h2 className="card-title text-2xl">
-                    <BiStats className="text-3xl text-primary" />
-                    Invite Data
-                </h2>
-                <div className="p-14">
-                    <PieChart
-                        chartRef={null}
-                        datalabels={[
-                            "Invites",
-                        ]}
-                        labelvals={["Cancelled", "Used Invites"]}
-                        datavals={[
-                            numCancelled,
-                            numUsed
-                        ]}
-                    />
-                </div>
+                <div className="card bg-base-200 w-full p-3 ml-2">
+                    <h2 className="card-title text-2xl">
+                        <BiStats className="text-3xl text-primary" />
+                        Invite Data
+                    </h2>
+                    <div className="p-10 md:p-14">
+                        <PieChart
+                            chartRef={null}
+                            datalabels={[
+                                "Invites",
+                            ]}
+                            labelvals={["Cancelled", "Used Invites"]}
+                            datavals={[
+                                numCancelled,
+                                numUsed
+                            ]}
+                        />
+                    </div>
                 </div>
                 <div className="col-span-2 grid grid-cols-1 gap-5 md:col-span-1">
                     <div className="card h-full w-full bg-base-200 p-5 shadow">
@@ -390,8 +390,9 @@ const VisitorDashboard = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="flex flex-row w-full space-x-3">
-                    <div className="card h-full w-1/2 bg-base-200 p-4 pb-1 shadow">
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div className="card h-full bg-base-200 p-4 pb-1 shadow">
                         <h2 className="card-title font-normal">
                             <span className="text-2xl text-primary">
                                 <FaBed />
@@ -407,7 +408,7 @@ const VisitorDashboard = () => {
                         <div className="card-actions"></div>
                     </div>
 
-                    <div className="card h-full w-1/2 bg-base-200 p-4 pb-1 shadow">
+                    <div className="card h-full bg-base-200 p-4 pb-1 shadow">
                         <h2 className="card-title font-normal">
                             <span className="text-2xl text-primary">
                                 <AiFillClockCircle />
@@ -421,7 +422,6 @@ const VisitorDashboard = () => {
                         </div>
                         <div className="card-actions"></div>
                     </div>
-
                     </div>
                 </div>
                 <div className="col-span-2 grid grid-cols-1 grid-rows-2 gap-4 md:grid-cols-2 md:grid-rows-1">

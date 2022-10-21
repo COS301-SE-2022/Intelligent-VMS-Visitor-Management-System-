@@ -53,7 +53,8 @@ const ProfilePage = () => {
                 let info = data.getProfileInfo;
                 setXP(info.xp);
                 setBadges(info.allBadges);
-                setRewards(info.allRewards);
+                setRewards(info.allRewards.sort((a,b) => { return a.xp - b.xp }));
+                console.log(info.allRewards);
                 setUserBadges(info.badges);
                 setProgress(info.progress);
             }
@@ -102,7 +103,7 @@ const ProfilePage = () => {
                 BADGES
         </div>
         
-        <div className="mx-5 mt-5 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 space-y-2 space-x-3">
+        <div className="mx-5 mt-5 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-7 space-y-2 space-x-3">
 
             {badges.map((badge, idx) => {
                 return [...Array(badge.levels)].map((x,i) => {
