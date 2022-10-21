@@ -267,7 +267,7 @@ const AdminDashboard = () => {
             setInitialNumParkingSpots(numParkingSpotsAvailable);
             adjustParkingMutation();
             setNumParkingSpotsAvailableToday(
-                numParkingSpotsAvailable - parkingDateMap.get(parkingStartDate)
+                numParkingSpotsAvailable - parkingVals.data[0]
             );
         }
 

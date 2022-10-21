@@ -11,14 +11,28 @@ const Hero = () => {
         return state.decodedToken;
     })();
 
-    const heroContainer = {
-        animate: {
+    const scrollArrow = {
+        initial: {
             transition: {
-                staggerChildren: 0.8,
+                ease: "easeInOut",
+            }
+        },
+        animate: {
+            y: [0, 10, 0],
+            transition: {
                 ease: "linear",
+                repeat: Infinity,
+                duration: 1
+            }
+        },
+        hover: {
+            y: 10,
+            transition: {
+                ease: "linear",
+                duration: 0.4,
             },
         },
-    };
+    }; 
 
     const spinArrow = {
         initial: {
@@ -85,9 +99,9 @@ const Hero = () => {
                     </Link>
                 </motion.div>
             </div>
-            <div className="absolute bottom-[10px] left-auto mx-auto z-1">
+            <motion.div variants={scrollArrow} initial="initial" whileHover="hover" animate="animate" className="absolute bottom-[30px] md:bottom-[10px] left-[47%] mx-auto z-1">
                 <BsChevronDoubleDown className="text-xl md:text-xl lg:text-2xl"/>
-            </div>
+            </motion.div>
         </div>
     );
 };

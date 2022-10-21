@@ -12,7 +12,8 @@ export class RewardsService {
     constructor(private queryBus: QueryBus,
                 private commandBus: CommandBus,
                 @Inject(forwardRef(() => {return UserService}))
-                private readonly userService: UserService,) {}
+                private readonly userService: UserService,) {
+    }
 
     async getProfileInfo(email: string) {
 

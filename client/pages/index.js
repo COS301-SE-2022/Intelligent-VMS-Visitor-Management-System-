@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { motion } from "framer-motion";
 
 import { AiFillLinkedin, AiFillGithub } from "react-icons/ai";
 
