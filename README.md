@@ -22,9 +22,9 @@ The VMS is an intelligent visitor management system that provides a platform for
 
 <a href="https://docs.google.com/document/d/1cEvTOnoZmEXxylP1PYGmIJqaO40ZHLxCKjMB2wpL74I/edit?usp=sharing">🧶 Coding Standards Document</a>
 
-<a href="https://docs.google.com/document/d/1vzGkBj-z6qehz3pOtaYuUYPNi2w1h8cGahX0uUgkSGk/edit?usp=sharing">📘 Testing Policy</a>
+<a href="https://github.com/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-/wiki/Testing">📘 Testing</a>
 
-<a href="https://github.com/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-/projects/1">📦 Project Board</a>
+<a href="https://github.com/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-/wiki/Project-Management">📦 Project Management</a>
 
 <a href="https://docs.google.com/document/d/1V3HpPmDET7Qi9HQAEkKv3RmPfhWuLtyKRNrvhorMitw/edit?usp=sharing">📖 User Manual</a>
 
