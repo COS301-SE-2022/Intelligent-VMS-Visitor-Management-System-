@@ -30,23 +30,13 @@ The VMS is an intelligent visitor management system that provides a platform for
 
 <a href="https://docs.google.com/document/d/1xGIGt2TF3m_zBTq8HFQvbrWQS1P7GJDmd-BllNjurzk/edit?usp=sharing">🏠 Architecture Requirements Document</a>
 
-<a href="https://docs.google.com/document/d/124ubxwnVHgESve9ysGf2L5XBBt-JyZ_6pMC4tz4P6rE/edit?usp=sharing">📲 Technical Installation Manual</a>
+<a href="https://github.com/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-/blob/main/CONTRIBUTING.md">🏘 Contributing to Project</a>
 
 <a href="https://github.com/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-/wiki/The-Team">👏 The Team</a>
 
 <a href="https://drive.google.com/file/d/1dD1Xs5posYQw5nBmKD-MtA66LXuvnw3j/view?usp=sharing">🚧 Demo Video</a>
 
-<a href="#">📽 Project Summary</a>
-
-<a href="https://drive.google.com/file/d/1yz_Nz23otto52HPwkg4rQuaamllkoZR4/view?usp=sharing">🎢 Advert</a>
-
-<a href="https://github.com/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-/wiki/Deployment">🚀 System Deployment</a>
-
-<a href="https://docs.google.com/document/d/1YLsJSseVc8EUI0MPoKMe_InlRHobMgEgD7avqhEulSM/edit?usp=sharing">🦾 Tutorial</a>
-
-<a href="https://docs.google.com/document/d/1YLsJSseVc8EUI0MPoKMe_InlRHobMgEgD7avqhEulSM/edit?usp=sharing">💡 Usage</a>
-
-<a href="https://github.com/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-/blob/main/CONTRIBUTING.md">🏘 Contributing to Project</a>
+<a href="https://github.com/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-/wiki/Useful-Project-Links">✨ Useful Project Links</a>
 
 <!-- Shield links -->
 [linkedin-shield]: https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white
