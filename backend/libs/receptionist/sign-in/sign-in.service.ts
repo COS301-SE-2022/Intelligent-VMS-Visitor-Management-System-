@@ -125,7 +125,7 @@ export class SignInService {
 
             if(!invite) {
                 return {"error": "Invite not found"};
-            } else if (invite.inviteState === "signedIn" || invite.inviteState === "signedOut") {
+            } else if (invite.inviteState === "signedIn" || invite.inviteState === "signedOut" || invite.inviteState === "extended") {
                 return {"error": "Invite already used"};
             } 
 

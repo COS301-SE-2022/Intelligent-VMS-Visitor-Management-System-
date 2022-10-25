@@ -103,7 +103,7 @@ const ProfilePage = () => {
                 BADGES
         </div>
         
-        <div className="mx-5 mt-5 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-7 space-y-2 space-x-3">
+        <div className="mx-5 mt-5 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-7 space-y-2 space-x-3">
 
             {badges.map((badge, idx) => {
                 return [...Array(badge.levels)].map((x,i) => {

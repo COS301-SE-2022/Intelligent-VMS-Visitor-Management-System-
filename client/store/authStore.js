@@ -43,22 +43,22 @@ const useAuth = create(
                     switch(permission) {
                         case 0:
                             return [
-                                { content: "Create Invite", path: "/createInvite" },
-                                { content: "Your Dashboard", path: "/visitorDashboard"},
                                 { content: "Admin Dashboard", path: "/adminDashboard"},
-                                { content: "Your Profile", path: "/profilePage" },
                                 { content: "Reporting", path: "/reporting"},
                                 { content: "Manage Users", path: "/authorizeUser"},
+                                { content: "Create Invite", path: "/createInvite" },
+                                { content: "Visitor Dashboard", path: "/visitorDashboard"},
+                                { content: "Rewards", path: "/profilePage" },
                                 { content: "Logout", path: "/", onClick: () => get().logout() }
                             ]; 
 
                         case 1:
                             return [
-                                { content: "Create Invite", path: "/createInvite" },
-                                { content: "Your Dashboard", path: "/visitorDashboard" },
-                                { content: "Your Profile", path: "/profilePage" },
-                                { content: "Manage Residents", path: "/authorizeUser"},
                                 { content: "Receptionist Dashboard", path: "/receptionistDashboard" },
+                                { content: "Manage Residents", path: "/authorizeUser"},
+                                { content: "Create Invite", path: "/createInvite" },
+                                { content: "Visitor Dashboard", path: "/visitorDashboard" },
+                                { content: "Rewards", path: "/profilePage" },
                                 { content: "Logout", path: "/", onClick: () => get().logout() },
                             ];
                         
@@ -66,8 +66,8 @@ const useAuth = create(
                         case 2:
                             return [
                                 { content: "Create Invite", path: "/createInvite" },
-                                { content: "Profile Page", path: "/profilePage"},
-                                { content: "Your Dashboard", path: "/visitorDashboard" },
+                                { content: "Visitor Dashboard", path: "/visitorDashboard" },
+                                { content: "Rewards", path: "/profilePage"},
                                 { content: "Logout", path: "/", onClick: () => get().logout() },
                             ];
                     }

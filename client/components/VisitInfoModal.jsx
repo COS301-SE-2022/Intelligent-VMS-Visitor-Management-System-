@@ -62,7 +62,7 @@ const VisitInfoModal = ({ setCurrentVisitData, setShowVisitorModal, setShowSignO
             <div className="divider w-full">Invite Info</div>
             <div className="space-y-3">
                 <div className="flex items-center space-x-3">
-                    <HiIdentification className="text-2xl" />
+                    <HiIdentification className="text-xl md:text-2xl" />
                     <p>
                         Expected ID Document:{" "}
                         <span className="font-bold capitalize">
@@ -71,7 +71,7 @@ const VisitInfoModal = ({ setCurrentVisitData, setShowVisitorModal, setShowSignO
                     </p>
                 </div>
                 <div className="flex items-center space-x-3">
-                    <MdPassword className="text-2xl" />
+                    <MdPassword className="text-xl md:text-2xl" />
                     <p>
                         Expected ID Number:{" "}
                         <span className="font-bold capitalize">
@@ -80,7 +80,7 @@ const VisitInfoModal = ({ setCurrentVisitData, setShowVisitorModal, setShowSignO
                     </p>
                 </div>
                 <div className="flex items-center space-x-3">
-                    <BsFillPersonCheckFill className="text-2xl" />
+                    <BsFillPersonCheckFill className="text-xl md:text-2xl" />
                     <p>
                         User Email:{" "}
                         <span className="font-bold">
@@ -89,15 +89,6 @@ const VisitInfoModal = ({ setCurrentVisitData, setShowVisitorModal, setShowSignO
                     </p>
                 </div>
             </div>
-            {(visitModalData.inviteState === "signedIn" || visitModalData.inviteState === "EXTENDED") &&
-                <div className="card-actions mt-3 justify-end">
-                    <button onClick={() => {
-                        setCurrentVisitData(visitModalData);
-                        setShowVisitorModal(false);
-                        setShowSignOutModal(true);
-                    }}className="btn btn-error">Sign Out</button>
-                </div>
-            }
         </div>
     );
 };

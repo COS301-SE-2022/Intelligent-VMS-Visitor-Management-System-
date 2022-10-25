@@ -238,9 +238,9 @@ const ReceptionistDashboard = () => {
                 </button>
             </div>
 
-            <div className="flow-root w-full pt-7">
-                <div className="float-left flex flex-wrap">
-                    <h1 className="base-100 pl-3 text-xl font-bold md:text-3xl lg:text-4xl ">
+            <div className="w-full ml-2 pt-7 grid grid-cols-1 md:grid-cols-2">
+                <div className="w-full flex">
+                    <h1 className="base-100 text-xl font-bold md:text-3xl lg:text-4xl ">
                         {searching ? "Search Results" : "Today's Invites"}
                     </h1>
                     {searching ? (
@@ -257,32 +257,34 @@ const ReceptionistDashboard = () => {
                 </div>
 
 
-                <label
-                    htmlFor="QRScan-modal"
-                    className="modal-button btn btn-tertiary btn-sm float-right mx-3 gap-2 md:btn-md"
-                    onClick={() => setShowScanner(true)}
-                >
-                    <BiQrScan />
-                    Scan Invite
-                </label>
+                <div className="flex flex-col justify-center space-y-4 md:space-y-0 md:flex-row md:justify-end md:space-x-3 mr-6">
+                    <label
+                        htmlFor="QRScan-modal"
+                        className="modal-button btn btn-tertiary btn-sm gap-2 md:btn-md"
+                        onClick={() => setShowScanner(true)}
+                    >
+                        <BiQrScan />
+                        Scan Invite
+                    </label>
 
-                <label
-                    htmlFor="Upload-modal"
-                    className="modal-button btn btn-secondary btn-sm float-right gap-2 md:btn-md"
-                    onClick={() => setShowUploadPopUp(true)}
-                >
-                    <FaMailBulk />
-                    Bulk-SignIn
-                </label>
+                    <label
+                        htmlFor="Upload-modal"
+                        className="modal-button btn btn-secondary btn-sm gap-2 md:btn-md"
+                        onClick={() => setShowUploadPopUp(true)}
+                    >
+                        <FaMailBulk />
+                        Bulk-SignIn
+                    </label>
 
-                <label
-                    htmlFor="signIn-modal"
-                    className="modal-button btn btn-primary btn-sm float-right mx-3 gap-2 md:btn-md"
-                    onClick={() => setShowSignInModal(true)}
-                >
-                    <BiFace />
-                    Recognize Face
-                </label>
+                    <label
+                        htmlFor="signIn-modal"
+                        className="modal-button btn btn-primary btn-sm gap-2 md:btn-md"
+                        onClick={() => setShowSignInModal(true)}
+                    >
+                        <BiFace />
+                        Recognize Face
+                    </label>
+                </div>
             </div>
 
             <div className={`grid grid-cols-1 ${searching?( " md:grid-cols-3 " ): ( " md:grid-cols-2 " )} gap-3 mt-5 mx-3`}>
@@ -467,7 +469,7 @@ const ReceptionistDashboard = () => {
                 <div className="modal-box">
                     <label
                         htmlFor="signIn-modal"
-                        className="btn btn-circle btn-sm"
+                        className="btn btn-circle absolute right-2 top-2 btn-sm"
                         onClick={() => {
                             setShowSignInModal(false);
                         }}
