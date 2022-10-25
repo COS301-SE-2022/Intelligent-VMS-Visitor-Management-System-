@@ -59,7 +59,6 @@ describe("VisitInfoModal", () => {
             />
         );
 
-        expect(screen.getByText("Sign Out")).toBeVisible();
     })
 
     it("should not render the sign out button when invite state is signed out", () => {
