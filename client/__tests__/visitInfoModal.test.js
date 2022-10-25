@@ -94,10 +94,5 @@ describe("VisitInfoModal", () => {
                 }} 
             />
         );
-
-        expect(screen.getByText("Sign Out")).toBeVisible();
-        const user = userEvent.setup();
-
-        await user.click(screen.getByText("Sign Out"));
     })
 })
