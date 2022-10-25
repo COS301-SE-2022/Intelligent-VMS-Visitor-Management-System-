@@ -29,7 +29,7 @@ const DownloadChart = ({
     return (
         <div className="card w-full bg-base-300 p-3 lg:p-4">
             {title && <h2 className="card-title text-base-content">{title}</h2>}
-            <div className="h-full">
+            <div className="h-full w-full">
                 <Chart
                     chartRef={chartRef}
                     labelvals={labelvals}

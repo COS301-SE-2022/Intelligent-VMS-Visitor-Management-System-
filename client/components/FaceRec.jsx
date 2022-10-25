@@ -26,7 +26,7 @@ const FaceRec = ({ onSuccess, onAddFace, setFile }) => {
         const formData = new FormData();
         const file = await urlToFile(imageData, "face.png", "image/png")
         formData.append("file", file);
-        const response = await axios.post(`${BACKEND_URL}/receptionist/compareFace?idNumber=0109195273090`, formData, {
+        const response = await axios.post(`${BACKEND_URL}/receptionist/compareFace`, formData, {
             headers: {
                 'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
                 'Authorization': `Bearer ${token}`

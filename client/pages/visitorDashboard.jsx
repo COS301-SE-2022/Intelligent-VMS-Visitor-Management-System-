@@ -393,7 +393,7 @@ const VisitorDashboard = () => {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div className="card h-full bg-base-200 p-4 pb-1 shadow">
-                        <h2 className="card-title font-normal">
+                        <h2 className="card-title font-bold">
                             <span className="text-2xl text-primary">
                                 <FaBed />
                             </span>
@@ -409,7 +409,7 @@ const VisitorDashboard = () => {
                     </div>
 
                     <div className="card h-full bg-base-200 p-4 pb-1 shadow">
-                        <h2 className="card-title font-normal">
+                        <h2 className="card-title font-bold">
                             <span className="text-2xl text-primary">
                                 <AiFillClockCircle />
                             </span>

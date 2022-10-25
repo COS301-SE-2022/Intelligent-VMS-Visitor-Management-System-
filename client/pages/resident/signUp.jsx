@@ -159,9 +159,9 @@ const SignUp = () => {
                         return (
                             <form
                                 onSubmit={handleSubmit}
-                                className="prose form-control space-y-4 rounded-xl border p-14"
+                                className="form-control space-y-4 rounded-xl border p-14"
                             >
-                                <h1>Let&apos;s Get Started ✨</h1>
+                                <h1 className="font-bold text-xl md:text-4xl">Let&apos;s Get Started ✨</h1>
                                 <input
                                     type="email"
                                     name="email"
