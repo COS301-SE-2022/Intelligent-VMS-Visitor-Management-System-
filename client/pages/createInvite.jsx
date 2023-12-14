@@ -22,7 +22,6 @@ const getFormattedDateString = (date) => {
 };
 
 const CreateInvite = ({ name, email, idNumber, idDocType }) => {
-
     // Get Instance of NextJS router to redirect to different pages
     const router = useRouter();
     //let { name, email, idNumber, idDocType } = router.query;
@@ -86,9 +85,7 @@ const CreateInvite = ({ name, email, idNumber, idDocType }) => {
 
     useEffect(() => {
         if (!numInvitesQuery.loading && !numInvitesQuery.error) {
-            setNumInvitesAllowed(
-                numInvitesQuery.data.getMaxInvitesPerResident
-            );
+            setNumInvitesAllowed(numInvitesQuery.data.getMaxInvitesPerResident);
         } else if (numInvitesQuery.error) {
             if (numInvitesQuery.error.message === "Unauthorized") {
                 router.push("/expire");
@@ -129,8 +126,7 @@ const CreateInvite = ({ name, email, idNumber, idDocType }) => {
             numInvitesAllowed !== 0
         ) {
             const numSent =
-                numInvitesOfResidentQuery.data
-                    .getNumberOfOpenInvites;
+                numInvitesOfResidentQuery.data.getNumberOfOpenInvites;
             if (numSent >= numInvitesAllowed && jwtTokenData.permission === 2) {
                 setErrorMessage("Invite Limit Reached");
                 setLimitReached(true);
@@ -149,7 +145,12 @@ const CreateInvite = ({ name, email, idNumber, idDocType }) => {
             setErrorMessage(numInvitesOfResidentQuery.error.message);
             setShowErrorAlert(true);
         }
-    }, [numInvitesOfResidentQuery, numInvitesAllowed, jwtTokenData.permission, router])
+    }, [
+        numInvitesOfResidentQuery,
+        numInvitesAllowed,
+        jwtTokenData.permission,
+        router,
+    ]);
 
     return (
         <Layout>
@@ -163,6 +164,47 @@ const CreateInvite = ({ name, email, idNumber, idDocType }) => {
                         visitDate: now,
                         reserveParking: false,
                     }}
+                    /****   Ignore */
+                    /*
+                                        validate={(values) => {
+                                            const errors = {};
+                                            if (!values.email) {
+                                                errors.email = "Required";
+                                            } else if (
+                                                !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(
+                                                    values.email
+                                                )
+                                            ) {
+                                                errors.email = "Invalid email address";
+                                            } else if (!values.idValue) {
+                                                errors.idValue = "Required";
+                                            } else if (
+                                                (values.idDoc === "RSA-ID" ||
+                                                    values.idDoc === "Drivers-License") &&
+                                                !/^(((\d{2}((0[13578]|1[02])(0[1-9]|[12]\d|3[01])|(0[13456789]|1[012])(0[1-9]|[12]\d|30)|02(0[1-9]|1\d|2[0-8])))|([02468][048]|[13579][26])0229))(( |-)(\d{4})( |-)(\d{3})|(\d{7}))$/i.test(
+                                                    values.idValue
+                                                )
+                                            ) {
+                                                errors.idValue = "Invalid RSA ID Number";
+                                            } else if (!values.name) {
+                                                errors.name = "Required";
+                                            } else if (!/[A-Za-z]+/i.test(values.name)) {
+                                                errors.name =
+                                                    "Name contains non alphabetic characters";
+                                            } else if (
+                                                values.idDoc === "UP-Student-ID" &&
+                                                !/^\d{8}$/i.test(values.idValue)
+                                            ) {
+                                                errors.idValue = "Invalid UP student number";
+                                            } else if (!values.visitDate) {
+                                                errors.visitDate = "Please add a date";
+                                            }
+
+                                            return errors;
+                                        }}
+                    */
+                    /****   Ignore */
+
                     validate={(values) => {
                         const errors = {};
                         if (!values.email) {
@@ -173,47 +215,26 @@ const CreateInvite = ({ name, email, idNumber, idDocType }) => {
                             )
                         ) {
                             errors.email = "Invalid email address";
-                        }  else if (!values.idValue) {
-                            errors.idValue = "Required";
-                        } else if (
-                            (values.idDoc === "RSA-ID" ||
-                                values.idDoc === "Drivers-License") &&
-                            !/^(((\d{2}((0[13578]|1[02])(0[1-9]|[12]\d|3[01])|(0[13456789]|1[012])(0[1-9]|[12]\d|30)|02(0[1-9]|1\d|2[0-8])))|([02468][048]|[13579][26])0229))(( |-)(\d{4})( |-)(\d{3})|(\d{7}))$/i.test(
-                                values.idValue
-                            )
-                        ) {
-                            errors.idValue = "Invalid RSA ID Number";
-                        } else if (!values.name) {
-                            errors.name = "Required";
-                        } else if (!/[A-Za-z]+/i.test(values.name)) {
-                            errors.name =
-                                "Name contains non alphabetic characters";
-                        } else if (
-                            values.idDoc === "UP-Student-ID" &&
-                            !/^\d{8}$/i.test(values.idValue)
-                        ) {
-                            errors.idValue = "Invalid UP student number";
-                        } else if (!values.visitDate) {
-                            errors.visitDate = "Please add a date";
                         }
 
                         return errors;
                     }}
                     onSubmit={(values, { setSubmitting }) => {
-
                         const CREATE_INVITE = gql`
                             mutation {
                                 createInvite(
                                     userEmail: "${jwtTokenData.email}"
                                     visitorEmail: "${values.email}"
                                     visitorName: "${values.name.toLowerCase()}"
-                                    IDDocType: "${values.idDoc}"
-                                    IDNumber: "${values.idValue}"
+                                    IDDocType: "${values.idDoc || "RSA-ID"}" 
+                                    IDNumber: "${
+                                        values.idValue || "0012120178091"
+                                    }"
                                     inviteDate: "${values.visitDate}"
                                     requiresParking: ${values.reserveParking}
                                     suggestion: ${suggestion}
-                            )
-                        }
+                                )
+                            }
                         `;
 
                         client
@@ -279,17 +300,22 @@ const CreateInvite = ({ name, email, idNumber, idDocType }) => {
                                     value={values.visitDate}
                                 />
 
-                                {!values.name.length > 0 && !email && !idNumber && !idDocType ? (
-                                    <VisitorSuggestions date={now} setSuggestion={setSuggestion} />
-                                ):(
+                                {!values.name.length > 0 &&
+                                !email &&
+                                !idNumber &&
+                                !idDocType ? (
+                                    <VisitorSuggestions
+                                        date={now}
+                                        setSuggestion={setSuggestion}
+                                    />
+                                ) : (
                                     <div></div>
                                 )}
-                                
 
-                                <br/>
+                                <br />
 
                                 <span className="text-md mb-1 font-bold">
-                                        Visitor Details:
+                                    Visitor Details:
                                 </span>
 
                                 <input
@@ -309,31 +335,6 @@ const CreateInvite = ({ name, email, idNumber, idDocType }) => {
                                         errors.email}
                                 </span>
 
-                                <Field
-                                    as="select"
-                                    className="select select-primary w-full"
-                                    name="idDoc"
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                >
-                                    <option value="RSA-ID">RSA ID</option>
-                                    <option value="Drivers-License">
-                                        Driver&apos;s License
-                                    </option>
-                                    <option value="UP-Student-ID">
-                                        Student Number
-                                    </option>
-                                </Field>
-
-                                <input
-                                    type="text"
-                                    name="idValue"
-                                    placeholder="Enter ID number"
-                                    className="input input-bordered w-full"
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    value={values.idValue}
-                                />
                                 <span className="text-error">
                                     {errors.idValue &&
                                         touched.idValue &&
@@ -353,7 +354,7 @@ const CreateInvite = ({ name, email, idNumber, idDocType }) => {
                                     {errors.name && touched.name && errors.name}
                                 </span>
 
-                                <br/>
+                                <br />
 
                                 <motion.label className="label cursor-pointer">
                                     <motion.span
@@ -361,7 +362,15 @@ const CreateInvite = ({ name, email, idNumber, idDocType }) => {
                                         whileHover="animate"
                                         className="label-text overflow-x-hidden pr-3"
                                     >
-                                        {values.reserveParking?  <span className='mr-3 font-bold text-base text-secondary'>Parking Reserved</span>:<span className='font-bold text-base mr-3'>Reserve Parking </span> }
+                                        {values.reserveParking ? (
+                                            <span className="mr-3 text-base font-bold text-secondary">
+                                                Parking Reserved
+                                            </span>
+                                        ) : (
+                                            <span className="mr-3 text-base font-bold">
+                                                Reserve Parking{" "}
+                                            </span>
+                                        )}
                                         <motion.span
                                             initial={false}
                                             className="inline-block"
@@ -418,14 +427,14 @@ const CreateInvite = ({ name, email, idNumber, idDocType }) => {
 
 CreateInvite.getInitialProps = async ({ query }) => {
     const { name, email, idNumber, idDocType } = query;
-    
+
     return {
         name: name ? name : "",
         email: email ? email : "",
         idNumber: idNumber ? idNumber : "",
-        idDocType:  idDocType ? idDocType : "",
-        protected: true
-    }
+        idDocType: idDocType ? idDocType : "",
+        protected: true,
+    };
 };
 
 export default CreateInvite;

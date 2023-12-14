@@ -50,8 +50,8 @@ const Layout = ({ children }) => {
                     </svg>
 
                     <p className="font-bold">
-                        Team Firestorm <br />
-                        Providing reliable tech since 2022
+                        Banjos Net Solutions <br />
+                        Providing reliable tech solutions.
                         <span className="hidden">
                             Millions and Millions of Dollars
                         </span>

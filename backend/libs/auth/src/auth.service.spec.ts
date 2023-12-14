@@ -1,7 +1,7 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
-import { HttpModule, HttpService } from '@nestjs/axios';
+import { HttpModule, HttpService } from "@nestjs/axios";
 import { AuthService } from "./auth.service";
 import { UserService } from "@vms/user";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
@@ -21,7 +21,6 @@ import { Badge } from "@vms/rewards/schema/badge.schema";
 import { GetUserQuery } from "@vms/user/queries/impl/getUser.query";
 import { of } from "rxjs";
 
-
 describe("AuthService", () => {
     let service: AuthService;
     let userService: UserService;
@@ -31,41 +30,55 @@ describe("AuthService", () => {
     let mockUserModel: Model<UserDocument>;
     let cache: Cache;
     const mailService = {
-        sendVerify: jest.fn(() => {return {}}),
+        sendVerify: jest.fn(() => {
+            return {};
+        }),
     };
     const cacheMock = {
-        get: jest.fn(async () => { return 'any value' }),
-        set: jest.fn(() => { return jest.fn() }),
-        del: jest.fn(() => { return jest.fn() }),
+        get: jest.fn(async () => {
+            return "any value";
+        }),
+        set: jest.fn(() => {
+            return jest.fn();
+        }),
+        del: jest.fn(() => {
+            return jest.fn();
+        }),
     };
 
     const queryBusMock = {
         execute: jest.fn((query) => {
             if (query instanceof GetAllBadgesQuery) {
                 return [];
-            } else if (query instanceof GetUserQuery){
-                return{
+            } else if (query instanceof GetUserQuery) {
+                return {
                     email: "resident@mail.com",
                     password: "password",
                     badges: "1000000",
-                    xp: 20
-                }
-            } else return {
-                email: "admin@mail.com",
-                password: "password"
-            };
-        })
-    }
+                    xp: 20,
+                };
+            } else
+                return {
+                    email: "admin@mail.com",
+                    password: "password",
+                };
+        }),
+    };
 
     const scheduleMock = {
-        addCronJob: jest.fn(()=>{return {}}),
-        deleteCronJob: jest.fn(()=>{return {}}),
-      };
+        addCronJob: jest.fn(() => {
+            return {};
+        }),
+        deleteCronJob: jest.fn(() => {
+            return {};
+        }),
+    };
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
             imports: [HttpModule],
-            providers: [AuthService,
+            providers: [
+                AuthService,
                 JwtService,
                 UserService,
                 ConfigService,
@@ -74,10 +87,10 @@ describe("AuthService", () => {
                 RestrictionsService,
                 ParkingService,
                 CommandBus,
-                { provide: SchedulerRegistry, useValue: scheduleMock},
+                { provide: SchedulerRegistry, useValue: scheduleMock },
                 {
                     provide: QueryBus,
-                    useValue: queryBusMock
+                    useValue: queryBusMock,
                 },
                 // {
                 //     provide: getModelToken(User.name),
@@ -86,12 +99,10 @@ describe("AuthService", () => {
                 {
                     provide: CACHE_MANAGER,
                     useValue: cacheMock,
-
                 },
                 {
                     provide: MailService,
                     useValue: mailService,
-
                 },
             ],
         })
@@ -124,16 +135,18 @@ describe("AuthService", () => {
 
     describe("Login", () => {
         it("should return an access token on valid user data", async () => {
-            jest.spyOn(userService, "findOne").mockImplementation(async (email: string) => {
-                if (email === "admin@mail.com") {
-                    return {
-                        email: "admin@mail.com",
-                        password: "password"
-                    };
-                } else {
-                    return undefined;
-                }
-            });
+            jest.spyOn(userService, "findOne").mockImplementation(
+                async (email: string) => {
+                    if (email === "admin@mail.com") {
+                        return {
+                            email: "admin@mail.com",
+                            password: "password",
+                        };
+                    } else {
+                        return undefined;
+                    }
+                },
+            );
 
             jest.spyOn(service, "validateUser").mockImplementation(
                 async (email: string, password: string) => {
@@ -141,28 +154,32 @@ describe("AuthService", () => {
                 },
             );
 
-            const payload = await service.login({ email: "admin@mail.com", password: "password" });
+            const payload = await service.login({
+                email: "admin@mail.com",
+                password: "password",
+            });
             expect(payload).toHaveProperty("access_token");
         });
     });
 
     describe("validateUser", () => {
-
         it("should return a user object on valid user data", async () => {
             const bcryptCompare = jest.fn().mockResolvedValue(true);
             (bcrypt.compare as jest.Mock) = bcryptCompare;
 
-            jest.spyOn(userService, "findOne").mockImplementation(async (email: string) => {
-                if (email === "admin@mail.com") {
-                    return {
-                        email: "admin@mail.com",
-                        password: "password",
-                        permission: 0
+            jest.spyOn(userService, "findOne").mockImplementation(
+                async (email: string) => {
+                    if (email === "admin@mail.com") {
+                        return {
+                            email: "admin@mail.com",
+                            password: "password",
+                            permission: 0,
+                        };
+                    } else {
+                        return undefined;
                     }
-                } else {
-                    return undefined;
-                }
-            });
+                },
+            );
 
             const user = await service.validateUser(
                 "admin@mail.com",
@@ -179,17 +196,19 @@ describe("AuthService", () => {
             const bcryptCompare = jest.fn().mockResolvedValue(true);
             (bcrypt.compare as jest.Mock) = bcryptCompare;
 
-            jest.spyOn(userService, "findOne").mockImplementation(async (email: string) => {
-                if (email === "admin@mail.com") {
-                    return {
-                        email: "admin@mail.com",
-                        password: "password",
-                        permission: 0
+            jest.spyOn(userService, "findOne").mockImplementation(
+                async (email: string) => {
+                    if (email === "admin@mail.com") {
+                        return {
+                            email: "admin@mail.com",
+                            password: "password",
+                            permission: 0,
+                        };
+                    } else {
+                        return undefined;
                     }
-                } else {
-                    return undefined;
-                }
-            });
+                },
+            );
 
             try {
                 await service.validateUser("error@mail.com", "password");
@@ -203,17 +222,19 @@ describe("AuthService", () => {
             const bcryptCompare = jest.fn().mockResolvedValue(false);
             (bcrypt.compare as jest.Mock) = bcryptCompare;
 
-            jest.spyOn(userService, "findOne").mockImplementation(async (email: string) => {
-                if (email === "admin@mail.com") {
-                    return {
-                        email: "admin@mail.com",
-                        password: "password",
-                        permission: 0
+            jest.spyOn(userService, "findOne").mockImplementation(
+                async (email: string) => {
+                    if (email === "admin@mail.com") {
+                        return {
+                            email: "admin@mail.com",
+                            password: "password",
+                            permission: 0,
+                        };
+                    } else {
+                        return undefined;
                     }
-                } else {
-                    return undefined;
-                }
-            });
+                },
+            );
 
             try {
                 await service.validateUser("admin@mail.com", "password");
@@ -222,146 +243,180 @@ describe("AuthService", () => {
                 expect(err.message).toEqual("Incorrect Password");
             }
         });
-
     });
 
-    describe('sign up', () => {
+    describe("sign up", () => {
         beforeEach(() => {
             jest.restoreAllMocks();
-        })
-        it('should sign up resident', async () => {
+        });
+        it("should sign up resident", async () => {
             // Arrange
             cacheMock.get.mockReturnValueOnce(Promise.resolve(undefined));
-            const findOneMock = jest.spyOn(userService, 'findOne').mockReturnValueOnce(Promise.resolve(null))
+            const findOneMock = jest
+                .spyOn(userService, "findOne")
+                .mockReturnValueOnce(Promise.resolve(null));
             // Act
             try {
                 const file = {
-                  originalname: 'file.png',
-                  mimetype: 'image/png',
-                  path: 'something',
-                  buffer: Buffer.from('one,two,three'),
-                };  
+                    originalname: "file.png",
+                    mimetype: "image/png",
+                    path: "something",
+                    buffer: Buffer.from("one,two,three"),
+                };
                 //const response = await service.signup({ email: 'mail', password: 'password', type: 'resident', idNumber: 2323, file: file, confirmationPin: "", name: "kyle" })
                 //expect(response).toEqual(true)
             } catch (e) {
                 // Assert
-                console.log('we got an error: ', e)
+                console.log("we got an error: ", e);
                 expect(true).toEqual(false);
             }
-        })
-        it('should sign up receptionist', async () => {
+        });
+        it("should sign up receptionist", async () => {
             // Arrange
             cacheMock.get.mockReturnValueOnce(Promise.resolve(undefined));
-            const findOneMock = jest.spyOn(userService, 'findOne').mockReturnValueOnce(Promise.resolve(null))
+            const findOneMock = jest
+                .spyOn(userService, "findOne")
+                .mockReturnValueOnce(Promise.resolve(null));
             // Act
             try {
                 //const response = await service.signup({ email: 'mail', password: 'password',confirmationPin:'00000', type: 'receptionist', idNumber: 2323 })
                 //expect(response).toEqual(true)
-            }
-            catch (e) {
+            } catch (e) {
                 // Assert
                 expect(true).toEqual(false);
             }
-        })
-        it('should throw error when sign up fails', async () => {
+        });
+        it("should throw error when sign up fails", async () => {
             // Arrange
             cacheMock.get.mockReturnValueOnce(Promise.resolve(undefined));
-            const findOneMock = jest.spyOn(userService, 'findOne').mockReturnValueOnce(Promise.resolve(null))
+            const findOneMock = jest
+                .spyOn(userService, "findOne")
+                .mockReturnValueOnce(Promise.resolve(null));
             // Act
             try {
                 //const response = await service.signup({ email: 'mail', password: 'password',confirmationPin:'00000', type: 'other', idNumber: 2323 })
                 //expect(response).toEqual({})
-            }
-            catch (e) {
+            } catch (e) {
                 // Assert
-                expect(e.message).toEqual('Invalid User Type Provided');
+                expect(e.message).toEqual("Invalid User Type Provided");
             }
-        })
-        it('should throw error when user exists', async () => {
+        });
+        it("should throw error when user exists", async () => {
             // Arrange
-            const findOneMock = jest.spyOn(userService, 'findOne').mockReturnValueOnce(Promise.resolve('emailUser'))
+            const findOneMock = jest
+                .spyOn(userService, "findOne")
+                .mockReturnValueOnce(Promise.resolve("emailUser"));
             // Act
             try {
-                const response = await service.signup({ email: 'mail' })
-            }
-            catch (e) {
+                const response = await service.signup({ email: "mail" });
+            } catch (e) {
                 // Assert
-                expect(e.message).toEqual('User already exists');
+                expect(e.message).toEqual("User already exists");
             }
-        })
-        it('should throw error when user is already signed up', async () => {
+        });
+        it("should throw error when user is already signed up", async () => {
             // Arrange
-            const findOneMock = jest.spyOn(userService, 'findOne').mockReturnValueOnce(null)
+            const findOneMock = jest
+                .spyOn(userService, "findOne")
+                .mockReturnValueOnce(null);
             // Act
             try {
-                const response = await service.signup({ email: 'mail', password: "password" })
-            }
-            catch (e) {
+                const response = await service.signup({
+                    email: "mail",
+                    password: "password",
+                });
+            } catch (e) {
                 // Assert
-                expect(e.message).toEqual('User is already signed up');
+                expect(e.message).toEqual("User is already signed up");
             }
-        })
-    })
+        });
+    });
 
-
-    describe('verifyNewAccount()', () => {
-        it('should throw error on invalid verification ID', async () => {
+    describe("verifyNewAccount()", () => {
+        it("should throw error on invalid verification ID", async () => {
             // arrange
 
             try {
                 // act
-                const response = await service.verifyNewAccount('asdadsasd', 'email@mail.com');
-            }
-            catch (e) {
+                const response = await service.verifyNewAccount(
+                    "asdadsasd",
+                    "email@mail.com",
+                );
+            } catch (e) {
                 // assert
-                expect(e.message).toEqual('Invalid verification ID')
+                expect(e.message).toEqual("Invalid verification ID");
             }
-
-        })
-        it('should throw an iterable error', async () => {
+        });
+        it("should throw an iterable error", async () => {
             // arrange
-            (cacheMock as any).get.mockReturnValueOnce(Promise.resolve({ verifyID: 'b3eFcCe3-4CDa-CEB1-F0Df-daBEBE298a47', file: { buffer: ["hello"], originalname: "file.png", password: "" } }))
+            (cacheMock as any).get.mockReturnValueOnce(
+                Promise.resolve({
+                    verifyID: "b3eFcCe3-4CDa-CEB1-F0Df-daBEBE298a47",
+                    file: {
+                        buffer: ["hello"],
+                        originalname: "file.png",
+                        password: "",
+                    },
+                }),
+            );
 
             try {
                 // act
-                const response = await service.verifyNewAccount('b3eFcCe3-4CDa-CEB1-F0Df-daBEBE298a47', 'email22@mail.com');
-            }
-            catch (e) {
+                const response = await service.verifyNewAccount(
+                    "b3eFcCe3-4CDa-CEB1-F0Df-daBEBE298a47",
+                    "email22@mail.com",
+                );
+            } catch (e) {
                 // assert
-                expect(e.message).toEqual('Email Not Found, please signup again')
+                expect(e.message).toEqual(
+                    "Email Not Found, please signup again",
+                );
             }
-        })
-        it('should verify account', async () => {
+        });
+        it("should verify account", async () => {
             // arrange
-            jest.spyOn(userService, 'createUser').mockReturnValueOnce(null);
-           (cacheMock as any).get.mockReturnValueOnce(Promise.resolve({ verifyID: 'b3eFcCe3-4CDa-CEB1-F0Df-daBEBE298a47', file: { buffer: ["hello"], originalname: "file.png", email: "email2@mail.com" } }))
+            jest.spyOn(userService, "createUser").mockReturnValueOnce(null);
+            (cacheMock as any).get.mockReturnValueOnce(
+                Promise.resolve({
+                    verifyID: "b3eFcCe3-4CDa-CEB1-F0Df-daBEBE298a47",
+                    file: {
+                        buffer: ["hello"],
+                        originalname: "file.png",
+                        email: "email2@mail.com",
+                    },
+                }),
+            );
             try {
                 // act
                 //const response = await service.verifyNewAccount('b3eFcCe3-4CDa-CEB1-F0Df-daBEBE298a47', 'email2@mail.com');
-
                 // assert
                 //expect(response).toEqual(true)
-            }
-            catch (e) {
+            } catch (e) {
                 // assert
-                expect(true).toEqual(false)
+                expect(true).toEqual(false);
             }
-        })
-        it('should throw an error for email not found', async () => {
+        });
+        it("should throw an error for email not found", async () => {
             // arrange
-            jest.spyOn(userService, 'createUser').mockReturnValueOnce(null);
-            (cacheMock as any).get.mockReturnValueOnce(Promise.resolve(undefined))
+            jest.spyOn(userService, "createUser").mockReturnValueOnce(null);
+            (cacheMock as any).get.mockReturnValueOnce(
+                Promise.resolve(undefined),
+            );
             try {
                 // act
-                const response = await service.verifyNewAccount('b3eFcCe3-4CDa-CEB1-F0Df-daBEBE298a47', 'emaildwdw@mail.com');
+                const response = await service.verifyNewAccount(
+                    "b3eFcCe3-4CDa-CEB1-F0Df-daBEBE298a47",
+                    "emaildwdw@mail.com",
+                );
 
                 // assert
-                expect(response).toEqual(true)
-            }
-            catch (e) {
+                expect(response).toEqual(true);
+            } catch (e) {
                 // assert
-                expect(e.message).toEqual('Email Not Found, please signup again')
+                expect(e.message).toEqual(
+                    "Email Not Found, please signup again",
+                );
             }
-        })
-    })
+        });
+    });
 });

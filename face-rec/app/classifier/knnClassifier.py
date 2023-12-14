@@ -20,6 +20,12 @@ def train(modelSavePath, numNeighbours, knnAlgo="ball_tree", verbose=False):
             idOutput.append(encodingDoc["idNumber"])
 
 
+    # check if data is not empty
+    if not encodings or not idOutput:
+        print("Error: Empty data")
+        return None
+
+
     # Calculate number of neighbours if not provided
     if numNeighbours == None:
         numNeighbours = int(round(math.sqrt(len(X))))

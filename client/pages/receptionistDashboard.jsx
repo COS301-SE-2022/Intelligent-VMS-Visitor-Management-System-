@@ -94,34 +94,42 @@ const ReceptionistDashboard = () => {
             `,
             })
             .then((res) => {
-                const inActiveInvites = res.data.getInvitesByNameForSearch.filter((invite)=>{
-                    return (
-                        invite.inviteDate === todayString &&
-                        invite.inviteID &&
-                        invite.inviteState === "inActive"
-                    )
-                })
+                const inActiveInvites =
+                    res.data.getInvitesByNameForSearch.filter((invite) => {
+                        return (
+                            invite.inviteDate === todayString &&
+                            invite.inviteID &&
+                            invite.inviteState === "inActive"
+                        );
+                    });
                 setInactiveInvites(inActiveInvites);
-                const signedInInvites =  res.data.getInvitesByNameForSearch.filter((invite)=>{
-                    return (
-                        invite.inviteID &&
-                        (
-                        (invite.inviteDate >= todayString &&
-                        invite.inviteState === "signedIn") ||
-                        invite.inviteState === "extended"
-                        )   
-                    )
-                }).sort((a,b)=>(a.inviteState=="signedIn" &&  b.inviteState=="extended") ? -1 : ((a.inviteState=="extended" &&  b.inviteState=="signedIn") ? 1 : 0));
+                const signedInInvites = res.data.getInvitesByNameForSearch
+                    .filter((invite) => {
+                        return (
+                            invite.inviteID &&
+                            ((invite.inviteDate >= todayString &&
+                                invite.inviteState === "signedIn") ||
+                                invite.inviteState === "extended")
+                        );
+                    })
+                    .sort((a, b) =>
+                        a.inviteState == "signedIn" &&
+                        b.inviteState == "extended"
+                            ? -1
+                            : a.inviteState == "extended" &&
+                              b.inviteState == "signedIn"
+                            ? 1
+                            : 0
+                    );
                 setSignedInInvites(signedInInvites);
-                const signedOutInvites =  res.data.getInvitesByNameForSearch.filter((invite)=>{
-                    return (
-                        invite.inviteID &&
-                        (
-                        (invite.inviteDate === todayString &&
-                        invite.inviteState === "signedOut")
-                        )   
-                    )
-                })
+                const signedOutInvites =
+                    res.data.getInvitesByNameForSearch.filter((invite) => {
+                        return (
+                            invite.inviteID &&
+                            invite.inviteDate === todayString &&
+                            invite.inviteState === "signedOut"
+                        );
+                    });
                 setSignedOutInvites(signedOutInvites);
             })
             .catch((err) => {});
@@ -129,24 +137,31 @@ const ReceptionistDashboard = () => {
 
     const resetDefaultResults = () => {
         if (!loading && !error) {
-            const inActiveInvites = data.getInvitesByDate.filter((invite)=>{
+            const inActiveInvites = data.getInvitesByDate.filter((invite) => {
                 return (
                     invite.inviteDate === todayString &&
                     invite.inviteID &&
                     invite.inviteState === "inActive"
-                )
-            })
+                );
+            });
             setInactiveInvites(inActiveInvites);
-            const signedInInvites =  data.getInvitesByDate.filter((invite)=>{
-                return (
-                    invite.inviteID &&
-                    (
-                    (invite.inviteDate >= todayString &&
-                    invite.inviteState === "signedIn") ||
-                    invite.inviteState === "extended"
-                    )   
-                )
-            }).sort((a,b)=>(a.inviteState=="signedIn" &&  b.inviteState=="extended") ? -1 : ((a.inviteState=="extended" &&  b.inviteState=="signedIn") ? 1 : 0));
+            const signedInInvites = data.getInvitesByDate
+                .filter((invite) => {
+                    return (
+                        invite.inviteID &&
+                        ((invite.inviteDate >= todayString &&
+                            invite.inviteState === "signedIn") ||
+                            invite.inviteState === "extended")
+                    );
+                })
+                .sort((a, b) =>
+                    a.inviteState == "signedIn" && b.inviteState == "extended"
+                        ? -1
+                        : a.inviteState == "extended" &&
+                          b.inviteState == "signedIn"
+                        ? 1
+                        : 0
+                );
             setSignedInInvites(signedInInvites);
             setSearch(false);
         } else if (error) {
@@ -169,24 +184,34 @@ const ReceptionistDashboard = () => {
         invitesQuery();
         if (!loading && !error) {
             if (data) {
-                const inActiveInvites = data.getInvitesByDate.filter((invite)=>{
-                    return (
-                        invite.inviteDate === todayString &&
-                        invite.inviteID &&
-                        invite.inviteState === "inActive"
-                    )
-                })
+                const inActiveInvites = data.getInvitesByDate.filter(
+                    (invite) => {
+                        return (
+                            invite.inviteDate === todayString &&
+                            invite.inviteID &&
+                            invite.inviteState === "inActive"
+                        );
+                    }
+                );
                 setInactiveInvites(inActiveInvites);
-                const signedInInvites =  data.getInvitesByDate.filter((invite)=>{
-                    return (
-                        invite.inviteID &&
-                        (
-                        (invite.inviteDate >= todayString &&
-                        invite.inviteState === "signedIn") ||
-                        invite.inviteState === "extended"
-                        )   
-                    )
-                }).sort((a,b)=>(a.inviteState=="signedIn" &&  b.inviteState=="extended") ? -1 : ((a.inviteState=="extended" &&  b.inviteState=="signedIn") ? 1 : 0));
+                const signedInInvites = data.getInvitesByDate
+                    .filter((invite) => {
+                        return (
+                            invite.inviteID &&
+                            ((invite.inviteDate >= todayString &&
+                                invite.inviteState === "signedIn") ||
+                                invite.inviteState === "extended")
+                        );
+                    })
+                    .sort((a, b) =>
+                        a.inviteState == "signedIn" &&
+                        b.inviteState == "extended"
+                            ? -1
+                            : a.inviteState == "extended" &&
+                              b.inviteState == "signedIn"
+                            ? 1
+                            : 0
+                    );
                 setSignedInInvites(signedInInvites);
             }
         } else if (error) {
@@ -220,7 +245,11 @@ const ReceptionistDashboard = () => {
                         }
                     }}
                 />
-                <button data-testid="searchbtn" onClick={search} className="btn btn-sm md:btn-md">
+                <button
+                    data-testid="searchbtn"
+                    onClick={search}
+                    className="btn btn-sm md:btn-md"
+                >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="h-6 w-6"
@@ -238,8 +267,8 @@ const ReceptionistDashboard = () => {
                 </button>
             </div>
 
-            <div className="w-full ml-2 pt-7 grid grid-cols-1 md:grid-cols-2">
-                <div className="w-full flex">
+            <div className="ml-2 grid w-full grid-cols-1 pt-7 md:grid-cols-2">
+                <div className="flex w-full">
                     <h1 className="base-100 text-xl font-bold md:text-3xl lg:text-4xl ">
                         {searching ? "Search Results" : "Today's Invites"}
                     </h1>
@@ -256,11 +285,10 @@ const ReceptionistDashboard = () => {
                     )}
                 </div>
 
-
-                <div className="flex flex-col justify-center space-y-4 md:space-y-0 md:flex-row md:justify-end md:space-x-3 mr-6">
+                <div className="mr-6 flex flex-col justify-center space-y-4 md:flex-row md:justify-end md:space-y-0 md:space-x-3">
                     <label
                         htmlFor="QRScan-modal"
-                        className="modal-button btn btn-tertiary btn-sm gap-2 md:btn-md"
+                        className="modal-button btn-tertiary btn btn-sm gap-2 md:btn-md"
                         onClick={() => setShowScanner(true)}
                     >
                         <BiQrScan />
@@ -287,54 +315,59 @@ const ReceptionistDashboard = () => {
                 </div>
             </div>
 
-            <div className={`grid grid-cols-1 ${searching?( " md:grid-cols-3 " ): ( " md:grid-cols-2 " )} gap-3 mt-5 mx-3`}>
-
+            <div
+                className={`grid grid-cols-1 ${
+                    searching ? " md:grid-cols-3 " : " md:grid-cols-2 "
+                } mx-3 mt-5 gap-3`}
+            >
                 <div className="card h-fit bg-base-300 p-3">
                     <div className="flex flex-col">
                         <h2 className="ml-3 mb-3 text-xl font-bold">
                             IN-ACTIVE INVITES
                         </h2>
                         {loading ? (
-                                <progress className="progress progress-primary w-56">
-                                    progress
-                                </progress>
-                            ) : (
-                            inActiveInvites.length >0 ? (
-                                <div className="flex flex-col gap-2 overflow-y-scroll p-2 h-[30rem]">
-                                    {inActiveInvites.map((visit, idx) => {
-                                        return (
-                                            <div className="hover:bg-base-200 cursor-pointer bg-base-100 flex justify-between shadow-xl m-1 p-3 rounded-lg flex flex-row items-center" key={visit.inviteID}
-                                                onClick={() => {
-                                                    setCurrentVisitData(visit);
-                                                    setShowVisitorModal(true);
-                                                }}>
+                            <progress className="progress progress-primary w-56">
+                                progress
+                            </progress>
+                        ) : inActiveInvites.length > 0 ? (
+                            <div className="flex h-[30rem] flex-col gap-2 overflow-y-scroll p-2">
+                                {inActiveInvites.map((visit, idx) => {
+                                    return (
+                                        <div
+                                            className="m-1 flex cursor-pointer flex-row items-center justify-between rounded-lg bg-base-100 p-3 shadow-xl hover:bg-base-200"
+                                            key={visit.inviteID}
+                                            onClick={() => {
+                                                setCurrentVisitData(visit);
+                                                setShowVisitorModal(true);
+                                            }}
+                                        >
+                                            <div className="flex flex-row items-center justify-center">
+                                                <BsInfoCircle className="mr-5 ml-2" />
 
-                                                <div className="flex flex-row items-center justify-center">
-                                                    <BsInfoCircle className="mr-5 ml-2"/>
-
-                                                    <div className="flex flex-col items-start">
-                                                        <div className="text-md font-bold capitalize">{visit.visitorName}</div>
-                                                        <div className="text-sm">{visit.idNumber}</div>
+                                                <div className="flex flex-col items-start">
+                                                    <div className="text-md font-bold capitalize">
+                                                        {visit.visitorName}
+                                                    </div>
+                                                    <div className="text-sm">
+                                                        {visit.idNumber}
                                                     </div>
                                                 </div>
-
-                                                <ReceptionistSignButton
-                                                    key={visit.inviteID}
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                    }}
-                                                    text="Not Signed In"
-                                                    colour="bg-tertiary"
-                                                />
-
                                             </div>
-                                        );
-                                    })}
-                                </div>
-                            ):(
-                                <h3 className="ml-3">Nothing to show..</h3>
-                            )
-                            
+
+                                            <ReceptionistSignButton
+                                                key={visit.inviteID}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                }}
+                                                text="Not Signed In"
+                                                colour="bg-tertiary"
+                                            />
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        ) : (
+                            <h3 className="ml-3">Nothing to show..</h3>
                         )}
                     </div>
                 </div>
@@ -345,117 +378,130 @@ const ReceptionistDashboard = () => {
                             OPEN INVITES
                         </h2>
                         {loading ? (
+                            <progress className="progress progress-primary w-56">
+                                progress
+                            </progress>
+                        ) : signedInInvites.length > 0 ? (
+                            <div className="flex h-[30rem] flex-col gap-2 overflow-y-scroll p-2 ">
+                                {signedInInvites.map((visit, idx) => {
+                                    return (
+                                        <div
+                                            className="m-1 flex flex cursor-pointer flex-row items-center justify-between rounded-lg bg-base-100 p-3 shadow-xl hover:bg-base-200"
+                                            key={visit.inviteID}
+                                            onClick={() => {
+                                                setCurrentVisitData(visit);
+                                                setShowVisitorModal(true);
+                                            }}
+                                        >
+                                            <div className="flex flex-row items-center justify-center">
+                                                <BsInfoCircle className="mr-5 ml-2" />
+
+                                                <div className="flex flex-col items-start">
+                                                    <div className="text-md font-bold capitalize">
+                                                        {visit.visitorName}
+                                                    </div>
+                                                    <div className="text-sm">
+                                                        {visit.idNumber}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <ReceptionistSignButton
+                                                className="mx-5 cursor-default"
+                                                key={visit.inviteID}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+
+                                                    setCurrentVisitData(visit);
+
+                                                    setCurrentButton(
+                                                        e.currentTarget
+                                                            .classList
+                                                    );
+                                                    setSignedInInvites(
+                                                        visit.inviteID
+                                                    );
+                                                    setShowVisitorModal(false);
+                                                }}
+                                                text="Signed In"
+                                                colour={
+                                                    visit.inviteState ===
+                                                    "extended"
+                                                        ? "bg-warning "
+                                                        : "bg-success"
+                                                }
+                                                signInTime={
+                                                    visit.inviteState ===
+                                                    "extended"
+                                                        ? visit.signInTime
+                                                        : null
+                                                }
+                                            />
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        ) : (
+                            <h3 className="ml-3">Nothing to show..</h3>
+                        )}
+                    </div>
+                </div>
+
+                {searching ? (
+                    <div className="card h-fit bg-base-300 p-3">
+                        <div className="flex flex-col">
+                            <h2 className="ml-3 mb-3 text-xl font-bold">
+                                SIGNED-OUT INVITES
+                            </h2>
+                            {loading ? (
                                 <progress className="progress progress-primary w-56">
                                     progress
                                 </progress>
-                            ) : (
-                            signedInInvites.length>0?(
-                                <div className="flex flex-col gap-2 overflow-y-scroll p-2 h-[30rem] ">
-                                    {signedInInvites.map((visit, idx) => {
+                            ) : signedOutInvites.length > 0 ? (
+                                <div className="flex h-80 flex-col gap-2 overflow-y-scroll p-2">
+                                    {signedOutInvites.map((visit, idx) => {
                                         return (
-                                            <div className="hover:bg-base-200 cursor-pointer bg-base-100 flex justify-between shadow-xl m-1 p-3 rounded-lg flex flex-row items-center" key={visit.inviteID}
+                                            <div
+                                                className="m-1 flex flex flex-row items-center justify-between rounded-lg bg-base-100 p-3 shadow-xl hover:bg-base-200"
+                                                key={visit.inviteID}
                                                 onClick={() => {
                                                     setCurrentVisitData(visit);
                                                     setShowVisitorModal(true);
-                                                }}>
+                                                }}
+                                            >
                                                 <div className="flex flex-row items-center justify-center">
-                                                    <BsInfoCircle className="mr-5 ml-2"/>
+                                                    <BsInfoCircle className="mr-5 ml-2" />
 
                                                     <div className="flex flex-col items-start">
-                                                        <div className="text-md font-bold capitalize">{visit.visitorName}</div>
-                                                        <div className="text-sm">{visit.idNumber}</div>
+                                                        <div className="text-md font-bold capitalize">
+                                                            {visit.visitorName}
+                                                        </div>
+                                                        <div className="text-sm">
+                                                            {visit.idNumber}
+                                                        </div>
                                                     </div>
                                                 </div>
 
                                                 <ReceptionistSignButton
-                                                    className="mx-5 cursor-default"
                                                     key={visit.inviteID}
                                                     onClick={(e) => {
                                                         e.stopPropagation();
-
-                                                        setCurrentVisitData(
-                                                            visit
-                                                        );
-
-                                                        setCurrentButton(
-                                                            e
-                                                                .currentTarget
-                                                                .classList
-                                                        );
-                                                        setShowVisitorModal(
-                                                            false
-                                                        );
                                                     }}
-                                                    text="Signed In"
-                                                    colour={visit.inviteState==="extended" ? "bg-warning " : "bg-success"}
-                                                    signInTime={visit.inviteState==="extended" ? visit.signInTime : null}
+                                                    text="Signed Out"
+                                                    colour="bg-tertiary"
                                                 />
                                             </div>
                                         );
                                     })}
                                 </div>
-                            ):(
+                            ) : (
                                 <h3 className="ml-3">Nothing to show..</h3>
-                             )
-                            
-                        )}
+                            )}
+                        </div>
                     </div>
-
-                </div>
-
-                {searching? (
-                        <div className="card h-fit bg-base-300 p-3">
-                                <div className="flex flex-col">
-                                    <h2 className="ml-3 mb-3 text-xl font-bold">
-                                        SIGNED-OUT INVITES
-                                    </h2>
-                                    {loading ? (
-                                            <progress className="progress progress-primary w-56">
-                                                progress
-                                            </progress>
-                                        ) : (
-                                        signedOutInvites.length >0 ? (
-                                            <div className="flex flex-col gap-2 overflow-y-scroll p-2 h-80">
-                                                {signedOutInvites.map((visit, idx) => {
-                                                    return (
-                                                        <div className="hover:bg-base-200 bg-base-100 flex justify-between shadow-xl m-1 p-3 rounded-lg flex flex-row items-center" key={visit.inviteID}
-                                                            onClick={() => {
-                                                                setCurrentVisitData(visit);
-                                                                setShowVisitorModal(true);
-                                                            }}>
-
-                                                            <div className="flex flex-row items-center justify-center">
-                                                                <BsInfoCircle className="mr-5 ml-2"/>
-
-                                                                <div className="flex flex-col items-start">
-                                                                    <div className="text-md font-bold capitalize">{visit.visitorName}</div>
-                                                                    <div className="text-sm">{visit.idNumber}</div>
-                                                                </div>
-                                                            </div>
-
-                                                            <ReceptionistSignButton
-                                                                key={visit.inviteID}
-                                                                onClick={(e) => {
-                                                                    e.stopPropagation();
-                                                                }}
-                                                                text="Signed Out"
-                                                                colour="bg-tertiary"
-                                                            />
-
-                                                        </div>
-                                                    );
-                                                })}
-                                            </div>
-                                        ):(
-                                            <h3 className="ml-3">Nothing to show..</h3>
-                                        )
-                                        
-                                    )}
-                                </div>
-                            </div>
-
-                            ):(<div></div>)}
-
+                ) : (
+                    <div></div>
+                )}
             </div>
 
             <input
@@ -469,7 +515,7 @@ const ReceptionistDashboard = () => {
                 <div className="modal-box">
                     <label
                         htmlFor="signIn-modal"
-                        className="btn btn-circle absolute right-2 top-2 btn-sm"
+                        className="btn btn-circle btn-sm absolute right-2 top-2"
                         onClick={() => {
                             setShowSignInModal(false);
                         }}

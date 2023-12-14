@@ -59,7 +59,6 @@ type Visitor {
   idDocType: String!
   numInvites: Float!
   visits: [String!]!
-  prob: Float!
 }
 
 type Invite {

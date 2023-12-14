@@ -12,32 +12,53 @@ import { CurrentUser } from "@vms/auth/decorators/CurrentUserDecorator.decorator
 import { UserService } from "./user.service";
 
 import { User } from "./models/user.model";
-import { SearchUser } from "./models/searchUser.model"; 
+import { SearchUser } from "./models/searchUser.model";
 import { LoginUser } from "./dto/loginUser.dto";
 
-@Resolver((of) => {return User})
+@Resolver((of) => {
+    return User;
+})
 export class UserResolver {
     constructor(
-        @Inject(forwardRef(() => {return AuthService}))
+        @Inject(
+            forwardRef(() => {
+                return AuthService;
+            }),
+        )
         private authService: AuthService,
         private userService: UserService,
     ) {}
 
     @UseGuards(GqlAuthGuard)
-    @Query((returns) => {return String}, { name: "helloUser" })
+    @Query(
+        (returns) => {
+            return String;
+        },
+        { name: "helloUser" },
+    )
     async hello(@CurrentUser() user: User) {
         return "👋 from to " + user.email + " " + user.permission;
     }
 
-    @UseGuards(GqlAuthGuard,RolesGuard)
+    @UseGuards(GqlAuthGuard, RolesGuard)
     @Roles("admin")
-    @Query((returns) => {return [SearchUser]}, { name: "searchUser"})
+    @Query(
+        (returns) => {
+            return [SearchUser];
+        },
+        { name: "searchUser" },
+    )
     async searchUser(@Args("searchQuery") searchQuery: string) {
-        return this.userService.searchUser(searchQuery); 
+        return this.userService.searchUser(searchQuery);
     }
 
     @UseGuards(LocalAuthGuard)
-    @Mutation((returns) => {return LoginUser}, { name: "login" })
+    @Mutation(
+        (returns) => {
+            return LoginUser;
+        },
+        { name: "login" },
+    )
     async login(
         @Args("email") email: string,
         @Args("password") password: string,
@@ -49,7 +70,33 @@ export class UserResolver {
     }
 
     // Signup new user
-    @Mutation((returns) => {return Boolean}, { name: "signup"})
+    @Mutation(
+        (returns) => {
+            return Boolean;
+        },
+        { name: "signup" },
+    )
+
+    // new logic for signup
+    /*
+async signup(
+    @Args("email") email: string,
+    @Args("password") password: string,
+    @Args("confirmationPin") confirmationPin: string,
+    @Args("type") type: string,
+    @Args("name") name: string,
+    @Args("file") file: string,
+) {
+    return await this.authService.signup({
+        email: email,
+        password: password,
+        confirmationPin: confirmationPin,
+        type: type,
+        file: file,
+        name: name,
+    });
+}
+*/
     async signup(
         @Args("email") email: string,
         @Args("password") password: string,
@@ -60,28 +107,73 @@ export class UserResolver {
         @Args("name") name: string,
         @Args("file") file: string,
     ) {
-        return (await this.authService.signup({
+        return await this.authService.signup({
             email: email,
             password: password,
-            confirmationPin:confirmationPin,
+            confirmationPin: confirmationPin,
             type: type,
             idNumber: idNumber,
             file: file,
             idDocType: idDocType,
-            name: name
-        }));
+            name: name,
+        });
     }
 
     // Verify user account with email
-    @Mutation((returns) => {return Boolean}, { name: "verify"})
-    async verify(@Args("verifyID") verifyID: string, @Args("email") email: string) {
-        return this.authService.verifyNewAccount(verifyID, email); 
+    /*
+    @Mutation(
+        (returns) => {
+            return Boolean;
+        },
+        { name: "verify" },
+    )
+    async verify(
+        @Args("verifyID") verifyID: string,
+        @Args("email") email: string,
+    ) {
+        return this.authService.verifyNewAccount(verifyID, email);
+    }
+
+    @Mutation(
+        (returns) => {
+            return Boolean;
+        },
+        { name: "authorizeUserAccount" },
+    )
+    async authorizeUserAccount(@Args("email") email: string) {
+        return await this.userService.authorizeUserAccount(email);
+    }*/
+
+    //new logic that requires no verification
+    @Mutation(
+        (returns) => {
+            return Boolean;
+        },
+        { name: "verify" },
+    )
+    async verify(
+        @Args("verifyID") verifyID: string,
+        @Args("email") email: string,
+    ) {
+        const isVerified = await this.authService.verifyNewAccount(
+            verifyID,
+            email,
+        );
+        if (isVerified) {
+            await this.userService.authorizeUserAccount(email);
+        }
+        return isVerified;
     }
 
     // Get all the unauthorized user accounts
     @UseGuards(GqlAuthGuard, RolesGuard)
     @Roles("receptionist", "admin")
-    @Query((returns) => { return [User] }, { name: "getUnauthorizedUsers"})
+    @Query(
+        (returns) => {
+            return [User];
+        },
+        { name: "getUnauthorizedUsers" },
+    )
     async getUnauthorizedUsers(@CurrentUser() user: User) {
         return await this.userService.getUnAuthorizedUsers(user.permission);
     }
@@ -89,59 +181,125 @@ export class UserResolver {
     // Delete User Account
     @UseGuards(GqlAuthGuard, RolesGuard)
     @Roles("admin")
-    @Mutation((returns) => { return Boolean }, { name: "deleteUserAccount" })
+    @Mutation(
+        (returns) => {
+            return Boolean;
+        },
+        { name: "deleteUserAccount" },
+    )
     async deleteUserAccount(@Args("email") email: string) {
         return await this.userService.deleteUserAccount(email);
     }
-    
+
     // Authorize User Account
     @UseGuards(GqlAuthGuard, RolesGuard)
     @Roles("receptionist", "admin")
-    @Mutation((returns) => { return Boolean }, { name: "authorizeUserAccount" })
+    @Mutation(
+        (returns) => {
+            return Boolean;
+        },
+        { name: "authorizeUserAccount" },
+    )
     async authorizeUserAccount(@Args("email") email: string) {
-        return await this.userService.authorizeUserAccount(email); 
+        return await this.userService.authorizeUserAccount(email);
     }
 
     // Deauthorize User Account
     @UseGuards(GqlAuthGuard, RolesGuard)
     @Roles("receptionist", "admin")
-    @Mutation((returns) => { return Boolean }, { name: "deauthorizeUserAccount" })
-    async deuthorizeUserAccount(@Args("email") email: string) {
-        return await this.userService.deauthorizeUserAccount(email); 
+    @Mutation(
+        (returns) => {
+            return Boolean;
+        },
+        { name: "deauthorizeUserAccount" },
+    )
+    async deauthorizeUserAccount(@Args("email") email: string) {
+        return await this.userService.deauthorizeUserAccount(email);
     }
 
     @UseGuards(GqlAuthGuard, RolesGuard)
     @Roles("admin")
-    @Query((returns) => { return [SearchUser] }, { name: "getUsersByType"})
+    @Query(
+        (returns) => {
+            return [SearchUser];
+        },
+        { name: "getUsersByType" },
+    )
     async getUsersByType(@Args("permission") permission: number) {
         return await this.userService.getUsersByType(permission);
     }
 
     @UseGuards(GqlAuthGuard)
-    @Query((returns) => { return Number }, { name: "getNumInvites"})
+    @Query(
+        (returns) => {
+            return Number;
+        },
+        { name: "getNumInvites" },
+    )
     async getNumInvites(@Args("email") email: string) {
-        return await this.userService.getNumInvites(email);
+        const numInvites = await this.userService.getNumInvites(email);
+        console.log(numInvites);
+        if (isNaN(numInvites)) {
+            throw new Error("Invalid value for numInvites");
+        }
+        return numInvites;
     }
 
     @UseGuards(GqlAuthGuard)
-    @Query((returns) => { return Number }, { name: "getNumThemes"})
+    @Query(
+        (returns) => {
+            return Number;
+        },
+        { name: "getNumThemes" },
+    )
     async getNumThemes(@Args("email") email: string) {
-        return await this.userService.getNumThemes(email);
+        const numThemes = await this.userService.getNumInvites(email);
+        console.log(numThemes);
+        if (isNaN(numThemes)) {
+            throw new Error("Invalid value for numThemes");
+        }
+        return numThemes;
     }
 
     @UseGuards(GqlAuthGuard)
-    @Query((returns) => { return Number }, { name: "getNumSleepovers"})
+    @Query(
+        (returns) => {
+            return Number;
+        },
+        { name: "getNumSleepovers" },
+    )
     async getNumSleepovers(@Args("email") email: string) {
-        return await this.userService.getNumSleepovers(email);
+        const NumSleepovers = await this.userService.getNumSleepovers(email);
+        console.log(NumSleepovers);
+        if (isNaN(NumSleepovers)) {
+            throw new Error("Invalid value for numThemes");
+        }
+        return NumSleepovers;
     }
 
     @UseGuards(GqlAuthGuard)
-    @Query((returns) => { return Number }, { name: "getCurfewTimeOfResident"})
+    @Query(
+        (returns) => {
+            return Number;
+        },
+        { name: "getCurfewTimeOfResident" },
+    )
     async getCurfewTimeOfResident(@Args("email") email: string) {
-        return await this.userService.getCurfewTimeOfResident(email);
+        const CurfewTimeOfResident =
+            await this.userService.getCurfewTimeOfResident(email);
+        console.log(CurfewTimeOfResident);
+        if (isNaN(CurfewTimeOfResident)) {
+            throw new Error("Invalid value for numThemes");
+        }
+        return CurfewTimeOfResident;
     }
 
-    @Query((returns) => { return Boolean }, { name: "resendVerify" })
+    @Query(
+        (returns) => {
+            return Boolean;
+        },
+        { name: "resendVerify" },
+    )
     async resendVerify(@Args("email") email: string) {
         return await this.authService.resendVerifyEmail(email);
     }
