@@ -1,7 +1,8 @@
 from pymongo import MongoClient
+import os
 
 # MongoDB connection URI
-uri = "mongodb+srv://DevLam:O8AkhlZfMtX0Dfic@cluster0.pnhzoxr.mongodb.net/?retryWrites=true&w=majority"
+uri = os.environ.get('MONGO_DB_CONNECTION_STRING')
 
 # Create a MongoDB client
 client = MongoClient(uri)
@@ -18,14 +19,20 @@ try:
     print("Connected to Database")
 
     # Create a new user document
-    user = {
-        'username': 'MyDevLam',
-        'password': 'O8AkhlZfMtX0Dfic'
+    user_data = {
+      'username': os.environ.get('USERNAME'),
+    'password': os.environ.get('PASSWORD')
     }
 
     # Insert the user document into the User collection
-    user.insert_one(user)
+    # user.insert_one(user)
 
+     # Get the User collection from the database
+    user_collection = db['User']
+
+     # Insert the user document into the User collection
+    user_collection.insert_one(user_data)
+    
     print("User created")
 
 finally:
