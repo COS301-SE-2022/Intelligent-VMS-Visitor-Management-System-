@@ -1,5 +1,6 @@
 # Intelligent Visitor Management System(VMS)
-## Development Team: Firestorm 🔥
+
+## Development Team: Firestorm and Devlam🔥
 
 <div align="center">
     <img width="55%" src="https://user-images.githubusercontent.com/29174023/166639981-b303a2c9-4e56-4623-a42f-f4cb0d3067cf.png" />
@@ -15,9 +16,11 @@
 ![Issues](https://img.shields.io/github/issues/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-)
 
 ### 📐 The Project
+
 The VMS is an intelligent visitor management system that provides a platform for building residents to create invites for visitors, contractors or even prospective buyers. The visitor management platform will also allow the building management to view and analyse visiting data as they see fit. The system will also provide "smart" suggestions using a custom AI analytics engine.
 
 ### ⛓ Project Links
+
 <a href="https://docs.google.com/document/d/1H1qph418MlRJAnXKmxjCJjcUdoOnHHgsy3m5uIQUpOw/edit?usp=sharing">📊 SRS Document</a>
 
 <a href="https://docs.google.com/document/d/1cEvTOnoZmEXxylP1PYGmIJqaO40ZHLxCKjMB2wpL74I/edit?usp=sharing">🧶 Coding Standards Document</a>
@@ -39,5 +42,6 @@ The VMS is an intelligent visitor management system that provides a platform for
 <a href="https://github.com/COS301-SE-2022/Intelligent-VMS-Visitor-Management-System-/wiki/Useful-Project-Links">✨ Useful Project Links</a>
 
 <!-- Shield links -->
+
 [linkedin-shield]: https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white
 [github-shield]: https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white
