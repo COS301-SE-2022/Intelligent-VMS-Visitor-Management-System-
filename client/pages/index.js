@@ -31,10 +31,10 @@ const Home = () => {
                         </p>
                         <div className="divider"></div>
                         <p>
-                            VMS aims to provide a simple and modern interface
-                            where residents, receptionists and building managers
-                            will come together to create a modern residential
-                            building community.
+                            <b>ASFALEAI</b> aims to provide a simple and modern
+                            interface where residents, receptionists and
+                            building managers will come together to create a
+                            modern residential building community.
                         </p>
                     </div>
                     <div>
